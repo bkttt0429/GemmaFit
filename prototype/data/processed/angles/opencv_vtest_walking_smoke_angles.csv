@@ -1,0 +1,2 @@
+source,frame,label,knee_angle,hip_angle,back_angle,torso_length_ratio,heel_angle,heel_angle_delta,valgus_ratio,left_fppa,right_fppa,max_fppa,knee_over_toes,knee_velocity_dps,hip_velocity_dps,back_velocity_dps,max_angular_velocity_dps,rapid_movement,squat_phase,back_slack,heels_off,knee_valgus_ratio,knee_valgus_fppa,knee_valgus
+opencv_vtest.avi,510,walking_smoke,25.92,19.409,119.498,1.0,21.388,0.0,0.8678,154.08,72.278,154.08,0,0.0,0.0,0.0,0.0,0,bottom,0,0,0,1,1

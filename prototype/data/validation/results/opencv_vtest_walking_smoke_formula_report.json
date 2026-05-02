@@ -1,0 +1,66 @@
+{
+  "video": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\prototype\\data\\raw\\test_videos\\opencv_vtest.avi",
+  "fps": 10.0,
+  "sample_every": 30,
+  "landmark_csv": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\prototype\\data\\processed\\landmarks\\opencv_vtest_walking_smoke.csv",
+  "angle_csv": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\prototype\\data\\processed\\angles\\opencv_vtest_walking_smoke_angles.csv",
+  "landmark_frames": 1,
+  "angle_frames": 1,
+  "summaries": {
+    "knee_angle": {
+      "count": 1,
+      "min": 25.92,
+      "median": 25.92,
+      "max": 25.92
+    },
+    "hip_angle": {
+      "count": 1,
+      "min": 19.409,
+      "median": 19.409,
+      "max": 19.409
+    },
+    "back_angle": {
+      "count": 1,
+      "min": 119.498,
+      "median": 119.498,
+      "max": 119.498
+    },
+    "valgus_ratio": {
+      "count": 1,
+      "min": 0.8678,
+      "median": 0.8678,
+      "max": 0.8678
+    },
+    "max_fppa": {
+      "count": 1,
+      "min": 154.08,
+      "median": 154.08,
+      "max": 154.08
+    },
+    "max_angular_velocity_dps": {
+      "count": 1,
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+    }
+  },
+  "com": {
+    "frames": 1,
+    "inside_count": 0,
+    "inside_rate": 0.0,
+    "offset_ratio": {
+      "count": 1,
+      "min": 0.3054,
+      "median": 0.3054,
+      "max": 0.3054
+    }
+  },
+  "checks": {
+    "pass": true,
+    "failures": [],
+    "warnings": [],
+    "observed_phases": [
+      "bottom"
+    ]
+  }
+}

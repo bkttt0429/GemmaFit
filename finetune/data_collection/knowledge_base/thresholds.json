@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "thresholds": [
+    {
+      "metric": "knee_flexion_deg",
+      "value_deg": 100.0,
+      "range_max_deg": null,
+      "context": "nger individuals performed the deep-squat movement, with knee flexion exceeding 100 degrees, and a motion analysis system and force",
+      "source_pmid": "35193063",
+      "year": "2022",
+      "citation": "PMID:35193063 (2022) — Effects of aging on whole-body center of mass movement and lower limb joint kinematics and kinetics during deep-squat mo"
+    },
+    {
+      "metric": "trunk_lean_deg",
+      "value_deg": 60.0,
+      "range_max_deg": null,
+      "context": "nsional angles of the trunk, hip, and knee of 18 participants were evaluated at 60 degrees of knee flexion and at maximum squat de",
+      "source_pmid": "36155000",
+      "year": "2022",
+      "citation": "PMID:36155000 (2022) — Trunk and lower-extremity kinematics differ based on step-down tap variation: An assessment of methodology for a return-"
+    }
+  ]
+}

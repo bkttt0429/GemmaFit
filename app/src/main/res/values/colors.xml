@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary -->
+    <color name="primary_green">#00E676</color>
+    <color name="error_red">#FF1744</color>
+    <color name="warning_orange">#FF9100</color>
+    <color name="accent_blue">#448AFF</color>
+    <color name="muscle_highlight">#E040FB</color>
+    <color name="muscle_secondary">#7C4DFF</color>
+
+    <!-- Background -->
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="overlay_panel">#2C2C2C</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_hint">#757575</color>
+
+    <!-- Form Score -->
+    <color name="score_high">#00E676</color>
+    <color name="score_mid">#FFAB00</color>
+    <color name="score_low">#FF1744</color>
+</resources>

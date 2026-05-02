@@ -1,0 +1,15 @@
+from .core import (
+    TEMPLATES,
+    ExerciseTemplate,
+    ExerciseDetectionResult,
+    QualityFlag,
+    NotApplicableNote,
+    StructuredMotionReport,
+    detect_exercise,
+    apply_gates,
+    extract_template_metrics,
+    build_report,
+    mock_gemma_feedback,
+    STATUS_OK, STATUS_MONITOR, STATUS_WARNING, STATUS_CRITICAL,
+    STATUS_NOT_APPLICABLE, STATUS_LOW_CONFIDENCE, STATUS_VIEW_LIMITED,
+)

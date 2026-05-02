@@ -1,0 +1,97 @@
+{
+  "inputs": {
+    "angles": "data\\processed\\angles\\zenodo_squat_full_angles.csv",
+    "labels": "data\\validation\\zenodo_squat\\zenodo_squat_full_labels.csv",
+    "run_report": "data\\validation\\zenodo_squat\\zenodo_squat_full_report.json"
+  },
+  "run": {
+    "dataset_zip": "..\\test_assets\\datasets\\zenodo_squat_good_bad_back_bad_heel\\Dataset.zip",
+    "max_per_class": 2000,
+    "selected_entries": 3806,
+    "landmark_frames": 3769,
+    "missed_images": 37,
+    "class_counts": {
+      "test/bad_back": 329,
+      "test/bad_heel": 321,
+      "test/good": 310,
+      "train/bad_back": 956,
+      "train/bad_heel": 852,
+      "train/good": 1001
+    },
+    "landmarks_csv": "data\\processed\\landmarks\\zenodo_squat_full_landmarks.csv",
+    "angles_csv": "data\\processed\\angles\\zenodo_squat_full_angles.csv",
+    "labels_csv": "data\\validation\\zenodo_squat\\zenodo_squat_full_labels.csv",
+    "angle_summary": {
+      "total": {
+        "frames": 3769,
+        "knee_valgus": 3766,
+        "back_slack": 92,
+        "heels_off": 1451
+      },
+      "by_label": {
+        "bad_back": {
+          "frames": 1285,
+          "knee_valgus": 1282,
+          "back_slack": 92,
+          "heels_off": 157
+        },
+        "bad_heel": {
+          "frames": 1173,
+          "heels_off": 1032,
+          "knee_valgus": 1173
+        },
+        "good": {
+          "frames": 1311,
+          "knee_valgus": 1311,
+          "heels_off": 262
+        }
+      }
+    },
+    "notes": [
+      "Zenodo squat dataset is image-based; Rule 6 velocity is not evaluated here.",
+      "Bad Back maps to rule2_expected for prototype threshold calibration.",
+      "Bad Heel is recorded as heels_off_expected, not full COM/BoS validation."
+    ]
+  },
+  "metrics": [
+    {
+      "key": "rule2_bad_back",
+      "label": "Rule 2 Bad Back",
+      "prediction_column": "back_slack",
+      "expected_column": "rule2_expected",
+      "evidence": "prototype_threshold",
+      "frames": 3769,
+      "predicted_positive": 92,
+      "expected_positive": 1285,
+      "confusion": {
+        "true_positive": 92,
+        "false_positive": 0,
+        "false_negative": 1193,
+        "true_negative": 2484
+      },
+      "interpretation": "precision is high but recall is low on the full image set, so the current back_slack rule is conservative."
+    },
+    {
+      "key": "bad_heel_proxy",
+      "label": "Bad Heel proxy",
+      "prediction_column": "heels_off",
+      "expected_column": "heels_off_expected",
+      "evidence": "prototype_threshold",
+      "frames": 3769,
+      "predicted_positive": 1451,
+      "expected_positive": 1173,
+      "confusion": {
+        "true_positive": 1032,
+        "false_positive": 419,
+        "false_negative": 141,
+        "true_negative": 2177
+      },
+      "interpretation": "heel lift has a stronger signal for Bad Heel and is suitable as the first demo benchmark, while still remaining a prototype heuristic."
+    }
+  ],
+  "notes": [
+    "Rule 6 rapid movement is excluded because the Zenodo asset is image-only and has no time sequence.",
+    "Rule 1 FPPA/knee-ratio is excluded because the dataset is side-view squat imagery, not a frontal knee-valgus benchmark.",
+    "Rule 5 COM-vs-BoS is not fully validated here; Bad Heel is reported only as a heel-lift proxy."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "videos": {
+    "wikimedia_squat_demo": {
+      "page": "https://commons.wikimedia.org/wiki/File:Squat_-_exercise_demonstration_video.webm",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Squat_-_exercise_demonstration_video.webm",
+      "local_path": "test_assets/videos/squat_wikimedia_01.webm",
+      "license": "CC BY 3.0",
+      "attribution": "FitnessScape",
+      "status": "downloaded_formula_validation_passed",
+      "report": "test_assets/outputs/angle_reports/squat_wikimedia_formula_report.json"
+    },
+    "wikimedia_cdc_pushup": {
+      "page": "https://commons.wikimedia.org/wiki/File:Muscle_Strengthening_at_Home_-_Push-ups.webm",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Muscle_Strengthening_at_Home_-_Push-ups.webm",
+      "local_path": "test_assets/videos/pushup_cdc_01.webm",
+      "license": "Public domain, US HHS CDC work",
+      "attribution": "Centers for Disease Control and Prevention",
+      "status": "downloaded_formula_validation_passed",
+      "report": "test_assets/outputs/angle_reports/pushup_cdc_formula_report.json"
+    },
+    "lunge_kettlebell_demo": {
+      "local_path": "test_assets/videos/lunge_kettlebell.webm",
+      "status": "local_file_present_phase3_template_validation_passed",
+      "source_note": "Existing local public-demo asset; source metadata pending before final writeup citation."
+    },
+    "deadlift_demo": {
+      "local_path": "test_assets/videos/deadlift_demo.webm",
+      "status": "local_file_present_phase3_template_validation_passed",
+      "source_note": "Existing local public-demo asset; source metadata pending before final writeup citation."
+    },
+    "pexels_squat_front": {
+      "page": "https://www.pexels.com/video/a-woman-in-activewear-doing-squats-at-home-8837221/",
+      "status": "blocked_by_cloudflare_for_script_download",
+      "manual_target": "test_assets/videos/squat_front_01.mp4"
+    },
+    "pexels_pushup_side": {
+      "page": "https://www.pexels.com/video/close-up-video-of-man-doing-push-up-exercises-4812846/",
+      "status": "blocked_by_cloudflare_for_script_download",
+      "manual_target": "test_assets/videos/pushup_side_01.mp4"
+    },
+    "opencv_walking_smoke": {
+      "url": "https://raw.githubusercontent.com/opencv/opencv/master/samples/data/vtest.avi",
+      "local_path": "prototype/data/raw/test_videos/opencv_vtest.avi",
+      "status": "downloaded_smoke_test_only"
+    }
+  },
+  "datasets": {
+    "zenodo_squat": {
+      "record": "https://zenodo.org/records/17558630",
+      "api": "https://zenodo.org/api/records/17558630",
+      "file": "https://zenodo.org/api/records/17558630/files/Dataset.zip/content",
+      "size_bytes": 824064094,
+      "md5": "cebeb32ac04dab34d4abe9686a9fc5d3",
+      "local_zip": "test_assets/datasets/zenodo_squat_good_bad_back_bad_heel/Dataset.zip",
+      "partial_download": "test_assets/datasets/zenodo_squat_good_bad_back_bad_heel/Dataset.zip.partial",
+      "status": "partial_download_only_not_usable_yet"
+    }
+  }
+}

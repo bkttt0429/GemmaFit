@@ -1,0 +1,361 @@
+source,frame,label,rule2_expected,rule6_expected,heels_off_expected
+test/Bad Back/Bad Back (1).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (10).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (100).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (101).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (102).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (103).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (104).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (105).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (106).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (107).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (108).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (109).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (11).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (110).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (111).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (112).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (113).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (114).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (115).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (116).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (117).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (118).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (119).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (12).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (120).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (121).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (122).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (123).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (124).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (125).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (126).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (127).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (128).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (129).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (13).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (130).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (131).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (132).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (133).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (134).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (135).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (136).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (137).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (138).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (139).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (14).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (140).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (141).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (142).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (143).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (144).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (145).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (146).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (147).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (148).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (149).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (15).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (150).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (151).jpg,0,bad_back,1,0,0
+test/Bad Back/Bad Back (152).jpg,0,bad_back,1,0,0
+test/Bad Heel/Bad Heel (1).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (10).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (100).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (101).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (102).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (103).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (104).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (105).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (106).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (107).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (108).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (109).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (11).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (110).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (111).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (112).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (113).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (114).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (115).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (116).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (117).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (118).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (119).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (12).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (120).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (121).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (122).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (123).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (124).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (125).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (126).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (127).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (128).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (129).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (13).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (130).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (131).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (132).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (133).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (134).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (135).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (136).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (137).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (138).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (139).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (14).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (140).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (141).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (142).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (143).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (144).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (145).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (146).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (147).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (148).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (149).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (15).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (150).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (151).jpg,0,bad_heel,0,0,1
+test/Bad Heel/Bad Heel (152).jpg,0,bad_heel,0,0,1
+test/Good/Good (1).jpg,0,good,0,0,0
+test/Good/Good (10).jpg,0,good,0,0,0
+test/Good/Good (100).jpg,0,good,0,0,0
+test/Good/Good (101).jpg,0,good,0,0,0
+test/Good/Good (102).jpg,0,good,0,0,0
+test/Good/Good (103).jpg,0,good,0,0,0
+test/Good/Good (104).jpg,0,good,0,0,0
+test/Good/Good (105).jpg,0,good,0,0,0
+test/Good/Good (106).jpg,0,good,0,0,0
+test/Good/Good (107).jpg,0,good,0,0,0
+test/Good/Good (108).jpg,0,good,0,0,0
+test/Good/Good (109).jpg,0,good,0,0,0
+test/Good/Good (11).jpg,0,good,0,0,0
+test/Good/Good (110).jpg,0,good,0,0,0
+test/Good/Good (111).jpg,0,good,0,0,0
+test/Good/Good (112).jpg,0,good,0,0,0
+test/Good/Good (113).jpg,0,good,0,0,0
+test/Good/Good (114).jpg,0,good,0,0,0
+test/Good/Good (115).jpg,0,good,0,0,0
+test/Good/Good (116).jpg,0,good,0,0,0
+test/Good/Good (117).jpg,0,good,0,0,0
+test/Good/Good (118).jpg,0,good,0,0,0
+test/Good/Good (119).jpg,0,good,0,0,0
+test/Good/Good (12).jpg,0,good,0,0,0
+test/Good/Good (120).jpg,0,good,0,0,0
+test/Good/Good (121).jpg,0,good,0,0,0
+test/Good/Good (122).jpg,0,good,0,0,0
+test/Good/Good (123).jpg,0,good,0,0,0
+test/Good/Good (124).jpg,0,good,0,0,0
+test/Good/Good (125).jpg,0,good,0,0,0
+test/Good/Good (126).jpg,0,good,0,0,0
+test/Good/Good (127).jpg,0,good,0,0,0
+test/Good/Good (128).jpg,0,good,0,0,0
+test/Good/Good (129).jpg,0,good,0,0,0
+test/Good/Good (13).jpg,0,good,0,0,0
+test/Good/Good (130).jpg,0,good,0,0,0
+test/Good/Good (131).jpg,0,good,0,0,0
+test/Good/Good (132).jpg,0,good,0,0,0
+test/Good/Good (133).jpg,0,good,0,0,0
+test/Good/Good (134).jpg,0,good,0,0,0
+test/Good/Good (135).jpg,0,good,0,0,0
+test/Good/Good (136).jpg,0,good,0,0,0
+test/Good/Good (137).jpg,0,good,0,0,0
+test/Good/Good (138).jpg,0,good,0,0,0
+test/Good/Good (139).jpg,0,good,0,0,0
+test/Good/Good (14).jpg,0,good,0,0,0
+test/Good/Good (140).jpg,0,good,0,0,0
+test/Good/Good (141).jpg,0,good,0,0,0
+test/Good/Good (142).jpg,0,good,0,0,0
+test/Good/Good (143).jpg,0,good,0,0,0
+test/Good/Good (144).jpg,0,good,0,0,0
+test/Good/Good (145).jpg,0,good,0,0,0
+test/Good/Good (146).jpg,0,good,0,0,0
+test/Good/Good (147).jpg,0,good,0,0,0
+test/Good/Good (148).jpg,0,good,0,0,0
+test/Good/Good (149).jpg,0,good,0,0,0
+test/Good/Good (15).jpg,0,good,0,0,0
+test/Good/Good (150).jpg,0,good,0,0,0
+test/Good/Good (151).jpg,0,good,0,0,0
+test/Good/Good (152).jpg,0,good,0,0,0
+train/Bad back/Bad Back (1).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (10).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (100).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (101).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (102).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (103).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (104).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (105).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (106).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (107).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (108).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (109).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (11).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (110).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (111).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (112).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (113).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (114).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (115).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (116).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (117).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (118).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (119).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (12).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (120).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (121).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (122).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (123).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (124).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (125).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (126).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (127).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (128).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (129).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (13).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (130).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (131).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (132).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (133).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (134).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (135).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (136).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (137).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (138).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (139).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (14).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (140).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (141).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (142).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (143).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (144).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (145).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (146).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (147).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (148).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (149).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (15).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (150).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (151).jpg,0,bad_back,1,0,0
+train/Bad back/Bad Back (152).jpg,0,bad_back,1,0,0
+train/Bad heel/Bad Heel (1).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (10).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (100).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (101).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (102).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (103).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (104).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (105).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (106).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (107).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (108).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (109).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (11).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (110).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (111).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (112).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (113).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (114).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (115).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (116).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (117).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (118).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (119).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (12).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (120).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (121).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (122).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (123).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (124).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (125).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (126).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (127).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (128).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (129).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (13).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (130).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (131).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (132).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (133).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (134).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (135).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (136).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (137).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (138).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (139).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (14).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (140).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (141).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (142).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (143).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (144).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (145).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (146).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (147).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (148).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (149).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (15).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (150).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (151).jpg,0,bad_heel,0,0,1
+train/Bad heel/Bad Heel (152).jpg,0,bad_heel,0,0,1
+train/Good/Good (1).jpg,0,good,0,0,0
+train/Good/Good (10).jpg,0,good,0,0,0
+train/Good/Good (100).jpg,0,good,0,0,0
+train/Good/Good (1000).jpg,0,good,0,0,0
+train/Good/Good (1001).jpg,0,good,0,0,0
+train/Good/Good (101).jpg,0,good,0,0,0
+train/Good/Good (102).jpg,0,good,0,0,0
+train/Good/Good (103).jpg,0,good,0,0,0
+train/Good/Good (104).jpg,0,good,0,0,0
+train/Good/Good (105).jpg,0,good,0,0,0
+train/Good/Good (106).jpg,0,good,0,0,0
+train/Good/Good (107).jpg,0,good,0,0,0
+train/Good/Good (108).jpg,0,good,0,0,0
+train/Good/Good (109).jpg,0,good,0,0,0
+train/Good/Good (11).jpg,0,good,0,0,0
+train/Good/Good (110).jpg,0,good,0,0,0
+train/Good/Good (111).jpg,0,good,0,0,0
+train/Good/Good (112).jpg,0,good,0,0,0
+train/Good/Good (113).jpg,0,good,0,0,0
+train/Good/Good (114).jpg,0,good,0,0,0
+train/Good/Good (115).jpg,0,good,0,0,0
+train/Good/Good (116).jpg,0,good,0,0,0
+train/Good/Good (117).jpg,0,good,0,0,0
+train/Good/Good (118).jpg,0,good,0,0,0
+train/Good/Good (119).jpg,0,good,0,0,0
+train/Good/Good (12).jpg,0,good,0,0,0
+train/Good/Good (120).jpg,0,good,0,0,0
+train/Good/Good (121).jpg,0,good,0,0,0
+train/Good/Good (122).jpg,0,good,0,0,0
+train/Good/Good (123).jpg,0,good,0,0,0
+train/Good/Good (124).jpg,0,good,0,0,0
+train/Good/Good (125).jpg,0,good,0,0,0
+train/Good/Good (126).jpg,0,good,0,0,0
+train/Good/Good (127).jpg,0,good,0,0,0
+train/Good/Good (128).jpg,0,good,0,0,0
+train/Good/Good (129).jpg,0,good,0,0,0
+train/Good/Good (13).jpg,0,good,0,0,0
+train/Good/Good (130).jpg,0,good,0,0,0
+train/Good/Good (131).jpg,0,good,0,0,0
+train/Good/Good (132).jpg,0,good,0,0,0
+train/Good/Good (133).jpg,0,good,0,0,0
+train/Good/Good (134).jpg,0,good,0,0,0
+train/Good/Good (135).jpg,0,good,0,0,0
+train/Good/Good (136).jpg,0,good,0,0,0
+train/Good/Good (137).jpg,0,good,0,0,0
+train/Good/Good (138).jpg,0,good,0,0,0
+train/Good/Good (139).jpg,0,good,0,0,0
+train/Good/Good (14).jpg,0,good,0,0,0
+train/Good/Good (140).jpg,0,good,0,0,0
+train/Good/Good (141).jpg,0,good,0,0,0
+train/Good/Good (142).jpg,0,good,0,0,0
+train/Good/Good (143).jpg,0,good,0,0,0
+train/Good/Good (144).jpg,0,good,0,0,0
+train/Good/Good (145).jpg,0,good,0,0,0
+train/Good/Good (146).jpg,0,good,0,0,0
+train/Good/Good (147).jpg,0,good,0,0,0
+train/Good/Good (148).jpg,0,good,0,0,0
+train/Good/Good (149).jpg,0,good,0,0,0
+train/Good/Good (15).jpg,0,good,0,0,0
+train/Good/Good (150).jpg,0,good,0,0,0

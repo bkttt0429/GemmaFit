@@ -1,0 +1,96 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "GemmaFitNative",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "gemmafit_bridge::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gemmafit_bridge-Debug-6d3b0d443a065c474225.json",
+					"name" : "gemmafit_bridge",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gemmafit_kinematics::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gemmafit_kinematics-Debug-50ec5291b6fd4d95a22a.json",
+					"name" : "gemmafit_kinematics",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_com_tracker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_com_tracker-Debug-1d8fed5ec7d03e2f1496.json",
+					"name" : "test_com_tracker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_kinematics_pipeline::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_kinematics_pipeline-Debug-608d454d3ca1b51fdec5.json",
+					"name" : "test_kinematics_pipeline",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_safety_monitor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_safety_monitor-Debug-b72854c7a1d9d2f66f27.json",
+					"name" : "test_safety_monitor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/ken/OneDrive/\u684c\u9762/GemmaFit/app/.cxx/Debug/6o263564/x86_64",
+		"source" : "C:/Users/ken/OneDrive/\u684c\u9762/GemmaFit/native"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -1,0 +1,21 @@
+                        -HC:\Users\ken\OneDrive\桌面\GemmaFit\native
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=26
+-DANDROID_PLATFORM=android-26
+-DANDROID_ABI=x86_64
+-DCMAKE_ANDROID_ARCH_ABI=x86_64
+-DANDROID_NDK=C:\Users\ken\AppData\Local\Android\Sdk\ndk\30.0.14904198
+-DCMAKE_ANDROID_NDK=C:\Users\ken\AppData\Local\Android\Sdk\ndk\30.0.14904198
+-DCMAKE_TOOLCHAIN_FILE=C:\Users\ken\AppData\Local\Android\Sdk\ndk\30.0.14904198\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=C:\Users\ken\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe
+-DCMAKE_CXX_FLAGS=-std=c++17 -O3 -DANDROID
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\Users\ken\OneDrive\桌面\GemmaFit\app\build\intermediates\cxx\Debug\6u5e2i5n\obj\x86_64
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=C:\Users\ken\OneDrive\桌面\GemmaFit\app\build\intermediates\cxx\Debug\6u5e2i5n\obj\x86_64
+-DCMAKE_BUILD_TYPE=Debug
+-BC:\Users\ken\OneDrive\桌面\GemmaFit\app\.cxx\Debug\6u5e2i5n\x86_64
+-GNinja
+-DANDROID_STL=c++_shared
+-DANDROID_ARM_NEON=TRUE
+                        Build command args: []
+                        Version: 2

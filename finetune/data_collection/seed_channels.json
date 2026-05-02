@@ -1,0 +1,21 @@
+{
+  "_comment": "Add real YouTube video IDs (the ?v= part of the URL) for fitness channels you trust. Or just run: python youtube_cues.py --url <youtube-url> instead.",
+  "_how_to_find": "Open the YouTube video in a browser, copy the URL. The id is after ?v= or after youtu.be/.",
+  "channels": [
+    {
+      "name": "Squat University",
+      "speciality": ["squat", "deadlift", "knee_health"],
+      "video_ids": []
+    },
+    {
+      "name": "Athlean-X",
+      "speciality": ["push_up", "squat", "form_correction"],
+      "video_ids": []
+    },
+    {
+      "name": "Jeff Nippard",
+      "speciality": ["squat", "deadlift", "muscle_focus"],
+      "video_ids": []
+    }
+  ]
+}

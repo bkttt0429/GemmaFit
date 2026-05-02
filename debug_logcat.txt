@@ -1,0 +1,56 @@
+--------- beginning of main
+D/GemmaFit.VM(11286): Initializing PoseLandmarker (IMAGE mode)...
+E/PoseLandmarker(11286): PoseLandmarker setup failed: unknown: Unable to read the file in zip archive.
+D/GemmaFit.VM(11286): PoseLandmarker initialized successfully (IMAGE mode)
+D/GemmaFit.VM(11286): Starting video processing with PoseLandmarker ready
+D/GemmaFit.VideoProc(11286): Video: duration=7100ms, fps=30.0, interval=33333us, PoseLandmarker=true
+D/GemmaFit.VideoProc(11286): Frame 0: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 3: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 6: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 9: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 12: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 15: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 18: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 21: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 24: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 27: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 30: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 33: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 36: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 39: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 42: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 45: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 48: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 51: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 54: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 57: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 60: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 63: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 66: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Frame 69: 1 pose(s) detected, 33 landmarks each
+D/GemmaFit.VideoProc(11286): Video processing done: 24 frames extracted, 24 with pose detected
+D/GemmaFit.VM(11286): Frame 0: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 3: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 6: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 9: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 12: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 15: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 18: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 21: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 24: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 27: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 30: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 33: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 36: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 39: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 42: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 45: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 48: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 51: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 54: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 57: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 60: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 63: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 66: detected 33 landmarks
+D/GemmaFit.VM(11286): Frame 69: detected 33 landmarks
+D/GemmaFit.VM(11286): Video processing complete. Frames: 69, Landmarks present: true

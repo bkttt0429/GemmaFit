@@ -1,0 +1,50 @@
+{
+  "dataset_zip": "..\\test_assets\\datasets\\zenodo_squat_good_bad_back_bad_heel\\Dataset.zip",
+  "max_per_class": 60,
+  "selected_entries": 360,
+  "landmark_frames": 360,
+  "missed_images": 0,
+  "class_counts": {
+    "test/bad_back": 60,
+    "test/bad_heel": 60,
+    "test/good": 60,
+    "train/bad_back": 60,
+    "train/bad_heel": 60,
+    "train/good": 60
+  },
+  "landmarks_csv": "data\\processed\\landmarks\\zenodo_squat_sample_landmarks.csv",
+  "angles_csv": "data\\processed\\angles\\zenodo_squat_sample_angles.csv",
+  "labels_csv": "data\\validation\\zenodo_squat\\zenodo_squat_sample_labels.csv",
+  "angle_summary": {
+    "total": {
+      "frames": 360,
+      "knee_valgus": 359,
+      "back_slack": 295,
+      "heels_off": 105
+    },
+    "by_label": {
+      "bad_back": {
+        "frames": 120,
+        "knee_valgus": 119,
+        "back_slack": 84,
+        "heels_off": 54
+      },
+      "bad_heel": {
+        "frames": 120,
+        "knee_valgus": 120,
+        "back_slack": 110
+      },
+      "good": {
+        "frames": 120,
+        "knee_valgus": 120,
+        "back_slack": 101,
+        "heels_off": 51
+      }
+    }
+  },
+  "notes": [
+    "Zenodo squat dataset is image-based; Rule 6 velocity is not evaluated here.",
+    "Bad Back maps to rule2_expected for prototype threshold calibration.",
+    "Bad Heel is recorded as heels_off_expected, not full COM/BoS validation."
+  ]
+}

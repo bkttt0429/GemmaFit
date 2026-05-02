@@ -1,0 +1,42 @@
+# 機密
+.env
+
+# Android build
+*.apk
+*.aab
+build/
+local.properties
+*.iml
+.idea/
+
+# Native build
+native/build/
+native/llama.cpp/build/
+
+# 模型（體積過大）
+models/*.gguf
+models/*.bin
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# 資料集原始檔（自行下載）
+prototype/data/raw/
+
+# OS
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# Other outputs & IDE settings
+finetune/output/
+.gradle/
+.vscode/
+.claude/
+
+# Large media & datasets
+*.zip
+*.mp4

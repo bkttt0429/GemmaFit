@@ -1,0 +1,2928 @@
+{
+  "video": "squat_wikimedia_01.webm",
+  "fps": 30.0,
+  "sample_every": 2,
+  "n_frames": 107,
+  "dominant_exercise": "squat",
+  "frames": [
+    {
+      "frame": 0,
+      "exercise": "squat",
+      "exercise_confidence": 0.669,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 173.4,
+        "right_knee_angle": 160.1,
+        "left_hip_angle": 158.6,
+        "right_hip_angle": 153.3,
+        "trunk_lean_deg": 21.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.669,
+        "push_up": 0.442,
+        "lunge": 0.362,
+        "deadlift": 0.048
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 1,
+      "exercise": "squat",
+      "exercise_confidence": 0.669,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 173.8,
+        "right_knee_angle": 160.0,
+        "left_hip_angle": 155.9,
+        "right_hip_angle": 153.3,
+        "trunk_lean_deg": 24.1,
+        "tempo_dps": 13.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.669,
+        "push_up": 0.442,
+        "lunge": 0.362,
+        "deadlift": 0.048
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 2,
+      "exercise": "squat",
+      "exercise_confidence": 0.679,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 175.0,
+        "right_knee_angle": 168.0,
+        "left_hip_angle": 157.0,
+        "right_hip_angle": 159.8,
+        "trunk_lean_deg": 23.0,
+        "tempo_dps": 33.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.679,
+        "push_up": 0.442,
+        "lunge": 0.24,
+        "deadlift": 0.038
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 3,
+      "exercise": "squat",
+      "exercise_confidence": 0.687,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 174.6,
+        "right_knee_angle": 171.2,
+        "left_hip_angle": 158.0,
+        "right_hip_angle": 163.7,
+        "trunk_lean_deg": 22.0,
+        "tempo_dps": 10.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.687,
+        "push_up": 0.443,
+        "lunge": 0.171,
+        "deadlift": 0.03
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 4,
+      "exercise": "squat",
+      "exercise_confidence": 0.677,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 175.5,
+        "right_knee_angle": 172.4,
+        "left_hip_angle": 156.7,
+        "right_hip_angle": 167.2,
+        "trunk_lean_deg": 23.3,
+        "tempo_dps": 25.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.677,
+        "push_up": 0.447,
+        "lunge": 0.172,
+        "deadlift": 0.022
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 5,
+      "exercise": "squat",
+      "exercise_confidence": 0.663,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 176.6,
+        "right_knee_angle": 172.1,
+        "left_hip_angle": 155.9,
+        "right_hip_angle": 170.7,
+        "trunk_lean_deg": 24.1,
+        "tempo_dps": 33.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.663,
+        "push_up": 0.443,
+        "lunge": 0.189,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 6,
+      "exercise": "squat",
+      "exercise_confidence": 0.665,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 177.2,
+        "right_knee_angle": 172.0,
+        "left_hip_angle": 156.0,
+        "right_hip_angle": 171.3,
+        "trunk_lean_deg": 24.0,
+        "tempo_dps": 18.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.444,
+        "lunge": 0.179,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 7,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 177.3,
+        "right_knee_angle": 171.5,
+        "left_hip_angle": 155.5,
+        "right_hip_angle": 171.6,
+        "trunk_lean_deg": 24.5,
+        "tempo_dps": 4.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.443,
+        "lunge": 0.176,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 8,
+      "exercise": "squat",
+      "exercise_confidence": 0.67,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 177.3,
+        "right_knee_angle": 171.0,
+        "left_hip_angle": 155.3,
+        "right_hip_angle": 171.9,
+        "trunk_lean_deg": 24.7,
+        "tempo_dps": 0.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.67,
+        "push_up": 0.441,
+        "lunge": 0.17,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 9,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 176.4,
+        "right_knee_angle": 170.8,
+        "left_hip_angle": 153.9,
+        "right_hip_angle": 171.6,
+        "trunk_lean_deg": 26.1,
+        "tempo_dps": 28.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.44,
+        "lunge": 0.179,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 10,
+      "exercise": "squat",
+      "exercise_confidence": 0.664,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 174.2,
+        "right_knee_angle": 170.5,
+        "left_hip_angle": 151.5,
+        "right_hip_angle": 170.8,
+        "trunk_lean_deg": 28.5,
+        "tempo_dps": 65.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.664,
+        "push_up": 0.439,
+        "lunge": 0.187,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 11,
+      "exercise": "squat",
+      "exercise_confidence": 0.663,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 172.1,
+        "right_knee_angle": 169.8,
+        "left_hip_angle": 149.2,
+        "right_hip_angle": 170.3,
+        "trunk_lean_deg": 30.8,
+        "tempo_dps": 63.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.663,
+        "push_up": 0.44,
+        "lunge": 0.19,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 12,
+      "exercise": "squat",
+      "exercise_confidence": 0.663,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 171.0,
+        "right_knee_angle": 169.1,
+        "left_hip_angle": 147.9,
+        "right_hip_angle": 169.7,
+        "trunk_lean_deg": 32.1,
+        "tempo_dps": 32.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.663,
+        "push_up": 0.44,
+        "lunge": 0.192,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 13,
+      "exercise": "squat",
+      "exercise_confidence": 0.661,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 170.2,
+        "right_knee_angle": 168.7,
+        "left_hip_angle": 147.3,
+        "right_hip_angle": 169.3,
+        "trunk_lean_deg": 32.7,
+        "tempo_dps": 22.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.661,
+        "push_up": 0.439,
+        "lunge": 0.195,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 14,
+      "exercise": "squat",
+      "exercise_confidence": 0.661,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 170.2,
+        "right_knee_angle": 167.9,
+        "left_hip_angle": 146.8,
+        "right_hip_angle": 168.9,
+        "trunk_lean_deg": 33.2,
+        "tempo_dps": 1.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.661,
+        "push_up": 0.439,
+        "lunge": 0.196,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 15,
+      "exercise": "squat",
+      "exercise_confidence": 0.66,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 170.2,
+        "right_knee_angle": 167.5,
+        "left_hip_angle": 146.5,
+        "right_hip_angle": 168.5,
+        "trunk_lean_deg": 33.5,
+        "tempo_dps": 2.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.66,
+        "push_up": 0.44,
+        "lunge": 0.199,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 16,
+      "exercise": "squat",
+      "exercise_confidence": 0.66,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 169.9,
+        "right_knee_angle": 167.1,
+        "left_hip_angle": 146.1,
+        "right_hip_angle": 168.4,
+        "trunk_lean_deg": 33.9,
+        "tempo_dps": 7.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.66,
+        "push_up": 0.441,
+        "lunge": 0.199,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 17,
+      "exercise": "squat",
+      "exercise_confidence": 0.671,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 168.2,
+        "right_knee_angle": 166.7,
+        "left_hip_angle": 144.0,
+        "right_hip_angle": 166.9,
+        "trunk_lean_deg": 36.0,
+        "tempo_dps": 52.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.671,
+        "push_up": 0.44,
+        "lunge": 0.188,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 18,
+      "exercise": "squat",
+      "exercise_confidence": 0.689,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 167.1,
+        "right_knee_angle": 165.7,
+        "left_hip_angle": 142.3,
+        "right_hip_angle": 165.3,
+        "trunk_lean_deg": 37.7,
+        "tempo_dps": 30.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.689,
+        "push_up": 0.438,
+        "lunge": 0.165,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 19,
+      "exercise": "squat",
+      "exercise_confidence": 0.69,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 165.8,
+        "right_knee_angle": 164.8,
+        "left_hip_angle": 140.3,
+        "right_hip_angle": 163.1,
+        "trunk_lean_deg": 39.7,
+        "tempo_dps": 39.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.69,
+        "push_up": 0.443,
+        "lunge": 0.2,
+        "deadlift": 0.016
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 20,
+      "exercise": "squat",
+      "exercise_confidence": 0.678,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 162.5,
+        "right_knee_angle": 158.5,
+        "left_hip_angle": 137.6,
+        "right_hip_angle": 156.4,
+        "trunk_lean_deg": 42.4,
+        "tempo_dps": 100.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.678,
+        "push_up": 0.448,
+        "lunge": 0.344,
+        "deadlift": 0.027
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 21,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "top",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 160.7,
+        "right_knee_angle": 148.2,
+        "left_hip_angle": 135.2,
+        "right_hip_angle": 147.8,
+        "trunk_lean_deg": 44.8,
+        "tempo_dps": 52.5
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.448,
+        "lunge": 0.506,
+        "deadlift": 0.041
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 22,
+      "exercise": "squat",
+      "exercise_confidence": 0.669,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 158.9,
+        "right_knee_angle": 144.4,
+        "left_hip_angle": 133.5,
+        "right_hip_angle": 143.3,
+        "trunk_lean_deg": 46.5,
+        "tempo_dps": 53.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.669,
+        "push_up": 0.441,
+        "lunge": 0.552,
+        "deadlift": 0.052
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 23,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 107.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.67,
+        "push_up": 0.444,
+        "lunge": 0.65,
+        "deadlift": 0.068
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 24,
+      "exercise": "lunge",
+      "exercise_confidence": 0.786,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 148.0,
+        "right_knee_angle": 125.7,
+        "left_hip_angle": 124.0,
+        "right_hip_angle": 124.1,
+        "trunk_lean_deg": 56.0,
+        "front_knee_angle": 125.7,
+        "back_knee_angle": 148.0,
+        "knee_asymmetry_deg": 22.3,
+        "tempo_dps": 221.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.448,
+        "lunge": 0.786,
+        "deadlift": 0.087
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 25,
+      "exercise": "lunge",
+      "exercise_confidence": 0.854,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 141.9,
+        "right_knee_angle": 119.5,
+        "left_hip_angle": 117.8,
+        "right_hip_angle": 116.0,
+        "trunk_lean_deg": 62.2,
+        "front_knee_angle": 119.5,
+        "back_knee_angle": 141.9,
+        "knee_asymmetry_deg": 22.4,
+        "tempo_dps": 182.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.444,
+        "lunge": 0.854,
+        "deadlift": 0.104
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 26,
+      "exercise": "lunge",
+      "exercise_confidence": 0.915,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 129.1,
+        "right_knee_angle": 107.8,
+        "left_hip_angle": 107.3,
+        "right_hip_angle": 102.7,
+        "trunk_lean_deg": 72.7,
+        "front_knee_angle": 107.8,
+        "back_knee_angle": 129.1,
+        "knee_asymmetry_deg": 21.3,
+        "tempo_dps": 383.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.68,
+        "push_up": 0.45,
+        "lunge": 0.915,
+        "deadlift": 0.134
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 27,
+      "exercise": "lunge",
+      "exercise_confidence": 0.916,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 120.8,
+        "right_knee_angle": 97.9,
+        "left_hip_angle": 100.0,
+        "right_hip_angle": 92.2,
+        "trunk_lean_deg": 80.0,
+        "front_knee_angle": 97.9,
+        "back_knee_angle": 120.8,
+        "knee_asymmetry_deg": 22.8,
+        "tempo_dps": 250.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.719,
+        "push_up": 0.446,
+        "lunge": 0.916,
+        "deadlift": 0.163
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 28,
+      "exercise": "lunge",
+      "exercise_confidence": 0.911,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 118.6,
+        "right_knee_angle": 99.1,
+        "left_hip_angle": 100.3,
+        "right_hip_angle": 93.4,
+        "trunk_lean_deg": 79.7,
+        "front_knee_angle": 99.1,
+        "back_knee_angle": 118.6,
+        "knee_asymmetry_deg": 19.5,
+        "tempo_dps": 64.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.715,
+        "push_up": 0.441,
+        "lunge": 0.911,
+        "deadlift": 0.162
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 29,
+      "exercise": "lunge",
+      "exercise_confidence": 0.945,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 116.3,
+        "right_knee_angle": 79.3,
+        "left_hip_angle": 96.9,
+        "right_hip_angle": 73.3,
+        "trunk_lean_deg": 83.1,
+        "front_knee_angle": 79.3,
+        "back_knee_angle": 116.3,
+        "knee_asymmetry_deg": 37.0,
+        "tempo_dps": 70.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.759,
+        "push_up": 0.44,
+        "lunge": 0.945,
+        "deadlift": 0.197
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 30,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 113.3,
+        "right_knee_angle": 73.3,
+        "left_hip_angle": 96.0,
+        "right_hip_angle": 65.8,
+        "trunk_lean_deg": 84.0,
+        "front_knee_angle": 73.3,
+        "back_knee_angle": 113.3,
+        "knee_asymmetry_deg": 40.1,
+        "tempo_dps": 87.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.77,
+        "push_up": 0.433,
+        "lunge": 0.944,
+        "deadlift": 0.201
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 31,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 108.6,
+        "right_knee_angle": 63.8,
+        "left_hip_angle": 91.2,
+        "right_hip_angle": 52.1,
+        "trunk_lean_deg": 88.8,
+        "front_knee_angle": 63.8,
+        "back_knee_angle": 108.6,
+        "knee_asymmetry_deg": 44.8,
+        "tempo_dps": 143.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.43,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 32,
+      "exercise": "lunge",
+      "exercise_confidence": 0.902,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 109.6,
+        "right_knee_angle": 63.0,
+        "left_hip_angle": 90.0,
+        "right_hip_angle": 48.0,
+        "trunk_lean_deg": 90.0,
+        "front_knee_angle": 63.0,
+        "back_knee_angle": 109.6,
+        "knee_asymmetry_deg": 46.6,
+        "tempo_dps": 29.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.787,
+        "push_up": 0.434,
+        "lunge": 0.902,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 33,
+      "exercise": "squat",
+      "exercise_confidence": 0.861,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 109.1,
+        "right_knee_angle": 62.9,
+        "left_hip_angle": 88.1,
+        "right_hip_angle": 44.7,
+        "trunk_lean_deg": 91.9,
+        "tempo_dps": 13.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.861,
+        "push_up": 0.44,
+        "lunge": 0.699,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 34,
+      "exercise": "squat",
+      "exercise_confidence": 0.862,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 108.8,
+        "right_knee_angle": 65.8,
+        "left_hip_angle": 88.0,
+        "right_hip_angle": 44.7,
+        "trunk_lean_deg": 92.0,
+        "tempo_dps": 8.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.862,
+        "push_up": 0.439,
+        "lunge": 0.694,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 35,
+      "exercise": "squat",
+      "exercise_confidence": 0.856,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 109.9,
+        "right_knee_angle": 66.3,
+        "left_hip_angle": 87.9,
+        "right_hip_angle": 42.7,
+        "trunk_lean_deg": 92.1,
+        "tempo_dps": 32.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.856,
+        "push_up": 0.442,
+        "lunge": 0.708,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 36,
+      "exercise": "squat",
+      "exercise_confidence": 0.864,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 108.0,
+        "right_knee_angle": 68.2,
+        "left_hip_angle": 87.8,
+        "right_hip_angle": 43.9,
+        "trunk_lean_deg": 92.2,
+        "tempo_dps": 58.5
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.864,
+        "push_up": 0.438,
+        "lunge": 0.686,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 37,
+      "exercise": "lunge",
+      "exercise_confidence": 0.9,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 111.1,
+        "right_knee_angle": 70.8,
+        "left_hip_angle": 90.3,
+        "right_hip_angle": 47.0,
+        "trunk_lean_deg": 89.7,
+        "front_knee_angle": 70.8,
+        "back_knee_angle": 111.1,
+        "knee_asymmetry_deg": 40.2,
+        "tempo_dps": 92.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.787,
+        "push_up": 0.428,
+        "lunge": 0.9,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 38,
+      "exercise": "lunge",
+      "exercise_confidence": 0.919,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 109.0,
+        "right_knee_angle": 72.9,
+        "left_hip_angle": 91.0,
+        "right_hip_angle": 50.3,
+        "trunk_lean_deg": 89.0,
+        "front_knee_angle": 72.9,
+        "back_knee_angle": 109.0,
+        "knee_asymmetry_deg": 36.1,
+        "tempo_dps": 62.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.78,
+        "push_up": 0.421,
+        "lunge": 0.919,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 39,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 102.9,
+        "right_knee_angle": 77.2,
+        "left_hip_angle": 93.7,
+        "right_hip_angle": 57.7,
+        "trunk_lean_deg": 86.3,
+        "front_knee_angle": 77.2,
+        "back_knee_angle": 102.9,
+        "knee_asymmetry_deg": 25.7,
+        "tempo_dps": 182.5
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.418,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 40,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 94.9,
+        "right_knee_angle": 77.2,
+        "left_hip_angle": 93.2,
+        "right_hip_angle": 58.5,
+        "trunk_lean_deg": 86.8,
+        "front_knee_angle": 77.2,
+        "back_knee_angle": 94.9,
+        "knee_asymmetry_deg": 17.8,
+        "tempo_dps": 239.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.416,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 41,
+      "exercise": "lunge",
+      "exercise_confidence": 0.909,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 88.7,
+        "right_knee_angle": 85.4,
+        "left_hip_angle": 94.6,
+        "right_hip_angle": 68.3,
+        "trunk_lean_deg": 85.4,
+        "front_knee_angle": 85.4,
+        "back_knee_angle": 88.7,
+        "knee_asymmetry_deg": 3.3,
+        "tempo_dps": 187.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.784,
+        "push_up": 0.427,
+        "lunge": 0.909,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 42,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 132.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.788,
+        "push_up": 0.438,
+        "lunge": 0.803,
+        "deadlift": 0.198
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 43,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 192.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.797,
+        "push_up": 0.432,
+        "lunge": 0.752,
+        "deadlift": 0.195
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 44,
+      "exercise": "squat",
+      "exercise_confidence": 0.779,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 79.4,
+        "right_knee_angle": 115.0,
+        "left_hip_angle": 97.3,
+        "right_hip_angle": 103.3,
+        "trunk_lean_deg": 82.7,
+        "tempo_dps": 46.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.779,
+        "push_up": 0.436,
+        "lunge": 0.671,
+        "deadlift": 0.162
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 45,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 28.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.741,
+        "push_up": 0.425,
+        "lunge": 0.677,
+        "deadlift": 0.138
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 46,
+      "exercise": "squat",
+      "exercise_confidence": 0.69,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 86.0,
+        "right_knee_angle": 138.2,
+        "left_hip_angle": 109.0,
+        "right_hip_angle": 129.2,
+        "trunk_lean_deg": 71.0,
+        "tempo_dps": 225.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.69,
+        "push_up": 0.436,
+        "lunge": 0.583,
+        "deadlift": 0.098
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 47,
+      "exercise": "squat",
+      "exercise_confidence": 0.674,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 92.5,
+        "right_knee_angle": 144.3,
+        "left_hip_angle": 113.1,
+        "right_hip_angle": 136.6,
+        "trunk_lean_deg": 66.9,
+        "tempo_dps": 193.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.674,
+        "push_up": 0.442,
+        "lunge": 0.54,
+        "deadlift": 0.081
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 48,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 102.5,
+        "right_knee_angle": 149.5,
+        "left_hip_angle": 117.5,
+        "right_hip_angle": 142.3,
+        "trunk_lean_deg": 62.5,
+        "tempo_dps": 299.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.446,
+        "lunge": 0.493,
+        "deadlift": 0.068
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 49,
+      "exercise": "squat",
+      "exercise_confidence": 0.668,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 111.1,
+        "right_knee_angle": 154.9,
+        "left_hip_angle": 121.1,
+        "right_hip_angle": 147.1,
+        "trunk_lean_deg": 58.9,
+        "tempo_dps": 259.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.668,
+        "push_up": 0.445,
+        "lunge": 0.425,
+        "deadlift": 0.059
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 50,
+      "exercise": "squat",
+      "exercise_confidence": 0.682,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 120.8,
+        "right_knee_angle": 163.8,
+        "left_hip_angle": 124.6,
+        "right_hip_angle": 155.1,
+        "trunk_lean_deg": 55.4,
+        "tempo_dps": 292.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.682,
+        "push_up": 0.444,
+        "lunge": 0.286,
+        "deadlift": 0.046
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 51,
+      "exercise": "squat",
+      "exercise_confidence": 0.683,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 127.8,
+        "right_knee_angle": 170.9,
+        "left_hip_angle": 127.2,
+        "right_hip_angle": 163.5,
+        "trunk_lean_deg": 52.8,
+        "tempo_dps": 207.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.683,
+        "push_up": 0.442,
+        "lunge": 0.18,
+        "deadlift": 0.031
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 52,
+      "exercise": "squat",
+      "exercise_confidence": 0.668,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 132.4,
+        "right_knee_angle": 171.6,
+        "left_hip_angle": 128.9,
+        "right_hip_angle": 166.5,
+        "trunk_lean_deg": 51.1,
+        "tempo_dps": 138.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.668,
+        "push_up": 0.441,
+        "lunge": 0.192,
+        "deadlift": 0.025
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 53,
+      "exercise": "squat",
+      "exercise_confidence": 0.668,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 136.1,
+        "right_knee_angle": 171.8,
+        "left_hip_angle": 131.1,
+        "right_hip_angle": 170.2,
+        "trunk_lean_deg": 48.9,
+        "tempo_dps": 112.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.668,
+        "push_up": 0.447,
+        "lunge": 0.164,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 54,
+      "exercise": "squat",
+      "exercise_confidence": 0.673,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 139.8,
+        "right_knee_angle": 171.0,
+        "left_hip_angle": 132.9,
+        "right_hip_angle": 171.8,
+        "trunk_lean_deg": 47.1,
+        "tempo_dps": 111.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.673,
+        "push_up": 0.445,
+        "lunge": 0.153,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 55,
+      "exercise": "squat",
+      "exercise_confidence": 0.671,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 144.0,
+        "right_knee_angle": 170.3,
+        "left_hip_angle": 134.7,
+        "right_hip_angle": 172.3,
+        "trunk_lean_deg": 45.3,
+        "tempo_dps": 125.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.671,
+        "push_up": 0.441,
+        "lunge": 0.168,
+        "deadlift": 0.013
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 56,
+      "exercise": "squat",
+      "exercise_confidence": 0.676,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 146.3,
+        "right_knee_angle": 170.1,
+        "left_hip_angle": 136.0,
+        "right_hip_angle": 172.1,
+        "trunk_lean_deg": 44.0,
+        "tempo_dps": 68.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.676,
+        "push_up": 0.441,
+        "lunge": 0.164,
+        "deadlift": 0.011
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 57,
+      "exercise": "squat",
+      "exercise_confidence": 0.676,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 147.7,
+        "right_knee_angle": 169.9,
+        "left_hip_angle": 136.9,
+        "right_hip_angle": 171.6,
+        "trunk_lean_deg": 43.1,
+        "tempo_dps": 41.5
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.676,
+        "push_up": 0.444,
+        "lunge": 0.157,
+        "deadlift": 0.012
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 58,
+      "exercise": "squat",
+      "exercise_confidence": 0.672,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 147.9,
+        "right_knee_angle": 170.3,
+        "left_hip_angle": 136.8,
+        "right_hip_angle": 171.3,
+        "trunk_lean_deg": 43.2,
+        "tempo_dps": 6.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.672,
+        "push_up": 0.437,
+        "lunge": 0.169,
+        "deadlift": 0.012
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 59,
+      "exercise": "squat",
+      "exercise_confidence": 0.668,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 149.3,
+        "right_knee_angle": 170.4,
+        "left_hip_angle": 136.9,
+        "right_hip_angle": 170.7,
+        "trunk_lean_deg": 43.1,
+        "tempo_dps": 43.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.668,
+        "push_up": 0.435,
+        "lunge": 0.18,
+        "deadlift": 0.012
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 60,
+      "exercise": "squat",
+      "exercise_confidence": 0.665,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 151.8,
+        "right_knee_angle": 170.4,
+        "left_hip_angle": 137.8,
+        "right_hip_angle": 170.2,
+        "trunk_lean_deg": 42.2,
+        "tempo_dps": 75.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.437,
+        "lunge": 0.186,
+        "deadlift": 0.013
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 61,
+      "exercise": "squat",
+      "exercise_confidence": 0.665,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 153.7,
+        "right_knee_angle": 170.7,
+        "left_hip_angle": 138.5,
+        "right_hip_angle": 169.6,
+        "trunk_lean_deg": 41.5,
+        "tempo_dps": 54.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.444,
+        "lunge": 0.187,
+        "deadlift": 0.013
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 62,
+      "exercise": "squat",
+      "exercise_confidence": 0.665,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 155.5,
+        "right_knee_angle": 170.9,
+        "left_hip_angle": 139.3,
+        "right_hip_angle": 169.0,
+        "trunk_lean_deg": 40.7,
+        "tempo_dps": 55.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.448,
+        "lunge": 0.185,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 63,
+      "exercise": "squat",
+      "exercise_confidence": 0.664,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 157.1,
+        "right_knee_angle": 171.1,
+        "left_hip_angle": 140.2,
+        "right_hip_angle": 168.8,
+        "trunk_lean_deg": 39.8,
+        "tempo_dps": 47.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.664,
+        "push_up": 0.444,
+        "lunge": 0.186,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 64,
+      "exercise": "squat",
+      "exercise_confidence": 0.664,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 157.9,
+        "right_knee_angle": 171.5,
+        "left_hip_angle": 140.2,
+        "right_hip_angle": 168.6,
+        "trunk_lean_deg": 39.8,
+        "tempo_dps": 25.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.664,
+        "push_up": 0.444,
+        "lunge": 0.186,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 65,
+      "exercise": "squat",
+      "exercise_confidence": 0.668,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 158.4,
+        "right_knee_angle": 171.9,
+        "left_hip_angle": 139.6,
+        "right_hip_angle": 167.3,
+        "trunk_lean_deg": 40.4,
+        "tempo_dps": 15.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.668,
+        "push_up": 0.444,
+        "lunge": 0.183,
+        "deadlift": 0.016
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 66,
+      "exercise": "squat",
+      "exercise_confidence": 0.688,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 158.8,
+        "right_knee_angle": 168.3,
+        "left_hip_angle": 138.7,
+        "right_hip_angle": 162.7,
+        "trunk_lean_deg": 41.3,
+        "tempo_dps": 11.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.688,
+        "push_up": 0.445,
+        "lunge": 0.212,
+        "deadlift": 0.018
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 67,
+      "exercise": "squat",
+      "exercise_confidence": 0.674,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 158.4,
+        "right_knee_angle": 158.3,
+        "left_hip_angle": 137.4,
+        "right_hip_angle": 154.6,
+        "trunk_lean_deg": 42.6,
+        "tempo_dps": 13.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.674,
+        "push_up": 0.446,
+        "lunge": 0.378,
+        "deadlift": 0.031
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 68,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 157.6,
+        "right_knee_angle": 150.0,
+        "left_hip_angle": 136.1,
+        "right_hip_angle": 148.6,
+        "trunk_lean_deg": 43.9,
+        "tempo_dps": 25.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.436,
+        "lunge": 0.494,
+        "deadlift": 0.042
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 69,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 59.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.662,
+        "push_up": 0.443,
+        "lunge": 0.615,
+        "deadlift": 0.059
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 70,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 59.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.661,
+        "push_up": 0.443,
+        "lunge": 0.683,
+        "deadlift": 0.071
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 71,
+      "exercise": "lunge",
+      "exercise_confidence": 0.774,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 144.8,
+        "right_knee_angle": 127.1,
+        "left_hip_angle": 122.7,
+        "right_hip_angle": 123.9,
+        "trunk_lean_deg": 57.3,
+        "front_knee_angle": 127.1,
+        "back_knee_angle": 144.8,
+        "knee_asymmetry_deg": 17.6,
+        "tempo_dps": 265.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.665,
+        "push_up": 0.447,
+        "lunge": 0.774,
+        "deadlift": 0.089
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 72,
+      "exercise": "lunge",
+      "exercise_confidence": 0.858,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 134.0,
+        "right_knee_angle": 116.1,
+        "left_hip_angle": 113.2,
+        "right_hip_angle": 111.2,
+        "trunk_lean_deg": 66.8,
+        "front_knee_angle": 116.1,
+        "back_knee_angle": 134.0,
+        "knee_asymmetry_deg": 17.9,
+        "tempo_dps": 324.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.676,
+        "push_up": 0.448,
+        "lunge": 0.858,
+        "deadlift": 0.117
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 73,
+      "exercise": "lunge",
+      "exercise_confidence": 0.894,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 123.0,
+        "right_knee_angle": 107.5,
+        "left_hip_angle": 105.8,
+        "right_hip_angle": 102.0,
+        "trunk_lean_deg": 74.2,
+        "front_knee_angle": 107.5,
+        "back_knee_angle": 123.0,
+        "knee_asymmetry_deg": 15.5,
+        "tempo_dps": 329.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.69,
+        "push_up": 0.449,
+        "lunge": 0.894,
+        "deadlift": 0.14
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 74,
+      "exercise": "lunge",
+      "exercise_confidence": 0.945,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 118.5,
+        "right_knee_angle": 97.1,
+        "left_hip_angle": 100.2,
+        "right_hip_angle": 92.3,
+        "trunk_lean_deg": 79.8,
+        "front_knee_angle": 97.1,
+        "back_knee_angle": 118.5,
+        "knee_asymmetry_deg": 21.4,
+        "tempo_dps": 134.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.7,
+        "push_up": 0.44,
+        "lunge": 0.945,
+        "deadlift": 0.161
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 75,
+      "exercise": "lunge",
+      "exercise_confidence": 0.945,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 114.1,
+        "right_knee_angle": 91.8,
+        "left_hip_angle": 98.5,
+        "right_hip_angle": 86.2,
+        "trunk_lean_deg": 81.5,
+        "front_knee_angle": 91.8,
+        "back_knee_angle": 114.1,
+        "knee_asymmetry_deg": 22.3,
+        "tempo_dps": 132.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.717,
+        "push_up": 0.441,
+        "lunge": 0.945,
+        "deadlift": 0.174
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 76,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 112.7,
+        "right_knee_angle": 78.6,
+        "left_hip_angle": 97.6,
+        "right_hip_angle": 72.4,
+        "trunk_lean_deg": 82.4,
+        "front_knee_angle": 78.6,
+        "back_knee_angle": 112.7,
+        "knee_asymmetry_deg": 34.2,
+        "tempo_dps": 40.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.747,
+        "push_up": 0.438,
+        "lunge": 0.944,
+        "deadlift": 0.195
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 77,
+      "exercise": "lunge",
+      "exercise_confidence": 0.943,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 110.8,
+        "right_knee_angle": 68.4,
+        "left_hip_angle": 96.0,
+        "right_hip_angle": 59.0,
+        "trunk_lean_deg": 84.0,
+        "front_knee_angle": 68.4,
+        "back_knee_angle": 110.8,
+        "knee_asymmetry_deg": 42.5,
+        "tempo_dps": 58.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.768,
+        "push_up": 0.431,
+        "lunge": 0.943,
+        "deadlift": 0.201
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 78,
+      "exercise": "lunge",
+      "exercise_confidence": 0.943,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 105.0,
+        "right_knee_angle": 65.1,
+        "left_hip_angle": 92.4,
+        "right_hip_angle": 52.5,
+        "trunk_lean_deg": 87.6,
+        "front_knee_angle": 65.1,
+        "back_knee_angle": 105.0,
+        "knee_asymmetry_deg": 39.8,
+        "tempo_dps": 174.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.428,
+        "lunge": 0.943,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 79,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 212.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.8,
+        "push_up": 0.426,
+        "lunge": 0.865,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 80,
+      "exercise": "lunge",
+      "exercise_confidence": 0.934,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 100.4,
+        "right_knee_angle": 62.9,
+        "left_hip_angle": 89.9,
+        "right_hip_angle": 45.3,
+        "trunk_lean_deg": 90.1,
+        "front_knee_angle": 62.9,
+        "back_knee_angle": 100.4,
+        "knee_asymmetry_deg": 37.5,
+        "tempo_dps": 76.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.775,
+        "push_up": 0.431,
+        "lunge": 0.934,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 81,
+      "exercise": "lunge",
+      "exercise_confidence": 0.887,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 101.1,
+        "right_knee_angle": 63.1,
+        "left_hip_angle": 89.5,
+        "right_hip_angle": 43.8,
+        "trunk_lean_deg": 90.5,
+        "front_knee_angle": 63.1,
+        "back_knee_angle": 101.1,
+        "knee_asymmetry_deg": 38.0,
+        "tempo_dps": 19.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.792,
+        "push_up": 0.436,
+        "lunge": 0.887,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 82,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 69.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.82,
+        "push_up": 0.425,
+        "lunge": 0.809,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 83,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 68.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.799,
+        "push_up": 0.421,
+        "lunge": 0.869,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 84,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 91.2,
+        "right_knee_angle": 70.9,
+        "left_hip_angle": 92.1,
+        "right_hip_angle": 53.7,
+        "trunk_lean_deg": 87.9,
+        "front_knee_angle": 70.9,
+        "back_knee_angle": 91.2,
+        "knee_asymmetry_deg": 20.3,
+        "tempo_dps": 161.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.421,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 85,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 83.0,
+        "right_knee_angle": 71.2,
+        "left_hip_angle": 92.7,
+        "right_hip_angle": 55.4,
+        "trunk_lean_deg": 87.3,
+        "front_knee_angle": 71.2,
+        "back_knee_angle": 83.0,
+        "knee_asymmetry_deg": 11.8,
+        "tempo_dps": 243.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.42,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 86,
+      "exercise": "lunge",
+      "exercise_confidence": 0.944,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 75.8,
+        "right_knee_angle": 78.0,
+        "left_hip_angle": 94.3,
+        "right_hip_angle": 63.9,
+        "trunk_lean_deg": 85.7,
+        "front_knee_angle": 75.8,
+        "back_knee_angle": 78.0,
+        "knee_asymmetry_deg": 2.2,
+        "tempo_dps": 216.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.772,
+        "push_up": 0.422,
+        "lunge": 0.944,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 87,
+      "exercise": "unknown",
+      "exercise_confidence": 0.0,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "tempo_dps": 0.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.823,
+        "push_up": 0.425,
+        "lunge": 0.804,
+        "deadlift": 0.2
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 88,
+      "exercise": "squat",
+      "exercise_confidence": 0.829,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 71.4,
+        "right_knee_angle": 98.0,
+        "left_hip_angle": 93.8,
+        "right_hip_angle": 84.6,
+        "trunk_lean_deg": 86.2,
+        "tempo_dps": 132.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.829,
+        "push_up": 0.418,
+        "lunge": 0.71,
+        "deadlift": 0.207
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 89,
+      "exercise": "squat",
+      "exercise_confidence": 0.783,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 70.5,
+        "right_knee_angle": 108.2,
+        "left_hip_angle": 96.1,
+        "right_hip_angle": 95.5,
+        "trunk_lean_deg": 83.9,
+        "tempo_dps": 28.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.783,
+        "push_up": 0.43,
+        "lunge": 0.713,
+        "deadlift": 0.179
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 90,
+      "exercise": "squat",
+      "exercise_confidence": 0.787,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 70.1,
+        "right_knee_angle": 115.1,
+        "left_hip_angle": 96.6,
+        "right_hip_angle": 103.5,
+        "trunk_lean_deg": 83.4,
+        "tempo_dps": 10.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.787,
+        "push_up": 0.429,
+        "lunge": 0.651,
+        "deadlift": 0.166
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 91,
+      "exercise": "squat",
+      "exercise_confidence": 0.722,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 70.3,
+        "right_knee_angle": 127.7,
+        "left_hip_angle": 101.8,
+        "right_hip_angle": 115.8,
+        "trunk_lean_deg": 78.2,
+        "tempo_dps": 5.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.722,
+        "push_up": 0.422,
+        "lunge": 0.651,
+        "deadlift": 0.132
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 92,
+      "exercise": "squat",
+      "exercise_confidence": 0.682,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 74.2,
+        "right_knee_angle": 138.2,
+        "left_hip_angle": 107.4,
+        "right_hip_angle": 127.3,
+        "trunk_lean_deg": 72.6,
+        "tempo_dps": 118.4
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.682,
+        "push_up": 0.435,
+        "lunge": 0.6,
+        "deadlift": 0.105
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 93,
+      "exercise": "squat",
+      "exercise_confidence": 0.671,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 83.8,
+        "right_knee_angle": 143.6,
+        "left_hip_angle": 111.5,
+        "right_hip_angle": 133.9,
+        "trunk_lean_deg": 68.5,
+        "tempo_dps": 286.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.671,
+        "push_up": 0.432,
+        "lunge": 0.558,
+        "deadlift": 0.089
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 94,
+      "exercise": "squat",
+      "exercise_confidence": 0.663,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 96.3,
+        "right_knee_angle": 151.8,
+        "left_hip_angle": 118.3,
+        "right_hip_angle": 143.1,
+        "trunk_lean_deg": 61.7,
+        "tempo_dps": 376.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.663,
+        "push_up": 0.437,
+        "lunge": 0.472,
+        "deadlift": 0.07
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 95,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "bottom",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 105.0,
+        "right_knee_angle": 157.2,
+        "left_hip_angle": 121.0,
+        "right_hip_angle": 147.6,
+        "trunk_lean_deg": 59.0,
+        "tempo_dps": 261.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.447,
+        "lunge": 0.406,
+        "deadlift": 0.06
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 96,
+      "exercise": "squat",
+      "exercise_confidence": 0.677,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 115.2,
+        "right_knee_angle": 165.3,
+        "left_hip_angle": 124.8,
+        "right_hip_angle": 154.7,
+        "trunk_lean_deg": 55.2,
+        "tempo_dps": 303.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.677,
+        "push_up": 0.447,
+        "lunge": 0.285,
+        "deadlift": 0.048
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 97,
+      "exercise": "squat",
+      "exercise_confidence": 0.685,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 120.9,
+        "right_knee_angle": 172.9,
+        "left_hip_angle": 126.7,
+        "right_hip_angle": 162.7,
+        "trunk_lean_deg": 53.3,
+        "tempo_dps": 173.6
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.685,
+        "push_up": 0.444,
+        "lunge": 0.164,
+        "deadlift": 0.034
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 98,
+      "exercise": "squat",
+      "exercise_confidence": 0.675,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 125.2,
+        "right_knee_angle": 173.8,
+        "left_hip_angle": 128.2,
+        "right_hip_angle": 165.9,
+        "trunk_lean_deg": 51.8,
+        "tempo_dps": 127.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.675,
+        "push_up": 0.449,
+        "lunge": 0.165,
+        "deadlift": 0.026
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 99,
+      "exercise": "squat",
+      "exercise_confidence": 0.667,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 129.7,
+        "right_knee_angle": 174.1,
+        "left_hip_angle": 130.6,
+        "right_hip_angle": 169.4,
+        "trunk_lean_deg": 49.4,
+        "tempo_dps": 134.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.667,
+        "push_up": 0.442,
+        "lunge": 0.17,
+        "deadlift": 0.019
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 100,
+      "exercise": "squat",
+      "exercise_confidence": 0.667,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 133.3,
+        "right_knee_angle": 173.7,
+        "left_hip_angle": 132.2,
+        "right_hip_angle": 171.2,
+        "trunk_lean_deg": 47.8,
+        "tempo_dps": 109.1
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.667,
+        "push_up": 0.446,
+        "lunge": 0.17,
+        "deadlift": 0.017
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 101,
+      "exercise": "squat",
+      "exercise_confidence": 0.672,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 137.9,
+        "right_knee_angle": 173.3,
+        "left_hip_angle": 133.9,
+        "right_hip_angle": 172.2,
+        "trunk_lean_deg": 46.1,
+        "tempo_dps": 138.0
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.672,
+        "push_up": 0.445,
+        "lunge": 0.158,
+        "deadlift": 0.017
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 102,
+      "exercise": "squat",
+      "exercise_confidence": 0.672,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 142.0,
+        "right_knee_angle": 173.1,
+        "left_hip_angle": 136.0,
+        "right_hip_angle": 172.5,
+        "trunk_lean_deg": 44.0,
+        "tempo_dps": 122.9
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.672,
+        "push_up": 0.442,
+        "lunge": 0.163,
+        "deadlift": 0.016
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 103,
+      "exercise": "squat",
+      "exercise_confidence": 0.666,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 144.1,
+        "right_knee_angle": 173.0,
+        "left_hip_angle": 136.3,
+        "right_hip_angle": 172.1,
+        "trunk_lean_deg": 43.7,
+        "tempo_dps": 62.8
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.666,
+        "push_up": 0.442,
+        "lunge": 0.18,
+        "deadlift": 0.014
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 104,
+      "exercise": "squat",
+      "exercise_confidence": 0.664,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 147.1,
+        "right_knee_angle": 173.2,
+        "left_hip_angle": 137.7,
+        "right_hip_angle": 171.5,
+        "trunk_lean_deg": 42.3,
+        "tempo_dps": 89.7
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.664,
+        "push_up": 0.443,
+        "lunge": 0.186,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 105,
+      "exercise": "squat",
+      "exercise_confidence": 0.661,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 149.7,
+        "right_knee_angle": 173.5,
+        "left_hip_angle": 139.1,
+        "right_hip_angle": 171.2,
+        "trunk_lean_deg": 40.9,
+        "tempo_dps": 77.2
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.661,
+        "push_up": 0.439,
+        "lunge": 0.194,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    },
+    {
+      "frame": 106,
+      "exercise": "squat",
+      "exercise_confidence": 0.662,
+      "phase": "descending",
+      "rep": 0,
+      "metrics": {
+        "left_knee_angle": 151.9,
+        "right_knee_angle": 173.9,
+        "left_hip_angle": 140.1,
+        "right_hip_angle": 170.8,
+        "trunk_lean_deg": 39.9,
+        "tempo_dps": 68.3
+      },
+      "quality_flags": [],
+      "not_applicable": [],
+      "candidate_scores": {
+        "squat": 0.662,
+        "push_up": 0.438,
+        "lunge": 0.195,
+        "deadlift": 0.015
+      },
+      "notes": [
+        "not_medical_diagnosis",
+        "single_camera_pose_based_feedback"
+      ]
+    }
+  ]
+}
