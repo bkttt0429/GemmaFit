@@ -1,0 +1,57 @@
+{
+  "buildFiles": [
+    "Z:\\native\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "Z:\\app\\.cxx\\Debug\\2s1q0451\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "Z:\\app\\.cxx\\Debug\\2s1q0451\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "gemmafit_kinematics::@6890427a1f51a3e7e1df": {
+      "artifactName": "gemmafit_kinematics",
+      "abi": "x86_64",
+      "output": "Z:\\app\\.cxx\\Debug\\2s1q0451\\x86_64\\libgemmafit_kinematics.a",
+      "runtimeFiles": []
+    },
+    "test_kinematics_pipeline::@6890427a1f51a3e7e1df": {
+      "artifactName": "test_kinematics_pipeline",
+      "abi": "x86_64",
+      "output": "Z:\\app\\build\\intermediates\\cxx\\Debug\\2s1q0451\\obj\\x86_64\\test_kinematics_pipeline",
+      "runtimeFiles": []
+    },
+    "gemmafit_bridge::@6890427a1f51a3e7e1df": {
+      "artifactName": "gemmafit_bridge",
+      "abi": "x86_64",
+      "output": "Z:\\app\\build\\intermediates\\cxx\\Debug\\2s1q0451\\obj\\x86_64\\libgemmafit_bridge.so",
+      "runtimeFiles": []
+    },
+    "test_com_tracker::@6890427a1f51a3e7e1df": {
+      "artifactName": "test_com_tracker",
+      "abi": "x86_64",
+      "output": "Z:\\app\\build\\intermediates\\cxx\\Debug\\2s1q0451\\obj\\x86_64\\test_com_tracker",
+      "runtimeFiles": []
+    },
+    "test_motion_quality::@6890427a1f51a3e7e1df": {
+      "artifactName": "test_motion_quality",
+      "abi": "x86_64",
+      "output": "Z:\\app\\build\\intermediates\\cxx\\Debug\\2s1q0451\\obj\\x86_64\\test_motion_quality",
+      "runtimeFiles": []
+    },
+    "test_safety_monitor::@6890427a1f51a3e7e1df": {
+      "artifactName": "test_safety_monitor",
+      "abi": "x86_64",
+      "output": "Z:\\app\\build\\intermediates\\cxx\\Debug\\2s1q0451\\obj\\x86_64\\test_safety_monitor",
+      "runtimeFiles": []
+    }
+  }
+}

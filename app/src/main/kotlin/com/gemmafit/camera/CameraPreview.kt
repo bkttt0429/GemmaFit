@@ -49,35 +49,42 @@ class PoseLandmarkerHelper(
 
     private fun setupPoseLandmarker() {
         try {
-            // The model file must be placed in app/src/main/assets/
-            // Download from: https://developers.google.com/mediapipe/solutions/vision/pose_landmarker
             val modelPath = "pose_landmarker_lite.task"
-            val baseOptions = BaseOptions.builder()
-                .setDelegate(Delegate.CPU)
-                .setModelAssetPath(modelPath)
-                .build()
-
             val options = PoseLandmarker.PoseLandmarkerOptions.builder()
-                .setBaseOptions(baseOptions)
+                .setBaseOptions(BaseOptions.builder().setDelegate(Delegate.GPU).setModelAssetPath(modelPath).build())
                 .setMinPoseDetectionConfidence(0.5f)
                 .setMinPosePresenceConfidence(0.5f)
                 .setMinTrackingConfidence(0.5f)
                 .setRunningMode(RunningMode.LIVE_STREAM)
                 .setResultListener { result, image ->
-                    listener.onResults(
-                        result,
-                        image.height,
-                        image.width,
-                        System.currentTimeMillis()
-                    )
+                    listener.onResults(result, image.height, image.width, System.currentTimeMillis())
                 }
                 .setErrorListener { error ->
                     listener.onError(error.message ?: "PoseLandmarker error")
                 }
                 .build()
 
-            poseLandmarker = PoseLandmarker.createFromOptions(context, options)
-            Log.i("PoseLandmarker", "ready: model=$modelPath, mode=LIVE_STREAM, conf=0.5")
+            try {
+                poseLandmarker = PoseLandmarker.createFromOptions(context, options)
+                Log.i("PoseLandmarker", "ready: GPU, LIVE_STREAM")
+            } catch (e: Exception) {
+                Log.w("PoseLandmarker", "GPU failed, trying CPU: ${e.message}")
+                val cpuOptions = PoseLandmarker.PoseLandmarkerOptions.builder()
+                    .setBaseOptions(BaseOptions.builder().setDelegate(Delegate.CPU).setModelAssetPath(modelPath).build())
+                    .setMinPoseDetectionConfidence(0.5f)
+                    .setMinPosePresenceConfidence(0.5f)
+                    .setMinTrackingConfidence(0.5f)
+                    .setRunningMode(RunningMode.LIVE_STREAM)
+                    .setResultListener { result, image ->
+                        listener.onResults(result, image.height, image.width, System.currentTimeMillis())
+                    }
+                    .setErrorListener { error ->
+                        listener.onError(error.message ?: "PoseLandmarker error")
+                    }
+                    .build()
+                poseLandmarker = PoseLandmarker.createFromOptions(context, cpuOptions)
+                Log.i("PoseLandmarker", "ready: CPU fallback")
+            }
         } catch (e: Exception) {
             Log.e("PoseLandmarker", "setup failed: ${e.message}", e)
             listener.onError("PoseLandmarker setup failed: ${e.message}")
@@ -109,28 +116,30 @@ class PoseLandmarkerHelper(
     }
 
     private fun ImageProxy.toBitmap(): android.graphics.Bitmap {
-        val yBuffer = planes[0].buffer
-        val uBuffer = planes[1].buffer
-        val vBuffer = planes[2].buffer
-
-        val ySize = yBuffer.remaining()
-        val uSize = uBuffer.remaining()
-        val vSize = vBuffer.remaining()
-
-        val nv21 = ByteArray(ySize + uSize + vSize)
-        yBuffer.get(nv21, 0, ySize)
-        vBuffer.get(nv21, ySize, vSize)
-        uBuffer.get(nv21, ySize + vSize, uSize)
-
-        val yuvImage = android.graphics.YuvImage(
-            nv21, android.graphics.ImageFormat.NV21, width, height, null
-        )
-        val out = java.io.ByteArrayOutputStream()
-        yuvImage.compressToJpeg(
-            android.graphics.Rect(0, 0, width, height), 100, out
-        )
-        val imageBytes = out.toByteArray()
-        return android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        val yPlane = planes[0]
+        val uPlane = planes[1]
+        val vPlane = planes[2]
+        val yRowStride = yPlane.rowStride
+        val uvRowStride = uPlane.rowStride
+        val uvPixelStride = uPlane.pixelStride
+        val yBuf = yPlane.buffer
+        val uBuf = uPlane.buffer
+        val vBuf = vPlane.buffer
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val yIdx = y * yRowStride + x
+                val uvIdx = (y shr 1) * uvRowStride + (x shr 1) * uvPixelStride
+                val yVal = (yBuf[yIdx].toInt() and 0xFF) - 16
+                val uVal = (uBuf[uvIdx.coerceIn(0, uBuf.capacity() - 1)].toInt() and 0xFF) - 128
+                val vVal = (vBuf[uvIdx.coerceIn(0, vBuf.capacity() - 1)].toInt() and 0xFF) - 128
+                val r = (1.164f * yVal + 1.596f * vVal).toInt().coerceIn(0, 255)
+                val g = (1.164f * yVal - 0.392f * uVal - 0.813f * vVal).toInt().coerceIn(0, 255)
+                val b = (1.164f * yVal + 2.017f * uVal).toInt().coerceIn(0, 255)
+                pixels[y * width + x] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
+            }
+        }
+        return android.graphics.Bitmap.createBitmap(pixels, width, height, android.graphics.Bitmap.Config.ARGB_8888)
     }
 }
 

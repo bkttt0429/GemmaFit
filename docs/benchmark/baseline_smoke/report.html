@@ -1,0 +1,227 @@
+<!doctype html>
+<html><head><meta charset='utf-8'><title>GemmaFit A/B benchmark</title>
+<style>
+  body { font-family: -apple-system, system-ui, Arial; background: #0f1724; color: #e0e0e0; margin: 0; padding: 24px; }
+  h1 { color: #00D4AA; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 12px; }
+  th, td { border: 1px solid #333; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #15202b; color: #4ECDC4; font-weight: bold; }
+  pre { margin: 0; white-space: pre-wrap; word-break: break-word; max-width: 380px; max-height: 220px; overflow: auto; font-family: ui-monospace, monospace; font-size: 11px; }
+  td.ok { background: #102a18; }
+  td.bad { background: #2a1010; }
+  table.summary { width: auto; }
+  table.summary th, table.summary td { padding: 10px 16px; }
+  .ok { color: #00D4AA; } .bad { color: #FF6B6B; }
+</style></head>
+<body>
+  <h1>GemmaFit A/B benchmark</h1>
+  <p>Base: <code>models/gemma4-e2b-Q4_K_M.gguf</code></p>
+  
+  <h2>Summary</h2>
+  
+<table class=summary>
+  <tr><th></th><th>Base</th></tr>
+  <tr><td>JSON parse rate</td><td>100.0%</td></tr>
+  <tr><td>Function-name match</td><td>0.0%</td></tr>
+  <tr><td>Args Jaccard (avg)</td><td>0.075</td></tr>
+  <tr><td>Avg latency (sec)</td><td>6.02</td></tr>
+</table>
+
+  <h2>Per-example results (first 5)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Input</th><th>Expected</th><th>Base (gemma4-e2b-Q4_K_M.gguf)</th></tr></thead>
+    <tbody><tr><td>0</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [],
+  "streak_frames": 90
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_elbow_dominant_sagittal",
+    "primary_muscles": [
+      "biceps",
+      "brachialis"
+    ],
+    "streak": 90
+  }
+}</pre></td><td class=bad><pre>{
+  "function": "analyze_movement_pattern",
+  "args": {
+    "pattern": "bipedal_elbow_dominant_sagittal",
+    "phase": "ascent",
+    "estimated_primary": [
+      "biceps",
+      "brachialis"
+    ],
+    "estimated_secondary": [
+      "forearm_flexors",
+      "shoulder_stabilizers"
+    ],
+    "anomalies": [],
+    "streak_frames": 90
+  }
+}</pre></td></tr><tr><td>1</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "knee",
+      "left_angle": 89.9,
+      "right_angle": 70.3,
+      "difference": 19.6,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "knee",
+    "left": 89.9,
+    "right": 70.3
+  }
+}</pre></td><td class=bad><pre>{
+  "function": "analyze_joint_angle_deviation",
+  "args": {
+    "joint": "knee",
+    "left_angle": 89.9,
+    "right_angle": 70.3,
+    "difference": 19.6,
+    "rule": 4,
+    "evidence": "prototype_threshold"
+  }
+}</pre></td></tr><tr><td>2</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [],
+  "streak_frames": 120
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_sagittal",
+    "primary_muscles": [
+      "latissimus_dorsi",
+      "rhomboids",
+      "biceps"
+    ],
+    "streak": 120
+  }
+}</pre></td><td class=bad><pre>{
+  "function": "analyze_movement_pattern",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_sagittal",
+    "phase": "ascent",
+    "estimated_primary": [
+      "latissimus_dorsi",
+      "rhomboids",
+      "biceps"
+    ],
+    "estimated_secondary": [
+      "posterior_deltoid",
+      "trapezius_mid"
+    ],
+    "anomalies": [],
+    "streak_frames": 120
+  }
+}</pre></td></tr><tr><td>3</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "unknown",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [],
+  "confidence": 0.39,
+  "note": "low_visibility"
+}</pre></td><td><pre>{
+  "function": "warn_poor_visibility",
+  "args": {
+    "confidence": 0.39,
+    "message": "adjust_camera_or_lighting"
+  }
+}</pre></td><td class=bad><pre>{
+  "function": "analyze_unipedal_hip_stabilizer_frontal",
+  "args": {}
+}</pre></td></tr><tr><td>4</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 23.0,
+      "direction": "hyperextension",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 23.0,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>{
+  "function": "analyze_hip_stability",
+  "args": {
+    "pattern": "unipedal_hip_stabilizer_frontal",
+    "phase": "descent",
+    "estimated_primary": [
+      "gluteus_medius",
+      "ankle_stabilizers",
+      "core"
+    ],
+    "estimated_secondary": [
+      "adductors"
+    ],
+    "anomalies": [
+      {
+        "rule": 8,
+        "deviation": 23.0,
+        "direction": "hyperextension",
+        "severity": "moderate",
+        "evidence": "prototype_threshold"
+      }
+    ]
+  }
+}</pre></td></tr></tbody>
+  </table>
+</body></html>

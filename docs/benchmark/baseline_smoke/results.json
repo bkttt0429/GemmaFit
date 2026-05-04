@@ -1,0 +1,265 @@
+{
+  "summary_base": {
+    "n": 5,
+    "json_parse_rate": 1.0,
+    "function_match_rate": 0.0,
+    "avg_args_jaccard": 0.075,
+    "avg_latency_s": 6.022
+  },
+  "summary_ft": null,
+  "base": [
+    {
+      "idx": 0,
+      "input": {
+        "pattern": "bipedal_elbow_dominant_sagittal",
+        "phase": "ascent",
+        "estimated_primary": [
+          "biceps",
+          "brachialis"
+        ],
+        "estimated_secondary": [
+          "forearm_flexors",
+          "shoulder_stabilizers"
+        ],
+        "anomalies": [],
+        "streak_frames": 90
+      },
+      "expected": {
+        "function": "positive_reinforcement",
+        "args": {
+          "pattern": "bipedal_elbow_dominant_sagittal",
+          "primary_muscles": [
+            "biceps",
+            "brachialis"
+          ],
+          "streak": 90
+        }
+      },
+      "raw_output": "{\"function\": \"analyze_movement_pattern\", \"args\": {\"pattern\": \"bipedal_elbow_dominant_sagittal\", \"phase\": \"ascent\", \"estimated_primary\": [\"biceps\", \"brachialis\"], \"estimated_secondary\": [\"forearm_flexors\", \"shoulder_stabilizers\"], \"anomalies\": [], \"streak_frames\": 90}}",
+      "parsed": {
+        "function": "analyze_movement_pattern",
+        "args": {
+          "pattern": "bipedal_elbow_dominant_sagittal",
+          "phase": "ascent",
+          "estimated_primary": [
+            "biceps",
+            "brachialis"
+          ],
+          "estimated_secondary": [
+            "forearm_flexors",
+            "shoulder_stabilizers"
+          ],
+          "anomalies": [],
+          "streak_frames": 90
+        }
+      },
+      "json_ok": true,
+      "function_match": false,
+      "args_jaccard": 0.125,
+      "elapsed_s": 6.91,
+      "error": null
+    },
+    {
+      "idx": 1,
+      "input": {
+        "pattern": "bipedal_shoulder_dominant_sagittal",
+        "phase": "bottom",
+        "estimated_primary": [
+          "latissimus_dorsi",
+          "rhomboids",
+          "biceps"
+        ],
+        "estimated_secondary": [
+          "posterior_deltoid",
+          "trapezius_mid"
+        ],
+        "anomalies": [
+          {
+            "rule": 4,
+            "joint": "knee",
+            "left_angle": 89.9,
+            "right_angle": 70.3,
+            "difference": 19.6,
+            "evidence": "prototype_threshold"
+          }
+        ]
+      },
+      "expected": {
+        "function": "correct_asymmetry",
+        "args": {
+          "joint": "knee",
+          "left": 89.9,
+          "right": 70.3
+        }
+      },
+      "raw_output": "{\"function\": \"analyze_joint_angle_deviation\", \"args\": {\"joint\": \"knee\", \"left_angle\": 89.9, \"right_angle\": 70.3, \"difference\": 19.6, \"rule\": 4, \"evidence\": \"prototype_threshold\"}}",
+      "parsed": {
+        "function": "analyze_joint_angle_deviation",
+        "args": {
+          "joint": "knee",
+          "left_angle": 89.9,
+          "right_angle": 70.3,
+          "difference": 19.6,
+          "rule": 4,
+          "evidence": "prototype_threshold"
+        }
+      },
+      "json_ok": true,
+      "function_match": false,
+      "args_jaccard": 0.125,
+      "elapsed_s": 5.43,
+      "error": null
+    },
+    {
+      "idx": 2,
+      "input": {
+        "pattern": "bipedal_shoulder_dominant_sagittal",
+        "phase": "ascent",
+        "estimated_primary": [
+          "latissimus_dorsi",
+          "rhomboids",
+          "biceps"
+        ],
+        "estimated_secondary": [
+          "posterior_deltoid",
+          "trapezius_mid"
+        ],
+        "anomalies": [],
+        "streak_frames": 120
+      },
+      "expected": {
+        "function": "positive_reinforcement",
+        "args": {
+          "pattern": "bipedal_shoulder_dominant_sagittal",
+          "primary_muscles": [
+            "latissimus_dorsi",
+            "rhomboids",
+            "biceps"
+          ],
+          "streak": 120
+        }
+      },
+      "raw_output": "{\"function\": \"analyze_movement_pattern\", \"args\": {\"pattern\": \"bipedal_shoulder_dominant_sagittal\", \"phase\": \"ascent\", \"estimated_primary\": [\"latissimus_dorsi\", \"rhomboids\", \"biceps\"], \"estimated_secondary\": [\"posterior_deltoid\", \"trapezius_mid\"], \"anomalies\": [], \"streak_frames\": 120}}",
+      "parsed": {
+        "function": "analyze_movement_pattern",
+        "args": {
+          "pattern": "bipedal_shoulder_dominant_sagittal",
+          "phase": "ascent",
+          "estimated_primary": [
+            "latissimus_dorsi",
+            "rhomboids",
+            "biceps"
+          ],
+          "estimated_secondary": [
+            "posterior_deltoid",
+            "trapezius_mid"
+          ],
+          "anomalies": [],
+          "streak_frames": 120
+        }
+      },
+      "json_ok": true,
+      "function_match": false,
+      "args_jaccard": 0.125,
+      "elapsed_s": 6.64,
+      "error": null
+    },
+    {
+      "idx": 3,
+      "input": {
+        "pattern": "unipedal_hip_stabilizer_frontal",
+        "phase": "unknown",
+        "estimated_primary": [
+          "gluteus_medius",
+          "ankle_stabilizers",
+          "core"
+        ],
+        "estimated_secondary": [
+          "adductors"
+        ],
+        "anomalies": [],
+        "confidence": 0.39,
+        "note": "low_visibility"
+      },
+      "expected": {
+        "function": "warn_poor_visibility",
+        "args": {
+          "confidence": 0.39,
+          "message": "adjust_camera_or_lighting"
+        }
+      },
+      "raw_output": "{\"function\": \"analyze_unipedal_hip_stabilizer_frontal\", \"args\": {}}",
+      "parsed": {
+        "function": "analyze_unipedal_hip_stabilizer_frontal",
+        "args": {}
+      },
+      "json_ok": true,
+      "function_match": false,
+      "args_jaccard": 0.0,
+      "elapsed_s": 2.34,
+      "error": null
+    },
+    {
+      "idx": 4,
+      "input": {
+        "pattern": "unipedal_hip_stabilizer_frontal",
+        "phase": "descent",
+        "estimated_primary": [
+          "gluteus_medius",
+          "ankle_stabilizers",
+          "core"
+        ],
+        "estimated_secondary": [
+          "adductors"
+        ],
+        "anomalies": [
+          {
+            "rule": 8,
+            "deviation": 23.0,
+            "direction": "hyperextension",
+            "severity": "moderate",
+            "evidence": "prototype_threshold"
+          }
+        ]
+      },
+      "expected": {
+        "function": "correct_spinal_alignment",
+        "args": {
+          "deviation": 23.0,
+          "region": "cervical"
+        }
+      },
+      "raw_output": "{\"function\": \"analyze_hip_stability\", \"args\": {\"pattern\": \"unipedal_hip_stabilizer_frontal\", \"phase\": \"descent\", \"estimated_primary\": [\"gluteus_medius\", \"ankle_stabilizers\", \"core\"], \"estimated_secondary\": [\"adductors\"], \"anomalies\": [{\"rule\": 8, \"deviation\": 23.0, \"direction\": \"hyperextension\", \"severity\": \"moderate\", \"evidence\": \"prototype_threshold\"}]}}",
+      "parsed": {
+        "function": "analyze_hip_stability",
+        "args": {
+          "pattern": "unipedal_hip_stabilizer_frontal",
+          "phase": "descent",
+          "estimated_primary": [
+            "gluteus_medius",
+            "ankle_stabilizers",
+            "core"
+          ],
+          "estimated_secondary": [
+            "adductors"
+          ],
+          "anomalies": [
+            {
+              "rule": 8,
+              "deviation": 23.0,
+              "direction": "hyperextension",
+              "severity": "moderate",
+              "evidence": "prototype_threshold"
+            }
+          ]
+        }
+      },
+      "json_ok": true,
+      "function_match": false,
+      "args_jaccard": 0.0,
+      "elapsed_s": 8.79,
+      "error": null
+    }
+  ],
+  "ft": null
+}

@@ -119,14 +119,21 @@ fun PoseOverlay(
     val connections = if (heroMode) POSE_CONNECTIONS_HERO else state.connections
 
     Canvas(modifier = modifier) {
+        val hasSourceSize = width > 0f && height > 0f && size.width > 0f && size.height > 0f
+        val scale = if (hasSourceSize) minOf(size.width / width, size.height / height) else 1f
+        val contentW = if (hasSourceSize) width * scale else size.width
+        val contentH = if (hasSourceSize) height * scale else size.height
+        val offsetX = if (hasSourceSize) (size.width - contentW) / 2f else 0f
+        val offsetY = if (hasSourceSize) (size.height - contentH) / 2f else 0f
+
         fun point(index: Int): Offset {
             val lm = state.landmarks.getOrElse(index) { PoseLandmark(0.5f, 0.5f, 0f) }
-            return Offset(lm.x * size.width, lm.y * size.height)
+            return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
         }
 
         fun pointFrom(frame: List<PoseLandmark>, index: Int): Offset {
             val lm = frame.getOrElse(index) { PoseLandmark(0.5f, 0.5f, 0f) }
-            return Offset(lm.x * size.width, lm.y * size.height)
+            return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
         }
 
         // ── Dark vignette backdrop for contrast on bright camera ─────
@@ -246,7 +253,7 @@ fun PoseOverlay(
 
         // ── COM marker ───────────────────────────────────────────────
         state.comPosition?.let { com ->
-            val comCenter = Offset(com.x * size.width, com.y * size.height)
+            val comCenter = Offset(offsetX + com.x * contentW, offsetY + com.y * contentH)
             drawCircle(
                 color = Color(0xCCFFD700),
                 radius = 14f, center = comCenter,

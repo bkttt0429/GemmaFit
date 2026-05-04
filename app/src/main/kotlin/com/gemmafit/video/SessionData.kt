@@ -72,6 +72,7 @@ data class LiveWorkoutState(
     val symmetryScore: Float = 1f,
     val activeWarnings: List<SafetyWarning> = emptyList(),
     val currentPattern: String = "unknown",
+    val movementPhase: String = "unknown",
     val currentMuscleFocus: MuscleFocusResult? = null,
     val detectedExercise: String = "unknown",
     val exerciseConfidence: Float = 0f,
@@ -171,6 +172,14 @@ data class VideoAnalysisState(
     val currentFrame: Int = 0,
     val totalFrames: Int = 0,
     val errorMessage: String? = null,
+    val elapsedSeconds: Float = 0f,
+    val processingFps: Float = 0f,
+    val etaSeconds: Int = 0,
+    val poseHitRate: Float = 0f,
+    val poseHits: Int = 0,
+    val poseMisses: Int = 0,
+    val subPhase: String = "",
+    val subPhaseProgress: Float = 0f,
 )
 
 sealed class VideoSource {

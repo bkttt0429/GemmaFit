@@ -1,0 +1,24 @@
+# ninja log v5
+94	1413	7994871597213737	CMakeFiles/gemmafit_bridge.dir/bridge/llm_bridge_jni.cpp.o	fb336eac126c000c
+2	1434	7994871597500592	CMakeFiles/gemmafit_kinematics.dir/kinematics/body_segments.cpp.o	451965898637c112
+33	1448	7994871597470599	CMakeFiles/gemmafit_kinematics.dir/kinematics/joint_angles.cpp.o	ff651cee756e1b6b
+12	1474	7994871597950310	CMakeFiles/gemmafit_kinematics.dir/kinematics/symmetry.cpp.o	a3a994e5faf087f7
+55	1476	7994871598015583	CMakeFiles/gemmafit_kinematics.dir/kinematics/movement_classifier.cpp.o	b83a92b915c6b03d
+63	1483	7994871598081376	CMakeFiles/gemmafit_kinematics.dir/kinematics/confidence_gate.cpp.o	2c40441cb0e3d1be
+86	1596	7994871599191600	CMakeFiles/gemmafit_bridge.dir/bridge/kinematics_bridge_jni.cpp.o	64671c34994cb9be
+39	1671	7994871599976878	CMakeFiles/gemmafit_kinematics.dir/kinematics/muscle_focus.cpp.o	c4c1f0a97d9ffad6
+78	1683	7994871600097070	CMakeFiles/gemmafit_bridge.dir/bridge/llm_bridge.cpp.o	1196da12bfe307b0
+19	1718	7994871600447570	CMakeFiles/gemmafit_kinematics.dir/kinematics/safety_monitor.cpp.o	f0b33200feda8eaf
+113	1744	7994871600728098	CMakeFiles/test_safety_monitor.dir/tests/test_safety_monitor.cpp.o	fd8802eb50ad47c0
+103	1895	7994871602260554	CMakeFiles/test_com_tracker.dir/tests/test_com_tracker.cpp.o	dd1af61a28ed730b
+70	1941	7994871602724949	CMakeFiles/gemmafit_bridge.dir/bridge/kinematics_bridge.cpp.o	afe38dfd20b3a98
+26	1979	7994871603102590	CMakeFiles/gemmafit_kinematics.dir/kinematics/com_tracker.cpp.o	491b6a86a29d91d1
+136	1989	7994871603193259	CMakeFiles/test_motion_quality.dir/tests/test_motion_quality.cpp.o	ce38adda2e26b245
+123	2002	7994871603314361	CMakeFiles/test_kinematics_pipeline.dir/tests/test_kinematics_pipeline.cpp.o	a83992472b67aa89
+48	3475	7994871617818468	CMakeFiles/gemmafit_kinematics.dir/kinematics/motion_quality.cpp.o	fa35ac5dd2c9e550
+3475	3567	7994871618873382	libgemmafit_kinematics.a	5816c8fddfc196d5
+3567	3670	7994871619974031	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/arm64-v8a/libgemmafit_bridge.so	2c9bbeb48d5d2ab1
+3576	3693	7994871620244590	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/arm64-v8a/test_com_tracker	24341e3eec7061dc
+3603	3702	7994871620343370	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/arm64-v8a/test_safety_monitor	85629d0fb74a250d
+3592	3702	7994871620333529	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/arm64-v8a/test_kinematics_pipeline	fb2786585ba36ae5
+3616	3724	7994871620526228	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/arm64-v8a/test_motion_quality	e0a7e2047c78326b

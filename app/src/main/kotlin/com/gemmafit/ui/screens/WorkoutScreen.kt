@@ -3,6 +3,7 @@ package com.gemmafit.ui.screens
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,12 +39,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,13 +57,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.gemmafit.camera.CameraPreviewWithOverlay
 import com.gemmafit.ui.components.ThreeDeeMini
 import com.gemmafit.ui.overlay.PoseLandmark
@@ -163,8 +180,19 @@ fun WorkoutScreen(
                 playerShouldPlay = playerShouldPlay,
                 onPickVideo = { videoPickerLauncher.launch("*/*") },
                 onResetCamera = { viewModel.resetToCamera() },
-                onPrevFrame = { viewModel.goToPrevFrame() },
-                onNextFrame = { viewModel.goToNextFrame() },
+                onPrevFrame = {
+                    isPaused = true
+                    viewModel.goToPrevFrame()
+                },
+                onNextFrame = {
+                    isPaused = true
+                    viewModel.goToNextFrame()
+                },
+                onSeekFrame = {
+                    isPaused = true
+                    viewModel.goToFrame(it)
+                },
+                onPlaybackPosition = { viewModel.showFrameAtTimestamp(it) },
                 onTogglePause = { isPaused = !isPaused },
                 onViewSummary = { onViewSummary(viewModel.sessionSummary.value) },
             )
@@ -178,6 +206,11 @@ fun WorkoutScreen(
                 currentFrame = state.currentFrame,
                 totalFrames = state.totalFrames,
                 fileName = (state.source as? VideoSource.VideoFile)?.displayName ?: "",
+                etaSeconds = state.etaSeconds,
+                processingFps = state.processingFps,
+                poseHitRate = state.poseHitRate,
+                subPhase = state.subPhase,
+                subPhaseProgress = state.subPhaseProgress,
                 onCancel = {
                     viewModel.cancelProcessing()
                     viewModel.resetToCamera()
@@ -203,10 +236,19 @@ private fun VideoAnalysisLayout(
     onResetCamera: () -> Unit,
     onPrevFrame: () -> Unit,
     onNextFrame: () -> Unit,
+    onSeekFrame: (Int) -> Unit,
+    onPlaybackPosition: (Long) -> Unit,
     onTogglePause: () -> Unit,
     onViewSummary: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val haptic = LocalHapticFeedback.current
+
+    // Haptic feedback on CRITICAL warnings (only on severity change, not every frame)
+    val criticalCount = live.activeWarnings.count { it.severity == "critical" || it.severity == "high" }
+    LaunchedEffect(criticalCount) {
+        if (criticalCount > 0) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         // ─ Sticky top bar
         TopBar(
@@ -238,16 +280,20 @@ private fun VideoAnalysisLayout(
 
             VideoFrame(
                 live = live,
+                isVideoMode = isVideoMode,
+                videoUri = videoUri,
                 isPlaying = playerShouldPlay,
-                onNextFrame = onNextFrame,
+                onPlaybackPosition = onPlaybackPosition,
             )
 
             if (live.totalFramesAnalyzed > 1) {
-                FrameNavigation(
+                FrameTimeline(
                     current = live.currentFrameIndex,
                     total = live.totalFramesAnalyzed,
+                    timestampMs = live.currentFrameTimestampMs,
                     onPrev = onPrevFrame,
                     onNext = onNextFrame,
+                    onSeek = onSeekFrame,
                 )
             }
 
@@ -263,7 +309,6 @@ private fun VideoAnalysisLayout(
             )
 
             EvidenceSection(card = live.evidenceCard)
-
             CannotJudgeSection(card = live.evidenceCard, qualityFlags = live.qualityFlags)
 
             Spacer(Modifier.height(80.dp))   // bottom-bar breathing room
@@ -302,6 +347,22 @@ private fun CameraLiveLayout(
             onPoseDetected = onCameraFrame,
             modifier = Modifier.fillMaxSize(),
         )
+
+        // FPS / detection rate HUD
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 70.dp, end = 8.dp)
+                .background(Color(0xAA000000), RoundedCornerShape(10.dp))
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+        ) {
+            Text(
+                text = "FPS · ${live.totalFramesAnalyzed}f",
+                color = TextSecondary,
+                fontSize = 10.sp,
+            )
+        }
+
         PoseOverlay(
             state = poseOverlayState,
             modifier = Modifier
@@ -511,26 +572,15 @@ private fun VerdictPill(
 @Composable
 private fun VideoFrame(
     live: LiveWorkoutState,
+    isVideoMode: Boolean,
+    videoUri: Uri?,
     isPlaying: Boolean,
-    onNextFrame: () -> Unit,
+    onPlaybackPosition: (Long) -> Unit,
 ) {
     val frameAspect = if (live.videoPreviewWidth > 0 && live.videoPreviewHeight > 0) {
         live.videoPreviewWidth.toFloat() / live.videoPreviewHeight.toFloat()
     } else {
         16f / 9f
-    }
-
-// Auto-advance at 6fps when playing
-    val fps = 6
-    val frameInterval = 1000L / fps
-
-    LaunchedEffect(isPlaying, live.totalFramesAnalyzed) {
-        if (isPlaying && live.totalFramesAnalyzed > 1) {
-            while (true) {
-                delay(frameInterval)
-                onNextFrame()
-            }
-        }
     }
 
     Surface(
@@ -544,9 +594,19 @@ private fun VideoFrame(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            live.videoPreview?.let { preview ->
+            if (isVideoMode && videoUri != null && isPlaying) {
+                // Auto-play: use ExoPlayer for smooth video
+                SmoothVideoPlayer(
+                    uri = videoUri,
+                    isPlaying = true,
+                    targetPositionMs = live.currentFrameTimestampMs,
+                    onPlaybackPosition = onPlaybackPosition,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else if (live.videoPreview != null) {
+                // Paused / frame-step: use analyzed bitmap (instant, guaranteed sync)
                 Image(
-                    bitmap = preview.asImageBitmap(),
+                    bitmap = live.videoPreview!!.asImageBitmap(),
                     contentDescription = "Video frame",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
@@ -582,15 +642,42 @@ private fun VideoFrame(
                 )
             }
 
-            if (isPlaying) {
+            if (isPlaying || live.totalFramesAnalyzed > 1) {
+                val progress = if (live.totalFramesAnalyzed > 1) {
+                    live.currentFrameIndex.toFloat() / (live.totalFramesAnalyzed - 1).coerceAtLeast(1)
+                } else 0f
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
-                        .background(Color(0x88000000), RoundedCornerShape(4.dp))
-                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                        .background(Color(0xAA000000), RoundedCornerShape(16.dp))
+                        .padding(horizontal = 10.dp, vertical = 5.dp),
                 ) {
-                    Text("▶ ${fps}fps", color = Green, fontSize = 10.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (isPlaying) {
+                            Canvas(modifier = Modifier.size(14.dp)) {
+                                val sw = 2.dp.toPx()
+                                drawArc(
+                                    color = Green,
+                                    startAngle = -90f,
+                                    sweepAngle = 360f * progress.coerceIn(0f, 1f),
+                                    useCenter = false,
+                                    style = Stroke(width = sw, cap = StrokeCap.Round),
+                                    topLeft = Offset(sw / 2, sw / 2),
+                                    size = Size(size.width - sw, size.height - sw),
+                                )
+                            }
+                        } else {
+                            Icon(Icons.Filled.PlayArrow, null, tint = Green, modifier = Modifier.size(14.dp))
+                        }
+                        Spacer(Modifier.width(5.dp))
+                        Text(
+                            "${live.currentFrameIndex + 1}/${live.totalFramesAnalyzed}",
+                            color = TextPrimary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
                 }
             }
         }
@@ -598,31 +685,122 @@ private fun VideoFrame(
 }
 
 @Composable
-private fun FrameNavigation(
+private fun SmoothVideoPlayer(
+    uri: Uri,
+    isPlaying: Boolean,
+    targetPositionMs: Long,
+    onPlaybackPosition: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val player = remember(uri) {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(uri))
+            repeatMode = Player.REPEAT_MODE_OFF
+            playWhenReady = false
+            prepare()
+            if (targetPositionMs > 0L) seekTo(targetPositionMs)
+        }
+    }
+
+    DisposableEffect(player) {
+        onDispose { player.release() }
+    }
+
+    LaunchedEffect(player, isPlaying) {
+        if (isPlaying) {
+            player.play()
+        } else {
+            player.pause()
+        }
+    }
+
+    LaunchedEffect(player, isPlaying, targetPositionMs) {
+        if (!isPlaying && targetPositionMs >= 0L) {
+            val driftMs = kotlin.math.abs(player.currentPosition - targetPositionMs)
+            if (driftMs > 50L) {
+                player.seekTo(targetPositionMs)
+            }
+        }
+    }
+
+    LaunchedEffect(player, isPlaying) {
+        if (isPlaying) {
+            while (true) {
+                onPlaybackPosition(player.currentPosition)
+                delay(33L)
+            }
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                useController = false
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                this.player = player
+            }
+        },
+        update = { view ->
+            if (view.player !== player) view.player = player
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun FrameTimeline(
     current: Int,
     total: Int,
+    timestampMs: Long,
     onPrev: () -> Unit,
     onNext: () -> Unit,
+    onSeek: (Int) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onPrev) {
-            Icon(Icons.Filled.PlayArrow, "Previous frame", tint = TextPrimary,
-                 modifier = Modifier.scale(-1f, 1f))
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Timestamp label
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(formatTimestamp(timestampMs), color = TextSecondary, style = MaterialTheme.typography.labelSmall)
+            Text("$total frames", color = TextSecondary, style = MaterialTheme.typography.labelSmall)
         }
+        // Slider
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onPrev, modifier = Modifier.size(36.dp)) {
+                Icon(Icons.Filled.PlayArrow, "Previous", tint = TextPrimary, modifier = Modifier.scale(-1f, 1f).size(16.dp))
+            }
+            Slider(
+                value = current.toFloat().coerceIn(0f, (total - 1).coerceAtLeast(1).toFloat()),
+                onValueChange = { onSeek(it.toInt()) },
+                valueRange = 0f..(total - 1).coerceAtLeast(1).toFloat(),
+                modifier = Modifier.weight(1f),
+                colors = SliderDefaults.colors(thumbColor = Green, activeTrackColor = Green),
+            )
+            IconButton(onClick = onNext, modifier = Modifier.size(36.dp)) {
+                Icon(Icons.Filled.PlayArrow, "Next", tint = TextPrimary, modifier = Modifier.size(16.dp))
+            }
+        }
+        // Frame counter
         Text(
             "${current + 1} / $total",
             color = TextSecondary,
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
         )
-        IconButton(onClick = onNext) {
-            Icon(Icons.Filled.PlayArrow, "Next frame", tint = TextPrimary)
-        }
     }
+}
+
+private fun formatTimestamp(ms: Long): String {
+    val totalSec = ms / 1000
+    val min = totalSec / 60
+    val sec = totalSec % 60
+    return "%d:%02d".format(min, sec)
 }
 
 
@@ -1007,6 +1185,7 @@ private fun exerciseDisplay(exercise: String): Pair<String, String> = when (exer
 }
 
 private fun derivePhaseLabel(live: LiveWorkoutState): String {
+    if (live.movementPhase != "unknown") return live.movementPhase
     val k = live.templateMetrics["left_knee_angle"] ?: live.templateMetrics["knee_angle_deg"]
     return when {
         k == null      -> "—"

@@ -39,7 +39,6 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
 
     init {
         coachVoice = CoachVoice(application)
-        initPoseLandmarkerAsync()
     }
 
     // ── Live workout state (single flow for WorkoutScreen) ─────────────
@@ -60,17 +59,22 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
     private var lastCoachMessage = ""
     private var currentFrameIdx = 0
     private val kinematicsMutex = Mutex()
+    private var _lastCoachMessage: String? = null
+    private var _lastCoachPriority: String? = null
+    private val temporalAnalyzer = TemporalMotionAnalyzer()
+    private val repRecords = mutableListOf<RepRecord>()
 
     // Video frame storage for navigation (updated during processing)
     private data class ProcessedFrame(
         val frameIndex: Int,
         val timestampMs: Long,
-        val bitmap: Bitmap,
+        val bitmap: Bitmap? = null,
         val bitmapWidth: Int,
         val bitmapHeight: Int,
         val landmarks: List<PoseLandmarkData>,
         val exercise: String = "unknown",
         val exerciseConfidence: Float = 0f,
+        val movementPhase: String = "unknown",
         val warnings: List<SafetyWarning> = emptyList(),
         val qualityFlags: List<QualityFlag> = emptyList(),
         val templateMetrics: Map<String, Float> = emptyMap(),
@@ -81,13 +85,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
     )
     private val processedFrames = mutableListOf<ProcessedFrame>()
 
-    // LRU bitmap cache: max 60 frames (~25MB), auto-recycles evicted entries
-    private val bitmapCache = object : LinkedHashMap<Int, Bitmap>(60, 0.75f, true) {
-        override fun removeEldestEntry(eldest: Map.Entry<Int, Bitmap>): Boolean {
-            if (size > 60) { eldest.value.recycle(); return true }
-            return false
-        }
-    }
+    // Fixed-size bitmap window: oldest frame's bitmap recycled when > 60
 
     fun initPoseLandmarker(landmarker: PoseLandmarker) {
         poseLandmarker = landmarker
@@ -102,7 +100,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                 val options = PoseLandmarker.PoseLandmarkerOptions.builder()
                     .setBaseOptions(
                         com.google.mediapipe.tasks.core.BaseOptions.builder()
-                            .setDelegate(com.google.mediapipe.tasks.core.Delegate.CPU)
+                            .setDelegate(com.google.mediapipe.tasks.core.Delegate.GPU)
                             .setModelAssetPath("pose_landmarker_lite.task")
                             .build()
                     )
@@ -146,10 +144,13 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         processingJob?.cancel()
         sessionStartMs = System.currentTimeMillis()
         resetSessionData()
+        initPoseLandmarkerAsync()
 
         processingJob = viewModelScope.launch {
-            _state.update { it.copy(phase = VideoPhase.Processing(0f)) }
+            _state.update { it.copy(phase = VideoPhase.Processing(0f), subPhase = "loading_model", subPhaseProgress = 0f) }
 
+            // Estimate total frames from video duration
+            var estimatedTotalFrames = 0
             withContext(Dispatchers.IO) {
                 var retries = 0
                 while (poseLandmarker == null && retries < 30) {
@@ -157,6 +158,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker failed to initialize")) }
                         return@withContext
                     }
+                    _state.update { it.copy(phase = VideoPhase.Processing(retries / 30f * 0.1f), subPhase = "loading_model", subPhaseProgress = retries / 30f) }
                     kotlinx.coroutines.delay(100)
                     retries++
                 }
@@ -164,9 +166,23 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                     _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker not ready after 3s")) }
                     return@withContext
                 }
+                // Quick scan to estimate frame count
+                val retriever = android.media.MediaMetadataRetriever()
+                try {
+                    retriever.setDataSource(getApplication(), uri)
+                    val durationMs = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+                    // 30fps video, sampled every 3rd frame = ~10 extracted frames per second
+                    estimatedTotalFrames = ((durationMs / 1000f) * 10f).toInt().coerceAtLeast(1)
+                } catch (_: Exception) {
+                    estimatedTotalFrames = 100
+                } finally {
+                    try { retriever.release() } catch (_: Exception) {}
+                }
             }
 
-            Log.d(TAG, "Starting video processing with PoseLandmarker ready")
+            _state.update { it.copy(totalFrames = estimatedTotalFrames, progress = 0.1f, subPhase = "decoding", subPhaseProgress = 0f) }
+
+            Log.d(TAG, "Starting video processing, estimated $estimatedTotalFrames frames")
             val processor = VideoProcessor(
                 context = getApplication(),
                 poseLandmarker = poseLandmarker,
@@ -174,14 +190,40 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             )
             videoProcessor = processor
 
+            val processingStartMs = System.currentTimeMillis()
+            var poseHits = 0
+            var poseMisses = 0
+
             try {
                 processor.processVideo(uri).collect { result ->
+                    val elapsed = (System.currentTimeMillis() - processingStartMs) / 1000f
+                    val realProgress = (result.frameIndex.toFloat() / estimatedTotalFrames).coerceIn(0f, 0.99f)
+                    val fps = if (elapsed > 0.5f) result.frameIndex / elapsed else 0f
+                    val eta = if (fps > 0) ((estimatedTotalFrames - result.frameIndex) / fps).toInt() else 0
+
+                    if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
+                        poseHits++
+                    } else {
+                        poseMisses++
+                    }
+                    val hitRate = if (poseHits + poseMisses > 0) {
+                        poseHits.toFloat() / (poseHits + poseMisses)
+                    } else 0f
+
                     _state.update { s ->
                         s.copy(
-                            phase = VideoPhase.Analyzing(result.frameIndex, result.frameIndex + 1),
-                            progress = s.progress,
+                            phase = VideoPhase.Analyzing(result.frameIndex, estimatedTotalFrames),
+                            progress = realProgress,
                             currentFrame = result.frameIndex,
-                            totalFrames = result.frameIndex + 1,
+                            totalFrames = estimatedTotalFrames,
+                            elapsedSeconds = elapsed,
+                            processingFps = fps,
+                            etaSeconds = eta,
+                            poseHitRate = hitRate,
+                            poseHits = poseHits,
+                            poseMisses = poseMisses,
+                            subPhase = "detecting",
+                            subPhaseProgress = realProgress,
                         )
                     }
                     if (result.landmarks != null && result.bitmap != null) {
@@ -204,6 +246,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                 }
 
                 _state.update { s -> s.copy(phase = VideoPhase.Complete(finalFrameCount)) }
+                _sessionSummary.value = buildSessionSummary()
 
                 // No need for separate thumbnail anymore; processedFrames has all bitmaps
             } catch (e: Exception) {
@@ -232,7 +275,11 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         }
         _live.value = _live.value.copy(poseLandmarks = poseData)
         viewModelScope.launch(Dispatchers.Default) {
-            processLandmarks(floatArray, totalFramesAnalyzed++)
+            processLandmarks(
+                floatArray = floatArray,
+                frameIndex = totalFramesAnalyzed++,
+                timestampMs = System.currentTimeMillis() - sessionStartMs,
+            )
         }
     }
 
@@ -269,6 +316,10 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         showFrame(prevIdx)
     }
 
+    fun goToFrame(index: Int) {
+        showFrame(index.coerceIn(0, (processedFrames.size - 1).coerceAtLeast(0)))
+    }
+
     fun showFrameAtTimestamp(timestampMs: Long) {
         if (processedFrames.isEmpty()) return
 
@@ -294,13 +345,14 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         _live.value = _live.value.copy(
             poseLandmarks = frame.landmarks,
             poseTrajectory = trajectoryFor(index),
-            videoPreview = bitmapCache[index],
+            videoPreview = frame.bitmap ?: _live.value.videoPreview,
             videoPreviewWidth = frame.bitmapWidth,
             videoPreviewHeight = frame.bitmapHeight,
             currentFrameIndex = index,
             currentFrameTimestampMs = frame.timestampMs,
             detectedExercise = frame.exercise,
             exerciseConfidence = frame.exerciseConfidence,
+            movementPhase = frame.movementPhase,
             activeWarnings = frame.warnings,
             qualityFlags = frame.qualityFlags,
             templateMetrics = frame.templateMetrics,
@@ -318,6 +370,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         warnings: List<SafetyWarning>,
         flags: List<QualityFlag>,
         metrics: Map<String, Float>,
+        movementPhase: String,
         trustMatrix: List<TrustMatrixItem>,
         evidenceCard: EvidenceCard,
         coachMsg: String,
@@ -328,6 +381,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         processedFrames[idx] = processedFrames[idx].copy(
             exercise = exercise,
             exerciseConfidence = confidence,
+            movementPhase = movementPhase,
             warnings = warnings,
             qualityFlags = flags,
             templateMetrics = metrics,
@@ -373,7 +427,13 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             bitmapHeight = bmpHeight,
             landmarks = poseData,
         ))
-        bitmapCache[frameIndex] = bitmap
+        // Sliding window: recycle oldest frame's bitmap when > 60 frames
+        if (processedFrames.size > 60) {
+            processedFrames[processedFrames.size - 61].bitmap?.let {
+                it.recycle()
+                processedFrames[processedFrames.size - 61] = processedFrames[processedFrames.size - 61].copy(bitmap = null)
+            }
+        }
         // Update live state with just the landmarks + bitmap for this frame
         _live.value = _live.value.copy(
             poseLandmarks = poseData,
@@ -384,7 +444,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             currentFrameTimestampMs = timestampMs,
             totalFramesAnalyzed = processedFrames.size,
         )
-        processLandmarks(floatArray, frameIndex)
+        processLandmarks(floatArray, frameIndex, timestampMs)
     }
 
     // ── Core processing (called for both camera and video) ──────────────
@@ -395,8 +455,14 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         return processedFrames.subList(start, index + 1).map { it.landmarks }
     }
 
-    private fun processLandmarks(floatArray: FloatArray, frameIndex: Int = 0) {
+    private fun processLandmarks(
+        floatArray: FloatArray,
+        frameIndex: Int = 0,
+        timestampMs: Long = System.currentTimeMillis() - sessionStartMs,
+    ) {
         viewModelScope.launch(Dispatchers.Default) {
+            if (!kinematicsMutex.tryLock()) return@launch
+            try {
             try {
                 val jsonOutput = KinematicsBridge.processFrame(floatArray, null, 0.6f)
                 val result = KinematicsBridge.parseResult(jsonOutput)
@@ -504,6 +570,17 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         } catch (_: Exception) {}
                     }
 
+                    val temporal = temporalAnalyzer.addSample(
+                        frameIndex = frameIndex,
+                        timestampMs = timestampMs,
+                        exercise = exercise,
+                        metrics = templateMetrics,
+                    )
+                    val movementPhase = temporal.movementPhase
+                    val temporalFlags = listOfNotNull(temporal.rapidFlag)
+                    templateMetrics = mergeTemporalMetrics(templateMetrics, temporal.temporalMetrics)
+                    qualityFlags = mergeQualityFlags(qualityFlags, temporalFlags)
+
                     val activeQualityFlags = qualityFlags.filter {
                         it.status == "CRITICAL" || it.status == "WARNING"
                     }
@@ -530,23 +607,36 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         qualityFlags = qualityFlags,
                         notApplicableFlags = notApplicableFlags,
                     )
+                    temporal.completedRep?.let { rep ->
+                        if (repRecords.none { it.repNumber == rep.repNumber }) {
+                            repRecords.add(
+                                rep.copy(
+                                    formQuality = score / 100f,
+                                    hadViolations = warnings.isNotEmpty(),
+                                )
+                            )
+                        }
+                    }
 
-                    // Generate mock coach message
-                    val (msg, priority) = generateMockCoachMessage(
-                        exercise = exercise,
-                        warnings = warnings,
-                        qualityFlags = qualityFlags,
-                        notApplicableFlags = notApplicableFlags,
-                    )
+                    // Generate coach message (LLM if available, mock fallback)
+                    val (msg, priority) = if (frameIndex % 30 == 0) {
+                        tryCallLLM(pattern, result.safetyJson, muscle?.pattern ?: "", exercise, warnings, qualityFlags, notApplicableFlags)
+                    } else {
+                        _lastCoachMessage?.let { it to (_lastCoachPriority ?: "low") }
+                            ?: generateMockCoachMessage(exercise, warnings, qualityFlags, notApplicableFlags)
+                    }
                     coachMsg = msg
                     coachPriority = priority
+                    _lastCoachMessage = msg
+                    _lastCoachPriority = priority
 
                     // Update live state
                     _live.value = _live.value.copy(
-                        repCount = _live.value.repCount,
+                        repCount = temporal.repCount,
                         formScore = score,
                         activeWarnings = warnings,
                         currentPattern = pattern,
+                        movementPhase = movementPhase,
                         currentMuscleFocus = muscle,
                         detectedExercise = exercise,
                         exerciseConfidence = exConfidence,
@@ -567,6 +657,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         warnings = warnings,
                         flags = qualityFlags + notApplicableFlags,
                         metrics = templateMetrics,
+                        movementPhase = movementPhase,
                         trustMatrix = trustMatrix,
                         evidenceCard = evidenceCard,
                         coachMsg = coachMsg,
@@ -621,6 +712,9 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             } catch (e: Exception) {
                 _live.value = _live.value.copy(activeWarnings = emptyList())
             }
+            } finally {
+                kinematicsMutex.unlock()
+            }
         }
     }
 
@@ -653,7 +747,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             safetyEvents = safetyEventLog.toList(),
             formScores = formScoreHistory.toList(),
             muscleFocusDistribution = muscleFocusCounts.toMap(),
-            repHistory = emptyList(),
+            repHistory = repRecords.toList(),
             coachTips = coachTipsSet.toList(),
         )
     }
@@ -666,10 +760,12 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         exerciseDetectionCounts.clear()
         muscleFocusCounts.clear()
         coachTipsSet.clear()
+        repRecords.clear()
+        temporalAnalyzer.reset()
         lastCoachMessage = ""
         currentFrameIdx = 0
-        // Recycle old frame bitmaps
-        processedFrames.forEach { it.bitmap.recycle() }
+        // Recycle all remaining bitmaps
+        processedFrames.forEach { it.bitmap?.recycle() }
         processedFrames.clear()
         _live.value = LiveWorkoutState(source = _state.value.source)
         _sessionSummary.value = SessionSummary()
@@ -758,6 +854,25 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             "exercise_template" -> "warn_poor_visibility"
             else -> "unknown"
         }
+    }
+
+    private fun mergeTemporalMetrics(
+        staticMetrics: Map<String, Float>,
+        temporalMetrics: Map<String, Float>,
+    ): Map<String, Float> {
+        if (temporalMetrics.isEmpty()) return staticMetrics
+        return staticMetrics.toMutableMap().apply {
+            putAll(temporalMetrics)
+        }
+    }
+
+    private fun mergeQualityFlags(
+        staticFlags: List<QualityFlag>,
+        temporalFlags: List<QualityFlag>,
+    ): List<QualityFlag> {
+        if (temporalFlags.isEmpty()) return staticFlags
+        val temporalIds = temporalFlags.map { it.id }.toSet()
+        return staticFlags.filterNot { it.id in temporalIds } + temporalFlags
     }
 
     private fun formScoreFromQuality(
@@ -904,6 +1019,41 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         else -> 9
     }
 
+    private fun tryCallLLM(
+        pattern: String,
+        safetyJson: String,
+        musclePattern: String,
+        exercise: String,
+        warnings: List<SafetyWarning>,
+        qualityFlags: List<QualityFlag>,
+        notApplicableFlags: List<QualityFlag>,
+    ): Pair<String, String> {
+        val modelPath = "/sdcard/Android/data/com.gemmafit/files/gemma4-e4b-q4.gguf"
+        return try {
+            if (!com.gemmafit.jni.LLMBridge.validateModel(modelPath)) {
+                Log.d(TAG, "LLM model not found, using mock coach")
+                return generateMockCoachMessage(exercise, warnings, qualityFlags, notApplicableFlags)
+            }
+            val jsonOutput = com.gemmafit.jni.LLMBridge.runInference(
+                movementPatternJson = "{\"pattern\":\"$pattern\"}",
+                safetyJson = safetyJson,
+                muscleJson = "{\"pattern\":\"$musclePattern\"}",
+                modelPath = modelPath,
+            )
+            val result = com.gemmafit.jni.LLMBridge.parseFunctionCall(jsonOutput)
+            if (result.success && result.functionName.isNotEmpty()) {
+                val msg = com.gemmafit.jni.LLMBridge.getCoachingMessage(result.functionName, result.argsJson)
+                Log.d(TAG, "LLM coaching: ${result.functionName} in ${result.inferenceTimeMs}ms")
+                msg to "medium"
+            } else {
+                generateMockCoachMessage(exercise, warnings, qualityFlags, notApplicableFlags)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "LLM inference failed: ${e.message}, falling back to mock")
+            generateMockCoachMessage(exercise, warnings, qualityFlags, notApplicableFlags)
+        }
+    }
+
     private fun generateMockCoachMessage(
         exercise: String,
         warnings: List<SafetyWarning>,
@@ -959,6 +1109,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
     }
 
     override fun onCleared() {
+        processedFrames.forEach { it.bitmap?.recycle() }
         super.onCleared()
         processingJob?.cancel()
         videoProcessor?.release()

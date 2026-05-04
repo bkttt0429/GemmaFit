@@ -1,0 +1,24 @@
+# ninja log v5
+72	1179	7994871642336969	CMakeFiles/gemmafit_bridge.dir/bridge/llm_bridge_jni.cpp.o	d38588ad55bc875b
+47	1226	7994871642820052	CMakeFiles/gemmafit_kinematics.dir/kinematics/confidence_gate.cpp.o	ca11d1692d36b753
+0	1296	7994871643502260	CMakeFiles/gemmafit_kinematics.dir/kinematics/joint_angles.cpp.o	72c331c9accd78c8
+16	1298	7994871643547870	CMakeFiles/gemmafit_kinematics.dir/kinematics/body_segments.cpp.o	39a6d870c729ab25
+39	1375	7994871644106021	CMakeFiles/gemmafit_kinematics.dir/kinematics/movement_classifier.cpp.o	9c912b79ebcf9802
+81	1403	7994871644514402	CMakeFiles/gemmafit_bridge.dir/bridge/kinematics_bridge_jni.cpp.o	f7800397319a9b14
+21	1427	7994871644805888	CMakeFiles/gemmafit_kinematics.dir/kinematics/symmetry.cpp.o	74a67f14b493f01
+33	1462	7994871645170507	CMakeFiles/gemmafit_kinematics.dir/kinematics/muscle_focus.cpp.o	222febed751b0801
+63	1488	7994871645459397	CMakeFiles/gemmafit_bridge.dir/bridge/llm_bridge.cpp.o	bf98a100b8a92f23
+11	1508	7994871645640363	CMakeFiles/gemmafit_kinematics.dir/kinematics/safety_monitor.cpp.o	de98bcd0bcc3c6ce
+102	1520	7994871645782853	CMakeFiles/test_safety_monitor.dir/tests/test_safety_monitor.cpp.o	f7c07f8f0c7983ac
+91	1600	7994871646570335	CMakeFiles/test_com_tracker.dir/tests/test_com_tracker.cpp.o	aad21de552047171
+55	1741	7994871647959034	CMakeFiles/gemmafit_bridge.dir/bridge/kinematics_bridge.cpp.o	5f9529f13cf17e9c
+120	1748	7994871648034092	CMakeFiles/test_kinematics_pipeline.dir/tests/test_kinematics_pipeline.cpp.o	249da4082f138280
+111	1778	7994871648375780	CMakeFiles/test_motion_quality.dir/tests/test_motion_quality.cpp.o	1446a60029e7b442
+6	1845	7994871649023672	CMakeFiles/gemmafit_kinematics.dir/kinematics/com_tracker.cpp.o	95d58e5c4d7e6842
+28	3005	7994871660559677	CMakeFiles/gemmafit_kinematics.dir/kinematics/motion_quality.cpp.o	421bd3e5ea44decf
+3005	3083	7994871661374121	libgemmafit_kinematics.a	5816c8fddfc196d5
+3084	3187	7994871662469063	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/x86_64/test_com_tracker	1b1a69c6db69864d
+3106	3217	7994871662761944	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/x86_64/test_safety_monitor	d3f39a386e573f66
+3094	3217	7994871662716695	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/x86_64/libgemmafit_bridge.so	76fcad41ddf49111
+3118	3231	7994871662905677	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/x86_64/test_kinematics_pipeline	de8b9fd655ce06bb
+3130	3241	7994871663014572	Z:/app/build/intermediates/cxx/Debug/2s1q0451/obj/x86_64/test_motion_quality	6d17686169682e16

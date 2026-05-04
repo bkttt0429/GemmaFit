@@ -13,13 +13,17 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -67,7 +71,6 @@ class VideoProcessor(
     }.flowOn(Dispatchers.Default)
 
     private fun extractWithCodec(uri: Uri): List<VideoFrameResult> {
-        val frames = mutableListOf<VideoFrameResult>()
         val extractor = MediaExtractor()
 
         try {
@@ -102,9 +105,12 @@ class VideoProcessor(
         val handlerThread = HandlerThread("FrameDecoder").also { it.start() }
         val handler = Handler(handlerThread.looper)
         val eosReached = AtomicBoolean(false)
-        val decodedFrames = ConcurrentLinkedQueue<Bitmap>()
         val decodeLatch = CountDownLatch(1)
         var decodeError: Exception? = null
+        val yuvQueue = LinkedBlockingQueue<Bitmap>()
+        val processResults = mutableListOf<VideoFrameResult>()
+        var processJob: Job? = null
+        var outputColorFormat = -1
 
         var decoder: MediaCodec? = null
         try {
@@ -134,15 +140,30 @@ class VideoProcessor(
                     }
 
                     if (info.size > 0 && outputCount % sampleEveryNFrames.coerceAtLeast(1) == 0) {
-                        val image = try { mc.getOutputImage(index) } catch (_: Exception) { null }
+                        val image = try { mc.getOutputImage(index) } catch (e: Exception) {
+                            Log.e(TAG, "getOutputImage: ${e.message}")
+                            null
+                        }
                         if (image != null) {
                             try {
                                 val bmp = yuvImageToBitmap(image, width, height, targetW, targetH)
-                                decodedFrames.add(bmp)
+                                yuvQueue.put(bmp)
                             } catch (e: Exception) {
-                                Log.w(TAG, "YUV conversion failed: ${e.message}")
+                                Log.e(TAG, "YUV convert failed (${width}x${height}): ${e.message}", e)
                             } finally {
                                 image.close()
+                            }
+                        } else if (info.size > 0) {
+                            val buf = try { mc.getOutputBuffer(index) } catch (_: Exception) { null }
+                            if (buf != null) {
+                                try {
+                                    buf.position(info.offset)
+                                    buf.limit(info.offset + info.size)
+                                    val bmp = bufferToBitmap(buf, width, height, targetW, targetH, outputColorFormat)
+                                    yuvQueue.put(bmp)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Buffer convert failed: ${e.message}", e)
+                                }
                             }
                         }
                     }
@@ -151,7 +172,8 @@ class VideoProcessor(
                 }
 
                 override fun onOutputFormatChanged(mc: MediaCodec, fmt: MediaFormat) {
-                    Log.d(TAG, "Output format changed: ${fmt.toString().take(100)}")
+                    outputColorFormat = try { fmt.getInteger(MediaFormat.KEY_COLOR_FORMAT) } catch (_: Exception) { -1 }
+                    Log.d(TAG, "Output format: color=$outputColorFormat")
                 }
 
                 override fun onError(mc: MediaCodec, e: MediaCodec.CodecException) {
@@ -164,10 +186,32 @@ class VideoProcessor(
             decoder!!.configure(decodeFormat, null, null, 0)
             decoder!!.start()
 
+            // Launch parallel pose detection coroutine (runs concurrently with decode)
+            val timeStep = durationUs / maxOf(1L, (durationUs / (1000L * 1000L / 30L * sampleEveryNFrames)).coerceAtLeast(1L)) / 1000L
+            processJob = CoroutineScope(Dispatchers.Default).launch {
+                var frameIdx = 0
+                var eosSeen = false
+                while (!eosSeen || yuvQueue.isNotEmpty()) {
+                    val bmp = try {
+                        yuvQueue.poll(100, TimeUnit.MILLISECONDS)
+                    } catch (_: InterruptedException) {
+                        return@launch
+                    }
+                    if (bmp != null) {
+                        val tsMs = frameIdx * timeStep
+                        val result = detectPose(bmp, frameIdx, tsMs)
+                        processResults.add(result)
+                        frameIdx++
+                    }
+                    eosSeen = eosReached.get()
+                }
+            }
+
             val timeoutSeconds = (durationUs / 1_000_000L).coerceAtLeast(10L) + 15L
             decodeLatch.await(timeoutSeconds, TimeUnit.SECONDS)
+            runBlocking { processJob?.join() }
 
-            Log.d(TAG, "Codec decoded ${decodedFrames.size} frames, outputIndex=done")
+            Log.d(TAG, "Codec decoded ${processResults.size} frames")
 
         } catch (e: Exception) {
             Log.e(TAG, "Codec extraction error: ${e.message}", e)
@@ -177,69 +221,84 @@ class VideoProcessor(
             try { decoder?.release() } catch (_: Exception) {}
             handlerThread.quitSafely()
             extractor.release()
+            while (true) { yuvQueue.poll()?.recycle() ?: break }
         }
 
-        if (decodeError != null && decodedFrames.isEmpty()) {
+        if (decodeError != null && processResults.isEmpty()) {
             throw decodeError!!
         }
-
-        var frameIdx = 0
-        var detectedFrames = 0
-        val timeStep = (durationUs / maxOf(decodedFrames.size, 1)) / 1000L
-        for (bmp in decodedFrames) {
-            val tsMs = frameIdx * timeStep
-            val result = detectPose(bmp, frameIdx, tsMs)
-            frames.add(result)
-            if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
-                detectedFrames++
-            }
-            frameIdx++
+        if (processResults.isEmpty()) {
+            Log.w(TAG, "Codec produced 0 frames, falling back to Retriever")
+            return extractWithRetriever(uri)
         }
 
-        Log.d(TAG, "Codec result: ${frames.size} frames, $detectedFrames with pose")
-        return frames
+        val detectedCount = processResults.count { it.landmarks != null && it.landmarks.landmarks.isNotEmpty() }
+        Log.d(TAG, "Codec result: ${processResults.size} frames, $detectedCount with pose")
+        return processResults
     }
 
     private fun yuvImageToBitmap(image: Image, srcW: Int, srcH: Int, targetW: Int, targetH: Int): Bitmap {
         val yPlane = image.planes[0]
         val uPlane = image.planes[1]
         val vPlane = image.planes[2]
-
         val yRowStride = yPlane.rowStride
         val uvRowStride = uPlane.rowStride
         val uvPixelStride = uPlane.pixelStride
-
         val yBuf = yPlane.buffer
         val uBuf = uPlane.buffer
         val vBuf = vPlane.buffer
-
-        val pixels = IntArray(srcW * srcH)
-
-        for (y in 0 until srcH) {
-            for (x in 0 until srcW) {
-                val yIdx = y * yRowStride + x
-                val uvIdx = (y shr 1) * uvRowStride + (x shr 1) * uvPixelStride
-
+        val yMax = yBuf.capacity() - 1
+        val uMax = uBuf.capacity() - 1
+        val vMax = vBuf.capacity() - 1
+        val scaleX = srcW.toFloat() / targetW.toFloat()
+        val scaleY = srcH.toFloat() / targetH.toFloat()
+        val pixels = IntArray(targetW * targetH)
+        for (ty in 0 until targetH) {
+            val sy = (ty * scaleY).toInt().coerceIn(0, srcH - 1)
+            for (tx in 0 until targetW) {
+                val sx = (tx * scaleX).toInt().coerceIn(0, srcW - 1)
+                val yIdx = (sy * yRowStride + sx).coerceIn(0, yMax)
+                val uvIdx = ((sy shr 1) * uvRowStride + (sx shr 1) * uvPixelStride).coerceIn(0, minOf(uMax, vMax))
                 val yVal = (yBuf[yIdx].toInt() and 0xFF) - 16
-                val uVal = (uBuf[uvIdx.coerceIn(0, uBuf.capacity() - 1)].toInt() and 0xFF) - 128
-                val vVal = (vBuf[uvIdx.coerceIn(0, vBuf.capacity() - 1)].toInt() and 0xFF) - 128
-
+                val uVal = (uBuf[uvIdx].toInt() and 0xFF) - 128
+                val vVal = (vBuf[uvIdx].toInt() and 0xFF) - 128
                 val r = (1.164f * yVal + 1.596f * vVal).toInt().coerceIn(0, 255)
                 val g = (1.164f * yVal - 0.392f * uVal - 0.813f * vVal).toInt().coerceIn(0, 255)
                 val b = (1.164f * yVal + 2.017f * uVal).toInt().coerceIn(0, 255)
-
-                pixels[y * srcW + x] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
+                pixels[ty * targetW + tx] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
             }
         }
+        return Bitmap.createBitmap(pixels, targetW, targetH, Bitmap.Config.ARGB_8888)
+    }
 
-        val fullBitmap = Bitmap.createBitmap(pixels, srcW, srcH, Bitmap.Config.ARGB_8888)
-        return if (srcW != targetW || srcH != targetH) {
-            val scaled = Bitmap.createScaledBitmap(fullBitmap, targetW, targetH, true)
-            fullBitmap.recycle()
-            scaled
-        } else {
-            fullBitmap
+    private fun bufferToBitmap(buf: java.nio.ByteBuffer, srcW: Int, srcH: Int, targetW: Int, targetH: Int, colorFormat: Int): Bitmap {
+        val scaleX = srcW.toFloat() / targetW.toFloat()
+        val scaleY = srcH.toFloat() / targetH.toFloat()
+        val pixels = IntArray(targetW * targetH)
+        val raw = ByteArray(buf.remaining())
+        buf.get(raw)
+        buf.rewind()
+
+        for (ty in 0 until targetH) {
+            val sy = (ty * scaleY).toInt().coerceIn(0, srcH - 1)
+            for (tx in 0 until targetW) {
+                val sx = (tx * scaleX).toInt().coerceIn(0, srcW - 1)
+                val idx = (sy * srcW + sx).coerceIn(0, (raw.size / 3).coerceAtLeast(1) - 1)
+                // Assume I420/NV12 planar layout — extract Y, U, V from raw bytes
+                val yOff = srcW * srcH
+                val uOff = yOff + yOff / 4
+                val yi = (sy * srcW + sx).coerceIn(0, yOff - 1)
+                val uvi = (yOff + (sy / 2) * (srcW / 2) + (sx / 2)).coerceIn(0, raw.size - 1)
+                val yVal = (raw[yi].toInt() and 0xFF) - 16
+                val uVal = (raw[uvi].toInt() and 0xFF) - 128
+                val vVal = (raw[minOf(uvi + 1, raw.size - 1)].toInt() and 0xFF) - 128
+                var r = (1.164f * yVal + 1.596f * vVal).toInt()
+                var g = (1.164f * yVal - 0.392f * uVal - 0.813f * vVal).toInt()
+                var b = (1.164f * yVal + 2.017f * uVal).toInt()
+                pixels[ty * targetW + tx] = (0xFF shl 24) or (r.coerceIn(0, 255) shl 16) or (g.coerceIn(0, 255) shl 8) or b.coerceIn(0, 255)
+            }
         }
+        return Bitmap.createBitmap(pixels, targetW, targetH, Bitmap.Config.ARGB_8888)
     }
 
     private fun extractWithRetriever(uri: Uri): List<VideoFrameResult> {

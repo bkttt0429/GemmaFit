@@ -68,6 +68,11 @@ fun VideoProcessingOverlay(
     totalFrames: Int,
     fileName: String,
     onCancel: () -> Unit,
+    etaSeconds: Int = 0,
+    processingFps: Float = 0f,
+    poseHitRate: Float = 0f,
+    subPhase: String = "",
+    subPhaseProgress: Float = 0f,
     modifier: Modifier = Modifier,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "processing_pulse")
@@ -94,7 +99,6 @@ fun VideoProcessingOverlay(
                 .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // ── Animated Icon ────────────────────────────────────────
             when (phase) {
                 is VideoPhase.Processing -> ProcessingAnimation(pulse = pulse)
                 is VideoPhase.Analyzing -> AnalyzingAnimation(progress = progress, pulse = pulse)
@@ -105,13 +109,15 @@ fun VideoProcessingOverlay(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // ── Status Title ─────────────────────────────────────────
+            val isInitPhase = subPhase == "loading_model"
+
             Text(
-                text = when (phase) {
-                    is VideoPhase.Processing -> "Extracting Frames"
-                    is VideoPhase.Analyzing -> "Analyzing Movement"
-                    is VideoPhase.Error -> "Processing Failed"
-                    is VideoPhase.Complete -> "Analysis Complete"
+                text = when {
+                    subPhase == "loading_model" -> "Loading Model"
+                    subPhase == "decoding" -> "Decoding Frames"
+                    phase is VideoPhase.Analyzing -> "Analyzing Movement"
+                    phase is VideoPhase.Error -> "Processing Failed"
+                    phase is VideoPhase.Complete -> "Analysis Complete"
                     else -> "Preparing..."
                 },
                 style = MaterialTheme.typography.headlineMedium,
@@ -125,23 +131,26 @@ fun VideoProcessingOverlay(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // ── Subtitle ─────────────────────────────────────────────
             Text(
-                text = when (phase) {
-                    is VideoPhase.Processing -> "Reading video frames with MediaPipe Pose..."
-                    is VideoPhase.Analyzing -> "Frame $currentFrame of $totalFrames"
-                    is VideoPhase.Error -> (phase as VideoPhase.Error).message
-                    is VideoPhase.Complete -> "Ready to view results"
+                text = when {
+                    subPhase == "loading_model" -> "Initializing MediaPipe Pose..."
+                    subPhase == "decoding" -> "Extracting video frames..."
+                    phase is VideoPhase.Analyzing -> buildString {
+                        append("Frame $currentFrame / $totalFrames")
+                        if (poseHitRate > 0f) append("  ·  ${(poseHitRate * 100).toInt()}% detected")
+                    }
+                    phase is VideoPhase.Error -> (phase as VideoPhase.Error).message
+                    phase is VideoPhase.Complete -> "Ready to view results"
                     else -> ""
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextSecondary,
                 textAlign = TextAlign.Center,
+                maxLines = 3,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // ── File name ────────────────────────────────────────────
             if (fileName.isNotEmpty()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -168,13 +177,11 @@ fun VideoProcessingOverlay(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // ── Progress Bar ─────────────────────────────────────────
             if (phase !is VideoPhase.Error && phase !is VideoPhase.Complete) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(0.8f),
                 ) {
-                    // Determinate progress bar
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -187,9 +194,7 @@ fun VideoProcessingOverlay(
                                 .fillMaxWidth(progress.coerceIn(0f, 1f))
                                 .height(6.dp)
                                 .background(
-                                    Brush.horizontalGradient(
-                                        listOf(Blue, Green),
-                                    ),
+                                    Brush.horizontalGradient(listOf(Blue, Green)),
                                     RoundedCornerShape(3.dp),
                                 ),
                         )
@@ -197,7 +202,6 @@ fun VideoProcessingOverlay(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Percentage
                     Text(
                         text = "${(progress * 100).toInt()}%",
                         style = MaterialTheme.typography.titleLarge,
@@ -205,46 +209,53 @@ fun VideoProcessingOverlay(
                         fontWeight = FontWeight.Bold,
                     )
 
-                    // Elapsed time
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 4.dp),
-                    ) {
+                    if (progress > 0.05f && phase is VideoPhase.Analyzing) {
+                        Row(
+                            modifier = Modifier.padding(top = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                text = if (etaSeconds > 0) "~${formatEta(etaSeconds)} remaining" else "",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TextHint,
+                            )
+                            if (processingFps > 0f) {
+                                Text(
+                                    text = " ·  ${processingFps.toInt()} fps",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = TextHint,
+                                )
+                            }
+                        }
+                    } else if (phase is VideoPhase.Processing) {
                         Text(
-                            text = when (phase) {
-                                is VideoPhase.Processing -> "Extracting skeleton data..."
-                                is VideoPhase.Analyzing -> "Applying biomechanics rules..."
-                                else -> ""
+                            text = when {
+                                isInitPhase -> "Loading..."
+                                subPhase == "decoding" -> "Decoding frames..."
+                                else -> "Processing..."
                             },
                             style = MaterialTheme.typography.labelMedium,
                             color = TextHint,
+                            modifier = Modifier.padding(top = 4.dp),
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ── Cancel Button ────────────────────────────────────
                 Button(
                     onClick = onCancel,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0x22FFFFFF),
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x22FFFFFF)),
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.height(40.dp),
                 ) {
-                    Icon(
-                        Icons.Filled.Cancel,
-                        contentDescription = "Cancel",
-                        tint = TextSecondary,
-                        modifier = Modifier.size(16.dp),
-                    )
+                    Icon(Icons.Filled.Cancel, contentDescription = "Cancel", tint = TextSecondary, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Cancel", color = TextSecondary, fontSize = 14.sp)
                 }
             }
 
-            // ── Retry / Continue Buttons ─────────────────────────────
             if (phase is VideoPhase.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
@@ -263,58 +274,22 @@ fun VideoProcessingOverlay(
 private fun ProcessingAnimation(pulse: Float) {
     val infiniteTransition = rememberInfiniteTransition(label = "spin")
     val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
+        initialValue = 0f, targetValue = 360f,
+        animationSpec = infiniteRepeatable(animation = tween(1500, easing = LinearEasing), repeatMode = RepeatMode.Restart),
         label = "rotation",
     )
-
-    Box(
-        modifier = Modifier.size(100.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        // Outer pulsing ring
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer { alpha = pulse * 0.4f },
-        ) {
-            drawCircle(
-                color = Blue,
-                radius = size.minDimension / 2,
-                style = Stroke(width = 4.dp.toPx()),
-            )
+    Box(modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize().graphicsLayer { alpha = pulse * 0.4f }) {
+            drawCircle(color = Blue, radius = size.minDimension / 2, style = Stroke(width = 4.dp.toPx()))
         }
-        // Spinning arc
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .rotate(rotation),
-        ) {
-            val strokeWidth = 3.dp.toPx()
-            drawArc(
-                color = Green,
-                startAngle = 0f,
-                sweepAngle = 270f,
-                useCenter = false,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-                topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
-                size = androidx.compose.ui.geometry.Size(
-                    size.width - strokeWidth,
-                    size.height - strokeWidth,
-                ),
-            )
+        Canvas(modifier = Modifier.fillMaxSize().rotate(rotation)) {
+            val sw = 3.dp.toPx()
+            drawArc(color = Green, startAngle = 0f, sweepAngle = 270f, useCenter = false,
+                style = Stroke(width = sw, cap = StrokeCap.Round),
+                topLeft = Offset(sw / 2, sw / 2),
+                size = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw))
         }
-        // Center movie icon
-        Icon(
-            Icons.Filled.Movie,
-            contentDescription = null,
-            tint = TextPrimary.copy(alpha = 0.6f),
-            modifier = Modifier.size(32.dp),
-        )
+        Icon(Icons.Filled.Movie, contentDescription = null, tint = TextPrimary.copy(alpha = 0.6f), modifier = Modifier.size(32.dp))
     }
 }
 
@@ -322,74 +297,32 @@ private fun ProcessingAnimation(pulse: Float) {
 private fun AnalyzingAnimation(progress: Float, pulse: Float) {
     val infiniteTransition = rememberInfiniteTransition(label = "analyzing_spin")
     val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
+        initialValue = 0f, targetValue = 360f,
+        animationSpec = infiniteRepeatable(animation = tween(2000, easing = LinearEasing), repeatMode = RepeatMode.Restart),
         label = "rotation",
     )
-
-    Box(
-        modifier = Modifier.size(100.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        // Background track
+    Box(modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val strokeWidth = 4.dp.toPx()
-            drawArc(
-                color = Color(0x33FFFFFF),
-                startAngle = 0f,
-                sweepAngle = 360f,
-                useCenter = false,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-                topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
-                size = androidx.compose.ui.geometry.Size(
-                    size.width - strokeWidth,
-                    size.height - strokeWidth,
-                ),
-            )
+            val sw = 4.dp.toPx()
+            drawArc(color = Color(0x33FFFFFF), startAngle = 0f, sweepAngle = 360f, useCenter = false,
+                style = Stroke(width = sw, cap = StrokeCap.Round),
+                topLeft = Offset(sw / 2, sw / 2),
+                size = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw))
         }
-        // Progress arc
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .rotate(-90f),
-        ) {
-            val strokeWidth = 4.dp.toPx()
-            drawArc(
-                color = Green,
-                startAngle = 0f,
-                sweepAngle = 360f * progress.coerceIn(0f, 1f),
-                useCenter = false,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-                topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
-                size = androidx.compose.ui.geometry.Size(
-                    size.width - strokeWidth,
-                    size.height - strokeWidth,
-                ),
-            )
+        Canvas(modifier = Modifier.fillMaxSize().rotate(-90f)) {
+            val sw = 4.dp.toPx()
+            drawArc(color = Green, startAngle = 0f, sweepAngle = 360f * progress.coerceIn(0f, 1f), useCenter = false,
+                style = Stroke(width = sw, cap = StrokeCap.Round),
+                topLeft = Offset(sw / 2, sw / 2),
+                size = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw))
         }
-
-        // Inner pulsing dot
-        Canvas(
-            modifier = Modifier
-                .size(16.dp)
-                .graphicsLayer { alpha = pulse },
-        ) {
-            drawCircle(
-                color = Green,
-                radius = size.minDimension / 2,
-            )
+        Canvas(modifier = Modifier.size(16.dp).graphicsLayer { alpha = pulse }) {
+            drawCircle(color = Green, radius = size.minDimension / 2)
         }
-
-        // Percentage text
         Text(
             text = "${(progress * 100).toInt()}",
             style = MaterialTheme.typography.titleMedium,
-            color = TextPrimary,
-            fontWeight = FontWeight.Bold,
+            color = TextPrimary, fontWeight = FontWeight.Bold,
             modifier = Modifier.alpha(0.5f),
         )
     }
@@ -397,36 +330,21 @@ private fun AnalyzingAnimation(progress: Float, pulse: Float) {
 
 @Composable
 private fun SuccessIcon() {
-    Box(
-        modifier = Modifier
-            .size(100.dp)
-            .clip(CircleShape)
-            .background(Color(0x22FFFFFF)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            Icons.Filled.CheckCircle,
-            contentDescription = null,
-            tint = Green,
-            modifier = Modifier.size(56.dp),
-        )
+    Box(modifier = Modifier.size(100.dp).clip(CircleShape).background(Color(0x22FFFFFF)), contentAlignment = Alignment.Center) {
+        Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Green, modifier = Modifier.size(56.dp))
     }
 }
 
 @Composable
 private fun ErrorIcon() {
-    Box(
-        modifier = Modifier
-            .size(100.dp)
-            .clip(CircleShape)
-            .background(Color(0x22FFFFFF)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            Icons.Filled.Error,
-            contentDescription = null,
-            tint = Red,
-            modifier = Modifier.size(56.dp),
-        )
+    Box(modifier = Modifier.size(100.dp).clip(CircleShape).background(Color(0x22FFFFFF)), contentAlignment = Alignment.Center) {
+        Icon(Icons.Filled.Error, contentDescription = null, tint = Red, modifier = Modifier.size(56.dp))
     }
+}
+
+private fun formatEta(seconds: Int): String {
+    if (seconds < 60) return "${seconds}s"
+    val m = seconds / 60
+    val s = seconds % 60
+    return "${m}m ${s}s"
 }

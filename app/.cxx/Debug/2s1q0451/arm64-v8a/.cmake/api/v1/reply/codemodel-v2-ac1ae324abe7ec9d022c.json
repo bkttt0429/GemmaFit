@@ -1,0 +1,105 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "GemmaFitNative",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "gemmafit_bridge::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gemmafit_bridge-Debug-25d868c9576786dfd7e0.json",
+					"name" : "gemmafit_bridge",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gemmafit_kinematics::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gemmafit_kinematics-Debug-588cb293c83a85745db5.json",
+					"name" : "gemmafit_kinematics",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_com_tracker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_com_tracker-Debug-e088948c2073c15ddfc9.json",
+					"name" : "test_com_tracker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_kinematics_pipeline::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_kinematics_pipeline-Debug-1a4520ccc897bdc956f8.json",
+					"name" : "test_kinematics_pipeline",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_motion_quality::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_motion_quality-Debug-24d5a2631bdf31b5d869.json",
+					"name" : "test_motion_quality",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_safety_monitor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_safety_monitor-Debug-f886f46b66ef7703fef0.json",
+					"name" : "test_safety_monitor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "Z:/app/.cxx/Debug/2s1q0451/arm64-v8a",
+		"source" : "Z:/native"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
