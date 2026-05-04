@@ -49,6 +49,13 @@ Current output:
 5. Use production-format validation from `fc["validation"]["production"]`.
 6. Use run suffix `gemmafit_v2_format_expand`.
 
+Implementation note: the notebook materializes a finite mixed dataset instead
+of passing a HuggingFace streaming `interleave_datasets` object to Unsloth.
+Current Unsloth/TRL code expects iterable internals to expose `batch_size`, but
+`RandomlyCyclingMultiSourcesExamplesIterable` does not. The finite mix keeps the
+same 60/30/10 ratio by building 2040 domain rows, 1020 Glaive rows, and 340
+HH-RLHF rows.
+
 The v2 run intentionally keeps `metric_for_best_model="eval_loss"` for now and
 relies on post-hoc `prototype/eval_compare.py` for function-match benchmarking.
 

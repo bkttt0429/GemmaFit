@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 
 #include "../kinematics/com_tracker.h"
@@ -8,6 +9,7 @@
 #include "../kinematics/movement_classifier.h"
 #include "../kinematics/muscle_focus.h"
 #include "../kinematics/safety_monitor.h"
+#include "../kinematics/subject_selector.h"
 #include "../kinematics/symmetry.h"
 
 namespace gemmafit::bridge {
@@ -24,6 +26,7 @@ struct KinematicsOutput {
     std::string muscle_json;             // JSON for muscle focus
     std::string motion_report_json;      // JSON for exercise template metrics and quality gates
     std::string confidence_json;         // JSON for confidence gate
+    std::string subject_selection_json;  // JSON for multi-person subject selection
     std::string combined_json;           // all-in-one JSON for LLM input
 };
 
@@ -33,6 +36,27 @@ KinematicsOutput run_biomechanics_pipeline(
     const float* landmarks_99,
     const float* prev_landmarks_99 = nullptr,
     double visibility_threshold = 0.6);
+
+KinematicsOutput run_biomechanics_pipeline_candidates(
+    const float* candidates_nx99,
+    std::size_t candidate_count,
+    double visibility_threshold = 0.6,
+    long long timestamp_ms = 0,
+    bool has_tap = false,
+    double tap_x = -1.0,
+    double tap_y = -1.0,
+    bool clear_lock = false);
+
+std::string select_subject_candidates(
+    const float* candidates_nx99,
+    std::size_t candidate_count,
+    long long timestamp_ms = 0,
+    bool has_tap = false,
+    double tap_x = -1.0,
+    double tap_y = -1.0,
+    bool clear_lock = false);
+
+void reset_subject_selector();
 
 // Serialize individual structs to JSON.
 std::string to_json(const gemmafit::kinematics::JointAngleSet& angles);

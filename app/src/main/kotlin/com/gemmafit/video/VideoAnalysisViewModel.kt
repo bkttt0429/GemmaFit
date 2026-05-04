@@ -384,6 +384,10 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                     subPhaseProgress = realProgress,
                 )
             }
+            // During Full pass, broadcast progress so UI can show mini progress bar
+            if (pass == VideoAnalysisPass.FULL) {
+                _live.value = _live.value.copy(fullProgress = realProgress)
+            }
 
             if (result.landmarks != null && result.bitmap != null) {
                 processLandmarks(

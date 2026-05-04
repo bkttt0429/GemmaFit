@@ -93,14 +93,15 @@ add_kinematics_test(test_subject_selector)
 
 # ── Bridge tests ─────────────────────────────────────────────────────
 
-# add_executable(test_kinematics_bridge
-#     tests/test_kinematics_bridge.cpp
-# )
-# target_link_libraries(test_kinematics_bridge
-#     PRIVATE
-#         gemmafit_bridge
-#         gemmafit_kinematics
-# )
+add_executable(test_kinematics_bridge
+    tests/test_kinematics_bridge.cpp
+)
+target_link_libraries(test_kinematics_bridge
+    PRIVATE
+        gemmafit_bridge
+        gemmafit_kinematics
+)
+add_test(NAME test_kinematics_bridge COMMAND test_kinematics_bridge)
 
 # Enable CTest
 enable_testing()
