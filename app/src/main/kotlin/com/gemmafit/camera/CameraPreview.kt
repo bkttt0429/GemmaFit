@@ -55,6 +55,7 @@ class PoseLandmarkerHelper(
                 .setMinPoseDetectionConfidence(0.5f)
                 .setMinPosePresenceConfidence(0.5f)
                 .setMinTrackingConfidence(0.5f)
+                .setNumPoses(4)
                 .setRunningMode(RunningMode.LIVE_STREAM)
                 .setResultListener { result, image ->
                     listener.onResults(result, image.height, image.width, System.currentTimeMillis())
@@ -74,6 +75,7 @@ class PoseLandmarkerHelper(
                     .setMinPoseDetectionConfidence(0.5f)
                     .setMinPosePresenceConfidence(0.5f)
                     .setMinTrackingConfidence(0.5f)
+                    .setNumPoses(4)
                     .setRunningMode(RunningMode.LIVE_STREAM)
                     .setResultListener { result, image ->
                         listener.onResults(result, image.height, image.width, System.currentTimeMillis())

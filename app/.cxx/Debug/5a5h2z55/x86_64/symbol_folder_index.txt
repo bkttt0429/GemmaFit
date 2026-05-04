@@ -1,1 +1,1 @@
-C:\Users\ken\OneDrive\桌面\GemmaFit\app\build\intermediates\cxx\Debug\5a5h2z55\obj\x86_64
+D:\GemmaFit\app\build\intermediates\cxx\Debug\5a5h2z55\obj\x86_64

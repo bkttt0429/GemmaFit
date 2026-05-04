@@ -33,7 +33,7 @@ fun ControlBar(
             onClick = onPauseToggle,
             modifier = Modifier.weight(1f).height(48.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isPaused) Green else Surface,
+                containerColor = if (isPaused) Green else SurfaceColor,
             ),
             shape = RoundedCornerShape(10.dp),
         ) {
@@ -55,7 +55,7 @@ fun ControlBar(
             onClick = { /* flip camera */ },
             modifier = Modifier
                 .size(48.dp)
-                .background(Surface, RoundedCornerShape(10.dp)),
+                .background(SurfaceColor, RoundedCornerShape(10.dp)),
         ) {
             Icon(Icons.Filled.FlipCameraAndroid, "Flip", tint = TextSecondary)
         }
@@ -65,7 +65,7 @@ fun ControlBar(
             onClick = onViewSummary,
             modifier = Modifier
                 .size(48.dp)
-                .background(Surface, RoundedCornerShape(10.dp)),
+                .background(SurfaceColor, RoundedCornerShape(10.dp)),
         ) {
             Icon(Icons.Rounded.Analytics, "Summary", tint = Green)
         }

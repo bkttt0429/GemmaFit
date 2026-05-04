@@ -34,7 +34,15 @@ data class VideoFrameResult(
     val bitmap: Bitmap?,
     val bitmapWidth: Int = 0,
     val bitmapHeight: Int = 0,
+    val pass: VideoAnalysisPass = VideoAnalysisPass.FULL,
+    val convertMs: Long = 0L,
+    val poseMs: Long = 0L,
 )
+
+enum class VideoAnalysisPass {
+    PREVIEW,
+    FULL,
+}
 
 data class VideoPoseResult(
     val landmarks: List<List<NormalizedLandmark>>,
@@ -53,38 +61,49 @@ class VideoProcessor(
     private val poseLandmarker: PoseLandmarker?,
     private val sampleEveryNFrames: Int = 3,
     private val maxDimension: Int = 640,
+    private val targetAnalysisIntervalMs: Long = 100L,
+    private val pass: VideoAnalysisPass = VideoAnalysisPass.FULL,
 ) {
     companion object {
         private const val TAG = "GemmaFit.VideoProc"
     }
 
+    private data class QueuedFrame(
+        val bitmap: Bitmap,
+        val timestampMs: Long,
+        val convertMs: Long = 0L,
+    )
+
     fun processVideo(uri: Uri): Flow<VideoFrameResult> = flow {
-        val results = withContext(Dispatchers.IO) {
-            try {
-                extractWithCodec(uri)
-            } catch (e: Exception) {
-                Log.w(TAG, "MediaCodec fallback: ${e.message}")
-                extractWithRetriever(uri)
-            }
+        val emitted = try {
+            extractWithCodec(uri) { emit(it) }
+        } catch (e: Exception) {
+            Log.w(TAG, "MediaCodec fallback: ${e.message}")
+            0
         }
-        results.forEach { emit(it) }
+        if (emitted == 0) {
+            extractWithRetriever(uri) { emit(it) }
+        }
     }.flowOn(Dispatchers.Default)
 
-    private fun extractWithCodec(uri: Uri): List<VideoFrameResult> {
+    private suspend fun extractWithCodec(
+        uri: Uri,
+        emitFrame: suspend (VideoFrameResult) -> Unit,
+    ): Int {
         val extractor = MediaExtractor()
 
         try {
             extractor.setDataSource(context, uri, null)
         } catch (e: Exception) {
             Log.e(TAG, "Cannot open URI: ${e.message}", e)
-            return extractWithRetriever(uri)
+            return 0
         }
 
         val videoTrackIndex = (0 until extractor.trackCount).firstOrNull { i ->
             extractor.getTrackFormat(i).getString(MediaFormat.KEY_MIME)?.startsWith("video/") == true
         } ?: run {
             extractor.release()
-            return extractWithRetriever(uri)
+            return 0
         }
 
         extractor.selectTrack(videoTrackIndex)
@@ -94,9 +113,9 @@ class VideoProcessor(
         val durationUs = format.getLong(MediaFormat.KEY_DURATION)
         val mime = format.getString(MediaFormat.KEY_MIME) ?: "video/avc"
 
-        Log.d(TAG, "Codec: ${width}x${height}, duration=${durationUs / 1000}ms, mime=$mime, sampleEvery=$sampleEveryNFrames")
+        Log.d(TAG, "Codec[$pass]: ${width}x${height}, duration=${durationUs / 1000}ms, mime=$mime, interval=${targetAnalysisIntervalMs}ms, longSide=$maxDimension")
 
-        val scale = maxDimension.toFloat() / maxOf(width, height)
+        val scale = minOf(1f, maxDimension.toFloat() / maxOf(width, height))
         val targetW = (width * scale).toInt().coerceAtLeast(1)
         val targetH = (height * scale).toInt().coerceAtLeast(1)
 
@@ -105,12 +124,14 @@ class VideoProcessor(
         val handlerThread = HandlerThread("FrameDecoder").also { it.start() }
         val handler = Handler(handlerThread.looper)
         val eosReached = AtomicBoolean(false)
+        val decodeFinished = AtomicBoolean(false)
         val decodeLatch = CountDownLatch(1)
         var decodeError: Exception? = null
-        val yuvQueue = LinkedBlockingQueue<Bitmap>()
-        val processResults = mutableListOf<VideoFrameResult>()
+        val yuvQueue = LinkedBlockingQueue<QueuedFrame>()
+        val resultQueue = LinkedBlockingQueue<VideoFrameResult>()
         var processJob: Job? = null
         var outputColorFormat = -1
+        var emittedFrames = 0
 
         var decoder: MediaCodec? = null
         try {
@@ -118,6 +139,7 @@ class VideoProcessor(
 
             decoder!!.setCallback(object : MediaCodec.Callback() {
                 private var outputCount = 0
+                private var lastQueuedTimestampMs = Long.MIN_VALUE
 
                 override fun onInputBufferAvailable(mc: MediaCodec, index: Int) {
                     if (eosReached.get()) return
@@ -135,19 +157,32 @@ class VideoProcessor(
                 override fun onOutputBufferAvailable(mc: MediaCodec, index: Int, info: MediaCodec.BufferInfo) {
                     if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
                         mc.releaseOutputBuffer(index, false)
+                        decodeFinished.set(true)
                         decodeLatch.countDown()
                         return
                     }
 
-                    if (info.size > 0 && outputCount % sampleEveryNFrames.coerceAtLeast(1) == 0) {
+                    val rawTimestampMs = (info.presentationTimeUs / 1000L).coerceAtLeast(0L)
+                    val timestampMs = if (rawTimestampMs > lastQueuedTimestampMs || lastQueuedTimestampMs == Long.MIN_VALUE) {
+                        rawTimestampMs
+                    } else {
+                        outputCount * targetAnalysisIntervalMs.coerceAtLeast(1L)
+                    }
+                    val shouldAnalyze = info.size > 0 &&
+                        (lastQueuedTimestampMs == Long.MIN_VALUE ||
+                            timestampMs - lastQueuedTimestampMs >= targetAnalysisIntervalMs.coerceAtLeast(1L))
+
+                    if (shouldAnalyze) {
                         val image = try { mc.getOutputImage(index) } catch (e: Exception) {
                             Log.e(TAG, "getOutputImage: ${e.message}")
                             null
                         }
                         if (image != null) {
                             try {
+                                val convertStart = System.currentTimeMillis()
                                 val bmp = yuvImageToBitmap(image, width, height, targetW, targetH)
-                                yuvQueue.put(bmp)
+                                yuvQueue.put(QueuedFrame(bmp, timestampMs, System.currentTimeMillis() - convertStart))
+                                lastQueuedTimestampMs = timestampMs
                             } catch (e: Exception) {
                                 Log.e(TAG, "YUV convert failed (${width}x${height}): ${e.message}", e)
                             } finally {
@@ -159,8 +194,10 @@ class VideoProcessor(
                                 try {
                                     buf.position(info.offset)
                                     buf.limit(info.offset + info.size)
+                                    val convertStart = System.currentTimeMillis()
                                     val bmp = bufferToBitmap(buf, width, height, targetW, targetH, outputColorFormat)
-                                    yuvQueue.put(bmp)
+                                    yuvQueue.put(QueuedFrame(bmp, timestampMs, System.currentTimeMillis() - convertStart))
+                                    lastQueuedTimestampMs = timestampMs
                                 } catch (e: Exception) {
                                     Log.e(TAG, "Buffer convert failed: ${e.message}", e)
                                 }
@@ -179,6 +216,7 @@ class VideoProcessor(
                 override fun onError(mc: MediaCodec, e: MediaCodec.CodecException) {
                     Log.e(TAG, "Codec error: ${e.message}")
                     decodeError = e
+                    decodeFinished.set(true)
                     decodeLatch.countDown()
                 }
             }, handler)
@@ -187,31 +225,52 @@ class VideoProcessor(
             decoder!!.start()
 
             // Launch parallel pose detection coroutine (runs concurrently with decode)
-            val timeStep = durationUs / maxOf(1L, (durationUs / (1000L * 1000L / 30L * sampleEveryNFrames)).coerceAtLeast(1L)) / 1000L
             processJob = CoroutineScope(Dispatchers.Default).launch {
                 var frameIdx = 0
-                var eosSeen = false
-                while (!eosSeen || yuvQueue.isNotEmpty()) {
-                    val bmp = try {
+                var outputFinished = false
+                while (!outputFinished || yuvQueue.isNotEmpty()) {
+                    val queued = try {
                         yuvQueue.poll(100, TimeUnit.MILLISECONDS)
                     } catch (_: InterruptedException) {
                         return@launch
                     }
-                    if (bmp != null) {
-                        val tsMs = frameIdx * timeStep
-                        val result = detectPose(bmp, frameIdx, tsMs)
-                        processResults.add(result)
+                    if (queued != null) {
+                        val result = detectPose(
+                            bitmap = queued.bitmap,
+                            frameIndex = frameIdx,
+                            timestampMs = queued.timestampMs,
+                            convertMs = queued.convertMs,
+                        )
+                        resultQueue.put(result)
                         frameIdx++
                     }
-                    eosSeen = eosReached.get()
+                    outputFinished = decodeFinished.get()
                 }
             }
 
-            val timeoutSeconds = (durationUs / 1_000_000L).coerceAtLeast(10L) + 15L
-            decodeLatch.await(timeoutSeconds, TimeUnit.SECONDS)
-            runBlocking { processJob?.join() }
+            val timeoutMs = ((durationUs / 1000L).coerceAtLeast(10_000L) + 15_000L)
+            val deadline = System.currentTimeMillis() + timeoutMs
+            while (System.currentTimeMillis() < deadline) {
+                val result = resultQueue.poll(100, TimeUnit.MILLISECONDS)
+                if (result != null) {
+                    emitFrame(result)
+                    emittedFrames++
+                }
+                if (decodeFinished.get() && yuvQueue.isEmpty() && resultQueue.isEmpty() && processJob?.isCompleted == true) {
+                    break
+                }
+            }
+            if (!decodeFinished.get()) {
+                Log.w(TAG, "Codec[$pass] timed out after ${timeoutMs}ms")
+            }
+            processJob?.join()
+            while (true) {
+                val result = resultQueue.poll() ?: break
+                emitFrame(result)
+                emittedFrames++
+            }
 
-            Log.d(TAG, "Codec decoded ${processResults.size} frames")
+            Log.d(TAG, "Codec[$pass] streamed $emittedFrames frames")
 
         } catch (e: Exception) {
             Log.e(TAG, "Codec extraction error: ${e.message}", e)
@@ -221,20 +280,16 @@ class VideoProcessor(
             try { decoder?.release() } catch (_: Exception) {}
             handlerThread.quitSafely()
             extractor.release()
-            while (true) { yuvQueue.poll()?.recycle() ?: break }
+            while (true) { yuvQueue.poll()?.bitmap?.recycle() ?: break }
         }
 
-        if (decodeError != null && processResults.isEmpty()) {
+        if (decodeError != null && emittedFrames == 0) {
             throw decodeError!!
         }
-        if (processResults.isEmpty()) {
-            Log.w(TAG, "Codec produced 0 frames, falling back to Retriever")
-            return extractWithRetriever(uri)
+        if (emittedFrames == 0) {
+            Log.w(TAG, "Codec[$pass] produced 0 frames")
         }
-
-        val detectedCount = processResults.count { it.landmarks != null && it.landmarks.landmarks.isNotEmpty() }
-        Log.d(TAG, "Codec result: ${processResults.size} frames, $detectedCount with pose")
-        return processResults
+        return emittedFrames
     }
 
     private fun yuvImageToBitmap(image: Image, srcW: Int, srcH: Int, targetW: Int, targetH: Int): Bitmap {
@@ -301,55 +356,72 @@ class VideoProcessor(
         return Bitmap.createBitmap(pixels, targetW, targetH, Bitmap.Config.ARGB_8888)
     }
 
-    private fun extractWithRetriever(uri: Uri): List<VideoFrameResult> {
-        val list = mutableListOf<VideoFrameResult>()
+    private suspend fun extractWithRetriever(
+        uri: Uri,
+        emitFrame: suspend (VideoFrameResult) -> Unit,
+    ): Int {
+        var emittedFrames = 0
         var detectedFrames = 0
         val retriever = MediaMetadataRetriever()
 
         try {
             retriever.setDataSource(context, uri)
             val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 10000L
-            val sampleIntervalMs = 200L * sampleEveryNFrames.coerceAtLeast(1)
+            val sampleIntervalMs = targetAnalysisIntervalMs.coerceAtLeast(33L)
 
-            Log.d(TAG, "Retriever: duration=${durationMs}ms, interval=${sampleIntervalMs}ms")
+            Log.d(TAG, "Retriever[$pass]: duration=${durationMs}ms, interval=${sampleIntervalMs}ms, longSide=$maxDimension")
 
             var timeMs = 0L
             var frameIdx = 0
             while (timeMs < durationMs) {
                 val bmp = retriever.getFrameAtTime(timeMs * 1000L, MediaMetadataRetriever.OPTION_CLOSEST)
                 if (bmp != null) {
+                    val convertStart = System.currentTimeMillis()
                     val scaled = if (bmp.width > maxDimension || bmp.height > maxDimension) {
-                        val scale = maxDimension.toFloat() / maxOf(bmp.width, bmp.height)
+                        val scale = minOf(1f, maxDimension.toFloat() / maxOf(bmp.width, bmp.height))
                         Bitmap.createScaledBitmap(bmp, (bmp.width * scale).toInt(), (bmp.height * scale).toInt(), true)
                     } else {
                         bmp
                     }
-                    val result = detectPose(scaled, frameIdx, timeMs)
+                    val result = detectPose(
+                        bitmap = scaled,
+                        frameIndex = frameIdx,
+                        timestampMs = timeMs,
+                        convertMs = System.currentTimeMillis() - convertStart,
+                    )
                     if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
                         detectedFrames++
                     }
-                    list.add(result)
+                    emitFrame(result)
+                    emittedFrames++
                     if (scaled !== bmp) bmp.recycle()
                 }
                 timeMs += sampleIntervalMs
                 frameIdx++
             }
-            Log.d(TAG, "Retriever: ${list.size} frames, $detectedFrames with pose")
+            Log.d(TAG, "Retriever[$pass]: $emittedFrames frames, $detectedFrames with pose")
         } catch (e: Exception) {
             Log.e(TAG, "Retriever error: ${e.message}", e)
         } finally {
             try { retriever.release() } catch (_: Exception) {}
         }
-        return list
+        return emittedFrames
     }
 
-    private fun detectPose(bitmap: Bitmap, frameIndex: Int, timestampMs: Long): VideoFrameResult {
+    private fun detectPose(
+        bitmap: Bitmap,
+        frameIndex: Int,
+        timestampMs: Long,
+        convertMs: Long,
+    ): VideoFrameResult {
         if (poseLandmarker == null) {
-            return VideoFrameResult(frameIndex, timestampMs, null, null)
+            return VideoFrameResult(frameIndex, timestampMs, null, null, pass = pass, convertMs = convertMs)
         }
         return try {
+            val poseStart = System.currentTimeMillis()
             val mpImage = com.google.mediapipe.framework.image.BitmapImageBuilder(bitmap).build()
-            val result = poseLandmarker.detect(mpImage)
+            val result = poseLandmarker.detectForVideo(mpImage, timestampMs)
+            val poseMs = System.currentTimeMillis() - poseStart
             val landmarks = if (result.landmarks().isNotEmpty()) {
                 result.landmarks().map { lmList ->
                     lmList.map { lm ->
@@ -359,10 +431,21 @@ class VideoProcessor(
             } else {
                 emptyList()
             }
-            VideoFrameResult(frameIndex, timestampMs, VideoPoseResult(landmarks, null), bitmap, bitmap.width, bitmap.height)
+            Log.d(TAG, "Frame[$pass] #$frameIndex t=${timestampMs}ms convert=${convertMs}ms pose=${poseMs}ms poses=${landmarks.size}")
+            VideoFrameResult(
+                frameIndex = frameIndex,
+                timestampMs = timestampMs,
+                landmarks = VideoPoseResult(landmarks, null),
+                bitmap = bitmap,
+                bitmapWidth = bitmap.width,
+                bitmapHeight = bitmap.height,
+                pass = pass,
+                convertMs = convertMs,
+                poseMs = poseMs,
+            )
         } catch (e: Exception) {
             Log.e(TAG, "Frame $frameIndex: pose error: ${e.message}")
-            VideoFrameResult(frameIndex, timestampMs, null, null)
+            VideoFrameResult(frameIndex, timestampMs, null, null, pass = pass, convertMs = convertMs)
         }
     }
 

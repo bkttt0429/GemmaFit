@@ -113,24 +113,39 @@ def _jaccard(a: dict, b: dict) -> float:
     return len(inter) / len(union) if union else 1.0
 
 
-def _run_one(llm, example: dict, idx: int) -> ExampleResult:
-    inp = example["input"]
-    expected = example["output"]
+def _build_messages(inp: dict, prompt_format: str = "production") -> List[dict]:
+    """Two formats:
+      production — system prompt + ```json``` fences + indent=2 (what the app sends)
+      training   — bare 'Motion report:\\n{compact json}' (matches finetune/data fmt_domain)
+    """
+    if prompt_format == "training":
+        return [
+            {"role": "user",
+             "content": f"Motion report:\n{json.dumps(inp, ensure_ascii=False)}"},
+        ]
     user_msg = (
         f"Motion-analysis input:\n```json\n"
         f"{json.dumps(inp, ensure_ascii=False, indent=2)}\n```\n"
         f"Reply with a single JSON object: "
         f'{{"function": "...", "args": {{...}}}}'
     )
+    return [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user",   "content": user_msg},
+    ]
+
+
+def _run_one(llm, example: dict, idx: int,
+             prompt_format: str = "production") -> ExampleResult:
+    inp = example["input"]
+    expected = example["output"]
+    messages = _build_messages(inp, prompt_format)
     t0 = time.time()
     err = None
     raw = ""
     try:
         resp = llm.create_chat_completion(
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user",   "content": user_msg},
-            ],
+            messages=messages,
             max_tokens=200,
             temperature=0.1,
             stop=["\n\n\n"],
@@ -158,7 +173,9 @@ def _run_one(llm, example: dict, idx: int) -> ExampleResult:
 
 
 def evaluate_model(model_path: str, val_data: List[dict], n_ctx: int = 2048,
-                   max_n: Optional[int] = None) -> List[ExampleResult]:
+                   max_n: Optional[int] = None,
+                   n_gpu_layers: int = 0,
+                   prompt_format: str = "production") -> List[ExampleResult]:
     if not HAS_LLAMA:
         raise SystemExit("llama-cpp-python not installed. pip install llama-cpp-python "
                          "--only-binary=:all: --extra-index-url "
@@ -166,16 +183,16 @@ def evaluate_model(model_path: str, val_data: List[dict], n_ctx: int = 2048,
     if not os.path.exists(model_path):
         raise SystemExit(f"Model not found: {model_path}")
 
-    print(f"\n>>> Loading {model_path}", flush=True)
+    print(f"\n>>> Loading {model_path} (n_gpu_layers={n_gpu_layers})", flush=True)
     t0 = time.time()
     llm = Llama(model_path=model_path, n_ctx=n_ctx, n_threads=None,
-                n_gpu_layers=0, verbose=False)
+                n_gpu_layers=n_gpu_layers, verbose=False)
     print(f"    Load time: {time.time()-t0:.1f}s", flush=True)
 
     n = len(val_data) if max_n is None else min(max_n, len(val_data))
     results: List[ExampleResult] = []
     for i in range(n):
-        r = _run_one(llm, val_data[i], i)
+        r = _run_one(llm, val_data[i], i, prompt_format=prompt_format)
         status = "OK " if r.json_ok else "BAD"
         fn = "[Y]" if r.function_match else "[N]"
         print(f"  [{i+1:3d}/{n}] {status} fn={fn} args={r.args_jaccard:.2f} "
@@ -322,8 +339,10 @@ def write_json(out_dir: Path, base_results: List[ExampleResult],
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", required=True, help="Path to base GGUF")
+    ap.add_argument("--base", required=False, default=None, help="Path to base GGUF")
     ap.add_argument("--ft",   default=None,  help="Path to fine-tuned GGUF (optional)")
+    ap.add_argument("--reuse-base", default=None,
+                    help="Reuse base[] rows from a previous results.json instead of re-running base")
     ap.add_argument("--n",    type=int, default=20,
                     help="Number of validation examples to run (default 20)")
     ap.add_argument("--val",  default=str(DEFAULT_VAL_PATH),
@@ -331,6 +350,11 @@ def main():
     ap.add_argument("--out",  default=str(ROOT_DIR / "docs" / "benchmark"),
                     help="Output directory for report.html + results.json")
     ap.add_argument("--n-ctx", type=int, default=2048)
+    ap.add_argument("--n-gpu-layers", type=int, default=0,
+                    help="Layers to offload to GPU (-1 = all). Q4_K_M E4B has ~50 layers; on 4GB VRAM try 28-32")
+    ap.add_argument("--prompt-format", choices=["production", "training"], default="production",
+                    help="production: system prompt + JSON fences (what the app sends). "
+                         "training: matches fmt_domain in the notebook (bare 'Motion report:\\n{json}')")
     args = ap.parse_args()
 
     val_path = Path(args.val)
@@ -341,11 +365,25 @@ def main():
     out_dir = Path(args.out)
     print(f"Output → {out_dir}")
 
-    base_results = evaluate_model(args.base, val_data, args.n_ctx, args.n)
+    if args.reuse_base:
+        prev = json.loads(Path(args.reuse_base).read_text(encoding="utf-8"))
+        rows = prev.get("base") or []
+        base_results = [ExampleResult(**r) for r in rows[: args.n]]
+        if not args.base:
+            args.base = prev.get("meta", {}).get("base_path", args.reuse_base)
+        print(f"Reused {len(base_results)} base rows from {args.reuse_base}")
+    else:
+        if not args.base:
+            raise SystemExit("--base is required unless --reuse-base is given")
+        base_results = evaluate_model(args.base, val_data, args.n_ctx, args.n,
+                                      n_gpu_layers=args.n_gpu_layers,
+                                      prompt_format=args.prompt_format)
 
     ft_results = None
     if args.ft:
-        ft_results = evaluate_model(args.ft, val_data, args.n_ctx, args.n)
+        ft_results = evaluate_model(args.ft, val_data, args.n_ctx, args.n,
+                                    n_gpu_layers=args.n_gpu_layers,
+                                    prompt_format=args.prompt_format)
 
     json_path = write_json(out_dir, base_results, ft_results)
     html_path = write_html(out_dir, base_results, ft_results,

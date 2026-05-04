@@ -1,0 +1,120 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeDetermineSystem.cmake:204 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.26200 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      .NET Framework ??MSBuild ? 17.14.23+b0019275e
+      撌脩???撱箇蔭??2026/5/4 銝? 05:59:11??
+      
+      蝭\xc2\x80暺?1 (?身?格?) 銝?撠? "D:\\GemmaFit\\native\\build_local\\CMakeFiles\\3.26.3\\CompilerIdCXX\\CompilerIdCXX.vcxproj"??
+      PrepareForBuild:
+        甇?撱箇??桅? "Debug\\"??
+        蝯??撓?箏歇??楊霅臬閮箸?撘?撠??隤日?撅扎\xc2\x80??\xc2\x80閰喟敦鞈?嚗?? https://aka.ms/cpp/structured-output??
+        甇?撱箇??桅? "Debug\\CompilerIdCXX.tlog\\"??
+      InitializeBuildStatus:
+        ?望??鈭?"AlwaysCreate"嚗?甇斗迤?典遣蝡?"Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+        甇?霈???唾? "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> D:\\GemmaFit\\native\\build_local\\CMakeFiles\\3.26.3\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        甇??芷瑼? "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+        甇?霈???唾? "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate"??
+      撠? "D:\\GemmaFit\\native\\build_local\\CMakeFiles\\3.26.3\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (?身?格?) 撱箇蔭摰???
+      
+      撱箇蔭????
+          0 ?郎??
+          0 ?隤?
+      
+      蝬??? 00:00:01.91
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        D:/GemmaFit/native/build_local/CMakeFiles/3.26.3/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Users/ken/miniconda3/Library/share/cmake-3.26/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "D:/GemmaFit/native/build_local/CMakeFiles/CMakeScratch/TryCompile-qnih4l"
+      binary: "D:/GemmaFit/native/build_local/CMakeFiles/CMakeScratch/TryCompile-qnih4l"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: D:/GemmaFit/native/build_local/CMakeFiles/CMakeScratch/TryCompile-qnih4l
+        
+        Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_6f329.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n && .NET Framework ??MSBuild ? 17.14.23+b0019275e
+        撌脩???撱箇蔭??2026/5/4 銝? 05:59:14??
+        
+        蝭\xc2\x80暺?1 (?身?格?) 銝?撠? "D:\\GemmaFit\\native\\build_local\\CMakeFiles\\CMakeScratch\\TryCompile-qnih4l\\cmTC_6f329.vcxproj"??
+        PrepareForBuild:
+          甇?撱箇??桅? "cmTC_6f329.dir\\Debug\\"??
+          蝯??撓?箏歇??楊霅臬閮箸?撘?撠??隤日?撅扎\xc2\x80??\xc2\x80閰喟敦鞈?嚗?? https://aka.ms/cpp/structured-output??
+          甇?撱箇??桅? "D:\\GemmaFit\\native\\build_local\\CMakeFiles\\CMakeScratch\\TryCompile-qnih4l\\Debug\\"??
+          甇?撱箇??桅? "cmTC_6f329.dir\\Debug\\cmTC_6f329.tlog\\"??
+        InitializeBuildStatus:
+          ?望??鈭?"AlwaysCreate"嚗?甇斗迤?典遣蝡?"cmTC_6f329.dir\\Debug\\cmTC_6f329.tlog\\unsuccessfulbuild"??
+          甇?霈???唾? "cmTC_6f329.dir\\Debug\\cmTC_6f329.tlog\\unsuccessfulbuild"??
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_6f329.dir\\Debug\\\\" /Fd"cmTC_6f329.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\ken\\miniconda3\\Library\\share\\cmake-3.26\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35221 for x64
+          Copyright (C) Microsoft Corporation.  ??甈???銝虫??????押\xc2\x80?
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_6f329.dir\\Debug\\\\" /Fd"cmTC_6f329.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\ken\\miniconda3\\Library\\share\\cmake-3.26\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\GemmaFit\\native\\build_local\\CMakeFiles\\CMakeScratch\\TryCompile-qnih4l\\Debug\\cmTC_6f329.exe" /INCREMENTAL /ILK:"cmTC_6f329.dir\\Debug\\cmTC_6f329.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/GemmaFit/native/build_local/CMakeFiles/CMakeScratch/TryCompile-qnih4l/Debug/cmTC_6f329.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/GemmaFit/native/build_local/CMakeFiles/CMakeScratch/TryCompile-qnih4l/Debug/cmTC_6f329.lib" /MACHINE:X64  /machine:x64 cmTC_6f329.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_6f329.vcxproj -> D:\\GemmaFit\\native\\build_local\\CMakeFiles\\CMakeScratch\\TryCompile-qnih4l\\Debug\\cmTC_6f329.exe
+        FinalizeBuildStatus:
+          甇??芷瑼? "cmTC_6f329.dir\\Debug\\cmTC_6f329.tlog\\unsuccessfulbuild"??
+          甇?霈???唾? "cmTC_6f329.dir\\Debug\\cmTC_6f329.tlog\\cmTC_6f329.lastbuildstate"??
+        撠? "D:\\GemmaFit\\native\\build_local\\CMakeFiles\\CMakeScratch\\TryCompile-qnih4l\\cmTC_6f329.vcxproj" (?身?格?) 撱箇蔭摰???
+        
+        撱箇蔭????
+            0 ?郎??
+            0 ?隤?
+        
+        蝬??? 00:00:01.22
+        
+      exitCode: 0
+...

@@ -33,6 +33,7 @@ data class PoseLandmark(
 
 data class PoseOverlayState(
     val landmarks: List<PoseLandmark> = List(33) { PoseLandmark(0.5f, 0.5f, 0f) },
+    val secondarySubjects: List<List<PoseLandmark>> = emptyList(),
     val trajectoryFrames: List<List<PoseLandmark>> = emptyList(),
     val connections: List<Pair<Int, Int>> = POSE_CONNECTIONS,
     val violationSegments: Set<Pair<Int, Int>> = emptySet(),
@@ -136,6 +137,9 @@ fun PoseOverlay(
             return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
         }
 
+        val hasActiveSubject = state.landmarks.size >= 33 &&
+                state.landmarks.any { it.visibility > 0.2f }
+
         // ── Dark vignette backdrop for contrast on bright camera ─────
         if (heroMode) {
             val cx = size.width / 2f
@@ -152,8 +156,34 @@ fun PoseOverlay(
         }
 
         // ── Bone connections ─────────────────────────────────────────
+        state.secondarySubjects.forEach { subject ->
+            for ((a, b) in connections) {
+                val la = subject.getOrNull(a)
+                val lb = subject.getOrNull(b)
+                if ((la?.visibility ?: 0f) > 0.2f && (lb?.visibility ?: 0f) > 0.2f) {
+                    drawLine(
+                        color = Color(0xFF94A3B8).copy(alpha = 0.24f),
+                        start = pointFrom(subject, a),
+                        end = pointFrom(subject, b),
+                        strokeWidth = 2f,
+                        cap = StrokeCap.Round,
+                    )
+                }
+            }
+            for (i in 0 until 33) {
+                val lm = subject.getOrNull(i) ?: continue
+                if (lm.visibility > 0.2f) {
+                    drawCircle(
+                        color = Color(0xFF94A3B8).copy(alpha = 0.26f),
+                        radius = 3.5f,
+                        center = pointFrom(subject, i),
+                    )
+                }
+            }
+        }
+
         val trajectoryJoints = listOf(15, 16, 23, 24, 25, 26, 27, 28)
-        if (state.trajectoryFrames.size > 1) {
+        if (hasActiveSubject && state.trajectoryFrames.size > 1) {
             trajectoryJoints.forEach { joint ->
                 state.trajectoryFrames.zipWithNext().forEachIndexed { idx, (from, to) ->
                     val fromLm = from.getOrNull(joint)
@@ -173,81 +203,85 @@ fun PoseOverlay(
             }
         }
 
-        for ((a, b) in connections) {
-            val la = state.landmarks.getOrNull(a)
-            val lb = state.landmarks.getOrNull(b)
-            val vis = if (la != null && lb != null) {
-                (la.visibility * lb.visibility).coerceIn(0f, 1f)
-            } else 0f
+        if (hasActiveSubject) {
+            for ((a, b) in connections) {
+                val la = state.landmarks.getOrNull(a)
+                val lb = state.landmarks.getOrNull(b)
+                val vis = if (la != null && lb != null) {
+                    (la.visibility * lb.visibility).coerceIn(0f, 1f)
+                } else 0f
 
-            val isViolation = state.violationSegments.contains(a to b) ||
-                    state.violationSegments.contains(b to a)
+                val isViolation = state.violationSegments.contains(a to b) ||
+                        state.violationSegments.contains(b to a)
 
-            val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
+                val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
 
-            if (isViolation) {
-                // Glow layer for violated bones
-                drawLine(
-                    color = SkeletonViolation.copy(alpha = alpha * 0.3f * pulseAlpha),
-                    start = point(a), end = point(b),
-                    strokeWidth = 12f, cap = StrokeCap.Round,
-                )
-                drawLine(
-                    color = SkeletonViolation.copy(alpha = alpha * 0.7f * pulseAlpha),
-                    start = point(a), end = point(b),
-                    strokeWidth = 6f, cap = StrokeCap.Round,
-                )
-            } else {
-                // Normal bone: soft outer + solid inner
-                drawLine(
-                    color = SkeletonNormal.copy(alpha = alpha * 0.15f),
-                    start = point(a), end = point(b),
-                    strokeWidth = 7f, cap = StrokeCap.Round,
-                )
-                drawLine(
-                    color = SkeletonNormal.copy(alpha = alpha * 0.85f),
-                    start = point(a), end = point(b),
-                    strokeWidth = 3f, cap = StrokeCap.Round,
-                )
+                if (isViolation) {
+                    // Glow layer for violated bones
+                    drawLine(
+                        color = SkeletonViolation.copy(alpha = alpha * 0.3f * pulseAlpha),
+                        start = point(a), end = point(b),
+                        strokeWidth = 12f, cap = StrokeCap.Round,
+                    )
+                    drawLine(
+                        color = SkeletonViolation.copy(alpha = alpha * 0.7f * pulseAlpha),
+                        start = point(a), end = point(b),
+                        strokeWidth = 6f, cap = StrokeCap.Round,
+                    )
+                } else {
+                    // Normal bone: soft outer + solid inner
+                    drawLine(
+                        color = SkeletonNormal.copy(alpha = alpha * 0.15f),
+                        start = point(a), end = point(b),
+                        strokeWidth = 7f, cap = StrokeCap.Round,
+                    )
+                    drawLine(
+                        color = SkeletonNormal.copy(alpha = alpha * 0.85f),
+                        start = point(a), end = point(b),
+                        strokeWidth = 3f, cap = StrokeCap.Round,
+                    )
+                }
             }
         }
 
         // ── Joints ───────────────────────────────────────────────────
-        for (i in 0 until 33) {
-            val lm = state.landmarks.getOrNull(i) ?: continue
-            val vis = if (state.showConfidenceFade) lm.visibility else 1f
-            val isViolation = state.violationJoints.contains(i)
-            val p = point(i)
-            val jointAlpha = vis * 0.8f + 0.2f
+        if (hasActiveSubject) {
+            for (i in 0 until 33) {
+                val lm = state.landmarks.getOrNull(i) ?: continue
+                val vis = if (state.showConfidenceFade) lm.visibility else 1f
+                val isViolation = state.violationJoints.contains(i)
+                val p = point(i)
+                val jointAlpha = vis * 0.8f + 0.2f
 
-            if (isViolation) {
-                // Pulsing outer glow
-                drawCircle(
-                    color = SkeletonViolation.copy(alpha = jointAlpha * 0.25f * pulseAlpha),
-                    radius = 22f, center = p,
-                )
-                // Ring
-                drawCircle(
-                    color = SkeletonViolation.copy(alpha = jointAlpha * 0.8f * pulseAlpha),
-                    radius = 14f, center = p,
-                    style = Stroke(width = 3f),
-                )
-                // Core
-                drawCircle(
-                    color = SkeletonViolation.copy(alpha = jointAlpha),
-                    radius = 8f, center = p,
-                )
-            } else {
-                // Outer glow
-                drawCircle(
-                    color = SkeletonNormal.copy(alpha = jointAlpha * 0.15f),
-                    radius = 12f, center = p,
-                )
-                // Core dot
-                drawCircle(
-                    color = SkeletonJoint.copy(alpha = jointAlpha),
-                    radius = 5f, center = p,
-                )
+                if (isViolation) {
+                    // Pulsing outer glow
+                    drawCircle(
+                        color = SkeletonViolation.copy(alpha = jointAlpha * 0.25f * pulseAlpha),
+                        radius = 22f, center = p,
+                    )
+                    // Ring
+                    drawCircle(
+                        color = SkeletonViolation.copy(alpha = jointAlpha * 0.8f * pulseAlpha),
+                        radius = 14f, center = p,
+                        style = Stroke(width = 3f),
+                    )
+                    // Core
+                    drawCircle(
+                        color = SkeletonViolation.copy(alpha = jointAlpha),
+                        radius = 8f, center = p,
+                    )
+                } else {
+                    // Outer glow
+                    drawCircle(
+                        color = SkeletonNormal.copy(alpha = jointAlpha * 0.15f),
+                        radius = 12f, center = p,
+                    )
+                    // Core dot
+                    drawCircle(
+                        color = SkeletonJoint.copy(alpha = jointAlpha),
+                        radius = 5f, center = p,
+                    )
+                }
             }
         }
 
@@ -268,13 +302,17 @@ fun PoseOverlay(
         }
 
         // ── Angle arcs ───────────────────────────────────────────────
-        for (arc in state.angleArcs) {
-            drawAngleArc(point(arc.vertexIndex), point(arc.armAIndex), point(arc.armBIndex), arc.label, arc.valueDeg)
+        if (hasActiveSubject) {
+            for (arc in state.angleArcs) {
+                drawAngleArc(point(arc.vertexIndex), point(arc.armAIndex), point(arc.armBIndex), arc.label, arc.valueDeg)
+            }
         }
 
         // ── Correction arrows ────────────────────────────────────────
-        for (arrow in state.correctionArrows) {
-            drawCorrectionArrow(point(arrow.fromIndex), point(arrow.toIndex))
+        if (hasActiveSubject) {
+            for (arrow in state.correctionArrows) {
+                drawCorrectionArrow(point(arrow.fromIndex), point(arrow.toIndex))
+            }
         }
     }
 }

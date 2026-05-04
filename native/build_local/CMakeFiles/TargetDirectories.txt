@@ -1,0 +1,10 @@
+D:/GemmaFit/native/build_local/CMakeFiles/gemmafit_kinematics.dir
+D:/GemmaFit/native/build_local/CMakeFiles/gemmafit_bridge.dir
+D:/GemmaFit/native/build_local/CMakeFiles/test_com_tracker.dir
+D:/GemmaFit/native/build_local/CMakeFiles/test_safety_monitor.dir
+D:/GemmaFit/native/build_local/CMakeFiles/test_kinematics_pipeline.dir
+D:/GemmaFit/native/build_local/CMakeFiles/test_motion_quality.dir
+D:/GemmaFit/native/build_local/CMakeFiles/test_subject_selector.dir
+D:/GemmaFit/native/build_local/CMakeFiles/RUN_TESTS.dir
+D:/GemmaFit/native/build_local/CMakeFiles/ALL_BUILD.dir
+D:/GemmaFit/native/build_local/CMakeFiles/ZERO_CHECK.dir

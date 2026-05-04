@@ -64,7 +64,7 @@ fun HudRow(
                     .width(100.dp)
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp))
-                    .background(Surface),
+                    .background(SurfaceColor),
             ) {
                 Box(
                     modifier = Modifier

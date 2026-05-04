@@ -18,6 +18,7 @@ add_library(gemmafit_kinematics
     kinematics/motion_quality.cpp
     kinematics/muscle_focus.cpp
     kinematics/confidence_gate.cpp
+    kinematics/subject_selector.cpp
 )
 
 target_include_directories(gemmafit_kinematics
@@ -81,6 +82,7 @@ add_kinematics_test(test_com_tracker)
 add_kinematics_test(test_safety_monitor)
 add_kinematics_test(test_kinematics_pipeline)
 add_kinematics_test(test_motion_quality)
+add_kinematics_test(test_subject_selector)
 # Tests for new modules — stub .cpp files to be added later:
 # add_kinematics_test(test_joint_angles)
 # add_kinematics_test(test_body_segments)

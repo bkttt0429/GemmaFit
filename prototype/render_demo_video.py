@@ -17,8 +17,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import re
+import subprocess
 import sys
+import time
 from collections import deque
 from pathlib import Path
 from typing import Deque, Optional
@@ -212,7 +216,10 @@ def _render_panel(panel_w: int, panel_h: int,
                   status: str, status_msg: str,
                   metrics: dict, gemma_msg: str,
                   flagged_count: int, total_frames: int,
-                  clean_pct: float) -> np.ndarray:
+                  clean_pct: float,
+                  processing_elapsed_s: float = 0.0,
+                  processing_fps: float = 0.0,
+                  coach_source: str = "mock_gemma_feedback") -> np.ndarray:
     panel = np.full((panel_h, panel_w, 3), COL_BG, dtype=np.uint8)
     pad = 24
     y = 36
@@ -275,6 +282,8 @@ def _render_panel(panel_w: int, panel_h: int,
     # Gemma message block
     _put_text(panel, "GemmaFit Coach", (pad, y),
               scale=0.55, color=COL_GREEN, thick=2)
+    _put_text(panel, coach_source.replace("_", " ")[:32],
+              (pad + 175, y), scale=0.42, color=COL_DIM)
     y += 26
     if gemma_msg:
         for line in _wrap_text(gemma_msg, panel_w - 2*pad, 0.55, 1)[:5]:
@@ -286,8 +295,10 @@ def _render_panel(panel_w: int, panel_h: int,
     cv2.line(panel, (pad, fy - 14), (panel_w - pad, fy - 14), (60, 60, 60), 1)
     _put_text(panel, f"Frame {flagged_count}/{total_frames}",
               (pad, fy + 6), scale=0.5, color=COL_DIM)
-    _put_text(panel, f"Clean: {clean_pct:.0f}%",
-              (pad, fy + 32), scale=0.6, color=COL_GREEN, thick=2)
+    _put_text(panel, f"Clean: {clean_pct:.0f}%  Processing: {processing_elapsed_s:.1f}s",
+              (pad, fy + 30), scale=0.5, color=COL_GREEN, thick=2)
+    _put_text(panel, f"Render FPS: {processing_fps:.1f}",
+              (pad + 250, fy + 6), scale=0.5, color=COL_DIM)
     _put_text(panel, "pose-based feedback · not medical diagnosis",
               (pad, panel_h - 14), scale=0.42, color=COL_DIM)
 
@@ -303,10 +314,181 @@ DEMO_VIDEOS = {
     'deadlift': 'deadlift_demo.webm',
 }
 
+DEFAULT_GEMMA_MODEL = ROOT_DIR / 'models' / 'gemmafit-q4_k_m.gguf'
+DEFAULT_LLAMA_CLI = Path(r'D:\llama.cpp-bin\cpu-x64\llama-cli.exe')
+
+_GEMMA_FORBIDDEN = (
+    'injury', 'injured', 'risk', 'strain', 'pain',
+    'diagnosis', 'medical', 'joint force', 'newtons', 'clinical',
+    '受傷', '風險', '疼痛', '醫療', '診斷', '關節受力',
+)
+
+
+def _round_value(value):
+    if isinstance(value, (int, float, np.floating)):
+        return round(float(value), 2)
+    return value
+
+
+def _report_payload(report) -> dict:
+    return {
+        'exercise': report.exercise,
+        'exercise_confidence': round(float(report.exercise_confidence), 2),
+        'phase': report.phase,
+        'rep': report.rep,
+        'metrics': {
+            k: _round_value(v)
+            for k, v in (report.metrics or {}).items()
+        },
+        'quality_flags': [
+            {
+                'id': f.id,
+                'status': f.status,
+                'rule': f.rule,
+                'joint': f.joint,
+                'value': _round_value(f.value),
+                'threshold': _round_value(f.threshold),
+                'evidence': f.evidence,
+                'reason': f.reason,
+            }
+            for f in (report.quality_flags or [])
+        ],
+        'not_applicable': [
+            {
+                'id': n.id,
+                'rule': n.rule,
+                'status': n.status,
+                'reason': n.reason,
+            }
+            for n in (report.not_applicable or [])
+        ],
+        'boundaries': [
+            'movement_quality_feedback_only',
+            'no_medical_diagnosis',
+            'no_injury_prediction',
+            'no_joint_force_estimation',
+        ],
+    }
+
+
+def _build_local_gemma_prompt(report) -> str:
+    payload = _report_payload(report)
+    return (
+        "Output final answer only. No reasoning, no markdown, no JSON.\n"
+        "You are GemmaFit, a local movement quality coach.\n"
+        "Use only the allowed evidence in this structured report.\n"
+        "Never estimate joint force. Never mention medical diagnosis, injury, "
+        "pain, strain, or risk.\n"
+        "If a judgment is listed as not_applicable, say it cannot be judged "
+        "from this view instead of inferring it.\n"
+        "Write exactly one concise coaching sentence under 22 words.\n"
+        "Structured report:\n"
+        f"{json.dumps(payload, ensure_ascii=False)}\n"
+        "Final answer:\n"
+    )
+
+
+def _extract_llama_answer(stdout: str) -> str:
+    text = stdout
+    marker = 'Final answer:'
+    if marker in text:
+        text = text.split(marker)[-1]
+    elif '\n> ' in text:
+        text = text.split('\n> ')[-1]
+    text = re.sub(r'\[ Prompt:[\s\S]*$', '', text)
+    text = text.replace('Exiting...', '')
+    lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip()
+        and not line.startswith('Loading model')
+        and not line.startswith('build')
+        and not line.startswith('model')
+        and not line.startswith('modalities')
+        and not line.startswith('available commands')
+        and not line.startswith('/')
+    ]
+    return ' '.join(lines).strip()
+
+
+def _safe_local_message(message: str, fallback: str) -> str:
+    if not message:
+        return fallback
+    lowered = message.lower()
+    if any(term in lowered for term in _GEMMA_FORBIDDEN):
+        return fallback
+    return message
+
+
+def _local_gemma_feedback(report, model_path: Path, llama_cli: Path,
+                          prompt_dir: Path, max_tokens: int = 80,
+                          timeout_s: int = 90) -> dict:
+    fallback = mock_gemma_feedback(report)
+    if not model_path.exists():
+        fallback['source'] = 'mock_gemma_feedback (local model missing)'
+        return fallback
+    if not llama_cli.exists():
+        fallback['source'] = 'mock_gemma_feedback (llama-cli missing)'
+        return fallback
+
+    prompt_dir.mkdir(parents=True, exist_ok=True)
+    prompt_path = prompt_dir / f'gemma_frame_{report.frame:06d}.txt'
+    prompt_path.write_text(_build_local_gemma_prompt(report), encoding='utf-8')
+
+    cmd = [
+        str(llama_cli),
+        '-m', str(model_path),
+        '-f', str(prompt_path),
+        '-c', '1024',
+        '-n', str(max_tokens),
+        '-t', '8',
+        '--temp', '0.1',
+        '--no-display-prompt',
+        '--reasoning', 'off',
+        '--reasoning-budget', '0',
+        '-st',
+        '--simple-io',
+        '--color', 'off',
+    ]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=str(prompt_dir),
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_s,
+            check=False,
+        )
+        if proc.returncode != 0:
+            fallback['source'] = f'mock_gemma_feedback (llama-cli exit {proc.returncode})'
+            fallback['error'] = proc.stderr[-500:]
+            return fallback
+        raw = _extract_llama_answer(proc.stdout)
+        msg = _safe_local_message(raw, fallback['message'])
+        return {
+            'source': 'local_gemma_llama_cli',
+            'frame': report.frame,
+            'level': fallback.get('level', 'ok'),
+            'message': msg,
+            'safety_note': 'Pose-based coaching only; not medical diagnosis.',
+            'model_path': model_path.name,
+        }
+    except Exception as exc:
+        fallback['source'] = f'mock_gemma_feedback (local gemma fallback: {type(exc).__name__})'
+        fallback['error'] = str(exc)
+        return fallback
+
 
 def render(video_path: Path, out_path: Path,
            panel_w: int = 480, max_height: int = 720,
-           trail_len: int = 18) -> None:
+           trail_len: int = 18,
+           coach: str = 'mock',
+           gemma_model: Path = DEFAULT_GEMMA_MODEL,
+           llama_cli: Path = DEFAULT_LLAMA_CLI,
+           gemma_interval: int = 60) -> None:
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open video: {video_path}")
@@ -324,6 +506,14 @@ def render(video_path: Path, out_path: Path,
 
     print(f"Source : {video_path.name}  {src_w}x{src_h} @ {fps:.1f}fps  ({total} frames)")
     print(f"Output : {out_path.name}  {out_w}x{out_h}")
+    print(f"Coach  : {coach}")
+    if coach == 'local-gemma':
+        print(f"Model  : {gemma_model}")
+        print(f"Runtime: {llama_cli}")
+    start_time = time.perf_counter()
+    gemma_prompt_dir = out_path.parent / f'{out_path.stem}_gemma_prompts'
+    cached_gemma = None
+    cached_gemma_key = None
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -394,7 +584,31 @@ def render(video_path: Path, out_path: Path,
 
         report = build_report(frame_idx, ex_res, phase,
                               rep_ctr.rep_count, metrics, qf, na)
-        gemma  = mock_gemma_feedback(report)
+        top_flag = None
+        if qf:
+            _prio = {STATUS_CRITICAL: 0, STATUS_WARNING: 1,
+                     STATUS_MONITOR: 2, STATUS_OK: 99}
+            top_flag = sorted(qf, key=lambda f: _prio.get(f.status, 99))[0]
+        gemma_key = (
+            ex_res.exercise,
+            phase,
+            rep_ctr.rep_count,
+            top_flag.id if top_flag else 'none',
+            top_flag.status if top_flag else STATUS_OK,
+            frame_idx // max(1, gemma_interval),
+        )
+        if coach == 'local-gemma':
+            should_refresh = cached_gemma is None or gemma_key != cached_gemma_key
+            if should_refresh:
+                cached_gemma = _local_gemma_feedback(
+                    report, Path(gemma_model), Path(llama_cli), gemma_prompt_dir)
+                cached_gemma_key = gemma_key
+                print(f"    local-gemma frame={frame_idx} source={cached_gemma.get('source')} "
+                      f"msg={cached_gemma.get('message', '')[:70]}",
+                      flush=True)
+            gemma = cached_gemma
+        else:
+            gemma = mock_gemma_feedback(report)
 
         # Aggregate worst-status for the frame
         worst_status = STATUS_OK
@@ -429,12 +643,16 @@ def render(video_path: Path, out_path: Path,
                        flagged=flagged, com=com, trails=trails)
 
         clean_pct = 100.0 * n_clean / max(1, n_total)
+        elapsed_now = time.perf_counter() - start_time
+        render_fps = n_total / max(elapsed_now, 1e-6)
         panel = _render_panel(panel_w, out_h,
                               ex_res.exercise, ex_res.exercise_confidence,
                               rep_ctr.rep_count, phase,
                               worst_status, worst_msg,
                               metrics, gemma['message'],
-                              n_total, total, clean_pct)
+                              n_total, total, clean_pct,
+                              elapsed_now, render_fps,
+                              gemma.get('source', coach))
         canvas[0:out_h, vid_w:vid_w+panel_w] = panel
 
         writer.write(canvas)
@@ -451,8 +669,11 @@ def render(video_path: Path, out_path: Path,
     cap.release()
     pose.close()
 
+    elapsed_total = time.perf_counter() - start_time
+    render_fps_total = frame_idx / max(elapsed_total, 1e-6)
     final_clean = 100.0 * n_clean / max(1, n_total)
     print(f"\nDone: {frame_idx} frames written")
+    print(f"Processing time: {elapsed_total:.2f}s  ({render_fps_total:.2f} render fps)")
     print(f"Clean rate: {final_clean:.0f}%")
     print(f"Output:     {out_path}")
 
@@ -465,6 +686,14 @@ def main():
     ap.add_argument('--out', help='Output mp4 path.')
     ap.add_argument('--max-height', type=int, default=720)
     ap.add_argument('--panel-width', type=int, default=480)
+    ap.add_argument('--coach', choices=['mock', 'local-gemma'], default='mock',
+                    help='Coaching text source. local-gemma uses llama-cli + GGUF.')
+    ap.add_argument('--gemma-model', default=str(DEFAULT_GEMMA_MODEL),
+                    help='Path to trained Gemma GGUF for --coach local-gemma.')
+    ap.add_argument('--llama-cli', default=str(DEFAULT_LLAMA_CLI),
+                    help='Path to llama-cli executable for --coach local-gemma.')
+    ap.add_argument('--gemma-interval', type=int, default=60,
+                    help='Refresh local Gemma feedback every N frames.')
     args = ap.parse_args()
 
     if args.input:
@@ -483,7 +712,11 @@ def main():
 
     render(in_path, out_path,
            panel_w=args.panel_width,
-           max_height=args.max_height)
+           max_height=args.max_height,
+           coach=args.coach,
+           gemma_model=Path(args.gemma_model),
+           llama_cli=Path(args.llama_cli),
+           gemma_interval=args.gemma_interval)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,10 @@
+D:\GemmaFit\native\kinematics\com_tracker.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\com_tracker.obj
+D:\GemmaFit\native\kinematics\joint_angles.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\joint_angles.obj
+D:\GemmaFit\native\kinematics\body_segments.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\body_segments.obj
+D:\GemmaFit\native\kinematics\symmetry.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\symmetry.obj
+D:\GemmaFit\native\kinematics\safety_monitor.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\safety_monitor.obj
+D:\GemmaFit\native\kinematics\movement_classifier.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\movement_classifier.obj
+D:\GemmaFit\native\kinematics\motion_quality.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\motion_quality.obj
+D:\GemmaFit\native\kinematics\muscle_focus.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\muscle_focus.obj
+D:\GemmaFit\native\kinematics\confidence_gate.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\confidence_gate.obj
+D:\GemmaFit\native\kinematics\subject_selector.cpp;D:\GemmaFit\native\build_local\gemmafit_kinematics.dir\Release\subject_selector.obj

@@ -1,87 +1,87 @@
 [
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\com_tracker.cpp.o -c Z:\\native\\kinematics\\com_tracker.cpp",
-  "file": "Z:\\native\\kinematics\\com_tracker.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\com_tracker.cpp.o -c D:\\GemmaFit\\native\\kinematics\\com_tracker.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\com_tracker.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\joint_angles.cpp.o -c Z:\\native\\kinematics\\joint_angles.cpp",
-  "file": "Z:\\native\\kinematics\\joint_angles.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\joint_angles.cpp.o -c D:\\GemmaFit\\native\\kinematics\\joint_angles.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\joint_angles.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\body_segments.cpp.o -c Z:\\native\\kinematics\\body_segments.cpp",
-  "file": "Z:\\native\\kinematics\\body_segments.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\body_segments.cpp.o -c D:\\GemmaFit\\native\\kinematics\\body_segments.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\body_segments.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\symmetry.cpp.o -c Z:\\native\\kinematics\\symmetry.cpp",
-  "file": "Z:\\native\\kinematics\\symmetry.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\symmetry.cpp.o -c D:\\GemmaFit\\native\\kinematics\\symmetry.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\symmetry.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\safety_monitor.cpp.o -c Z:\\native\\kinematics\\safety_monitor.cpp",
-  "file": "Z:\\native\\kinematics\\safety_monitor.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\safety_monitor.cpp.o -c D:\\GemmaFit\\native\\kinematics\\safety_monitor.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\safety_monitor.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\movement_classifier.cpp.o -c Z:\\native\\kinematics\\movement_classifier.cpp",
-  "file": "Z:\\native\\kinematics\\movement_classifier.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\movement_classifier.cpp.o -c D:\\GemmaFit\\native\\kinematics\\movement_classifier.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\movement_classifier.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\motion_quality.cpp.o -c Z:\\native\\kinematics\\motion_quality.cpp",
-  "file": "Z:\\native\\kinematics\\motion_quality.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\motion_quality.cpp.o -c D:\\GemmaFit\\native\\kinematics\\motion_quality.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\motion_quality.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\muscle_focus.cpp.o -c Z:\\native\\kinematics\\muscle_focus.cpp",
-  "file": "Z:\\native\\kinematics\\muscle_focus.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\muscle_focus.cpp.o -c D:\\GemmaFit\\native\\kinematics\\muscle_focus.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\muscle_focus.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\confidence_gate.cpp.o -c Z:\\native\\kinematics\\confidence_gate.cpp",
-  "file": "Z:\\native\\kinematics\\confidence_gate.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_kinematics.dir\\kinematics\\confidence_gate.cpp.o -c D:\\GemmaFit\\native\\kinematics\\confidence_gate.cpp",
+  "file": "D:\\GemmaFit\\native\\kinematics\\confidence_gate.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -IZ:/native/bridge -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\kinematics_bridge.cpp.o -c Z:\\native\\bridge\\kinematics_bridge.cpp",
-  "file": "Z:\\native\\bridge\\kinematics_bridge.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -ID:/GemmaFit/native/bridge -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\kinematics_bridge.cpp.o -c D:\\GemmaFit\\native\\bridge\\kinematics_bridge.cpp",
+  "file": "D:\\GemmaFit\\native\\bridge\\kinematics_bridge.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -IZ:/native/bridge -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\llm_bridge.cpp.o -c Z:\\native\\bridge\\llm_bridge.cpp",
-  "file": "Z:\\native\\bridge\\llm_bridge.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -ID:/GemmaFit/native/bridge -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\llm_bridge.cpp.o -c D:\\GemmaFit\\native\\bridge\\llm_bridge.cpp",
+  "file": "D:\\GemmaFit\\native\\bridge\\llm_bridge.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -IZ:/native/bridge -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\kinematics_bridge_jni.cpp.o -c Z:\\native\\bridge\\kinematics_bridge_jni.cpp",
-  "file": "Z:\\native\\bridge\\kinematics_bridge_jni.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -ID:/GemmaFit/native/bridge -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\kinematics_bridge_jni.cpp.o -c D:\\GemmaFit\\native\\bridge\\kinematics_bridge_jni.cpp",
+  "file": "D:\\GemmaFit\\native\\bridge\\kinematics_bridge_jni.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -IZ:/native/bridge -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\llm_bridge_jni.cpp.o -c Z:\\native\\bridge\\llm_bridge_jni.cpp",
-  "file": "Z:\\native\\bridge\\llm_bridge_jni.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dgemmafit_bridge_EXPORTS -ID:/GemmaFit/native/bridge -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIC -std=c++17 -o CMakeFiles\\gemmafit_bridge.dir\\bridge\\llm_bridge_jni.cpp.o -c D:\\GemmaFit\\native\\bridge\\llm_bridge_jni.cpp",
+  "file": "D:\\GemmaFit\\native\\bridge\\llm_bridge_jni.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_com_tracker.dir\\tests\\test_com_tracker.cpp.o -c Z:\\native\\tests\\test_com_tracker.cpp",
-  "file": "Z:\\native\\tests\\test_com_tracker.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_com_tracker.dir\\tests\\test_com_tracker.cpp.o -c D:\\GemmaFit\\native\\tests\\test_com_tracker.cpp",
+  "file": "D:\\GemmaFit\\native\\tests\\test_com_tracker.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_safety_monitor.dir\\tests\\test_safety_monitor.cpp.o -c Z:\\native\\tests\\test_safety_monitor.cpp",
-  "file": "Z:\\native\\tests\\test_safety_monitor.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_safety_monitor.dir\\tests\\test_safety_monitor.cpp.o -c D:\\GemmaFit\\native\\tests\\test_safety_monitor.cpp",
+  "file": "D:\\GemmaFit\\native\\tests\\test_safety_monitor.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_kinematics_pipeline.dir\\tests\\test_kinematics_pipeline.cpp.o -c Z:\\native\\tests\\test_kinematics_pipeline.cpp",
-  "file": "Z:\\native\\tests\\test_kinematics_pipeline.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_kinematics_pipeline.dir\\tests\\test_kinematics_pipeline.cpp.o -c D:\\GemmaFit\\native\\tests\\test_kinematics_pipeline.cpp",
+  "file": "D:\\GemmaFit\\native\\tests\\test_kinematics_pipeline.cpp"
 },
 {
-  "directory": "Z:/app/.cxx/Debug/2s1q0451/x86_64",
-  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IZ:/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_motion_quality.dir\\tests\\test_motion_quality.cpp.o -c Z:\\native\\tests\\test_motion_quality.cpp",
-  "file": "Z:\\native\\tests\\test_motion_quality.cpp"
+  "directory": "D:/GemmaFit/app/.cxx/Debug/5a5h2z55/x86_64",
+  "command": "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\ndk\\30.0.14904198\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android26 --sysroot=C:/Users/ken/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/sysroot -ID:/GemmaFit/native/kinematics -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O3 -DANDROID -fno-limit-debug-info  -fPIE -std=c++17 -o CMakeFiles\\test_motion_quality.dir\\tests\\test_motion_quality.cpp.o -c D:\\GemmaFit\\native\\tests\\test_motion_quality.cpp",
+  "file": "D:\\GemmaFit\\native\\tests\\test_motion_quality.cpp"
 }
 ]

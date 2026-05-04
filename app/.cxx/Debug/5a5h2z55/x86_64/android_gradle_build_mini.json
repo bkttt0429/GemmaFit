@@ -1,56 +1,56 @@
 {
   "buildFiles": [
-    "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\native\\CMakeLists.txt"
+    "D:\\GemmaFit\\native\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "-C",
-      "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64",
+      "D:\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "C:\\Users\\ken\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
     "-C",
-    "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64",
+    "D:\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
     "gemmafit_kinematics::@6890427a1f51a3e7e1df": {
       "artifactName": "gemmafit_kinematics",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64\\libgemmafit_kinematics.a",
+      "output": "D:\\GemmaFit\\app\\.cxx\\Debug\\5a5h2z55\\x86_64\\libgemmafit_kinematics.a",
       "runtimeFiles": []
     },
     "test_kinematics_pipeline::@6890427a1f51a3e7e1df": {
       "artifactName": "test_kinematics_pipeline",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_kinematics_pipeline",
+      "output": "D:\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_kinematics_pipeline",
       "runtimeFiles": []
     },
     "gemmafit_bridge::@6890427a1f51a3e7e1df": {
       "artifactName": "gemmafit_bridge",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\libgemmafit_bridge.so",
+      "output": "D:\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\libgemmafit_bridge.so",
       "runtimeFiles": []
     },
     "test_com_tracker::@6890427a1f51a3e7e1df": {
       "artifactName": "test_com_tracker",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_com_tracker",
+      "output": "D:\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_com_tracker",
       "runtimeFiles": []
     },
     "test_motion_quality::@6890427a1f51a3e7e1df": {
       "artifactName": "test_motion_quality",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_motion_quality",
+      "output": "D:\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_motion_quality",
       "runtimeFiles": []
     },
     "test_safety_monitor::@6890427a1f51a3e7e1df": {
       "artifactName": "test_safety_monitor",
       "abi": "x86_64",
-      "output": "C:\\Users\\ken\\OneDrive\\桌面\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_safety_monitor",
+      "output": "D:\\GemmaFit\\app\\build\\intermediates\\cxx\\Debug\\5a5h2z55\\obj\\x86_64\\test_safety_monitor",
       "runtimeFiles": []
     }
   }

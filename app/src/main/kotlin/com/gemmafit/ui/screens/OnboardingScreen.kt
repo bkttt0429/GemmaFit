@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.gemmafit.ui.theme.Background
+import com.gemmafit.ui.theme.BackgroundGradientEnd
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.TextPrimary
@@ -84,7 +86,15 @@ fun OnboardingScreen(onComplete: () -> Unit) {
         ),
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Background)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Background, BackgroundGradientEnd),
+                ),
+            ),
+    ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

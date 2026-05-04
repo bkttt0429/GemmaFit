@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemmafit.ui.theme.PurpleHighlight
-import com.gemmafit.ui.theme.Surface
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextHint
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
@@ -45,7 +45,7 @@ fun MusclePanel(
 
     Column(
         modifier = modifier
-            .background(Surface, RoundedCornerShape(8.dp))
+            .background(SurfaceColor, RoundedCornerShape(8.dp))
             .clickable { expanded = !expanded }
             .padding(12.dp),
     ) {

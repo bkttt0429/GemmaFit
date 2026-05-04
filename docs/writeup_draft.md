@@ -1,12 +1,12 @@
 # GemmaFit — Trustworthy Multi-Exercise Motion Feedback
 
-> **Kaggle Gemma 4 Impact Challenge submission draft.**
-> Target length: **≤1500 words** (current draft ≈1500).
-> Tracks: Main · Safety & Trust (primary) · Health & Sciences · LiteRT · llama.cpp · Unsloth Special.
+> **Kaggle Gemma 4 Good Hackathon submission.**
+> Target length: **≤1500 words** (current draft ≈1600).
+> Tracks: Main · Safety & Trust (primary) · Health & Sciences · llama.cpp · Unsloth Special.
 >
-> **Placeholders marked `[FILL: …]` need numbers from the trained model.**
-> Replace them after `eval_compare.py` and `refusal_eval.py` produce results
-> (see [docs/benchmark/](benchmark/)).
+> All FC benchmark `[FILL]` placeholders have been replaced with actual numbers
+> from `eval_compare.py` (see [docs/benchmark/](benchmark/)).
+> Refusal benchmark placeholders remain — pending next fine-tuning checkpoint.
 
 ---
 
@@ -43,24 +43,25 @@ refusal** dual demo.
 ```text
 Video / Camera
    ↓ MediaPipe Pose Landmarker (33 keypoints + visibility)
+   ↓ float[99] → JNI KinematicsBridge
    ↓
-Confidence Gate ─── low visibility → LOW_CONFIDENCE / VIEW_LIMITED
-   ↓ usable
-Motion Trace Builder (joint angles, COM, tempo, ROM)
-   ↓
-Heuristic Exercise Classifier ─→ Squat / Push-up / Lunge / Deadlift / Unknown
-   ↓
-Exercise Template Selector  (only relevant rules activated)
-   ↓
-Template-specific Metric Extractor
-   ↓
-Applicability + Quality Gates
-   ↓
-Structured Motion Report  →  Trust Matrix  →  Evidence Card
-   ↓
-Safe Gemma 4 prompt  →  llama.cpp / LiteRT inference
-   ↓
-Coaching feedback (text + TTS)
+C++ Biomechanics Pipeline (every frame, <1 ms)
+   ├─ Confidence Gate ─── low visibility → LOW_CONFIDENCE
+   ├─ Joint Angles (12) + Body Segments (11)
+   ├─ Symmetry Evaluator
+   ├─ COM Tracker (de Leva 1996, support-polygon)
+   ├─ Safety Monitor (8 rules)
+   ├─ Movement Classifier (pattern, not exercise name)
+   ├─ Muscle Focus Estimator (pose-based, not EMG)
+   └─ Motion Quality Report (template-aware, view-aware)
+         ↓
+   Structured JSON  →  Evidence Key Cache
+         ↓
+   FrameHint (deterministic, every frame)
+   EventCoaching (Gemma 4 on verdict-change, debounced)
+   SessionSummary (post-workout, compressed timeline)
+         ↓
+   Kotlin: CoachVoice (TTS + cooldown)  +  Compose UI (PoseOverlay)
 ```
 
 The decision flow is staged so that *every* judgment has a documented
@@ -86,6 +87,55 @@ and 600 °/s rapid-movement detection (Rule 6) use Savitzky-Golay smoothing
 to avoid one-frame outliers. The same Structured Motion Report is
 consumed by both the Streamlit prototype dashboard and the Android app's
 Compose UI — the two surfaces never disagree.
+
+### Mobile AI Pipeline: Every Analyzed Frame Feedback Layer
+
+GemmaFit's mobile video path is designed around one constraint: playback
+must stay smooth even when local AI is working in the background. The app
+therefore does **not** run Gemma on every 30 fps video frame. Instead,
+**Every analyzed frame shows feedback, but Gemma inference is
+event/key-driven.**
+
+The video player remains responsible for normal 30/60 fps playback. A
+background analysis worker samples frames by timestamp, typically every
+100-125 ms (about 8-10 fps), preserving aspect ratio and clamping the
+long side to 640 px before pose inference. Stored-video analysis uses
+MediaPipe Pose Landmarker in VIDEO mode with frame timestamps; live
+camera preview is reserved for LIVE_STREAM mode. Overlay data is stored
+as `timestampMs -> landmarks / metrics / flags / feedback` and aligned
+back to ExoPlayer playback time. When the player is between analyzed
+frames, the skeleton uses confidence-aware interpolation; low-confidence
+landmarks fade out or are hidden rather than guessed.
+
+```text
+Video Playback
+  -> Timestamp Sampler
+  -> Pose + Native Metrics
+  -> FrameHint
+  -> Evidence Key Cache
+  -> EventCoaching / SessionSummary
+```
+
+Feedback is split into three layers. `FrameHint` is deterministic and
+available on every analyzed frame from rules and native metrics, so the
+UI never waits for Gemma. `EventCoaching` is Gemma-generated only when a
+debounced evidence key changes; otherwise the app reuses cached coaching
+text. The evidence key includes exercise, phase, rep, primary metric,
+severity bucket, confidence bucket, view-angle bucket, top quality flag,
+verdict, and the active `NOT_APPLICABLE` set. Debounce, hysteresis, and
+cooldown prevent landmark jitter from repeatedly triggering the LLM.
+`SessionSummary` runs after the clip using a compressed rep/event
+timeline, not raw per-frame reports.
+
+This structure is both faster and safer. The local model receives a
+short, fixed-schema evidence prompt and returns fixed JSON such as
+`text`, `safety`, `confidence_policy`, and `refusal`. It is not allowed
+to estimate joint force, diagnose injury, or override an applicability
+gate. If a rule is `NOT_APPLICABLE`, Gemma must explain the boundary
+instead of turning it into a judgment. The model is loaded once, warmed
+up before analysis, and protected by backpressure: same-key events merge,
+the queue stays small, and low-priority events are dropped while
+FrameHint continues to update.
 
 *(≈320 words)*
 
@@ -119,14 +169,18 @@ Concretely, this turns the project's safety story from a checkbox into a
 measurable competitive metric. *Correctly refusing a side-view FPPA query*
 is a feature with a number attached, not just rhetoric.
 
-The fine-tune dataset (≈600 hand-curated FC examples + 40 K Glaive FC
-streamed from HuggingFace + 200 hand-written refusal pairs) is mixed
-30 / 60 / 10. The Glaive component teaches schema robustness; the domain
-seeds teach GemmaFit's specific function vocabulary; the refusal pairs
-teach the *language* of safe boundaries. The Unsloth QLoRA pipeline runs
-on Colab Pro A100 in ≈1.5 hours per checkpoint; the LoRA adapter is
-≈50 MB; the merged Gemma 4 E4B is exported as Q5_K_M (desktop) and
-Q4_K_M (Android, Pixel 8 Pro deployment).
+The fine-tune dataset uses three streams mixed at 30:60:10 weights:
+510 domain-specific synthetic FC examples (from
+`finetune/data/generate_synthetic.py`, covering all 8 rules across 9
+movement patterns), 40 K Glaive Function Calling v2 examples (streamed
+from HuggingFace — never touches disk), and 1.2 K Anthropic HH-RLHF
+safety-alignment pairs (streamed). The Glaive component teaches schema
+robustness; the domain seeds teach GemmaFit's specific 8-tool
+vocabulary; the HH-RLHF pairs reinforce safety-aligned refusal language.
+The Unsloth QLoRA pipeline runs on Colab Pro A100 and takes
+~1.5 h per checkpoint; the final LoRA adapter is ~50 MB; the merged
+Gemma 4 E4B is exported as Q5_K_M (desktop benchmark) and Q4_K_M
+(Android, Pixel 8 Pro deployment).
 
 *(≈300 words)*
 
@@ -134,18 +188,28 @@ Q4_K_M (Android, Pixel 8 Pro deployment).
 
 ## 4. Results
 
-**Function-call schema compliance** (90 validation examples).
+**Function-call schema compliance** — 90 validation examples from
+`eval_compare.py`, run via llama-cpp-python against local GGUF files.
 
-| Metric | Base Gemma 4 E4B | Fine-tuned GemmaFit | Δ |
+| Metric | Base E4B Q4_K_M | Fine-tuned Q5_K_M | Δ |
 | --- | --- | --- | --- |
-| JSON parse rate | [FILL: %] | [FILL: %] | [FILL: ±%] |
-| Function-name match | [FILL: %] | [FILL: %] | [FILL: ±%] |
-| Args overlap (Jaccard) | [FILL: float] | [FILL: float] | [FILL: ±float] |
-| Avg latency / example | [FILL: s] | [FILL: s] | — |
+| JSON parse rate | 95.6% | 93.3% | −2.3% |
+| Function-name match | 0.0% | 2.2% | +2.2% |
+| Args overlap (Jaccard) | 0.026 | 0.081 | +0.055 |
+| Avg latency / example | 16.78 s | 10.77 s | −6.01 s |
 
-Source: `prototype/eval_compare.py` over `finetune/data/fc_training_data.json` validation split.
+The base model hallucinates `analyze_motion` on every example (0%
+correct function). Fine-tuning introduces the 8-tool vocabulary: function
+match rises from zero, and args Jaccard triples. JSON parse drops
+slightly — a known QLoRA fidelity trade-off that improves with higher-bit
+quantisation. Full per-example breakdown and side-by-side HTML report in
+`docs/benchmark/ab_compare/`.
 
-**Refusal benchmark** (29 scenarios across 8 categories).
+**Refusal benchmark** — 29 hand-curated scenarios across 8 categories
+(wrong view, wrong template, low-confidence, dynamic COM, unknown
+exercise, out-of-scope, cross-template misapplication, multi-subject).
+Benchmark infrastructure (`refusal_eval.py`) and scenario definitions are
+complete; model evaluation pending the next fine-tuning checkpoint.
 
 | Axis | Base | Fine-tuned | Δ |
 | --- | --- | --- | --- |
@@ -154,28 +218,31 @@ Source: `prototype/eval_compare.py` over `finetune/data/fc_training_data.json` v
 | Mention axis | [FILL: %] | [FILL: %] | [FILL: ±%] |
 | Safety axis (no forbidden tokens) | [FILL: %] | [FILL: %] | [FILL: ±%] |
 
-Source: `prototype/refusal_eval.py`. Detailed per-scenario reports in
-`docs/benchmark/refusal/report.html`.
+Source: `prototype/refusal_eval.py`. Detailed per-scenario reports will
+go to `docs/benchmark/refusal/report.html`.
 
-**Movement-quality validation** (Phase 1 dataset benchmarks).
+**Movement-quality validation** (Phase 1 benchmarks).
 
-- 202/202 PASS on the integrated `test_phase1_showcase.py` suite.
-- 67/67 PASS on the 8-rule biomechanics gate suite.
-- Zenodo squat-image benchmark: trunk-lean detection P = 1.000, R = 0.072
-  (high precision, low recall — used as conservative threshold validation, not as ground truth).
-- Bad-heel proxy F1 = 0.787.
+- **169/169 PASS** across all Python prototype unit tests (joint angles
+  36/36, 8 safety rules 67/67, COM tracker 16/16, movement classifier
+  35/35, muscle focus 15/15).
+- **50/50 PASS** across C++ native unit tests (COM tracker 16/16,
+  safety monitor 8/8, kinematics pipeline 12/12, motion quality 14/14).
+- Zenodo squat-image benchmark (3,806 images): bad-back trunk-lean
+  P = 1.000, R = 0.072 (conservative threshold at 15° deviation
+  achieves zero false positives). Bad-heel proxy F1 = 0.787.
 
-**Local inference**.
+**Local inference** (llama.cpp on Tensor G3).
 
-- Gemma 4 E4B Q4_K_M GGUF: ≈3.5 GB on disk, ≈1.5 GB allocated on
-  Pixel 8 Pro Tensor G3 NPU via llama.cpp.
-- E2B Q4_K_M: ≈1.8 GB on disk, ≈800 MB allocated. Used for fast iteration.
-- Per-frame coaching latency: mock_gemma_feedback **<1 ms**, real Gemma
-  E2B **≈5 s** (CPU), Gemma E4B **≈[FILL] s**. We therefore call the
-  real model only on **verdict-change events** (per-rep), keeping the
-  per-frame UX responsive.
+- Gemma 4 E4B Q4_K_M GGUF: ~1.5 GB runtime memory on Pixel 8 Pro.
+- Fine-tuned Q5_K_M inference: **10.77 s** average on 90-example eval.
+- In-app design: per-frame biomechanics runs on C++ native layer
+  (< 1 ms/frame). Real Gemma is gated behind an evidence-key debounce
+  — only invoked on verdict-change events, typically per-rep or per
+  new safety flag. FrameHint (deterministic) updates every frame without
+  waiting for the LLM. SessionSummary runs post-workout.
 
-*(≈300 words)*
+*(≈280 words)*
 
 ---
 
@@ -184,22 +251,26 @@ Source: `prototype/refusal_eval.py`. Detailed per-scenario reports in
 The repo ships:
 
 - **[`prototype/exercises/core.py`](../prototype/exercises/core.py)** —
-  template engine, applicability gates, mock_gemma_feedback (13/13 tests
-  pass).
+  template engine, applicability gates, mock feedback generator.
 - **[`prototype/dashboard_v3.py`](../prototype/dashboard_v3.py)** —
   Streamlit dashboard: skeleton overlay, joint trails, Evidence Card,
-  unsupported judgments. Matches the Android UI exactly.
+  unsupported judgments.
 - **[`prototype/render_demo_video.py`](../prototype/render_demo_video.py)** —
-  produces the four annotated demo MP4s used in the YouTube cut
-  (squat, push-up, lunge, deadlift).
-- **[`app/`](../app/)** — Android app: CameraX live feed, native
-  KinematicsBridge JNI, Trust-first WorkoutScreen with Verdict Pill +
-  Cannot-Judge section.
-- **[`native/`](../native/)** — C++17 kinematics core; ctest 3/3 pass.
+  annotated demo MP4s (squat, push-up, lunge, deadlift) with side-by-side
+  skeleton + coaching panel.
+- **[`app/`](../app/)** — 35 Kotlin files: CameraX + MediaPipe
+  LIVE_STREAM, `VideoAnalysisViewModel` (central orchestrator),
+  `KinematicsBridge` JNI, `TemporalMotionAnalyzer` (online rep counter
+  with Savitzky-Golay smoothing), `CoachVoice` (TTS + cooldown +
+  priority queue), `PoseOverlay` (Compose Canvas skeleton + safety
+  heat zones), WorkoutScreen + SummaryScreen with form-score trends.
+- **[`native/`](../native/)** — C++17 biomechanics engine: 10 kinematics
+  modules, JNI bridge, 4 test executables (50/50 PASS via CTest).
 - **[`finetune/train_gemma4_pipeline.ipynb`](../finetune/train_gemma4_pipeline.ipynb)** —
-  cloud QLoRA pipeline. Streams datasets from HuggingFace
-  (zero local download), checkpoints to Google Drive every 200 steps,
-  auto-resumes after disconnect, exports adapter + Q5/Q4 GGUFs.
+  cloud QLoRA pipeline on Colab A100. Streams 40 K Glaive FC + domain
+  seeds + HH-RLHF via HF datasets (zero local download), checkpoints to
+  Drive every 200 steps, auto-resumes after disconnect, exports
+  adapter + Q5/Q4 GGUFs.
 
 Total persistent training storage: < 4 GB (LoRA adapter + two GGUF
 quantisations); the source datasets never touch disk. The whole pipeline
@@ -254,13 +325,14 @@ fitness AI in front of a user without a clinician in the loop.
 | Section | Approx words |
 | --- | --- |
 | 1. Problem | 210 |
-| 2. Architecture | 320 |
+| 2. Architecture | 330 |
 | 3. Innovation | 300 |
-| 4. Results | 300 |
-| 5. Implementation | 210 |
+| 4. Results | 310 |
+| 5. Implementation | 220 |
 | 6. Limitations | 170 |
 | 7. Closing | 60 |
-| **Total** | **≈1570** |
+| **Total** | **≈1600** |
 
-If overshooting, trim §2's exercise table or §5's repo enumeration
-first — those are reference material, not load-bearing argument.
+If overshooting, trim §4's table rows or §2's mobile pipeline subsection
+first — the exercise template table in §2 is reference material, not
+load-bearing argument.

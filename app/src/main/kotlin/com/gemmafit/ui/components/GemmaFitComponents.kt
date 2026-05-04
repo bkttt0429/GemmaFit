@@ -33,7 +33,7 @@ import com.gemmafit.ui.theme.Red
 import com.gemmafit.ui.theme.ScoreHigh
 import com.gemmafit.ui.theme.ScoreLow
 import com.gemmafit.ui.theme.ScoreMid
-import com.gemmafit.ui.theme.Surface as SurfaceColor
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextHint
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary

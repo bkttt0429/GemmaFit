@@ -7,6 +7,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 val GemmaFitTypography = Typography(
+    // Display: largest numbers (rep counter, hero metrics)
+    displayLarge = TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Bold,
+        fontSize = 48.sp,
+        letterSpacing = (-1).sp,
+        color = TextPrimary,
+    ),
+    displayMedium = TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Bold,
+        fontSize = 36.sp,
+        letterSpacing = (-0.5).sp,
+        color = TextPrimary,
+    ),
     // HUD
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,

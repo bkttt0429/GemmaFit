@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
-import com.gemmafit.ui.theme.Surface
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextHint
 import com.gemmafit.ui.theme.TextSecondary
 
@@ -29,7 +29,7 @@ fun ThreeDeeMini(
     Column(
         modifier = modifier
             .width(140.dp)
-            .background(Surface.copy(alpha = 0.75f), RoundedCornerShape(8.dp))
+            .background(SurfaceColor.copy(alpha = 0.75f), RoundedCornerShape(8.dp))
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

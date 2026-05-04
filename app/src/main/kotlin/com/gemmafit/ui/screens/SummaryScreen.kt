@@ -1,6 +1,5 @@
 package com.gemmafit.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
@@ -29,19 +28,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gemmafit.ui.components.HorizontalMetricBar
 import com.gemmafit.ui.components.StatCard
+import com.gemmafit.ui.screens.summary.FormScoreTrendChart
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.Orange
 import com.gemmafit.ui.theme.Red
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextHint
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
@@ -71,7 +71,15 @@ fun SummaryScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Background),
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Background,
+                        Color(0xFF0E1210),
+                        Background,
+                    ),
+                ),
+            ),
     ) {
         SummaryTopBar(onBack = onBack)
 
@@ -107,14 +115,16 @@ fun SummaryScreen(
                 )
             }
 
-            // Form score trend
+            // Form score trend with safety markers
             if (formScores.isNotEmpty()) {
                 SummaryPanel(title = "Form Score Trend") {
-                    ScoreTrendChart(
-                        scores = formScores.map { it.score },
+                    FormScoreTrendChart(
+                        scores = formScores,
+                        safetyEvents = safetyEvents,
+                        totalFrames = session.totalFrames,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(170.dp),
+                            .height(220.dp),
                     )
                 }
             }
@@ -219,7 +229,7 @@ fun SummaryScreen(
                 Button(
                     onClick = {},
                     shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E1E1E)),
+                    colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor),
                     modifier = Modifier.weight(1f).height(52.dp),
                 ) {
                     Text("All History", color = TextPrimary, fontWeight = FontWeight.Bold)
@@ -240,7 +250,7 @@ private fun SummaryTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = TextPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = TextPrimary)
         }
         Text(
             text = "Workout Summary",
@@ -262,7 +272,7 @@ private fun SummaryPanel(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = Color(0xFF1E1E1E),
+        color = SurfaceColor,
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(
@@ -313,46 +323,5 @@ private fun CoachTip(text: String) {
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(text, style = MaterialTheme.typography.bodyLarge, color = TextSecondary)
-    }
-}
-
-@Composable
-private fun ScoreTrendChart(scores: List<Int>, modifier: Modifier = Modifier) {
-    Canvas(modifier = modifier) {
-        if (scores.size < 2) return@Canvas
-        val left = 18.dp.toPx()
-        val right = size.width - 8.dp.toPx()
-        val top = 12.dp.toPx()
-        val bottom = size.height - 22.dp.toPx()
-
-        for (i in 0..4) {
-            val y = top + (bottom - top) * i / 4f
-            drawLine(
-                color = Color(0x33FFFFFF),
-                start = Offset(left, y),
-                end = Offset(right, y),
-                strokeWidth = 1.dp.toPx(),
-            )
-        }
-
-        val points = scores.mapIndexed { index, score ->
-            val x = left + (right - left) * index / (scores.lastIndex).coerceAtLeast(1)
-            val y = bottom - (bottom - top) * (score.coerceIn(0, 100) / 100f)
-            Offset(x, y)
-        }
-
-        points.zipWithNext().forEach { (a, b) ->
-            drawLine(
-                color = Green,
-                start = a,
-                end = b,
-                strokeWidth = 4.dp.toPx(),
-                cap = StrokeCap.Round,
-            )
-        }
-        points.forEach { point ->
-            drawCircle(color = Background, radius = 6.dp.toPx(), center = point)
-            drawCircle(color = Green, radius = 6.dp.toPx(), center = point, style = Stroke(width = 2.dp.toPx()))
-        }
     }
 }

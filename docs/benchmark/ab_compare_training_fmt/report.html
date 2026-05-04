@@ -1,0 +1,2642 @@
+<!doctype html>
+<html><head><meta charset='utf-8'><title>GemmaFit A/B benchmark</title>
+<style>
+  body { font-family: -apple-system, system-ui, Arial; background: #0f1724; color: #e0e0e0; margin: 0; padding: 24px; }
+  h1 { color: #00D4AA; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 12px; }
+  th, td { border: 1px solid #333; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #15202b; color: #4ECDC4; font-weight: bold; }
+  pre { margin: 0; white-space: pre-wrap; word-break: break-word; max-width: 380px; max-height: 220px; overflow: auto; font-family: ui-monospace, monospace; font-size: 11px; }
+  td.ok { background: #102a18; }
+  td.bad { background: #2a1010; }
+  table.summary { width: auto; }
+  table.summary th, table.summary td { padding: 10px 16px; }
+  .ok { color: #00D4AA; } .bad { color: #FF6B6B; }
+</style></head>
+<body>
+  <h1>GemmaFit A/B benchmark</h1>
+  <p>Base: <code>models/gemma4-e4b-Q4_K_M.gguf</code></p>
+  <p>Fine-tuned: <code>models/gemmafit-q4_k_m.gguf</code></p>
+  <h2>Summary</h2>
+  
+<table class=summary>
+  <tr><th></th><th>Base</th><th>Fine-tuned</th><th>Δ</th></tr>
+  <tr><td>JSON parse rate</td>
+      <td>0.0%</td>
+      <td>0.0%</td>
+      <td>+0.0%</td>
+  </tr>
+  <tr><td>Function-name match</td>
+      <td>0.0%</td>
+      <td>0.0%</td>
+      <td>+0.0%</td>
+  </tr>
+  <tr><td>Args Jaccard (avg)</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>+0.000</td>
+  </tr>
+  <tr><td>Avg latency (sec)</td>
+      <td>22.18</td>
+      <td>13.69</td>
+      <td>—</td>
+  </tr>
+</table>
+
+  <h2>Per-example results (first 60)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Input</th><th>Expected</th><th>Base (gemma4-e4b-Q4_K_M.gguf)</th><th>Fine-tuned (gemmafit-q4_k_m.gguf)</th></tr></thead>
+    <tbody><tr><td>0</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [],
+  "streak_frames": 90
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_elbow_dominant_sagittal",
+    "primary_muscles": [
+      "biceps",
+      "brachialis"
+    ],
+    "streak": 90
+  }
+}</pre></td><td class=bad><pre>This motion report describes a specific phase of a bipedal movement, likely related to lifting or climbing, given the "ascent" phase.
+
+Here is a detailed breakdown and interpretation of the report:
+
+#</pre></td><td class=bad><pre>Motion analysis report:
+
+**Pattern:** Bipedal Elbow-Dominant Sagittal
+**Phase:** Ascent
+**Estimated Primary Movers:** Biceps, Brachialis
+**Estimated Secondary Movers:** Forearm Flexors, Shoulder Stabi</pre></td></tr><tr><td>1</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "knee",
+      "left_angle": 89.9,
+      "right_angle": 70.3,
+      "difference": 19.6,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "knee",
+    "left": 89.9,
+    "right": 70.3
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific moment in a bipedal movement, likely during a gait cycle or a dynamic posture.
+</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "knee",
+      "left_angle": 89.9,
+      "right_angle": 70.3,
+      "difference": 19.6,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>2</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [],
+  "streak_frames": 120
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_sagittal",
+    "primary_muscles": [
+      "latissimus_dorsi",
+      "rhomboids",
+      "biceps"
+    ],
+    "streak": 120
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to lifting, pulling, or climbing, given the</pre></td><td class=bad><pre>Motion analysis report:
+
+**Overall Assessment:**
+The movement pattern is consistent with bipedal_shoulder_dominant_sagittal motion. The current phase is 'ascent', indicating an upward or accelerating </pre></td></tr><tr><td>3</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "unknown",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [],
+  "confidence": 0.39,
+  "note": "low_visibility"
+}</pre></td><td><pre>{
+  "function": "warn_poor_visibility",
+  "args": {
+    "confidence": 0.39,
+    "message": "adjust_camera_or_lighting"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific pattern of movement observed, likely during a gait or dynamic exercise.
+
+**Key </pre></td><td class=bad><pre>**Analysis:**
+
+The motion report indicates a "unipedal_hip_stabilizer_frontal" pattern. This suggests that the individual is exhibiting instability or compensatory movements at the hip, likely involvi</pre></td></tr><tr><td>4</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 23.0,
+      "direction": "hyperextension",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 23.0,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement pattern, likely related to gait, single-leg stance, or a co</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 10,
+      "deviation": 1.0,
+      "direction": "none",
+      "severity": "low",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>5</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "elbow",
+      "left_angle": 79.2,
+      "right_angle": 60.9,
+      "difference": 18.3,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "elbow",
+    "left": 79.2,
+    "right": 60.9
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the kinematic and muscular activity observed during a specific phase of a bipedal movement.
+
+**Summary:**
+
+The subject is engaged in a **descent** phase </pre></td><td class=bad><pre>The motion report indicates a bipedal, elbow-dominant sagittal pattern during the descent phase. The estimated primary movers are the biceps and brachialis, with secondary involvement from the forearm</pre></td></tr><tr><td>6</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 24.2,
+      "direction": "hyperflexion",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 24.2,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to a controlled lowering or eccentric phase</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 24.2,
+      "direction": "hyperflexion",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>7</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "elbow",
+      "left_angle": 102.3,
+      "right_angle": 81.8,
+      "difference": 20.5,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "elbow",
+    "left": 102.3,
+    "right": 81.8
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the kinematic analysis of a bipedal movement, specifically focusing on the elbow joint during the "bottom" phase of the movement cycle.
+
+**Summary:**
+
+Th</pre></td><td class=bad><pre>The motion report indicates a bipedal, elbow-dominant, sagittal pattern during the bottom phase. The estimated primary movers are the biceps and brachialis, with secondary involvement from forearm fle</pre></td></tr><tr><td>8</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "right_knee",
+      "angular_velocity": 112.7,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "right_knee",
+    "velocity": 112.7
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely a phase of a squat, lunge</pre></td><td class=bad><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "right_knee",
+      "angular_velocity": 112.7,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>9</td><td><pre>{
+  "pattern": "bilateral_knee_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "calves",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 21.2,
+      "direction": "hyperextension",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 21.2,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanics of a specific movement, likely a squat, lunge, or stair ascent, based on </pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** The pattern is "bilateral_knee_dominant_sagittal". This suggests that the primary movement pattern is a forward and backward bending motion at the knees, </pre></td></tr><tr><td>10</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 39.6,
+      "region": "lumbar",
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 8,
+      "deviation": 23.6,
+      "direction": "hyperextension",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 39.6,
+    "region": "lumbar"
+  },
+  "selection_basis": "rule_2_highest_priority"
+}</pre></td><td class=bad><pre>Here is a structured analysis of the motion report:
+
+## Motion Analysis Report Summary
+
+This report details the kinematic and kinetic observations during a specific phase of bipedal movement. The prim</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Bipedal with elbow-dominant sagittal plane movement. This suggests a movement pattern that relies heavily on the elbow joint for flexion/extension, and th</pre></td></tr><tr><td>11</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.74,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "left",
+    "ratio": 0.74,
+    "severity": "moderate"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanics of a movement, likely a squat, lunge, or hip hinge, based on the terminol</pre></td><td class=bad><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.74,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>12</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.61,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "left",
+    "ratio": 0.61,
+    "severity": "severe"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely a squat, lunge, or hip ex</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** The movement pattern is characterized by a bilateral hip-dominant sagittal plane motion. This suggests that the primary propulsive forces are coming from </pre></td></tr><tr><td>13</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 7,
+      "joint": "right_hip",
+      "current_rom": 29.9,
+      "target_rom": 150,
+      "percentage": 19.9,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "increase_range_of_motion",
+  "args": {
+    "joint": "right_hip",
+    "current": 29.9,
+    "target": 150
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely a squat, deadlift, or hip hinge, and highlights a n</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **bilateral_hip_dominant_sagittal**, which suggests that the primary movement is occurring at the hips and in a forward/backward bending plane. The curr</pre></td></tr><tr><td>14</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 27.2,
+      "region": "lumbar",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 27.2,
+    "region": "lumbar"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement pattern, likely related to a squat, lunge, or single-leg ex</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **unipedal_knee_hip_dominant_sagittal**, which suggests a single-leg loading pattern with significant knee and hip flexion/extension moments, primarily </pre></td></tr><tr><td>15</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "left_shoulder",
+      "current_angle": 176.7,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 4,
+      "joint": "hip",
+      "left_angle": 78.0,
+      "right_angle": 97.2,
+      "difference": 19.2,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_joint_angle",
+  "args": {
+    "joint": "left_shoulder",
+    "current": 176.7,
+    "safe_range": [
+      150,
+      175
+    ]
+  },
+  "selection_basis": "rule_3_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report describes a specific phase of a bipedal movement, likely related to a squat, lunge, or general gait cycle, characterized by shoulder dominance in the sagittal pl</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Bipedal_Shoulder_Dominant_Sagittal. This suggests a walking or swinging pattern where the shoulders are the primary movers, and the movement is primarily </pre></td></tr><tr><td>16</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 26.9,
+      "region": "lumbar",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 26.9,
+    "region": "lumbar"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to an exercise or gait, and highlights area</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **bipedal_shoulder_dominant_frontal**, which suggests a walking or upright posture with primary movement originating from the shoulder girdle.
+
+**Phases</pre></td></tr><tr><td>17</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 5,
+      "com_direction": "left",
+      "offset_distance": 0.036,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_com_offset",
+  "args": {
+    "direction": "left",
+    "distance": 0.036
+  }
+}</pre></td><td class=bad><pre>This motion report describes a specific phase of a bipedal movement, likely related to an arm or elbow action. Here is a detailed breakdown and interpretation of the data:
+
+## Motion Report Analysis
+
+</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 5,
+      "com_direction": "left",
+      "offset_distance": 0.036,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>18</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "hip",
+      "left_angle": 99.7,
+      "right_angle": 121.4,
+      "difference": 21.7,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "hip",
+    "left": 99.7,
+    "right": 121.4
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely a squat, lunge, or hip hinge, based on the terminol</pre></td><td class=bad><pre>The motion report indicates a "bilateral_hip_dominant_sagittal" pattern during the "descent" phase. The estimated primary movers are the "gluteus_maximus" and "hamstrings", with "erector_spinae" and "</pre></td></tr><tr><td>19</td><td><pre>{
+  "pattern": "prone_hands_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "pectoralis_major",
+    "triceps",
+    "anterior_deltoid"
+  ],
+  "estimated_secondary": [
+    "serratus_anterior",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_elbow",
+      "angular_velocity": 150.8,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_elbow",
+    "velocity": 150.8
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific movement pattern, its current phase, the muscles primarily and secondarily enga</pre></td><td class=bad><pre>{
+  "pattern": "prone_hands_shoulder_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "pectoralis_major",
+    "triceps",
+    "anterior_deltoid"
+  ],
+  "estimated_secondary": [
+    "serratus_anterior",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 7,
+      "joint": "right_wrist",
+      "angular_velocity": 120.0,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>20</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 83.0,
+      "right_angle": 104.2,
+      "difference": 21.2,
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 5,
+      "com_direction": "forward",
+      "offset_distance": 0.085,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "shoulder",
+    "left": 83.0,
+    "right": 104.2
+  },
+  "selection_basis": "rule_4_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific phase of motion, focusing on hip stabilization and associated joint movements.
+
+**Summary:**
+
+The subject is in </pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Assessment:**
+The motion report indicates a pattern of unipedal hip stabilization with a frontal plane deviation. The primary stabilizing muscles appear to be the gl</pre></td></tr><tr><td>21</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 25.2,
+      "direction": "hyperextension",
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 25.2,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to a squat, deadlift, or hip hinge, and hig</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **bilateral_hip_dominant_sagittal**, which suggests a movement pattern where the hips are primarily driving the motion in a forward-backward (sagittal) </pre></td></tr><tr><td>22</td><td><pre>{
+  "pattern": "prone_hands_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "pectoralis_major",
+    "triceps",
+    "anterior_deltoid"
+  ],
+  "estimated_secondary": [
+    "serratus_anterior",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 17.3,
+      "region": "full_spine",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 69.3,
+      "right_angle": 90.1,
+      "difference": 20.8,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 17.3,
+    "region": "full_spine"
+  },
+  "selection_basis": "rule_2_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific movement pattern, likely related to a push-up or similar prone exercise.
+
+Here is a breakdown of the findings:
+
+</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Prone with hands and shoulder dominant sagittal plane movement. This suggests a strong reliance on the chest, back of the arms, and upper back muscles for</pre></td></tr><tr><td>23</td><td><pre>{
+  "pattern": "prone_quadrupedal_spine_stabilizer",
+  "phase": "isometric",
+  "estimated_primary": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+  ],
+  "estimated_secondary": [
+    "gluteus_maximus",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 5,
+      "com_direction": "forward",
+      "offset_distance": 0.127,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_com_offset",
+  "args": {
+    "direction": "forward",
+    "distance": 0.127
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific posture and muscle activation pattern during a movement, noting one deviation f</pre></td><td class=bad><pre>{
+  "pattern": "prone_quadrupedal_spine_stabilizer",
+  "phase": "isometric",
+  "estimated_primary": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+  ],
+  "estimated_secondary": [
+    "gluteus_maximus",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 5,
+      "com_direction": "forward",
+      "offset_distance": 0.127,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>24</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [],
+  "streak_frames": 90
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_elbow_dominant_sagittal",
+    "primary_muscles": [
+      "biceps",
+      "brachialis"
+    ],
+    "streak": 90
+  }
+}</pre></td><td class=bad><pre>This motion report describes a specific phase of a bipedal movement, likely related to lifting or climbing, given the "ascent" phase.
+
+Here is a detailed breakdown and interpretation of the report:
+
+#</pre></td><td class=bad><pre>Motion analysis report:
+
+**Overall Assessment:**
+The movement pattern is consistent with bipedal, elbow-dominant sagittal plane motion, likely representing a phase of bicep/brachialis-driven elbow fle</pre></td></tr><tr><td>25</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_shoulder",
+      "angular_velocity": 89.5,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_shoulder",
+    "velocity": 89.5
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific movement pattern. Here is a breakdown of the findings:
+
+**Movement Profile:**
+
+* **Pattern:** `bipedal_shoulder_</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_shoulder",
+      "angular_velocity": 89.5,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>26</td><td><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "right_elbow",
+      "current_angle": 176.8,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_joint_angle",
+  "args": {
+    "joint": "right_elbow",
+    "current": 176.8,
+    "safe_range": [
+      150,
+      175
+    ]
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the kinematic state of a bipedal subject during a specific phase of motion.
+
+**Summary:**
+
+The subject is exhibiting a **bipedal, elbow-dominant sagittal</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_elbow_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "biceps",
+    "brachialis"
+  ],
+  "estimated_secondary": [
+    "forearm_flexors",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "right_elbow",
+      "current_angle": 176.8,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>27</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 18.2,
+      "region": "thoracic",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 18.2,
+    "region": "thoracic"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific movement pattern, its current phase, the muscles primarily and secondarily enga</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 18.2,
+      "region": "thoracic",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>28</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "both_knees",
+      "ratio": 0.76,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "bilateral",
+    "ratio": 0.76,
+    "severity": "moderate"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely during a running, jumping</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "both_knees",
+      "ratio": 0.76,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>29</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "elbow",
+      "left_angle": 66.4,
+      "right_angle": 50.4,
+      "difference": 16.0,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "elbow",
+    "left": 66.4,
+    "right": 50.4
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific moment in a bipedal movement, likely during a gait cycle or a dynamic posture.
+</pre></td><td class=bad><pre>The motion report indicates a bipedal_shoulder_dominant_sagittal pattern in the bottom phase. The estimated primary movers are the latissimus_dorsi, rhomboids, and biceps, with secondary movers being </pre></td></tr><tr><td>30</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 101.8,
+      "right_angle": 85.4,
+      "difference": 16.4,
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 5,
+      "com_direction": "backward",
+      "offset_distance": 0.118,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "shoulder",
+    "left": 101.8,
+    "right": 85.4
+  },
+  "selection_basis": "rule_4_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific phase of a bipedal movement, focusing on shoulder girdle and trunk kinematics.
+
+**Summary:**
+
+The subject is in </pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Bipedal_Shoulder_Dominant_Sagittal. This suggests a walking pattern where the shoulders are primarily responsible for the movement, and the movement is oc</pre></td></tr><tr><td>31</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "isometric",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_hip",
+      "angular_velocity": 161.0,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_hip",
+    "velocity": 161.0
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details a specific phase of a movement pattern, highlighting the muscles involved and noting a significant anomaly.
+
+**Movement Pattern:** `unipedal_hip_stabiliz</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "isometric",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_hip",
+      "angular_velocity": 161.0,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>32</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 119.9,
+      "right_angle": 102.5,
+      "difference": 17.4,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "shoulder",
+    "left": 119.9,
+    "right": 102.5
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of movement, likely related to gait or a single-leg activity, and highlig</pre></td><td class=bad><pre>The motion report indicates an anomaly in the shoulder joint angles. Specifically, the left angle is 119.9 degrees and the right angle is 102.5 degrees, resulting in a difference of 17.4 degrees. This</pre></td></tr><tr><td>33</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_hip",
+      "angular_velocity": 168.7,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_hip",
+    "velocity": 168.7
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the kinematic and kinetic observations during a specific phase of a movement, likely a squat, lunge, or similar unilateral loading exercise, given the "u</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 7,
+      "joint": "left_hip",
+      "angular_velocity": 181.2,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>34</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "right_knee",
+      "ratio": 0.61,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "right",
+    "ratio": 0.61,
+    "severity": "severe"
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific phase of motion, likely related to a squat, lunge, or controlled descent.
+
+Here is a breakdown of the findings:
+</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "right_knee",
+      "ratio": 0.61,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>35</td><td><pre>{
+  "pattern": "bilateral_knee_dominant_sagittal",
+  "phase": "top",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "calves",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 5,
+      "com_direction": "forward_left",
+      "offset_distance": 0.036,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_com_offset",
+  "args": {
+    "direction": "forward_left",
+    "distance": 0.036
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely related to a squat, lunge</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **bilateral_knee_dominant_sagittal**, which suggests a movement pattern where the knees are the primary drivers of the motion, and the movement is occur</pre></td></tr><tr><td>36</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 8,
+      "deviation": 34.9,
+      "direction": "hyperflexion",
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 34.9,
+    "region": "cervical"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific biomechanical pattern observed during a movement, likely a squat, lunge, or sta</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 10,
+      "deviation": 20.0,
+      "direction": "none",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>37</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [],
+  "streak_frames": 30
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_sagittal",
+    "primary_muscles": [
+      "latissimus_dorsi",
+      "rhomboids",
+      "biceps"
+    ],
+    "streak": 30
+  }
+}</pre></td><td class=bad><pre>This motion report describes a specific biomechanical pattern observed during a movement, likely a lifting or climbing action, given the "ascent" phase.
+
+Here is a detailed breakdown and interpretatio</pre></td><td class=bad><pre>Motion analysis report:
+
+**Overall Assessment:**
+The movement pattern is consistent with bipedal shoulder-dominant sagittal plane motion. The current phase is "ascent," indicating an upward or acceler</pre></td></tr><tr><td>38</td><td><pre>{
+  "pattern": "bilateral_knee_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "calves",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "right_knee",
+      "ratio": 0.64,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "right",
+    "ratio": 0.64,
+    "severity": "severe"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely a squat, lunge, or stair ascent, and highlights the</pre></td><td class=bad><pre>{
+  "pattern": "bilateral_knee_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "calves",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.58,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>39</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 29.7,
+      "region": "full_spine",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 4,
+      "joint": "elbow",
+      "left_angle": 77.7,
+      "right_angle": 64.4,
+      "difference": 13.3,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 29.7,
+    "region": "full_spine"
+  },
+  "selection_basis": "rule_2_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific movement pattern during the **descent** phase.
+
+**Movement Pattern:** Unipedal Hip Stabilizer Frontal
+
+**Phase:*</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Assessment:**
+The movement pattern is "unipedal_hip_stabilizer_frontal" during the "descent" phase. The primary stabilizing muscles appear to be the gluteus medius, </pre></td></tr><tr><td>40</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "top",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "right_knee",
+      "ratio": 0.68,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "right",
+    "ratio": 0.68,
+    "severity": "moderate"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report you provided:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely a squat, dea</pre></td><td class=bad><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "top",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.52,
+      "severity": "mild",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>41</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "knee",
+      "left_angle": 116.5,
+      "right_angle": 135.3,
+      "difference": 18.8,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_asymmetry",
+  "args": {
+    "joint": "knee",
+    "left": 116.5,
+    "right": 135.3
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a bipedal movement, likely related to a controlled lowering or eccentr</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 4,
+      "joint": "knee",
+      "left_angle": 116.5,
+      "right_angle": 135.3,
+      "difference": 18.8,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>42</td><td><pre>{
+  "pattern": "prone_hands_shoulder_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "pectoralis_major",
+    "triceps",
+    "anterior_deltoid"
+  ],
+  "estimated_secondary": [
+    "serratus_anterior",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 21.1,
+      "region": "thoracic",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 21.1,
+    "region": "thoracic"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report you provided:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely a controlled lowering or eccentric pha</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **prone_hands_shoulder_dominant_sagittal**, which suggests a position of rest or low activity with the weight supported by the forearms and shoulders. T</pre></td></tr><tr><td>43</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "right_hip",
+      "angular_velocity": 85.3,
+      "severity": "moderate"
+    },
+    {
+      "rule": 5,
+      "com_direction": "right",
+      "offset_distance": 0.023
+    },
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 98.2,
+      "right_angle": 77.6,
+      "difference": 20.6
+    },
+    {
+      "rule": 2,
+      "deviation": 15.5,
+      "region": "thoracic",
+      "severity": "moderate"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 15.5,
+    "region": "thoracic"
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific gait pattern during the **ascent** phase.
+
+**Pattern Identified:** `unipedal_hip_stabilizer_frontal`
+* **Interpr</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Assessment:**
+The movement pattern is "unipedal_hip_stabilizer_frontal" during the "ascent" phase. The estimated primary stabilizing muscles are the gluteus medius, </pre></td></tr><tr><td>44</td><td><pre>{
+  "pattern": "prone_quadrupedal_spine_stabilizer",
+  "phase": "isometric",
+  "estimated_primary": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+  ],
+  "estimated_secondary": [
+    "gluteus_maximus",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "spine",
+      "current_angle": 176.8,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_joint_angle",
+  "args": {
+    "joint": "spine",
+    "current": 176.8,
+    "safe_range": [
+      150,
+      175
+    ]
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific posture and muscle activation pattern, along with one notable anomaly.
+
+### 1. </pre></td><td class=bad><pre>{
+  "pattern": "prone_quadrupedal_spine_stabilizer",
+  "phase": "isometric",
+  "estimated_primary": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+  ],
+  "estimated_secondary": [
+    "gluteus_maximus",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "spine",
+      "current_angle": 176.8,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>45</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [],
+  "streak_frames": 90
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_sagittal",
+    "primary_muscles": [
+      "latissimus_dorsi",
+      "rhomboids",
+      "biceps"
+    ],
+    "streak": 90
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to lifting, pulling, or climbing, given the</pre></td><td class=bad><pre>Motion analysis report:
+
+**Overall Assessment:**
+The motion pattern is consistent with bipedal_shoulder_dominant_sagittal movement during the ascent phase. The estimated primary and secondary muscle g</pre></td></tr><tr><td>46</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_knee",
+      "angular_velocity": 103.9,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_knee",
+    "velocity": 103.9
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific phase of movement.
+
+**Summary:** The subject is executing a **unipedal hip stabilizer frontal** pattern during t</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "descent",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 7,
+      "joint": "right_hip",
+      "angular_velocity": 101.9,
+      "severity": "mild",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>47</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [],
+  "streak_frames": 45
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "bipedal_shoulder_dominant_frontal",
+    "primary_muscles": [
+      "deltoids",
+      "triceps"
+    ],
+    "streak": 45
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific type of movement pattern observed over a sequence of 45 frames.
+
+**Key Findings</pre></td><td class=bad><pre>Motion analysis report:
+
+**Overall Assessment:**
+The movement pattern is consistent with bipedal, shoulder-dominant, frontal locomotion. The current phase is 'ascent', indicating an upward movement or</pre></td></tr><tr><td>48</td><td><pre>{
+  "pattern": "bilateral_knee_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "calves",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 34.4,
+      "region": "full_spine",
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 34.4,
+    "region": "full_spine"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report you provided:
+
+**Summary:**
+
+This report describes a specific phase of a movement pattern, likely related to a squat or a similar lower body </pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** The pattern is "bilateral_knee_dominant_sagittal". This suggests that the primary movement pattern is driven by the knees, with a noticeable forward and b</pre></td></tr><tr><td>49</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "right_elbow",
+      "current_angle": 5.0,
+      "angle_type": "hyperextended",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_joint_angle",
+  "args": {
+    "joint": "right_elbow",
+    "current": 5.0,
+    "safe_range": [
+      15,
+      165
+    ]
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific moment in a bipedal movement, likely during a squat, lunge, or similar weight-b</pre></td><td class=bad><pre>{
+  "pattern": "bipedal_shoulder_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "biceps"
+  ],
+  "estimated_secondary": [
+    "posterior_deltoid",
+    "trapezius_mid"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "right_elbow",
+      "current_angle": 5.0,
+      "angle_type": "hyperextended",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>50</td><td><pre>{
+  "pattern": "prone_quadrupedal_spine_stabilizer",
+  "phase": "isometric",
+  "estimated_primary": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+  ],
+  "estimated_secondary": [
+    "gluteus_maximus",
+    "shoulder_stabilizers"
+  ],
+  "anomalies": [],
+  "streak_frames": 120
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "prone_quadrupedal_spine_stabilizer",
+    "primary_muscles": [
+      "rectus_abdominis",
+      "transversus_abdominis",
+      "obliques"
+    ],
+    "streak": 120
+  }
+}</pre></td><td class=bad><pre>This motion report describes a specific type of physical activity and the muscles involved. Here is a detailed breakdown and interpretation:
+
+## Motion Report Analysis
+
+**1. Pattern: `prone_quadrupeda</pre></td><td class=bad><pre>Motion analysis report:
+The subject is performing a prone quadrupedal spine stabilizer exercise in an isometric phase. The primary muscles engaged are the rectus abdominis, transversus abdominis, and </pre></td></tr><tr><td>51</td><td><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "right_knee",
+      "ratio": 0.56,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "right",
+    "ratio": 0.56,
+    "severity": "severe"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement pattern, identifies the muscles primarily and secondarily e</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_hip_stabilizer_frontal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "gluteus_medius",
+    "ankle_stabilizers",
+    "core"
+  ],
+  "estimated_secondary": [
+    "adductors"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "left_knee",
+      "ratio": 0.48,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>52</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "right_hip",
+      "angular_velocity": 152.5,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "right_hip",
+    "velocity": 152.5
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement, likely related to walking, running, or a jumping/lifting m</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **unipedal_knee_hip_dominant_sagittal**, which suggests a single-leg loading pattern with significant knee and hip flexion/extension, and movement prima</pre></td></tr><tr><td>53</td><td><pre>{
+  "pattern": "prone_hands_shoulder_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "pectoralis_major",
+    "triceps",
+    "anterior_deltoid"
+  ],
+  "estimated_secondary": [
+    "serratus_anterior",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 21.5,
+      "region": "lumbar",
+      "severity": "moderate"
+    },
+    {
+      "rule": 3,
+      "joint": "right_shoulder",
+      "current_angle": 2.3,
+      "angle_type": "hyperextended"
+    },
+    {
+      "rule": 6,
+      "joint": "left_elbow",
+      "angular_velocity": 106.8,
+      "severity": "moderate"
+    },
+    {
+      "rule": 4,
+      "joint": "shoulder",
+      "left_angle": 67.2,
+      "right_angle": 88.0,
+      "difference": 20.8
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 21.5,
+    "region": "lumbar"
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a movement pattern identified as **"prone_hands_shoulder_dominant_sagittal"** during the **"descent"** phase.
+
+### Summary </pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Prone with hands and shoulder dominant sagittal plane movement.
+**Current Phase:** Descent.
+**Estimated Primary Movers:** Pectoralis major, triceps, anter</pre></td></tr><tr><td>54</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "bottom",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "deviation": 25.6,
+      "region": "thoracic",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_spinal_alignment",
+  "args": {
+    "deviation": 25.6,
+    "region": "thoracic"
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific phase of a movement pattern, likely related to gait, squatting, or a single-leg</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Pattern:** Unipedal_Knee_Hip_Dominant_Sagittal
+**Current Phase:** Bottom
+**Estimated Primary Movers:** Quadriceps, Gluteus Maximus, Gluteus Medius
+**Estimated Second</pre></td></tr><tr><td>55</td><td><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_hip",
+      "angular_velocity": 117.7,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "warn_rapid_movement",
+  "args": {
+    "joint": "left_hip",
+    "velocity": 117.7
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a specific movement, likely a phase of a lift or athl</pre></td><td class=bad><pre>{
+  "pattern": "bilateral_hip_dominant_sagittal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "gluteus_maximus",
+    "hamstrings"
+  ],
+  "estimated_secondary": [
+    "erector_spinae",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 6,
+      "joint": "left_hip",
+      "angular_velocity": 117.7,
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>56</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "note": "borderline",
+      "deviation": 13.8
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "positive_reinforcement",
+  "args": {
+    "pattern": "unipedal_knee_hip_dominant_sagittal",
+    "primary_muscles": [
+      "quadriceps",
+      "gluteus_maximus",
+      "gluteus_medius"
+    ]
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes the biomechanical characteristics of a movement, likely a squat, lunge, or controlled desc</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 2,
+      "note": "borderline",
+      "deviation": 13.8
+    }
+  ]
+}</pre></td></tr><tr><td>57</td><td><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "left_knee",
+      "current_angle": 175.2,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_joint_angle",
+  "args": {
+    "joint": "left_knee",
+    "current": 175.2,
+    "safe_range": [
+      150,
+      175
+    ]
+  }
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific phase of movement, likely related to a squat, lunge, or similar unilateral loading exercise.
+
+Here is a breakdow</pre></td><td class=bad><pre>{
+  "pattern": "unipedal_knee_hip_dominant_sagittal",
+  "phase": "descent",
+  "estimated_primary": [
+    "quadriceps",
+    "gluteus_maximus",
+    "gluteus_medius"
+  ],
+  "estimated_secondary": [
+    "hamstrings",
+    "adductors",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 3,
+      "joint": "left_knee",
+      "current_angle": 175.2,
+      "angle_type": "locked",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td></tr><tr><td>58</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 7,
+      "joint": "right_shoulder",
+      "current_rom": 19.7,
+      "target_rom": 120,
+      "percentage": 16.4,
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "increase_range_of_motion",
+  "args": {
+    "joint": "right_shoulder",
+    "current": 19.7,
+    "target": 120
+  }
+}</pre></td><td class=bad><pre>Here's a breakdown and interpretation of the motion report:
+
+## Motion Report Analysis
+
+This report describes a specific movement pattern, its current phase, the muscles primarily and secondarily enga</pre></td><td class=bad><pre>Motion report analysis:
+
+The overall pattern is **bipedal_shoulder_dominant_frontal**, which suggests a movement pattern that relies heavily on the shoulder joint for propulsion and stability, with a </pre></td></tr><tr><td>59</td><td><pre>{
+  "pattern": "bipedal_shoulder_dominant_frontal",
+  "phase": "ascent",
+  "estimated_primary": [
+    "deltoids",
+    "triceps"
+  ],
+  "estimated_secondary": [
+    "upper_trapezius",
+    "core_stabilizers"
+  ],
+  "anomalies": [
+    {
+      "rule": 1,
+      "joint": "both_knees",
+      "ratio": 0.62,
+      "severity": "severe",
+      "evidence": "prototype_threshold"
+    },
+    {
+      "rule": 2,
+      "deviation": 20.5,
+      "region": "full_spine",
+      "severity": "moderate",
+      "evidence": "prototype_threshold"
+    }
+  ]
+}</pre></td><td><pre>{
+  "function": "correct_knee_alignment",
+  "args": {
+    "side": "bilateral",
+    "ratio": 0.62,
+    "severity": "severe"
+  },
+  "selection_basis": "rule_1_highest_priority"
+}</pre></td><td class=bad><pre>## Motion Report Analysis
+
+This report details the biomechanical analysis of a specific movement pattern. Here is a breakdown of the findings:
+
+**Movement Profile:**
+
+* **Pattern:** `bipedal_shoulder_</pre></td><td class=bad><pre>Motion report analysis:
+
+**Overall Assessment:**
+The subject is exhibiting a bipedal, shoulder-dominant, frontal pattern during the ascent phase. The primary muscles engaged appear to be the deltoids </pre></td></tr></tbody>
+  </table>
+</body></html>

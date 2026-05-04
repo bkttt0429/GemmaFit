@@ -137,7 +137,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\ken\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe --regenerate-during-build -SC:\Users\ken\OneDrive\орн▒\GemmaFit\native -BC:\Users\ken\OneDrive\орн▒\GemmaFit\app\.cxx\Debug\5a5h2z55\x86_64
+  command = C:\Users\ken\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe --regenerate-during-build -SD:\GemmaFit\native -BD:\GemmaFit\app\.cxx\Debug\5a5h2z55\x86_64
   description = Re-running CMake...
   generator = 1
 

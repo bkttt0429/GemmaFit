@@ -25,6 +25,20 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
 
     companion object {
         private const val TAG = "GemmaFit.VM"
+        private const val TARGET_ANALYSIS_INTERVAL_MS = 125L
+        private const val PREVIEW_ANALYSIS_INTERVAL_MS = 250L
+        private const val PREVIEW_LONG_SIDE = 384
+        private const val FULL_LONG_SIDE = 512
+        private const val EVIDENCE_DEBOUNCE_FRAMES = 3
+        private const val LLM_COOLDOWN_MS = 2_000L
+        private const val MAX_POSE_CANDIDATES = 4
+        private const val FULL_POSE_CANDIDATES = 1
+        private const val SUBJECT_LOST_FRAMES = 5
+        private const val SUBJECT_MIN_VISIBILITY = 0.35f
+        private const val SUBJECT_MATCH_THRESHOLD = 0.25f
+        private const val AUTO_LOCK_MIN_SCORE = 0.62f
+        private const val AUTO_LOCK_MARGIN = 0.12f
+        private const val AUTO_LOCK_STABLE_FRAMES = 2
     }
 
     // ── Core state ─────────────────────────────────────────────────────
@@ -61,6 +75,20 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
     private val kinematicsMutex = Mutex()
     private var _lastCoachMessage: String? = null
     private var _lastCoachPriority: String? = null
+    private var lastEvidenceKey: String? = null
+    private var pendingEvidenceKey: String? = null
+    private var pendingEvidenceCount = 0
+    private var lastLlmTimestampMs = Long.MIN_VALUE
+    private var lastEventCoachMessage: String? = null
+    private var lastEventCoachPriority: String? = null
+    private var manualSubjectLock = false
+    private var pendingSubjectTap: Pair<Float, Float>? = null
+    private var lockedSubject: PoseCandidate? = null
+    private var lockedSubjectTrackId: Int? = null
+    private var pendingAutoSubject: PoseCandidate? = null
+    private var pendingAutoSubjectFrames = 0
+    private var nextSubjectTrackId = 1
+    private var lostSubjectFrames = 0
     private val temporalAnalyzer = TemporalMotionAnalyzer()
     private val repRecords = mutableListOf<RepRecord>()
 
@@ -72,6 +100,11 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         val bitmapWidth: Int,
         val bitmapHeight: Int,
         val landmarks: List<PoseLandmarkData>,
+        val poseCandidates: List<PoseCandidate> = emptyList(),
+        val activeSubjectIndex: Int? = null,
+        val activeSubjectTrackId: Int? = null,
+        val subjectLockStatus: SubjectLockStatus = SubjectLockStatus.NEEDS_SELECTION,
+        val subjectTrustFlags: List<String> = emptyList(),
         val exercise: String = "unknown",
         val exerciseConfidence: Float = 0f,
         val movementPhase: String = "unknown",
@@ -107,6 +140,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                     .setMinPoseDetectionConfidence(0.5f)
                     .setMinPosePresenceConfidence(0.5f)
                     .setMinTrackingConfidence(0.5f)
+                    .setNumPoses(MAX_POSE_CANDIDATES)
                     .setRunningMode(com.google.mediapipe.tasks.vision.core.RunningMode.IMAGE)
                     .build()
                 poseLandmarker = PoseLandmarker.createFromOptions(getApplication(), options)
@@ -117,6 +151,55 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                 Log.e(TAG, "PoseLandmarker init failed: ${e.message}", e)
                 _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker init failed: ${e.message}")) }
             }
+        }
+    }
+
+    private suspend fun createVideoPoseLandmarker(maxPoses: Int): PoseLandmarker? = withContext(Dispatchers.IO) {
+        val runningMode = com.google.mediapipe.tasks.vision.core.RunningMode.VIDEO
+        fun options(delegate: com.google.mediapipe.tasks.core.Delegate): PoseLandmarker.PoseLandmarkerOptions {
+            return PoseLandmarker.PoseLandmarkerOptions.builder()
+                .setBaseOptions(
+                    com.google.mediapipe.tasks.core.BaseOptions.builder()
+                        .setDelegate(delegate)
+                        .setModelAssetPath("pose_landmarker_lite.task")
+                        .build()
+                )
+                .setMinPoseDetectionConfidence(0.5f)
+                .setMinPosePresenceConfidence(0.5f)
+                .setMinTrackingConfidence(0.5f)
+                .setNumPoses(maxPoses.coerceAtLeast(1))
+                .setRunningMode(runningMode)
+                .build()
+        }
+
+        try {
+            Log.d(TAG, "Initializing VIDEO PoseLandmarker maxPoses=$maxPoses with GPU")
+            PoseLandmarker.createFromOptions(getApplication(), options(com.google.mediapipe.tasks.core.Delegate.GPU))
+        } catch (gpuError: Exception) {
+            Log.w(TAG, "VIDEO PoseLandmarker GPU failed, trying CPU: ${gpuError.message}")
+            try {
+                PoseLandmarker.createFromOptions(getApplication(), options(com.google.mediapipe.tasks.core.Delegate.CPU))
+            } catch (cpuError: Exception) {
+                Log.e(TAG, "VIDEO PoseLandmarker CPU failed: ${cpuError.message}", cpuError)
+                null
+            }
+        }
+    }
+
+    private suspend fun estimateAnalyzedFrames(
+        uri: Uri,
+        intervalMs: Long,
+    ): Int = withContext(Dispatchers.IO) {
+        val retriever = android.media.MediaMetadataRetriever()
+        try {
+            retriever.setDataSource(getApplication(), uri)
+            val durationMs = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)
+                ?.toLongOrNull() ?: 0L
+            ((durationMs.toFloat() / intervalMs.coerceAtLeast(1L).toFloat()).toInt() + 1).coerceAtLeast(1)
+        } catch (_: Exception) {
+            100
+        } finally {
+            try { retriever.release() } catch (_: Exception) {}
         }
     }
 
@@ -144,111 +227,78 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         processingJob?.cancel()
         sessionStartMs = System.currentTimeMillis()
         resetSessionData()
-        initPoseLandmarkerAsync()
 
         processingJob = viewModelScope.launch {
-            _state.update { it.copy(phase = VideoPhase.Processing(0f), subPhase = "loading_model", subPhaseProgress = 0f) }
-
-            // Estimate total frames from video duration
-            var estimatedTotalFrames = 0
-            withContext(Dispatchers.IO) {
-                var retries = 0
-                while (poseLandmarker == null && retries < 30) {
-                    if (poseInitFailed) {
-                        _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker failed to initialize")) }
-                        return@withContext
-                    }
-                    _state.update { it.copy(phase = VideoPhase.Processing(retries / 30f * 0.1f), subPhase = "loading_model", subPhaseProgress = retries / 30f) }
-                    kotlinx.coroutines.delay(100)
-                    retries++
-                }
-                if (poseLandmarker == null) {
-                    _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker not ready after 3s")) }
-                    return@withContext
-                }
-                // Quick scan to estimate frame count
-                val retriever = android.media.MediaMetadataRetriever()
-                try {
-                    retriever.setDataSource(getApplication(), uri)
-                    val durationMs = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
-                    // 30fps video, sampled every 3rd frame = ~10 extracted frames per second
-                    estimatedTotalFrames = ((durationMs / 1000f) * 10f).toInt().coerceAtLeast(1)
-                } catch (_: Exception) {
-                    estimatedTotalFrames = 100
-                } finally {
-                    try { retriever.release() } catch (_: Exception) {}
-                }
-            }
-
-            _state.update { it.copy(totalFrames = estimatedTotalFrames, progress = 0.1f, subPhase = "decoding", subPhaseProgress = 0f) }
-
-            Log.d(TAG, "Starting video processing, estimated $estimatedTotalFrames frames")
-            val processor = VideoProcessor(
-                context = getApplication(),
-                poseLandmarker = poseLandmarker,
-                sampleEveryNFrames = 3,
-            )
-            videoProcessor = processor
-
-            val processingStartMs = System.currentTimeMillis()
-            var poseHits = 0
-            var poseMisses = 0
-
             try {
-                processor.processVideo(uri).collect { result ->
-                    val elapsed = (System.currentTimeMillis() - processingStartMs) / 1000f
-                    val realProgress = (result.frameIndex.toFloat() / estimatedTotalFrames).coerceIn(0f, 0.99f)
-                    val fps = if (elapsed > 0.5f) result.frameIndex / elapsed else 0f
-                    val eta = if (fps > 0) ((estimatedTotalFrames - result.frameIndex) / fps).toInt() else 0
-
-                    if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
-                        poseHits++
-                    } else {
-                        poseMisses++
-                    }
-                    val hitRate = if (poseHits + poseMisses > 0) {
-                        poseHits.toFloat() / (poseHits + poseMisses)
-                    } else 0f
-
-                    _state.update { s ->
-                        s.copy(
-                            phase = VideoPhase.Analyzing(result.frameIndex, estimatedTotalFrames),
-                            progress = realProgress,
-                            currentFrame = result.frameIndex,
-                            totalFrames = estimatedTotalFrames,
-                            elapsedSeconds = elapsed,
-                            processingFps = fps,
-                            etaSeconds = eta,
-                            poseHitRate = hitRate,
-                            poseHits = poseHits,
-                            poseMisses = poseMisses,
-                            subPhase = "detecting",
-                            subPhaseProgress = realProgress,
-                        )
-                    }
-                    if (result.landmarks != null && result.bitmap != null) {
-                        processLandmarks(
-                            result.landmarks,
-                            result.frameIndex,
-                            result.timestampMs,
-                            result.bitmap,
-                            result.bitmapWidth,
-                            result.bitmapHeight,
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        phase = VideoPhase.Processing(0f),
+                        subPhase = "preview_loading",
+                        subPhaseProgress = 0f,
+                    )
                 }
-                val finalFrameCount = _state.value.totalFrames
+
+                val previewLandmarker = createVideoPoseLandmarker(MAX_POSE_CANDIDATES)
+                if (previewLandmarker == null) {
+                    _state.update { it.copy(phase = VideoPhase.Error("PoseLandmarker failed to initialize")) }
+                    return@launch
+                }
+                poseLandmarker?.close()
+                poseLandmarker = previewLandmarker
+
+                val previewFrames = estimateAnalyzedFrames(uri, PREVIEW_ANALYSIS_INTERVAL_MS)
+                runVideoPass(
+                    uri = uri,
+                    pass = VideoAnalysisPass.PREVIEW,
+                    estimatedTotalFrames = previewFrames,
+                    intervalMs = PREVIEW_ANALYSIS_INTERVAL_MS,
+                    longSide = PREVIEW_LONG_SIDE,
+                    maxPoses = MAX_POSE_CANDIDATES,
+                    runNativeMetrics = false,
+                )
+
+                // Preview complete — build early summary for instant feedback
+                _live.value = _live.value.copy(
+                    isPreviewData = true,
+                    analysisStage = "Preview complete",
+                )
+                _sessionSummary.value = buildSessionSummary().copy(isPreviewData = true)
+
+                _state.update {
+                    it.copy(
+                        phase = VideoPhase.Analyzing(0, estimateAnalyzedFrames(uri, TARGET_ANALYSIS_INTERVAL_MS)),
+                        subPhase = "full_analysis",
+                        subPhaseProgress = 0f,
+                    )
+                }
+                val fullLandmarker = createVideoPoseLandmarker(FULL_POSE_CANDIDATES)
+                if (fullLandmarker == null) {
+                    _state.update { it.copy(phase = VideoPhase.Error("Full analysis PoseLandmarker failed")) }
+                    return@launch
+                }
+                poseLandmarker?.close()
+                poseLandmarker = fullLandmarker
+
+                val fullFrames = estimateAnalyzedFrames(uri, TARGET_ANALYSIS_INTERVAL_MS)
+                runVideoPass(
+                    uri = uri,
+                    pass = VideoAnalysisPass.FULL,
+                    estimatedTotalFrames = fullFrames,
+                    intervalMs = TARGET_ANALYSIS_INTERVAL_MS,
+                    longSide = FULL_LONG_SIDE,
+                    maxPoses = FULL_POSE_CANDIDATES,
+                    runNativeMetrics = true,
+                )
+
+                val finalFrameCount = processedFrames.size
                 Log.d(TAG, "Video processing complete. Frames: $finalFrameCount, Landmarks present: ${_live.value.poseLandmarks.isNotEmpty()}")
-
-                // Show first frame 
-                if (processedFrames.isNotEmpty()) {
-                    showFrame(0)
-                }
-
-                _state.update { s -> s.copy(phase = VideoPhase.Complete(finalFrameCount)) }
-                _sessionSummary.value = buildSessionSummary()
-
-                // No need for separate thumbnail anymore; processedFrames has all bitmaps
+                _state.update { s -> s.copy(phase = VideoPhase.Complete(finalFrameCount), subPhase = "complete", subPhaseProgress = 1f) }
+                _live.value = _live.value.copy(
+                    analysisStage = "Full analysis complete",
+                    isPreviewData = false,
+                    fullProgress = 1f,
+                )
+                _sessionSummary.value = buildSessionSummary().copy(isPreviewData = false)
             } catch (e: Exception) {
                 Log.e(TAG, "Video processing error: ${e.message}", e)
                 _state.update { it.copy(phase = VideoPhase.Error(e.message ?: "Processing failed")) }
@@ -258,28 +308,166 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
 
     // ── Camera frame ────────────────────────────────────────────────────
 
-    fun onCameraFrame(result: com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult) {
-        if (result.landmarks().isEmpty()) return
-        val landmarks = result.landmarks()[0]
-        if (landmarks.size != 33) return
-        val floatArray = FloatArray(99)
-        val poseData = mutableListOf<PoseLandmarkData>()
-        for (i in 0 until 33) {
-            floatArray[i * 3] = landmarks[i].x()
-            floatArray[i * 3 + 1] = landmarks[i].y()
-            floatArray[i * 3 + 2] = landmarks[i].visibility().orElse(1.0f)
-            poseData.add(PoseLandmarkData(
-                landmarks[i].x(), landmarks[i].y(), 0f,
-                landmarks[i].visibility().orElse(1.0f)
-            ))
+    private suspend fun runVideoPass(
+        uri: Uri,
+        pass: VideoAnalysisPass,
+        estimatedTotalFrames: Int,
+        intervalMs: Long,
+        longSide: Int,
+        maxPoses: Int,
+        runNativeMetrics: Boolean,
+    ) {
+        val passStartMs = System.currentTimeMillis()
+        var firstResultLogged = false
+        var poseHits = 0
+        var poseMisses = 0
+
+        _state.update {
+            it.copy(
+                phase = VideoPhase.Analyzing(0, estimatedTotalFrames),
+                totalFrames = estimatedTotalFrames,
+                subPhase = if (pass == VideoAnalysisPass.PREVIEW) "preview_analysis" else "full_analysis",
+                subPhaseProgress = 0f,
+            )
         }
-        _live.value = _live.value.copy(poseLandmarks = poseData)
+        _live.value = _live.value.copy(
+            analysisStage = if (pass == VideoAnalysisPass.PREVIEW) {
+                "Preview analysis running"
+            } else {
+                "Full analysis running"
+            },
+        )
+
+        val processor = VideoProcessor(
+            context = getApplication(),
+            poseLandmarker = poseLandmarker,
+            sampleEveryNFrames = 1,
+            maxDimension = longSide,
+            targetAnalysisIntervalMs = intervalMs,
+            pass = pass,
+        )
+        videoProcessor = processor
+
+        processor.processVideo(uri).collect { result ->
+            if (!firstResultLogged) {
+                firstResultLogged = true
+                Log.d(TAG, "First ${pass.name.lowercase()} result in ${System.currentTimeMillis() - passStartMs}ms")
+            }
+
+            val elapsed = (System.currentTimeMillis() - passStartMs) / 1000f
+            val realProgress = (result.frameIndex.toFloat() / estimatedTotalFrames).coerceIn(0f, 0.99f)
+            val fps = if (elapsed > 0.5f) (result.frameIndex + 1) / elapsed else 0f
+            val eta = if (fps > 0f) ((estimatedTotalFrames - result.frameIndex) / fps).toInt() else 0
+
+            if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
+                poseHits++
+            } else {
+                poseMisses++
+            }
+            val hitRate = if (poseHits + poseMisses > 0) {
+                poseHits.toFloat() / (poseHits + poseMisses)
+            } else 0f
+
+            _state.update { s ->
+                s.copy(
+                    phase = VideoPhase.Analyzing(result.frameIndex, estimatedTotalFrames),
+                    progress = realProgress,
+                    currentFrame = result.frameIndex,
+                    totalFrames = estimatedTotalFrames,
+                    elapsedSeconds = elapsed,
+                    processingFps = fps,
+                    etaSeconds = eta,
+                    poseHitRate = hitRate,
+                    poseHits = poseHits,
+                    poseMisses = poseMisses,
+                    subPhase = if (pass == VideoAnalysisPass.PREVIEW) "preview_analysis" else "full_analysis",
+                    subPhaseProgress = realProgress,
+                )
+            }
+
+            if (result.landmarks != null && result.bitmap != null) {
+                processLandmarks(
+                    result = result.landmarks,
+                    frameIndex = result.frameIndex,
+                    timestampMs = result.timestampMs,
+                    bitmap = result.bitmap,
+                    bmpWidth = result.bitmapWidth,
+                    bmpHeight = result.bitmapHeight,
+                    runNativeMetrics = runNativeMetrics,
+                    pass = pass,
+                )
+            }
+        }
+
+        Log.d(
+            TAG,
+            "${pass.name} pass complete in ${System.currentTimeMillis() - passStartMs}ms, " +
+                "hitRate=${if (poseHits + poseMisses > 0) poseHits.toFloat() / (poseHits + poseMisses) else 0f}",
+        )
+    }
+
+    fun onCameraFrame(result: com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult) {
+        val candidates = candidatesFromLandmarkerResult(result)
+        val selection = resolveSubjectSelection(candidates)
+        if (selection.candidate == null) {
+            if (selection.status == SubjectLockStatus.LOCKED) {
+                _live.value = _live.value.copy(
+                    poseCandidates = candidates,
+                    activeSubjectIndex = null,
+                    activeSubjectTrackId = selection.trackId,
+                    subjectLockStatus = selection.status,
+                    subjectTrustFlags = selection.trustFlags,
+                    currentFrameTimestampMs = System.currentTimeMillis() - sessionStartMs,
+                )
+                return
+            }
+            publishSubjectGate(
+                candidates = candidates,
+                status = selection.status,
+                frameIndex = totalFramesAnalyzed,
+                timestampMs = System.currentTimeMillis() - sessionStartMs,
+                reason = selection.reason,
+                trustFlags = selection.trustFlags,
+            )
+            return
+        }
+
+        val floatArray = selection.candidate.landmarks.toFloat99()
+        _live.value = _live.value.copy(
+            poseLandmarks = selection.candidate.landmarks,
+            poseCandidates = candidates,
+            activeSubjectIndex = selection.activeIndex,
+            activeSubjectTrackId = selection.trackId,
+            subjectLockStatus = selection.status,
+            subjectTrustFlags = selection.trustFlags,
+        )
         viewModelScope.launch(Dispatchers.Default) {
             processLandmarks(
                 floatArray = floatArray,
                 frameIndex = totalFramesAnalyzed++,
                 timestampMs = System.currentTimeMillis() - sessionStartMs,
+                subjectTrustFlags = selection.trustFlags,
             )
+        }
+    }
+
+    fun selectSubjectAt(normalizedX: Float, normalizedY: Float) {
+        pendingSubjectTap = normalizedX.coerceIn(0f, 1f) to normalizedY.coerceIn(0f, 1f)
+        manualSubjectLock = true
+
+        if (processedFrames.isNotEmpty() && currentFrameIdx in processedFrames.indices) {
+            showFrame(currentFrameIdx)
+        } else if (_live.value.poseCandidates.isNotEmpty()) {
+            val selection = resolveSubjectSelection(_live.value.poseCandidates)
+            selection.candidate?.let { candidate ->
+                _live.value = _live.value.copy(
+                    poseLandmarks = candidate.landmarks,
+                    activeSubjectIndex = selection.activeIndex,
+                    activeSubjectTrackId = selection.trackId,
+                    subjectLockStatus = selection.status,
+                    subjectTrustFlags = selection.trustFlags,
+                )
+            }
         }
     }
 
@@ -342,14 +530,44 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         if (index !in processedFrames.indices) return
         currentFrameIdx = index
         val frame = processedFrames[index]
+        val selection = if (frame.poseCandidates.isNotEmpty()) {
+            resolveSubjectSelection(frame.poseCandidates)
+        } else {
+            SubjectSelection(
+                candidate = frame.landmarks.takeIf { it.isNotEmpty() }?.let { candidateFromPoseData(it) },
+                activeIndex = frame.activeSubjectIndex,
+                trackId = frame.activeSubjectTrackId,
+                status = frame.subjectLockStatus,
+                trustFlags = frame.subjectTrustFlags,
+                reason = "",
+            )
+        }
+
+        val displayLandmarks = selection.candidate?.landmarks ?: frame.landmarks
+        val displayStatus = selection.status
+        val displayTrustFlags = selection.trustFlags
+        if (selection.candidate != null && frame.poseCandidates.isNotEmpty()) {
+            processedFrames[index] = frame.copy(
+                landmarks = selection.candidate.landmarks,
+                activeSubjectIndex = selection.activeIndex,
+                activeSubjectTrackId = selection.trackId,
+                subjectLockStatus = displayStatus,
+                subjectTrustFlags = displayTrustFlags,
+            )
+        }
         _live.value = _live.value.copy(
-            poseLandmarks = frame.landmarks,
+            poseLandmarks = displayLandmarks,
             poseTrajectory = trajectoryFor(index),
             videoPreview = frame.bitmap ?: _live.value.videoPreview,
             videoPreviewWidth = frame.bitmapWidth,
             videoPreviewHeight = frame.bitmapHeight,
             currentFrameIndex = index,
             currentFrameTimestampMs = frame.timestampMs,
+            poseCandidates = frame.poseCandidates,
+            activeSubjectIndex = selection.activeIndex ?: frame.activeSubjectIndex,
+            activeSubjectTrackId = selection.trackId ?: frame.activeSubjectTrackId,
+            subjectLockStatus = displayStatus,
+            subjectTrustFlags = displayTrustFlags,
             detectedExercise = frame.exercise,
             exerciseConfidence = frame.exerciseConfidence,
             movementPhase = frame.movementPhase,
@@ -361,6 +579,24 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             coachMessage = frame.coachMessage,
             coachPriority = frame.coachPriority,
         )
+
+        if (selection.candidate == null && frame.poseCandidates.isNotEmpty()) {
+            publishSubjectGate(
+                candidates = frame.poseCandidates,
+                status = displayStatus,
+                frameIndex = frame.frameIndex,
+                timestampMs = frame.timestampMs,
+                reason = selection.reason,
+                trustFlags = displayTrustFlags,
+            )
+        } else if (selection.candidate != null && frame.exercise == "unknown" && frame.templateMetrics.isEmpty()) {
+            processLandmarks(
+                floatArray = selection.candidate.landmarks.toFloat99(),
+                frameIndex = frame.frameIndex,
+                timestampMs = frame.timestampMs,
+                subjectTrustFlags = displayTrustFlags,
+            )
+        }
     }
 
     private fun updateProcessedFrame(
@@ -375,6 +611,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         evidenceCard: EvidenceCard,
         coachMsg: String,
         coachPriority: String,
+        subjectTrustFlags: List<String> = emptyList(),
     ) {
         val idx = processedFrames.indexOfFirst { it.frameIndex == frameIndex }
         if (idx < 0) return
@@ -389,6 +626,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             evidenceCard = evidenceCard,
             coachMessage = coachMsg,
             coachPriority = coachPriority,
+            subjectTrustFlags = subjectTrustFlags.ifEmpty { processedFrames[idx].subjectTrustFlags },
         )
     }
 
@@ -401,23 +639,20 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         bitmap: Bitmap,
         bmpWidth: Int,
         bmpHeight: Int,
+        runNativeMetrics: Boolean = true,
+        pass: VideoAnalysisPass = VideoAnalysisPass.FULL,
     ) {
         if (result.landmarks.isEmpty()) {
             Log.w(TAG, "Frame $frameIndex: no pose landmarks detected")
             return
         }
-        val first = result.landmarks.firstOrNull() ?: return
-        if (first.size != 33) {
-            Log.w(TAG, "Frame $frameIndex: expected 33 landmarks, got ${first.size}")
+        val candidates = candidatesFromVideoResult(result)
+        if (candidates.isEmpty()) {
+            Log.w(TAG, "Frame $frameIndex: no valid 33-landmark candidates")
             return
         }
-        val floatArray = FloatArray(99)
-        val poseData = first.mapIndexed { i, lm ->
-            floatArray[i * 3] = lm.x
-            floatArray[i * 3 + 1] = lm.y
-            floatArray[i * 3 + 2] = lm.visibility
-            PoseLandmarkData(lm.x, lm.y, lm.z, lm.visibility)
-        }
+        val selection = resolveSubjectSelection(candidates)
+        val poseData = selection.candidate?.landmarks ?: candidates.first().landmarks
         // Store frame metadata (bitmap lives in LRU cache, not here)
         processedFrames.add(ProcessedFrame(
             frameIndex = frameIndex,
@@ -426,6 +661,11 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
             bitmapWidth = bmpWidth,
             bitmapHeight = bmpHeight,
             landmarks = poseData,
+            poseCandidates = candidates,
+            activeSubjectIndex = selection.activeIndex,
+            activeSubjectTrackId = selection.trackId,
+            subjectLockStatus = selection.status,
+            subjectTrustFlags = selection.trustFlags,
         ))
         // Sliding window: recycle oldest frame's bitmap when > 60 frames
         if (processedFrames.size > 60) {
@@ -438,13 +678,49 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         _live.value = _live.value.copy(
             poseLandmarks = poseData,
             poseTrajectory = trajectoryFor(processedFrames.lastIndex),
+            poseCandidates = candidates,
+            activeSubjectIndex = selection.activeIndex,
+            activeSubjectTrackId = selection.trackId,
+            subjectLockStatus = selection.status,
+            subjectTrustFlags = selection.trustFlags,
+            analysisStage = if (pass == VideoAnalysisPass.PREVIEW) "Preview analysis running" else "Full analysis running",
             videoPreview = bitmap,
             videoPreviewWidth = bmpWidth,
             videoPreviewHeight = bmpHeight,
             currentFrameTimestampMs = timestampMs,
             totalFramesAnalyzed = processedFrames.size,
         )
-        processLandmarks(floatArray, frameIndex, timestampMs)
+        if (selection.candidate == null) {
+            if (selection.status == SubjectLockStatus.LOCKED) {
+                _live.value = _live.value.copy(
+                    poseCandidates = candidates,
+                    activeSubjectIndex = null,
+                    activeSubjectTrackId = selection.trackId,
+                    subjectLockStatus = selection.status,
+                    subjectTrustFlags = selection.trustFlags,
+                    currentFrameTimestampMs = timestampMs,
+                )
+                return
+            }
+            publishSubjectGate(
+                candidates = candidates,
+                status = selection.status,
+                frameIndex = frameIndex,
+                timestampMs = timestampMs,
+                reason = selection.reason,
+                trustFlags = selection.trustFlags,
+            )
+            return
+        }
+        if (!runNativeMetrics) {
+            return
+        }
+        processLandmarks(
+            floatArray = selection.candidate.landmarks.toFloat99(),
+            frameIndex = frameIndex,
+            timestampMs = timestampMs,
+            subjectTrustFlags = selection.trustFlags,
+        )
     }
 
     // ── Core processing (called for both camera and video) ──────────────
@@ -455,10 +731,419 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         return processedFrames.subList(start, index + 1).map { it.landmarks }
     }
 
+    private data class SubjectSelection(
+        val candidate: PoseCandidate?,
+        val activeIndex: Int?,
+        val trackId: Int?,
+        val status: SubjectLockStatus,
+        val trustFlags: List<String>,
+        val reason: String,
+    )
+
+    private fun candidatesFromLandmarkerResult(
+        result: com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult,
+    ): List<PoseCandidate> {
+        return result.landmarks()
+            .take(MAX_POSE_CANDIDATES)
+            .mapNotNull { landmarks ->
+                val poseData = landmarks.map {
+                    PoseLandmarkData(
+                        x = it.x(),
+                        y = it.y(),
+                        z = 0f,
+                        visibility = it.visibility().orElse(1.0f),
+                    )
+                }
+                candidateFromPoseData(poseData)
+            }
+    }
+
+    private fun candidatesFromVideoResult(result: VideoPoseResult): List<PoseCandidate> {
+        return result.landmarks
+            .take(MAX_POSE_CANDIDATES)
+            .mapNotNull { landmarks ->
+                val poseData = landmarks.map { lm ->
+                    PoseLandmarkData(lm.x, lm.y, lm.z, lm.visibility)
+                }
+                candidateFromPoseData(poseData)
+            }
+    }
+
+    private fun candidateFromPoseData(
+        landmarks: List<PoseLandmarkData>,
+        trackScore: Float = 0f,
+    ): PoseCandidate? {
+        if (landmarks.size < 33) return null
+        val visible = landmarks.filter { it.visibility > 0.15f }
+        val points = visible.ifEmpty { landmarks }
+        val minX = points.minOf { it.x }.coerceIn(0f, 1f)
+        val minY = points.minOf { it.y }.coerceIn(0f, 1f)
+        val maxX = points.maxOf { it.x }.coerceIn(0f, 1f)
+        val maxY = points.maxOf { it.y }.coerceIn(0f, 1f)
+        val bbox = PoseBoundingBox(minX, minY, maxX, maxY)
+        val torso = listOf(11, 12, 23, 24).mapNotNull { landmarks.getOrNull(it) }
+            .filter { it.visibility > 0.15f }
+        val centerX = if (torso.isNotEmpty()) torso.map { it.x }.average().toFloat() else (bbox.minX + bbox.maxX) / 2f
+        val centerY = if (torso.isNotEmpty()) torso.map { it.y }.average().toFloat() else (bbox.minY + bbox.maxY) / 2f
+        val avgVisibility = landmarks.map { it.visibility }.average().toFloat()
+        return PoseCandidate(
+            landmarks = landmarks,
+            bbox = bbox,
+            centerX = centerX.coerceIn(0f, 1f),
+            centerY = centerY.coerceIn(0f, 1f),
+            avgVisibility = avgVisibility,
+            trackScore = trackScore,
+        )
+    }
+
+    private fun resolveSubjectSelection(candidates: List<PoseCandidate>): SubjectSelection {
+        val visibleCandidates = candidates
+            .take(MAX_POSE_CANDIDATES)
+            .filter { it.avgVisibility >= SUBJECT_MIN_VISIBILITY || it.bbox.area > 0.01f }
+
+        if (visibleCandidates.isEmpty()) {
+            pendingAutoSubject = null
+            pendingAutoSubjectFrames = 0
+            lostSubjectFrames += 1
+            if (manualSubjectLock && lockedSubject != null && lostSubjectFrames < SUBJECT_LOST_FRAMES) {
+                return SubjectSelection(
+                    candidate = null,
+                    activeIndex = null,
+                    trackId = lockedSubjectTrackId,
+                    status = SubjectLockStatus.LOCKED,
+                    trustFlags = listOf("subject_locked", "subject_hold"),
+                    reason = "subject_temporarily_unmatched",
+                )
+            }
+            return SubjectSelection(
+                candidate = null,
+                activeIndex = null,
+                trackId = lockedSubjectTrackId,
+                status = SubjectLockStatus.SUBJECT_LOST,
+                trustFlags = listOf("SUBJECT_LOST"),
+                reason = "locked_subject_lost",
+            )
+        }
+
+        pendingSubjectTap?.let { tap ->
+            pendingSubjectTap = null
+            val selected = selectCandidateFromTap(visibleCandidates, tap.first, tap.second)
+            if (selected != null) {
+                val sourceIndex = candidates.indexOf(selected).takeIf { it >= 0 }
+                if (lockedSubject == null || sourceIndex != _live.value.activeSubjectIndex || !manualSubjectLock) {
+                    resetSubjectTemporalState()
+                }
+                manualSubjectLock = true
+                val trackId = nextSubjectTrackId++
+                lockedSubjectTrackId = trackId
+                lockedSubject = selected.copy(trackId = trackId)
+                pendingAutoSubject = null
+                pendingAutoSubjectFrames = 0
+                lostSubjectFrames = 0
+                return SubjectSelection(
+                    candidate = lockedSubject,
+                    activeIndex = sourceIndex,
+                    trackId = trackId,
+                    status = SubjectLockStatus.LOCKED,
+                    trustFlags = subjectTrustFlagsFor(candidates, SubjectLockStatus.LOCKED),
+                    reason = "",
+                )
+            }
+        }
+
+        if (lockedSubject != null) {
+            val scored = visibleCandidates.map { candidate ->
+                candidate.copy(trackScore = scoreSubjectMatch(lockedSubject!!, candidate))
+            }
+            val best = scored.maxByOrNull { it.trackScore }
+            if (best != null && best.trackScore >= SUBJECT_MATCH_THRESHOLD) {
+                val sourceIndex = candidates.indexOfFirst { it.landmarks === best.landmarks }
+                    .takeIf { it >= 0 }
+                val status = if (manualSubjectLock) SubjectLockStatus.LOCKED else SubjectLockStatus.AUTO_LOCKED
+                val trackId = lockedSubjectTrackId ?: nextSubjectTrackId++
+                lockedSubjectTrackId = trackId
+                lockedSubject = best.copy(trackId = trackId)
+                pendingAutoSubject = null
+                pendingAutoSubjectFrames = 0
+                lostSubjectFrames = 0
+                return SubjectSelection(
+                    candidate = lockedSubject,
+                    activeIndex = sourceIndex,
+                    trackId = trackId,
+                    status = status,
+                    trustFlags = subjectTrustFlagsFor(candidates, status),
+                    reason = "",
+                )
+            }
+            if (!manualSubjectLock) {
+                lockedSubject = null
+                lockedSubjectTrackId = null
+            } else {
+            lostSubjectFrames += 1
+            if (lostSubjectFrames < SUBJECT_LOST_FRAMES) {
+                return SubjectSelection(
+                    candidate = null,
+                    activeIndex = null,
+                    trackId = lockedSubjectTrackId,
+                    status = SubjectLockStatus.LOCKED,
+                    trustFlags = listOf("subject_locked", "subject_hold"),
+                    reason = "subject_temporarily_unmatched",
+                )
+            }
+            return SubjectSelection(
+                candidate = null,
+                activeIndex = null,
+                trackId = lockedSubjectTrackId,
+                status = SubjectLockStatus.SUBJECT_LOST,
+                trustFlags = listOf("SUBJECT_LOST"),
+                reason = "locked_subject_lost",
+            )
+            }
+        }
+
+        if (visibleCandidates.size == 1) {
+            val selected = visibleCandidates.first()
+            val trackId = lockedSubjectTrackId ?: nextSubjectTrackId++
+            lockedSubjectTrackId = trackId
+            lockedSubject = selected.copy(trackId = trackId)
+            pendingAutoSubject = null
+            pendingAutoSubjectFrames = 0
+            lostSubjectFrames = 0
+            return SubjectSelection(
+                candidate = lockedSubject,
+                activeIndex = candidates.indexOf(selected).takeIf { it >= 0 },
+                trackId = trackId,
+                status = SubjectLockStatus.SINGLE_AUTO,
+                trustFlags = subjectTrustFlagsFor(candidates, SubjectLockStatus.SINGLE_AUTO),
+                reason = "",
+            )
+        }
+
+        val autoSelection = selectAutoCandidate(visibleCandidates)
+        if (autoSelection != null) {
+            val selected = autoSelection.first
+            val sourceIndex = candidates.indexOf(selected).takeIf { it >= 0 }
+            val stableCandidate = pendingAutoSubject?.let {
+                scoreSubjectMatch(it, selected) >= SUBJECT_MATCH_THRESHOLD
+            } == true
+            pendingAutoSubjectFrames = if (stableCandidate) pendingAutoSubjectFrames + 1 else 1
+            pendingAutoSubject = selected.copy(trackScore = autoSelection.second)
+            if (pendingAutoSubjectFrames < AUTO_LOCK_STABLE_FRAMES) {
+                return SubjectSelection(
+                    candidate = null,
+                    activeIndex = null,
+                    trackId = null,
+                    status = SubjectLockStatus.NEEDS_SELECTION,
+                    trustFlags = listOf("MULTI_PERSON", "AUTO_SELECTION_PENDING"),
+                    reason = "auto_subject_stabilizing",
+                )
+            }
+            val trackId = nextSubjectTrackId++
+            lockedSubjectTrackId = trackId
+            lockedSubject = selected.copy(trackScore = autoSelection.second, trackId = trackId)
+            pendingAutoSubject = null
+            pendingAutoSubjectFrames = 0
+            lostSubjectFrames = 0
+            resetSubjectTemporalState()
+            return SubjectSelection(
+                candidate = lockedSubject,
+                activeIndex = sourceIndex,
+                trackId = trackId,
+                status = SubjectLockStatus.AUTO_LOCKED,
+                trustFlags = subjectTrustFlagsFor(candidates, SubjectLockStatus.AUTO_LOCKED),
+                reason = "",
+            )
+        }
+
+        return SubjectSelection(
+            candidate = null,
+            activeIndex = null,
+            trackId = null,
+            status = SubjectLockStatus.NEEDS_SELECTION,
+            trustFlags = listOf("MULTI_PERSON", "NEEDS_SELECTION"),
+            reason = "multi_person_selection_required",
+        )
+    }
+
+    private fun selectCandidateFromTap(
+        candidates: List<PoseCandidate>,
+        x: Float,
+        y: Float,
+    ): PoseCandidate? {
+        val containing = candidates.filter { it.bbox.contains(x, y) }
+        val pool = containing.ifEmpty { candidates }
+        return pool.minByOrNull { candidate ->
+            val dx = candidate.centerX - x
+            val dy = candidate.centerY - y
+            dx * dx + dy * dy
+        }
+    }
+
+    private fun selectAutoCandidate(candidates: List<PoseCandidate>): Pair<PoseCandidate, Float>? {
+        if (candidates.size < 2) return null
+        val maxArea = candidates.maxOfOrNull { it.bbox.area }?.coerceAtLeast(0.001f) ?: return null
+        val scored = candidates.map { candidate ->
+            val areaScore = (candidate.bbox.area / maxArea).coerceIn(0f, 1f)
+            val centerDist = distance(candidate.centerX, candidate.centerY, 0.5f, 0.55f)
+            val centerScore = (1f - centerDist / 0.75f).coerceIn(0f, 1f)
+            val visibilityScore = candidate.avgVisibility.coerceIn(0f, 1f)
+            val score = 0.45f * areaScore + 0.35f * centerScore + 0.20f * visibilityScore
+            candidate to score
+        }.sortedByDescending { it.second }
+
+        val best = scored.first()
+        val secondScore = scored.getOrNull(1)?.second ?: 0f
+        if (best.second >= AUTO_LOCK_MIN_SCORE && best.second - secondScore >= AUTO_LOCK_MARGIN) {
+            return best
+        }
+        return null
+    }
+
+    private fun scoreSubjectMatch(previous: PoseCandidate, candidate: PoseCandidate): Float {
+        val centerDist = distance(previous.centerX, previous.centerY, candidate.centerX, candidate.centerY)
+        val centerScore = (1f - centerDist / 0.45f).coerceIn(0f, 1f)
+        val areaBase = maxOf(previous.bbox.area, candidate.bbox.area, 0.001f)
+        val areaScore = (1f - kotlin.math.abs(previous.bbox.area - candidate.bbox.area) / areaBase)
+            .coerceIn(0f, 1f)
+        val keypointScore = (1f - meanKeypointDistance(previous.landmarks, candidate.landmarks) / 0.35f)
+            .coerceIn(0f, 1f)
+        val visibilityScore = candidate.avgVisibility.coerceIn(0f, 1f)
+        return 0.42f * centerScore + 0.38f * keypointScore + 0.12f * areaScore + 0.08f * visibilityScore
+    }
+
+    private fun meanKeypointDistance(
+        a: List<PoseLandmarkData>,
+        b: List<PoseLandmarkData>,
+    ): Float {
+        val keypoints = listOf(11, 12, 23, 24, 25, 26, 27, 28)
+        val distances = keypoints.mapNotNull { index ->
+            val la = a.getOrNull(index)
+            val lb = b.getOrNull(index)
+            if (la != null && lb != null && la.visibility > 0.15f && lb.visibility > 0.15f) {
+                distance(la.x, la.y, lb.x, lb.y)
+            } else {
+                null
+            }
+        }
+        return if (distances.isEmpty()) 1f else distances.average().toFloat()
+    }
+
+    private fun distance(ax: Float, ay: Float, bx: Float, by: Float): Float {
+        val dx = ax - bx
+        val dy = ay - by
+        return kotlin.math.sqrt(dx * dx + dy * dy)
+    }
+
+    private fun subjectTrustFlagsFor(
+        candidates: List<PoseCandidate>,
+        status: SubjectLockStatus,
+    ): List<String> {
+        return buildList {
+            if (candidates.size > 1) add("other_people_detected")
+            when (status) {
+                SubjectLockStatus.LOCKED -> add("subject_locked")
+                SubjectLockStatus.AUTO_LOCKED -> add("subject_auto_locked")
+                SubjectLockStatus.SINGLE_AUTO -> add("single_subject_auto")
+                SubjectLockStatus.SUBJECT_LOST -> add("SUBJECT_LOST")
+                SubjectLockStatus.NEEDS_SELECTION -> add("NEEDS_SELECTION")
+            }
+        }.distinct()
+    }
+
+    private fun publishSubjectGate(
+        candidates: List<PoseCandidate>,
+        status: SubjectLockStatus,
+        frameIndex: Int,
+        timestampMs: Long,
+        reason: String,
+        trustFlags: List<String>,
+    ) {
+        val flag = when (status) {
+            SubjectLockStatus.SUBJECT_LOST -> QualityFlag(
+                id = "subject_lost",
+                status = "LOW_CONFIDENCE",
+                value = lostSubjectFrames.toFloat(),
+                threshold = SUBJECT_LOST_FRAMES.toFloat(),
+                evidence = "subject_lock",
+                reason = reason.ifBlank { "locked_subject_lost" },
+            )
+            else -> QualityFlag(
+                id = "multi_person_selection",
+                status = "VIEW_LIMITED",
+                value = candidates.size.toFloat(),
+                threshold = 1f,
+                evidence = "subject_lock",
+                reason = reason.ifBlank { "multi_person_selection_required" },
+            )
+        }
+        val matrix = buildTrustMatrix(listOf(flag), emptyList())
+        val card = EvidenceCard(
+            verdict = flag.status,
+            reason = flag.reason,
+            evidence = listOf(
+                EvidenceItem("people", candidates.size.toString()),
+                EvidenceItem("subject", status.name.lowercase()),
+            ),
+            trustFlags = (listOf("${flag.status}:${flag.id}") + trustFlags).distinct(),
+        )
+        val message = if (status == SubjectLockStatus.SUBJECT_LOST) {
+            "Locked subject lost. Keep your full body visible or tap again."
+        } else {
+            "Multiple people detected. Tap yourself to start."
+        }
+
+        val displayLandmarks = if (status == SubjectLockStatus.SUBJECT_LOST) {
+            _live.value.poseLandmarks
+        } else {
+            emptyList()
+        }
+        _live.value = _live.value.copy(
+            poseLandmarks = displayLandmarks,
+            poseCandidates = candidates,
+            activeSubjectIndex = null,
+            activeSubjectTrackId = null,
+            subjectLockStatus = status,
+            subjectTrustFlags = trustFlags,
+            activeWarnings = emptyList(),
+            qualityFlags = listOf(flag),
+            trustMatrix = matrix,
+            evidenceCard = card,
+            coachMessage = message,
+            coachPriority = "medium",
+            movementPhase = "unknown",
+            currentFrameTimestampMs = timestampMs,
+        )
+        updateProcessedFrame(
+            frameIndex = frameIndex,
+            exercise = "unknown",
+            confidence = 0f,
+            warnings = emptyList(),
+            flags = listOf(flag),
+            metrics = emptyMap(),
+            movementPhase = "unknown",
+            trustMatrix = matrix,
+            evidenceCard = card,
+            coachMsg = message,
+            coachPriority = "medium",
+            subjectTrustFlags = trustFlags,
+        )
+    }
+
+    private fun List<PoseLandmarkData>.toFloat99(): FloatArray {
+        val floatArray = FloatArray(99)
+        for (i in 0 until minOf(size, 33)) {
+            floatArray[i * 3] = this[i].x
+            floatArray[i * 3 + 1] = this[i].y
+            floatArray[i * 3 + 2] = this[i].visibility
+        }
+        return floatArray
+    }
+
     private fun processLandmarks(
         floatArray: FloatArray,
         frameIndex: Int = 0,
         timestampMs: Long = System.currentTimeMillis() - sessionStartMs,
+        subjectTrustFlags: List<String> = emptyList(),
     ) {
         viewModelScope.launch(Dispatchers.Default) {
             if (!kinematicsMutex.tryLock()) return@launch
@@ -486,13 +1171,14 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         verdict = "LOW_CONFIDENCE",
                         reason = result.gateReason,
                         evidence = listOf(EvidenceItem("gate", "blocked")),
-                        trustFlags = listOf("LOW_CONFIDENCE"),
+                        trustFlags = (listOf("LOW_CONFIDENCE") + subjectTrustFlags).distinct(),
                     )
                     _live.value = _live.value.copy(
                         activeWarnings = listOf(SafetyWarning(0, "warn_poor_visibility", result.gateReason, "low")),
                         formScore = 0,
                         trustMatrix = trustMatrix,
                         evidenceCard = evidenceCard,
+                        subjectTrustFlags = subjectTrustFlags,
                     )
                     coachVoice?.speakFunctionCall("warn_poor_visibility")
                 } else {
@@ -606,7 +1292,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         metrics = templateMetrics,
                         qualityFlags = qualityFlags,
                         notApplicableFlags = notApplicableFlags,
-                    )
+                    ).withSubjectTrustFlags(subjectTrustFlags)
                     temporal.completedRep?.let { rep ->
                         if (repRecords.none { it.repNumber == rep.repNumber }) {
                             repRecords.add(
@@ -618,11 +1304,37 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         }
                     }
 
-                    // Generate coach message (LLM if available, mock fallback)
-                    val (msg, priority) = if (frameIndex % 30 == 0) {
-                        tryCallLLM(pattern, result.safetyJson, muscle?.pattern ?: "", exercise, warnings, qualityFlags, notApplicableFlags)
+                    // FrameHint is always available; Gemma coaching is event/key-driven.
+                    val evidenceKey = buildEvidenceKey(
+                        exercise = exercise,
+                        movementPhase = movementPhase,
+                        repCount = temporal.repCount,
+                        metrics = templateMetrics,
+                        qualityFlags = qualityFlags,
+                        notApplicableFlags = notApplicableFlags,
+                        exerciseConfidence = exConfidence,
+                    )
+                    val shouldCallLlm = shouldRefreshEventCoaching(
+                        evidenceKey = evidenceKey,
+                        timestampMs = timestampMs,
+                        qualityFlags = qualityFlags,
+                        notApplicableFlags = notApplicableFlags,
+                    )
+                    val (msg, priority) = if (shouldCallLlm) {
+                        val generated = tryCallLLM(
+                            pattern,
+                            result.safetyJson,
+                            muscle?.pattern ?: "",
+                            exercise,
+                            warnings,
+                            qualityFlags,
+                            notApplicableFlags,
+                        )
+                        recordEventCoaching(evidenceKey, timestampMs, generated.first, generated.second)
+                        generated
                     } else {
-                        _lastCoachMessage?.let { it to (_lastCoachPriority ?: "low") }
+                        lastEventCoachMessage?.let { it to (lastEventCoachPriority ?: "low") }
+                            ?: _lastCoachMessage?.let { it to (_lastCoachPriority ?: "low") }
                             ?: generateMockCoachMessage(exercise, warnings, qualityFlags, notApplicableFlags)
                     }
                     coachMsg = msg
@@ -647,6 +1359,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         qualityFlags = qualityFlags + notApplicableFlags,
                         trustMatrix = trustMatrix,
                         evidenceCard = evidenceCard,
+                        subjectTrustFlags = subjectTrustFlags,
                     )
 
                     // Update the stored frame with kinematics results
@@ -662,6 +1375,7 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
                         evidenceCard = evidenceCard,
                         coachMsg = coachMsg,
                         coachPriority = coachPriority,
+                        subjectTrustFlags = subjectTrustFlags,
                     )
 
                     // Track session data
@@ -763,12 +1477,47 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         repRecords.clear()
         temporalAnalyzer.reset()
         lastCoachMessage = ""
+        _lastCoachMessage = null
+        _lastCoachPriority = null
+        lastEvidenceKey = null
+        pendingEvidenceKey = null
+        pendingEvidenceCount = 0
+        lastLlmTimestampMs = Long.MIN_VALUE
+        lastEventCoachMessage = null
+        lastEventCoachPriority = null
+        manualSubjectLock = false
+        pendingSubjectTap = null
+        lockedSubject = null
+        lockedSubjectTrackId = null
+        pendingAutoSubject = null
+        pendingAutoSubjectFrames = 0
+        nextSubjectTrackId = 1
+        lostSubjectFrames = 0
         currentFrameIdx = 0
         // Recycle all remaining bitmaps
         processedFrames.forEach { it.bitmap?.recycle() }
         processedFrames.clear()
         _live.value = LiveWorkoutState(source = _state.value.source)
         _sessionSummary.value = SessionSummary()
+    }
+
+    private fun resetSubjectTemporalState() {
+        temporalAnalyzer.reset()
+        repRecords.clear()
+        lastEvidenceKey = null
+        pendingEvidenceKey = null
+        pendingEvidenceCount = 0
+        lastLlmTimestampMs = Long.MIN_VALUE
+        lastEventCoachMessage = null
+        lastEventCoachPriority = null
+        _lastCoachMessage = null
+        _lastCoachPriority = null
+        _live.value = _live.value.copy(
+            repCount = 0,
+            movementPhase = "unknown",
+            templateMetrics = emptyMap(),
+            activeWarnings = emptyList(),
+        )
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────
@@ -1017,6 +1766,127 @@ class VideoAnalysisViewModel(application: Application) : AndroidViewModel(applic
         "MONITOR" -> 4
         "NOT_APPLICABLE" -> 5
         else -> 9
+    }
+
+    private fun EvidenceCard.withSubjectTrustFlags(flags: List<String>): EvidenceCard {
+        if (flags.isEmpty()) return this
+        return copy(trustFlags = (trustFlags + flags).distinct())
+    }
+
+    private fun buildEvidenceKey(
+        exercise: String,
+        movementPhase: String,
+        repCount: Int,
+        metrics: Map<String, Float>,
+        qualityFlags: List<QualityFlag>,
+        notApplicableFlags: List<QualityFlag>,
+        exerciseConfidence: Float,
+    ): String {
+        val topFlag = qualityFlags
+            .sortedWith(compareBy<QualityFlag> { statusPriority(it.status) }.thenBy { it.id })
+            .firstOrNull()
+        val verdict = topFlag?.status ?: "OK"
+        val primaryMetric = topFlag?.id ?: metrics.keys.sorted().firstOrNull() ?: "none"
+        val notApplicableSet = notApplicableFlags
+            .map { it.id }
+            .sorted()
+            .joinToString("+")
+            .ifBlank { "none" }
+
+        return listOf(
+            exercise.ifBlank { "unknown" },
+            movementPhase.ifBlank { "unknown" },
+            "rep$repCount",
+            primaryMetric,
+            severityBucket(topFlag),
+            confidenceBucket(exerciseConfidence),
+            topFlag?.id ?: "none",
+            verdict,
+            notApplicableSet,
+            viewAngleBucket(qualityFlags, notApplicableFlags),
+        ).joinToString("|")
+    }
+
+    private fun severityBucket(flag: QualityFlag?): String {
+        if (flag == null) return "none"
+        return when (flag.status) {
+            "CRITICAL" -> "critical"
+            "WARNING" -> {
+                val ratio = if (flag.threshold != 0f) {
+                    kotlin.math.abs(flag.value / flag.threshold)
+                } else {
+                    1f
+                }
+                if (ratio >= 1.5f) "high" else "medium"
+            }
+            "LOW_CONFIDENCE", "VIEW_LIMITED" -> "medium"
+            "MONITOR" -> "low"
+            else -> "low"
+        }
+    }
+
+    private fun confidenceBucket(confidence: Float): String = when {
+        confidence < 0.5f -> "conf_low"
+        confidence < 0.8f -> "conf_mid"
+        else -> "conf_high"
+    }
+
+    private fun viewAngleBucket(
+        qualityFlags: List<QualityFlag>,
+        notApplicableFlags: List<QualityFlag>,
+    ): String {
+        val allFlags = qualityFlags + notApplicableFlags
+        return when {
+            allFlags.any { it.status == "VIEW_LIMITED" || it.id.contains("view", ignoreCase = true) } -> "view_limited"
+            allFlags.any {
+                it.id.contains("knee_valgus", ignoreCase = true) ||
+                    it.id.contains("fppa", ignoreCase = true)
+            } -> "non_frontal_view"
+            else -> "unknown_view"
+        }
+    }
+
+    private fun shouldRefreshEventCoaching(
+        evidenceKey: String,
+        timestampMs: Long,
+        qualityFlags: List<QualityFlag>,
+        notApplicableFlags: List<QualityFlag>,
+    ): Boolean {
+        val hasEvent = qualityFlags.any {
+            it.status == "CRITICAL" ||
+                it.status == "WARNING" ||
+                it.status == "MONITOR" ||
+                it.status == "VIEW_LIMITED" ||
+                it.status == "LOW_CONFIDENCE"
+        } || notApplicableFlags.isNotEmpty()
+
+        if (!hasEvent) return false
+
+        if (pendingEvidenceKey == evidenceKey) {
+            pendingEvidenceCount += 1
+        } else {
+            pendingEvidenceKey = evidenceKey
+            pendingEvidenceCount = 1
+        }
+
+        if (pendingEvidenceCount < EVIDENCE_DEBOUNCE_FRAMES) return false
+        if (lastEvidenceKey == evidenceKey) return false
+        if (lastLlmTimestampMs != Long.MIN_VALUE && timestampMs - lastLlmTimestampMs < LLM_COOLDOWN_MS) {
+            return false
+        }
+        return true
+    }
+
+    private fun recordEventCoaching(
+        evidenceKey: String,
+        timestampMs: Long,
+        message: String,
+        priority: String,
+    ) {
+        lastEvidenceKey = evidenceKey
+        lastLlmTimestampMs = timestampMs
+        lastEventCoachMessage = message
+        lastEventCoachPriority = priority
     }
 
     private fun tryCallLLM(

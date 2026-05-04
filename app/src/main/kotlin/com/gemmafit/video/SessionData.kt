@@ -12,6 +12,7 @@ data class SessionSummary(
     val totalReps: Int = 0,
     val avgFormScore: Float = 100f,
     val durationSeconds: Int = 0,
+    val isPreviewData: Boolean = false,
     val detection: ExerciseDetection = ExerciseDetection(),
     val safetyEvents: List<SafetyEvent> = emptyList(),
     val formScores: List<FormScorePoint> = emptyList(),
@@ -86,6 +87,14 @@ data class LiveWorkoutState(
     // Latest detected landmarks for skeleton overlay
     val poseLandmarks: List<PoseLandmarkData> = emptyList(),
     val poseTrajectory: List<List<PoseLandmarkData>> = emptyList(),
+    val poseCandidates: List<PoseCandidate> = emptyList(),
+    val activeSubjectIndex: Int? = null,
+    val activeSubjectTrackId: Int? = null,
+    val subjectLockStatus: SubjectLockStatus = SubjectLockStatus.NEEDS_SELECTION,
+    val subjectTrustFlags: List<String> = emptyList(),
+    val analysisStage: String = "",
+    val isPreviewData: Boolean = false,
+    val fullProgress: Float = 0f,
     val videoPreview: Bitmap? = null,
     val videoPreviewWidth: Int = 0,
     val videoPreviewHeight: Int = 0,
@@ -97,11 +106,44 @@ data class LiveWorkoutState(
     val totalFramesAnalyzed: Int = 0,
 )
 
+enum class SubjectLockStatus {
+    NEEDS_SELECTION,
+    LOCKED,
+    AUTO_LOCKED,
+    SUBJECT_LOST,
+    SINGLE_AUTO,
+}
+
 data class PoseLandmarkData(
     val x: Float,
     val y: Float,
     val z: Float,
     val visibility: Float,
+)
+
+data class PoseBoundingBox(
+    val minX: Float,
+    val minY: Float,
+    val maxX: Float,
+    val maxY: Float,
+) {
+    val width: Float get() = (maxX - minX).coerceAtLeast(0f)
+    val height: Float get() = (maxY - minY).coerceAtLeast(0f)
+    val area: Float get() = width * height
+
+    fun contains(x: Float, y: Float): Boolean {
+        return x in minX..maxX && y in minY..maxY
+    }
+}
+
+data class PoseCandidate(
+    val landmarks: List<PoseLandmarkData>,
+    val bbox: PoseBoundingBox,
+    val centerX: Float,
+    val centerY: Float,
+    val avgVisibility: Float,
+    val trackScore: Float = 0f,
+    val trackId: Int = 0,
 )
 
 data class SafetyWarning(

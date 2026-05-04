@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\GemmaFit\native\build_local\CMakeFiles\e6a69bf15dfd0401cee5124a96d5b88a\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E21FFBA3-3AB5-34FB-B987-58141F4847CA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

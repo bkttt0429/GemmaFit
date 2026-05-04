@@ -1,1 +1,1 @@
-C:\Users\ken\OneDrive\桌面\GemmaFit\native\CMakeLists.txt
+D:\GemmaFit\native\CMakeLists.txt
