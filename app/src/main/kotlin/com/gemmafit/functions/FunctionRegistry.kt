@@ -1,7 +1,10 @@
 package com.gemmafit.functions
 
+import org.json.JSONArray
+import org.json.JSONObject
+
 /**
- * FunctionRegistry — 8 universal Function Calling tools for Gemma 4.
+ * FunctionRegistry - biomechanics and memory Function Calling tools for Gemma 4.
  *
  * Defines JSON schemas that Gemma 4 selects from based on biomechanics
  * input (movement pattern + safety anomalies + muscle focus).
@@ -11,18 +14,22 @@ package com.gemmafit.functions
  */
 object FunctionRegistry {
 
-    // ── Tool definitions ──────────────────────────────────────────────
+    // ?? Tool definitions ??????????????????????????????????????????????
 
     val allTools: List<Map<String, Any>> by lazy {
         listOf(
             correctKneeAlignment,
-        correctSpinalAlignment,
-        correctJointAngle,
-        correctAsymmetry,
-        warnComOffset,
-        warnRapidMovement,
-        increaseRangeOfMotion,
+            correctSpinalAlignment,
+            correctJointAngle,
+            correctAsymmetry,
+            warnComOffset,
+            warnRapidMovement,
+            increaseRangeOfMotion,
             positiveReinforcement,
+            readMemory,
+            requestMemoryUpdate,
+            summarizeTrend,
+            refuseUnsupportedQuestion,
         )
     }
 
@@ -58,7 +65,7 @@ object FunctionRegistry {
         "type" to "function",
         "function" to mapOf(
             "name" to "correct_spinal_alignment",
-            "description" to "Guide user to maintain neutral spine. Triggered when spine or neck deviation > 15°",
+            "description" to "Guide user to maintain neutral spine. Triggered when spine or neck deviation > 15簞",
             "parameters" to mapOf(
                 "type" to "object",
                 "properties" to mapOf(
@@ -81,7 +88,7 @@ object FunctionRegistry {
         "type" to "function",
         "function" to mapOf(
             "name" to "correct_joint_angle",
-            "description" to "Warn about joint overextension or locking. Triggered when joint angle ≈ 0° or 180° ± 5°",
+            "description" to "Warn about joint overextension or locking. Triggered when joint angle ??0簞 or 180簞 簣 5簞",
             "parameters" to mapOf(
                 "type" to "object",
                 "properties" to mapOf(
@@ -110,7 +117,7 @@ object FunctionRegistry {
         "type" to "function",
         "function" to mapOf(
             "name" to "correct_asymmetry",
-            "description" to "Guide user to balance left-right symmetry. Triggered when bilateral joint angle difference > 10°",
+            "description" to "Guide user to balance left-right symmetry. Triggered when bilateral joint angle difference > 10簞",
             "parameters" to mapOf(
                 "type" to "object",
                 "properties" to mapOf(
@@ -230,33 +237,149 @@ object FunctionRegistry {
         ),
     )
 
-    // ── Utility ───────────────────────────────────────────────────────
+    val readMemory: Map<String, Any> = mapOf(
+        "type" to "function",
+        "function" to mapOf(
+            "name" to "read_memory",
+            "description" to "Request a closed-set local memory slice. The app chooses what is returned.",
+            "parameters" to mapOf(
+                "type" to "object",
+                "properties" to mapOf(
+                    "scope" to mapOf(
+                        "type" to "string",
+                        "enum" to listOf("PROFILE", "CALIBRATION", "TRENDS_7D", "TRENDS_30D", "EVIDENCE_FOR_SESSION"),
+                        "description" to "Closed memory scope requested by the model"
+                    ),
+                    "exercise" to mapOf(
+                        "type" to "string",
+                        "description" to "Optional exercise key for calibration or trend scope"
+                    ),
+                    "session_id" to mapOf(
+                        "type" to "string",
+                        "description" to "Only valid for caregiver-flow evidence reads"
+                    ),
+                ),
+                "required" to listOf("scope"),
+            ),
+        ),
+    )
+
+    val requestMemoryUpdate: Map<String, Any> = mapOf(
+        "type" to "function",
+        "function" to mapOf(
+            "name" to "request_memory_update",
+            "description" to "Propose a structured memory write. The app policy engine validates before storing.",
+            "parameters" to mapOf(
+                "type" to "object",
+                "properties" to mapOf(
+                    "request_id" to mapOf(
+                        "type" to "string",
+                        "description" to "Idempotency key"
+                    ),
+                    "type" to mapOf(
+                        "type" to "string",
+                        "enum" to listOf("PROFILE", "CALIBRATION", "TREND_NOTE"),
+                        "description" to "Memory update type"
+                    ),
+                    "proposed_value" to mapOf(
+                        "type" to "object",
+                        "description" to "Structured payload; no freeform medical or diagnostic prose"
+                    ),
+                    "evidence_ids" to mapOf(
+                        "type" to "array",
+                        "items" to mapOf("type" to "string"),
+                        "description" to "Evidence ids supporting this proposed write"
+                    ),
+                    "confidence" to mapOf(
+                        "type" to "number",
+                        "description" to "Model confidence in the proposed update, 0.0 to 1.0"
+                    ),
+                ),
+                "required" to listOf("request_id", "type", "proposed_value", "confidence"),
+            ),
+        ),
+    )
+
+    val summarizeTrend: Map<String, Any> = mapOf(
+        "type" to "function",
+        "function" to mapOf(
+            "name" to "summarize_trend",
+            "description" to "Summarize a memory trend using app-provided aggregate slices only.",
+            "parameters" to mapOf(
+                "type" to "object",
+                "properties" to mapOf(
+                    "scope" to mapOf(
+                        "type" to "string",
+                        "enum" to listOf("TRENDS_7D", "TRENDS_30D"),
+                        "description" to "Trend window to summarize"
+                    ),
+                    "exercise" to mapOf(
+                        "type" to "string",
+                        "description" to "Exercise key for the trend summary"
+                    ),
+                    "focus" to mapOf(
+                        "type" to "string",
+                        "enum" to listOf("consistency", "tempo", "range_of_motion", "camera_quality"),
+                        "description" to "Non-clinical summary focus"
+                    ),
+                ),
+                "required" to listOf("scope", "exercise"),
+            ),
+        ),
+    )
+
+    val refuseUnsupportedQuestion: Map<String, Any> = mapOf(
+        "type" to "function",
+        "function" to mapOf(
+            "name" to "refuse_unsupported_question",
+            "description" to "Refuse medical, fall-risk, sarcopenia, injury, force, or diagnosis questions.",
+            "parameters" to mapOf(
+                "type" to "object",
+                "properties" to mapOf(
+                    "reason" to mapOf(
+                        "type" to "string",
+                        "enum" to listOf(
+                            "medical_diagnosis",
+                            "fall_risk_prediction",
+                            "sarcopenia_detection",
+                            "injury_prediction",
+                            "force_or_emg_claim",
+                            "insufficient_evidence",
+                        ),
+                        "description" to "Unsupported claim category"
+                    ),
+                    "safe_alternative" to mapOf(
+                        "type" to "string",
+                        "description" to "Pose-based, non-clinical alternative the app may display"
+                    ),
+                ),
+                "required" to listOf("reason"),
+            ),
+        ),
+    )
+
+    // ?? Utility ???????????????????????????????????????????????????????
 
     /**
      * Build the full system prompt with Function Calling schema for llama.cpp.
      */
     fun buildToolsJson(): String {
-        val tools = allTools.joinToString(separator = ",\n") { tool ->
-            val params = tool.toString()
-                .replace("=", ": ")
-                .replace("{", "{")
-            // Simple approach: use kotlinx.serialization or manual JSON build
-            buildString {
-                append("{\n")
-                append("  \"type\": \"function\",\n")
-                val func = (tool["function"] as Map<*, *>)
-                val name = func["name"] as String
-                val desc = func["description"] as String
-                append("  \"function\": {\n")
-                append("    \"name\": \"$name\",\n")
-                append("    \"description\": \"$desc\",\n")
-                append("    \"parameters\": ")
-                append(buildParamsJson(func["parameters"] as Map<*, *>))
-                append("\n  }\n")
-                append("}")
+        return (toJsonValue(allTools) as JSONArray).toString(2)
+    }
+
+    private fun toJsonValue(value: Any?): Any {
+        return when (value) {
+            null -> JSONObject.NULL
+            is Map<*, *> -> JSONObject().apply {
+                value.forEach { (key, child) ->
+                    put(key.toString(), toJsonValue(child))
+                }
             }
+            is Iterable<*> -> JSONArray().apply {
+                value.forEach { child -> put(toJsonValue(child)) }
+            }
+            else -> value
         }
-        return "[$tools]"
     }
 
     private fun buildParamsJson(params: Map<*, *>, indent: Int = 4): String {

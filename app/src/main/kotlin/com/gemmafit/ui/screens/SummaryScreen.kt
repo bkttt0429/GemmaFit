@@ -45,6 +45,7 @@ import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextHint
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
+import com.gemmafit.video.SessionCoachInsight
 import com.gemmafit.video.SessionSummary
 
 @Composable
@@ -59,6 +60,7 @@ fun SummaryScreen(
     val formScores = session.formScores
     val muscles = session.muscleFocusDistribution
     val tips = session.coachTips
+    val coachSummary = session.sessionCoachInsight
 
     val criticalCount = safetyEvents.count { it.severity == "high" }
     val warningCount = safetyEvents.count { it.severity == "medium" }
@@ -205,6 +207,10 @@ fun SummaryScreen(
                 }
             }
 
+            if (coachSummary.headline.isNotBlank()) {
+                LocalAiCoachSummaryPanel(coachSummary)
+            }
+
             // Coach tips
             if (tips.isNotEmpty()) {
                 SummaryPanel(title = "Coach Tips") {
@@ -236,6 +242,64 @@ fun SummaryScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LocalAiCoachSummaryPanel(insight: SessionCoachInsight) {
+    SummaryPanel(title = "Local AI Coach Summary") {
+        Text(
+            text = insight.headline,
+            style = MaterialTheme.typography.bodyLarge,
+            color = TextPrimary,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = buildString {
+                append(insight.backend.ifBlank { "fallback:deterministic" })
+                append(" - ")
+                append(insight.functionName.ifBlank { "deterministic" })
+                if (insight.fallback) append(" - fallback")
+                if (insight.inferenceTimeMs > 0.0) {
+                    append(" - ")
+                    append(insight.inferenceTimeMs.toInt())
+                    append(" ms")
+                }
+            },
+            style = MaterialTheme.typography.labelSmall,
+            color = if (insight.fallback) Orange else Green,
+        )
+        SummaryInsightSection("What I saw", insight.whatISaw)
+        SummaryInsightSection("Why it matters", insight.whyItMatters)
+        SummaryInsightSection("What I did not judge", insight.notJudged)
+        SummaryInsightSection("Next focus", insight.nextFocus)
+        if (insight.evidenceRefs.isNotEmpty()) {
+            Text(
+                text = "Evidence refs: ${insight.evidenceRefs.joinToString(", ")}",
+                style = MaterialTheme.typography.labelSmall,
+                color = TextHint,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SummaryInsightSection(
+    title: String,
+    body: String,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelMedium,
+            color = TextHint,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = body,
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextSecondary,
+        )
     }
 }
 

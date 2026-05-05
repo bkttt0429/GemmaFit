@@ -1,23 +1,28 @@
 package com.gemmafit.camera
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
+import android.util.Size
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.google.mediapipe.framework.image.BitmapImageBuilder
-import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
@@ -27,14 +32,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicReference
 
 class PoseLandmarkerHelper(
     private val context: Context,
     private val listener: PoseLandmarkerListener,
 ) {
+    private companion object {
+        const val MIN_LIVE_ANALYSIS_INTERVAL_MS = 66L
+    }
+
     private var poseLandmarker: PoseLandmarker? = null
     private val executor = Executors.newSingleThreadExecutor()
     private var started = false
+    private var lastAcceptedFrameElapsedMs = 0L
 
     interface PoseLandmarkerListener {
         fun onError(error: String)
@@ -94,21 +105,36 @@ class PoseLandmarkerHelper(
     }
 
     fun detectLiveStream(imageProxy: ImageProxy) {
+        val elapsedMs = SystemClock.elapsedRealtime()
+        if (elapsedMs - lastAcceptedFrameElapsedMs < MIN_LIVE_ANALYSIS_INTERVAL_MS) {
+            imageProxy.close()
+            return
+        }
+        lastAcceptedFrameElapsedMs = elapsedMs
+
         val frameTime = System.currentTimeMillis()
         val rotation = imageProxy.imageInfo.rotationDegrees
-        val raw = imageProxy.toBitmap()
-        val bitmap = if (rotation != 0) {
-            val m = android.graphics.Matrix().apply { postRotate(rotation.toFloat()) }
-            android.graphics.Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, m, true)
-        } else raw
-
-        val mpImage = BitmapImageBuilder(bitmap).build()
+        var raw: android.graphics.Bitmap? = null
+        var bitmap: android.graphics.Bitmap? = null
         try {
+            raw = imageProxy.toBitmap()
+            bitmap = if (rotation != 0) {
+                val m = android.graphics.Matrix().apply { postRotate(rotation.toFloat()) }
+                android.graphics.Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, m, true)
+            } else {
+                raw
+            }
+            val frameBitmap = bitmap ?: throw IllegalStateException("Bitmap conversion returned null")
+            val mpImage = BitmapImageBuilder(frameBitmap).build()
             poseLandmarker?.detectAsync(mpImage, frameTime)
         } catch (e: Exception) {
-            Log.e("PoseLandmarker", "detectAsync failed: ${e.message}")
+            Log.e("PoseLandmarker", "detectAsync failed: ${e.message}", e)
+        } finally {
+            if (raw != null && bitmap !== raw) {
+                raw.recycle()
+            }
+            imageProxy.close()
         }
-        imageProxy.close()
     }
 
     fun close() {
@@ -117,32 +143,6 @@ class PoseLandmarkerHelper(
         executor.shutdown()
     }
 
-    private fun ImageProxy.toBitmap(): android.graphics.Bitmap {
-        val yPlane = planes[0]
-        val uPlane = planes[1]
-        val vPlane = planes[2]
-        val yRowStride = yPlane.rowStride
-        val uvRowStride = uPlane.rowStride
-        val uvPixelStride = uPlane.pixelStride
-        val yBuf = yPlane.buffer
-        val uBuf = uPlane.buffer
-        val vBuf = vPlane.buffer
-        val pixels = IntArray(width * height)
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val yIdx = y * yRowStride + x
-                val uvIdx = (y shr 1) * uvRowStride + (x shr 1) * uvPixelStride
-                val yVal = (yBuf[yIdx].toInt() and 0xFF) - 16
-                val uVal = (uBuf[uvIdx.coerceIn(0, uBuf.capacity() - 1)].toInt() and 0xFF) - 128
-                val vVal = (vBuf[uvIdx.coerceIn(0, vBuf.capacity() - 1)].toInt() and 0xFF) - 128
-                val r = (1.164f * yVal + 1.596f * vVal).toInt().coerceIn(0, 255)
-                val g = (1.164f * yVal - 0.392f * uVal - 0.813f * vVal).toInt().coerceIn(0, 255)
-                val b = (1.164f * yVal + 2.017f * uVal).toInt().coerceIn(0, 255)
-                pixels[y * width + x] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-            }
-        }
-        return android.graphics.Bitmap.createBitmap(pixels, width, height, android.graphics.Bitmap.Config.ARGB_8888)
-    }
 }
 
 @Composable
@@ -153,6 +153,7 @@ fun CameraPreviewWithOverlay(
 ) {
     val context = LocalContext.current
     val previewView = remember { PreviewView(context) }
+    val activeImageAnalysis = remember { AtomicReference<ImageAnalysis?>(null) }
 
     val poseHelper = remember {
         PoseLandmarkerHelper(context, object : PoseLandmarkerHelper.PoseLandmarkerListener {
@@ -171,16 +172,31 @@ fun CameraPreviewWithOverlay(
         })
     }
 
-    LaunchedEffect(lensFacing) {
+    LaunchedEffect(lensFacing, previewView) {
         val cameraProvider = getCameraProvider(context)
-        val lifecycleOwner = context as androidx.lifecycle.LifecycleOwner
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner == null) {
+            Log.e("CameraPreview", "Context is not a LifecycleOwner: ${context::class.java.name}")
+            return@LaunchedEffect
+        }
 
         val preview = Preview.Builder()
             .build()
             .also { it.setSurfaceProvider(previewView.surfaceProvider) }
 
+        val analysisResolutionSelector = ResolutionSelector.Builder()
+            .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
+            .setResolutionStrategy(
+                ResolutionStrategy(
+                    Size(640, 480),
+                    ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER,
+                ),
+            )
+            .build()
+
         val imageAnalysis = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setResolutionSelector(analysisResolutionSelector)
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
             .build()
             .also {
@@ -195,7 +211,9 @@ fun CameraPreviewWithOverlay(
             .build()
 
         try {
+            activeImageAnalysis.getAndSet(null)?.clearAnalyzer()
             cameraProvider.unbindAll()
+            activeImageAnalysis.set(imageAnalysis)
             cameraProvider.bindToLifecycle(
                 lifecycleOwner,
                 cameraSelector,
@@ -203,7 +221,27 @@ fun CameraPreviewWithOverlay(
                 imageAnalysis,
             )
         } catch (e: Exception) {
+            imageAnalysis.clearAnalyzer()
+            activeImageAnalysis.compareAndSet(imageAnalysis, null)
             Log.e("CameraPreview", "Use case binding failed", e)
+        }
+    }
+
+    DisposableEffect(context, previewView, poseHelper) {
+        onDispose {
+            activeImageAnalysis.getAndSet(null)?.clearAnalyzer()
+            val providerFuture = ProcessCameraProvider.getInstance(context)
+            providerFuture.addListener(
+                {
+                    try {
+                        providerFuture.get().unbindAll()
+                    } catch (e: Exception) {
+                        Log.w("CameraPreview", "Camera unbind failed during dispose", e)
+                    }
+                },
+                Dispatchers.Main.asExecutor(),
+            )
+            poseHelper.close()
         }
     }
 

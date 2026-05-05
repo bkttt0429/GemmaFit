@@ -81,7 +81,8 @@ class TemporalMotionAnalyzer {
         val lastAngle = lastSmoothedAngle
         val lastTime = lastTimestampMs
         val dtSec = if (lastTime != null) {
-            ((timestampMs - lastTime).coerceAtLeast(1L)) / 1000f
+            val dtMs = timestampMs - lastTime
+            if (dtMs > 0L) dtMs / 1000f else 0f
         } else {
             0f
         }
@@ -94,7 +95,7 @@ class TemporalMotionAnalyzer {
         lastSmoothedAngle = smoothedAngle
         lastTimestampMs = timestampMs
 
-        val bend = bendFromAngle(smoothedAngle)
+        val bend = bendFromAngle(rawAngle)
         val bendVelocity = -signedVelocity
         val thresholds = thresholdsFor(exercise)
         val completedRep = updateRepState(bend, bendVelocity, thresholds)
@@ -155,8 +156,8 @@ class TemporalMotionAnalyzer {
     private fun smoothLatestAngle(): Float {
         if (samples.size < 5) return samples.last().rawAngleDeg
         val lastFive = samples.takeLast(5)
-        // Causal Savitzky-Golay endpoint smoothing, window=5, polynomial=2.
-        val weights = floatArrayOf(3f, -5f, -3f, 9f, 31f)
+        // Savitzky-Golay smoothing, window=5, polynomial=2.
+        val weights = floatArrayOf(-3f, 12f, 17f, 12f, -3f)
         var sum = 0f
         for (i in weights.indices) {
             sum += weights[i] * lastFive[i].rawAngleDeg

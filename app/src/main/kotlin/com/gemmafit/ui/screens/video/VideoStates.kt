@@ -32,10 +32,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,8 +51,9 @@ import com.gemmafit.ui.theme.Red
 import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
+import kotlinx.coroutines.delay
 
-// ── Empty State ─────────────────────────────────────────────────────
+// Empty State
 
 @Composable
 fun VideoEmptyState(
@@ -119,7 +124,7 @@ fun VideoEmptyState(
     }
 }
 
-// ── Loading State ───────────────────────────────────────────────────
+// Loading State
 
 @Composable
 fun VideoLoadingState(
@@ -131,11 +136,25 @@ fun VideoLoadingState(
     subPhaseProgress: Float,
     modifier: Modifier = Modifier,
 ) {
-    val progress = if (totalFrames > 0) currentFrame.toFloat() / totalFrames else 0f
+    val progress = when {
+        subPhaseProgress > 0f -> subPhaseProgress
+        totalFrames > 0 -> currentFrame.toFloat() / totalFrames
+        else -> 0f
+    }
+    val waitingForFirstFrame = currentFrame <= 0 && progress <= 0f
     val animatedProgress by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
         label = "loading_progress",
     )
+    var waitingProgress by remember { mutableFloatStateOf(0.08f) }
+    LaunchedEffect(waitingForFirstFrame) {
+        while (waitingForFirstFrame) {
+            waitingProgress = if (waitingProgress >= 0.9f) 0.08f else waitingProgress + 0.06f
+            delay(140L)
+        }
+        waitingProgress = 0.08f
+    }
+    val displayedProgress = if (waitingForFirstFrame) waitingProgress else animatedProgress
 
     Column(
         modifier = modifier
@@ -150,14 +169,14 @@ fun VideoLoadingState(
             contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator(
-                progress = animatedProgress,
+                progress = displayedProgress,
                 modifier = Modifier.fillMaxSize(),
                 color = Green,
                 strokeWidth = 4.dp,
                 trackColor = SurfaceColor,
             )
             Text(
-                text = "${(animatedProgress * 100).toInt()}",
+                text = if (waitingForFirstFrame) "..." else "${(animatedProgress * 100).toInt()}",
                 color = TextPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -167,7 +186,7 @@ fun VideoLoadingState(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = if (subPhase.isNotBlank()) subPhase else "Analyzing video…",
+            text = loadingLabelFor(subPhase),
             style = MaterialTheme.typography.titleLarge,
             color = TextPrimary,
         )
@@ -231,7 +250,7 @@ private fun LoadingMetricChip(label: String, value: String) {
     }
 }
 
-// ── Error State ─────────────────────────────────────────────────────
+// Error State
 
 @Composable
 fun VideoErrorState(
@@ -308,5 +327,15 @@ fun VideoErrorState(
                 Text("Retry", color = Background, fontWeight = FontWeight.Bold)
             }
         }
+    }
+}
+
+private fun loadingLabelFor(subPhase: String): String {
+    return when (subPhase) {
+        "preview_loading" -> "Preparing preview"
+        "preview_analysis" -> "Preview analysis"
+        "full_analysis" -> "Full analysis"
+        "complete" -> "Analysis complete"
+        else -> subPhase.replace("_", " ").ifBlank { "Analyzing video" }
     }
 }

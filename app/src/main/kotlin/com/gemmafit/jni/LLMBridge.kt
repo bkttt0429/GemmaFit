@@ -53,6 +53,10 @@ object LLMBridge {
         val success: Boolean,
         val functionName: String,
         val argsJson: String,
+        val backend: String = "fallback",
+        val selectionBasis: String = "",
+        val evidenceRefs: List<String> = emptyList(),
+        val modelInfoJson: String = "{}",
         val rawResponse: String,
         val inferenceTimeMs: Double,
         val errorMessage: String = "",
@@ -64,10 +68,21 @@ object LLMBridge {
     fun parseFunctionCall(jsonOutput: String): FunctionCallResult {
         return try {
             val root = JSONObject(jsonOutput)
+            val evidenceRefsJson = root.optJSONArray("evidence_refs")
+            val evidenceRefs = mutableListOf<String>()
+            if (evidenceRefsJson != null) {
+                for (i in 0 until evidenceRefsJson.length()) {
+                    evidenceRefs.add(evidenceRefsJson.optString(i))
+                }
+            }
             FunctionCallResult(
                 success = root.optBoolean("success", false),
                 functionName = root.optString("function", ""),
                 argsJson = root.optJSONObject("args")?.toString() ?: "{}",
+                backend = root.optString("backend", "fallback"),
+                selectionBasis = root.optString("selection_basis", ""),
+                evidenceRefs = evidenceRefs.filter { it.isNotBlank() },
+                modelInfoJson = root.optJSONObject("model_info")?.toString() ?: "{}",
                 rawResponse = root.optString("raw_response", ""),
                 inferenceTimeMs = root.optDouble("inference_time_ms", 0.0),
                 errorMessage = root.optString("error", ""),
@@ -77,6 +92,10 @@ object LLMBridge {
                 success = false,
                 functionName = "",
                 argsJson = "{}",
+                backend = "fallback",
+                selectionBasis = "",
+                evidenceRefs = emptyList(),
+                modelInfoJson = "{}",
                 rawResponse = jsonOutput,
                 inferenceTimeMs = 0.0,
                 errorMessage = e.message ?: "Parse error",
@@ -96,7 +115,7 @@ object LLMBridge {
             "warn_com_offset" -> "Center your weight. Stay balanced."
             "warn_rapid_movement" -> "Slow down. Control the movement."
             "increase_range_of_motion" -> "Move through the full range if comfortable."
-            "positive_reinforcement" -> "Good form! Keep it up."
+            "positive_reinforcement" -> "Clean rep: posture metrics stayed coordinated; keep the same tempo."
             else -> "Adjust your form for better safety."
         }
     }

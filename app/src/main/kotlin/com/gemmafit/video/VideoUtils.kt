@@ -55,4 +55,12 @@ object VideoUtils {
         val extensions = listOf(".mp4", ".avi", ".mov", ".mkv", ".3gp", ".webm", ".flv", ".wmv")
         return extensions.any { path.lowercase().endsWith(it) }
     }
+
+    fun isVideoUri(context: Context, uri: Uri): Boolean {
+        val mimeType = context.contentResolver.getType(uri)
+        if (mimeType?.startsWith("video/") == true) {
+            return true
+        }
+        return isVideoUri(uri)
+    }
 }

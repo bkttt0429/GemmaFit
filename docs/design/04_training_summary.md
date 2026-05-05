@@ -64,11 +64,36 @@ Use coaching guidance:
 
 - `Keep knees tracking over toes during knee-dominant reps.`
 - `Slow the descent when the velocity warning appears.`
+- `Depth and hip-knee timing stayed consistent.`
+- `Side view: judging depth and tempo only.`
+- `Tracking was unstable; re-record before judging alignment.`
 
 Avoid diagnostic statements:
 
 - Do not say a muscle is weak, inactive, or dysfunctional.
 - Do not describe safety events as injuries.
+
+## Local AI Coach Summary Policy
+
+The summary screen shows one `Local AI Coach Summary` panel after the workout.
+Live cues remain deterministic and short; Gemma is summary-only. The panel
+always uses this order:
+
+1. `What I saw`
+2. `Why it matters`
+3. `What I did not judge`
+4. `Next focus`
+
+Evidence comes first. Limitations are visible, but they should not cover useful
+metrics that were actually judgeable. For example, a side-view squat can still
+show depth, tempo, and trunk evidence while listing frontal knee valgus as
+`NOT_APPLICABLE`.
+
+The panel should expose backend status (`litert-lm`, `llama.cpp`, or
+deterministic fallback), selected function, and compact `evidence_refs`. If the
+model cites a missing evidence id or selects a tool outside the Capability
+Contract, the UI must label the result deterministic fallback instead of local
+Gemma.
 
 ## Current Compose Implementation
 

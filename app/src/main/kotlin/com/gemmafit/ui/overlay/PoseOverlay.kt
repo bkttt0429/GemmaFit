@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import com.gemmafit.pose.PosePresenceGate
 import com.gemmafit.ui.theme.SkeletonJoint
 import com.gemmafit.ui.theme.SkeletonNormal
 import com.gemmafit.ui.theme.SkeletonViolation
@@ -56,6 +57,10 @@ data class CorrectionArrow(
     val fromIndex: Int,
     val toIndex: Int,
 )
+
+private fun List<PoseLandmark>.canRenderPose(): Boolean {
+    return PosePresenceGate.canRender(this, { it.x }, { it.y }, { it.visibility })
+}
 
 // Standard MediaPipe pose connections (body skeleton)
 val POSE_CONNECTIONS = listOf(
@@ -96,6 +101,14 @@ val KEY_JOINTS = mapOf(
     "right_shoulder" to 12,
 )
 
+private val AngleLabelPaint = android.graphics.Paint().apply {
+    color = android.graphics.Color.argb(230, 0, 228, 118)
+    textSize = 24f
+    isFakeBoldText = true
+    isAntiAlias = true
+    setShadowLayer(4f, 0f, 0f, android.graphics.Color.argb(180, 0, 0, 0))
+}
+
 // Skeleton overlay with enhanced visuals
 @Composable
 fun PoseOverlay(
@@ -105,17 +118,22 @@ fun PoseOverlay(
     height: Float,
     heroMode: Boolean = false,
 ) {
-    // Pulsing animation for violation joints
-    val infiniteTransition = rememberInfiniteTransition(label = "violation_pulse")
-    val pulseAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "pulse",
-    )
+    val hasViolations = state.violationJoints.isNotEmpty() || state.violationSegments.isNotEmpty()
+    val pulseAlpha = if (hasViolations) {
+        val infiniteTransition = rememberInfiniteTransition(label = "violation_pulse")
+        val animatedPulse by infiniteTransition.animateFloat(
+            initialValue = 0.3f,
+            targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(800, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "pulse",
+        )
+        animatedPulse
+    } else {
+        1f
+    }
 
     val connections = if (heroMode) POSE_CONNECTIONS_HERO else state.connections
 
@@ -127,18 +145,18 @@ fun PoseOverlay(
         val offsetX = if (hasSourceSize) (size.width - contentW) / 2f else 0f
         val offsetY = if (hasSourceSize) (size.height - contentH) / 2f else 0f
 
-        fun point(index: Int): Offset {
-            val lm = state.landmarks.getOrElse(index) { PoseLandmark(0.5f, 0.5f, 0f) }
+        fun point(index: Int): Offset? {
+            val lm = state.landmarks.getOrNull(index) ?: return null
             return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
         }
 
-        fun pointFrom(frame: List<PoseLandmark>, index: Int): Offset {
-            val lm = frame.getOrElse(index) { PoseLandmark(0.5f, 0.5f, 0f) }
+        fun pointFrom(frame: List<PoseLandmark>, index: Int): Offset? {
+            val lm = frame.getOrNull(index) ?: return null
             return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
         }
 
-        val hasActiveSubject = state.landmarks.size >= 33 &&
-                state.landmarks.any { it.visibility > 0.2f }
+        val hasActiveSubject = state.landmarks.canRenderPose()
+        val renderableSecondarySubjects = state.secondarySubjects.filter { it.canRenderPose() }
 
         // ── Dark vignette backdrop for contrast on bright camera ─────
         if (heroMode) {
@@ -156,15 +174,17 @@ fun PoseOverlay(
         }
 
         // ── Bone connections ─────────────────────────────────────────
-        state.secondarySubjects.forEach { subject ->
+        renderableSecondarySubjects.forEach { subject ->
             for ((a, b) in connections) {
                 val la = subject.getOrNull(a)
                 val lb = subject.getOrNull(b)
                 if ((la?.visibility ?: 0f) > 0.2f && (lb?.visibility ?: 0f) > 0.2f) {
+                    val start = pointFrom(subject, a) ?: continue
+                    val end = pointFrom(subject, b) ?: continue
                     drawLine(
                         color = Color(0xFF94A3B8).copy(alpha = 0.24f),
-                        start = pointFrom(subject, a),
-                        end = pointFrom(subject, b),
+                        start = start,
+                        end = end,
                         strokeWidth = 2f,
                         cap = StrokeCap.Round,
                     )
@@ -173,10 +193,11 @@ fun PoseOverlay(
             for (i in 0 until 33) {
                 val lm = subject.getOrNull(i) ?: continue
                 if (lm.visibility > 0.2f) {
+                    val center = pointFrom(subject, i) ?: continue
                     drawCircle(
                         color = Color(0xFF94A3B8).copy(alpha = 0.26f),
                         radius = 3.5f,
-                        center = pointFrom(subject, i),
+                        center = center,
                     )
                 }
             }
@@ -184,21 +205,56 @@ fun PoseOverlay(
 
         val trajectoryJoints = listOf(15, 16, 23, 24, 25, 26, 27, 28)
         if (hasActiveSubject && state.trajectoryFrames.size > 1) {
+            val renderableTrajectoryFrames = state.trajectoryFrames.map { frame ->
+                frame to frame.canRenderPose()
+            }
             trajectoryJoints.forEach { joint ->
-                state.trajectoryFrames.zipWithNext().forEachIndexed { idx, (from, to) ->
+                renderableTrajectoryFrames.zipWithNext().forEachIndexed { idx, (fromEntry, toEntry) ->
+                    val (from, fromRenderable) = fromEntry
+                    val (to, toRenderable) = toEntry
+                    if (!fromRenderable || !toRenderable) return@forEachIndexed
                     val fromLm = from.getOrNull(joint)
                     val toLm = to.getOrNull(joint)
                     if ((fromLm?.visibility ?: 0f) > 0.2f && (toLm?.visibility ?: 0f) > 0.2f) {
+                        val start = pointFrom(from, joint) ?: return@forEachIndexed
+                        val end = pointFrom(to, joint) ?: return@forEachIndexed
                         val alpha = ((idx + 1).toFloat() / state.trajectoryFrames.lastIndex.coerceAtLeast(1))
                             .coerceIn(0.12f, 0.80f)
                         drawLine(
                             color = Color(0xFF38BDF8).copy(alpha = alpha),
-                            start = pointFrom(from, joint),
-                            end = pointFrom(to, joint),
+                            start = start,
+                            end = end,
                             strokeWidth = if (joint == 15 || joint == 16) 4f else 3f,
                             cap = StrokeCap.Round,
                         )
                     }
+                }
+            }
+            val comJoints = listOf(11, 12, 23, 24, 25, 26, 27, 28)
+            fun comFrom(frame: List<PoseLandmark>): Offset? {
+                val visible = comJoints.mapNotNull { joint -> frame.getOrNull(joint) }
+                    .filter { it.visibility > 0.2f }
+                if (visible.size < 4) return null
+                val x = visible.map { it.x }.average().toFloat()
+                val y = visible.map { it.y }.average().toFloat()
+                return Offset(offsetX + x * contentW, offsetY + y * contentH)
+            }
+            renderableTrajectoryFrames.zipWithNext().forEachIndexed { idx, (fromEntry, toEntry) ->
+                val (from, fromRenderable) = fromEntry
+                val (to, toRenderable) = toEntry
+                if (!fromRenderable || !toRenderable) return@forEachIndexed
+                val start = comFrom(from)
+                val end = comFrom(to)
+                if (start != null && end != null) {
+                    val alpha = ((idx + 1).toFloat() / state.trajectoryFrames.lastIndex.coerceAtLeast(1))
+                        .coerceIn(0.18f, 0.90f)
+                    drawLine(
+                        color = Color(0xFFFFD166).copy(alpha = alpha),
+                        start = start,
+                        end = end,
+                        strokeWidth = 5f,
+                        cap = StrokeCap.Round,
+                    )
                 }
             }
         }
@@ -215,29 +271,31 @@ fun PoseOverlay(
                         state.violationSegments.contains(b to a)
 
                 val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
+                val start = point(a) ?: continue
+                val end = point(b) ?: continue
 
                 if (isViolation) {
                     // Glow layer for violated bones
                     drawLine(
                         color = SkeletonViolation.copy(alpha = alpha * 0.3f * pulseAlpha),
-                        start = point(a), end = point(b),
+                        start = start, end = end,
                         strokeWidth = 12f, cap = StrokeCap.Round,
                     )
                     drawLine(
                         color = SkeletonViolation.copy(alpha = alpha * 0.7f * pulseAlpha),
-                        start = point(a), end = point(b),
+                        start = start, end = end,
                         strokeWidth = 6f, cap = StrokeCap.Round,
                     )
                 } else {
                     // Normal bone: soft outer + solid inner
                     drawLine(
                         color = SkeletonNormal.copy(alpha = alpha * 0.15f),
-                        start = point(a), end = point(b),
+                        start = start, end = end,
                         strokeWidth = 7f, cap = StrokeCap.Round,
                     )
                     drawLine(
                         color = SkeletonNormal.copy(alpha = alpha * 0.85f),
-                        start = point(a), end = point(b),
+                        start = start, end = end,
                         strokeWidth = 3f, cap = StrokeCap.Round,
                     )
                 }
@@ -250,7 +308,7 @@ fun PoseOverlay(
                 val lm = state.landmarks.getOrNull(i) ?: continue
                 val vis = if (state.showConfidenceFade) lm.visibility else 1f
                 val isViolation = state.violationJoints.contains(i)
-                val p = point(i)
+                val p = point(i) ?: continue
                 val jointAlpha = vis * 0.8f + 0.2f
 
                 if (isViolation) {
@@ -304,14 +362,19 @@ fun PoseOverlay(
         // ── Angle arcs ───────────────────────────────────────────────
         if (hasActiveSubject) {
             for (arc in state.angleArcs) {
-                drawAngleArc(point(arc.vertexIndex), point(arc.armAIndex), point(arc.armBIndex), arc.label, arc.valueDeg)
+                val vertex = point(arc.vertexIndex) ?: continue
+                val armA = point(arc.armAIndex) ?: continue
+                val armB = point(arc.armBIndex) ?: continue
+                drawAngleArc(vertex, armA, armB, arc.label, arc.valueDeg)
             }
         }
 
         // ── Correction arrows ────────────────────────────────────────
         if (hasActiveSubject) {
             for (arrow in state.correctionArrows) {
-                drawCorrectionArrow(point(arrow.fromIndex), point(arrow.toIndex))
+                val from = point(arrow.fromIndex) ?: continue
+                val to = point(arrow.toIndex) ?: continue
+                drawCorrectionArrow(from, to)
             }
         }
     }
@@ -349,11 +412,7 @@ private fun DrawScope.drawAngleArc(
     if (displayText.isNotEmpty()) {
         drawContext.canvas.nativeCanvas.drawText(
             displayText, vertex.x + radius + 6f, vertex.y - 6f,
-            android.graphics.Paint().apply {
-                color = android.graphics.Color.argb(230, 0, 228, 118)
-                textSize = 24f; isFakeBoldText = true; isAntiAlias = true
-                setShadowLayer(4f, 0f, 0f, android.graphics.Color.argb(180, 0, 0, 0))
-            },
+            AngleLabelPaint,
         )
     }
 }

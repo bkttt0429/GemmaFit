@@ -1,6 +1,7 @@
 package com.gemmafit.ui.screens.video
 
 import android.net.Uri
+import android.view.TextureView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,8 +43,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import com.gemmafit.ui.overlay.PoseLandmark
 import com.gemmafit.ui.overlay.PoseOverlay
 import com.gemmafit.ui.overlay.PoseOverlayState
@@ -64,6 +63,10 @@ fun VideoHero(
     live: LiveWorkoutState,
     videoUri: Uri?,
     isPlaying: Boolean,
+    isAnalyzing: Boolean = false,
+    analysisProgress: Float = 0f,
+    analysisFrameText: String = "",
+    showTrajectory: Boolean = false,
     onPlaybackPosition: (Long) -> Unit,
     onSubjectTap: (Float, Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -128,8 +131,12 @@ fun VideoHero(
                         PoseLandmark(it.x, it.y, it.visibility)
                     },
                     secondarySubjects = secondarySubjects,
-                    trajectoryFrames = live.poseTrajectory.map { frame ->
-                        frame.map { PoseLandmark(it.x, it.y, it.visibility) }
+                    trajectoryFrames = if (showTrajectory) {
+                        live.poseTrajectory.map { frame ->
+                            frame.map { PoseLandmark(it.x, it.y, it.visibility) }
+                        }
+                    } else {
+                        emptyList()
                     },
                     violationJoints = live.activeWarnings
                         .filter { it.joint.isNotEmpty() }
@@ -204,8 +211,10 @@ fun VideoHero(
             }
 
             // Frame counter / progress overlay
-            if (live.totalFramesAnalyzed > 1) {
-                val progress = if (live.totalFramesAnalyzed > 1) {
+            if (isAnalyzing || live.totalFramesAnalyzed > 1) {
+                val progress = if (isAnalyzing) {
+                    analysisProgress.coerceIn(0f, 0.99f)
+                } else if (live.totalFramesAnalyzed > 1) {
                     live.currentFrameIndex.toFloat() / (live.totalFramesAnalyzed - 1).coerceAtLeast(1)
                 } else 0f
 
@@ -217,7 +226,7 @@ fun VideoHero(
                         .padding(horizontal = 12.dp, vertical = 6.dp),
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (isPlaying) {
+                        if (isPlaying || isAnalyzing) {
                             Canvas(modifier = Modifier.size(14.dp)) {
                                 val sw = 2.dp.toPx()
                                 drawArc(
@@ -240,7 +249,12 @@ fun VideoHero(
                         }
                         Spacer(Modifier.size(6.dp))
                         Text(
-                            text = "${live.currentFrameIndex + 1}/${live.totalFramesAnalyzed}",
+                            text = if (isAnalyzing) {
+                                val percent = (progress * 100).toInt()
+                                if (analysisFrameText.isNotBlank()) "$percent%  $analysisFrameText" else "$percent%"
+                            } else {
+                                "${live.currentFrameIndex + 1}/${live.totalFramesAnalyzed}"
+                            },
                             color = TextPrimary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
@@ -286,6 +300,7 @@ private fun SmoothVideoPlayer(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val textureViewRef = remember(uri) { arrayOfNulls<TextureView>(1) }
     val player = remember(uri) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(uri))
@@ -297,7 +312,10 @@ private fun SmoothVideoPlayer(
     }
 
     DisposableEffect(player) {
-        onDispose { player.release() }
+        onDispose {
+            textureViewRef[0]?.let { player.clearVideoTextureView(it) }
+            player.release()
+        }
     }
 
     LaunchedEffect(player, targetPositionMs) {
@@ -316,14 +334,16 @@ private fun SmoothVideoPlayer(
 
     AndroidView(
         factory = { ctx ->
-            PlayerView(ctx).apply {
-                useController = false
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                this.player = player
+            TextureView(ctx).apply {
+                textureViewRef[0] = this
+                player.setVideoTextureView(this)
             }
         },
-        update = { view ->
-            if (view.player !== player) view.player = player
+        update = { textureView ->
+            if (textureViewRef[0] !== textureView) {
+                textureViewRef[0] = textureView
+                player.setVideoTextureView(textureView)
+            }
         },
         modifier = modifier,
     )

@@ -8,6 +8,7 @@ LlmOutput run_llm_inference(
     const LlmInput& input, const std::string& model_path) {
     LlmOutput output;
     output.success = false;
+    output.function_call.args_json = "{}";
 
     // Build the prompt with system message + biomechanics data
     std::string prompt = build_system_prompt();
@@ -23,19 +24,11 @@ LlmOutput run_llm_inference(
 
     prompt += "\nSelect the most appropriate function to call based on the safety data above.";
 
-    // NOTE: Actual llama.cpp inference is invoked via JNI.
-    // This stub provides the interface structure; the real implementation
-    // will use llama.cpp's grammar-constrained generation to ensure
-    // the output is a valid Function Calling JSON.
-    //
-    // Pseudo-code for JNI side:
-    //   LlamaContext ctx = llama_init_from_file(model_path.c_str(), params);
-    //   std::string response = llama_generate(ctx, prompt);
-    //   output.raw_response = response;
-    //   output.function_call = parse_function_call(response);
+    (void)input;
+    (void)model_path;
+    (void)prompt;
 
-    output.raw_response = prompt;
-    output.success = true;
+    output.error_message = "llama_cpp_backend_not_linked";
     return output;
 }
 

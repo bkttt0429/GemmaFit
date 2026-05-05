@@ -64,10 +64,26 @@ PoseCandidate shifted_motion(PoseCandidate candidate, double dx, double dy) {
     return SubjectSelector::build_candidate(candidate.landmarks).value();
 }
 
-PoseCandidate zero_area_candidate() {
+LandmarkArray distributed_blank_landmarks() {
     LandmarkArray lm{};
-    for (auto& p : lm) p = {0.5, 0.5, 0.0};
-    return SubjectSelector::build_candidate(lm, 0.15).value();
+    for (std::size_t i = 0; i < kPoseLandmarkCount; ++i) {
+        lm[i] = {
+            static_cast<double>(i % 6) / 5.0,
+            static_cast<double>(i / 6) / 5.0,
+            0.0,
+        };
+    }
+    return lm;
+}
+
+PoseCandidate invalid_large_bbox_candidate() {
+    PoseCandidate candidate;
+    candidate.landmarks = distributed_blank_landmarks();
+    candidate.bbox = {0.0, 0.0, 1.0, 1.0};
+    candidate.center_x = 0.5;
+    candidate.center_y = 0.5;
+    candidate.avg_visibility = 1.0;
+    return candidate;
 }
 
 }  // namespace
@@ -91,8 +107,14 @@ int main() {
 
     {
         SubjectSelector selector;
+        const auto blank = distributed_blank_landmarks();
+        check("distributed zero visibility is rejected", !SubjectSelector::build_candidate(blank).has_value());
+    }
+
+    {
+        SubjectSelector selector;
         const auto out = selector.update({
-            zero_area_candidate(),
+            invalid_large_bbox_candidate(),
             synth_candidate(0.5, 0.55),
         });
         check("active_index maps back to source index", out.active_index == 1);
@@ -103,7 +125,7 @@ int main() {
         SubjectSelector selector;
         std::vector<PoseCandidate> frame = {
             synth_candidate(0.50, 0.55, 0.20),
-            synth_candidate(0.10, 0.10, 0.05),
+            synth_candidate(0.10, 0.10, 0.10),
         };
         const auto first = selector.update(frame);
         const auto second = selector.update(frame);

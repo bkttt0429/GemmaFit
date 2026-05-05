@@ -16,9 +16,16 @@ data class SessionSummary(
     val detection: ExerciseDetection = ExerciseDetection(),
     val safetyEvents: List<SafetyEvent> = emptyList(),
     val formScores: List<FormScorePoint> = emptyList(),
+    val viewLimitedCount: Int = 0,
+    val lowConfidenceCount: Int = 0,
+    val notApplicableCounts: Map<String, Int> = emptyMap(),
     val muscleFocusDistribution: Map<String, Int> = emptyMap(),
     val repHistory: List<RepRecord> = emptyList(),
     val coachTips: List<String> = emptyList(),
+    val aiInsights: List<CoachInsight> = emptyList(),
+    val sessionCoachInsight: SessionCoachInsight = SessionCoachInsight(),
+    val capabilityContract: CapabilityContract = CapabilityContract(),
+    val evidenceRefs: List<String> = emptyList(),
 )
 
 /**
@@ -53,6 +60,47 @@ data class FormScorePoint(
 )
 
 /**
+ * A single tracked point used by the short-lived motion trace layer.
+ * These points are runtime evidence only; they are not written to long-term memory.
+ */
+data class TracePoint(
+    val frameIndex: Int,
+    val timestampMs: Long,
+    val jointId: Int,
+    val x: Float,
+    val y: Float,
+    val visibility: Float,
+)
+
+/**
+ * Rep-level trace evidence safe for Evidence Cards, memory summaries, and Gemma prompts.
+ * It intentionally stores derived movement evidence, not raw video or full landmark history.
+ */
+data class RepTraceSummary(
+    val repNumber: Int,
+    val exercise: String,
+    val tempoSec: Float,
+    val romProxyDeg: Float,
+    val peakVelocityDegS: Float,
+    val smoothnessProxy: Float,
+    val lateralSwayProxy: Float,
+    val pathDeviationFromBaseline: Float,
+    val confidenceCoverage: Float,
+)
+
+/**
+ * Runtime personal trace envelope learned only from high-confidence clean reps.
+ */
+data class PersonalTraceEnvelope(
+    val exercise: String,
+    val cleanRepCount: Int = 0,
+    val avgTempoSec: Float = 0f,
+    val avgRomProxyDeg: Float = 0f,
+    val avgLateralSwayProxy: Float = 0f,
+    val avgSmoothnessProxy: Float = 0f,
+)
+
+/**
  * A completed rep record.
  */
 data class RepRecord(
@@ -60,6 +108,7 @@ data class RepRecord(
     val formQuality: Float,
     val rangeOfMotionDeg: Float,
     val hadViolations: Boolean,
+    val traceSummary: RepTraceSummary? = null,
 )
 
 /**
@@ -81,6 +130,7 @@ data class LiveWorkoutState(
     val templateMetrics: Map<String, Float> = emptyMap(),
     val coachMessage: String = "",
     val coachPriority: String = "low",
+    val coachInsight: CoachInsight = CoachInsight(),
     val qualityFlags: List<QualityFlag> = emptyList(),
     val trustMatrix: List<TrustMatrixItem> = defaultTrustMatrix(),
     val evidenceCard: EvidenceCard = EvidenceCard(),
@@ -100,6 +150,7 @@ data class LiveWorkoutState(
     val videoPreviewHeight: Int = 0,
     val imageWidth: Int = 1080,
     val imageHeight: Int = 1920,
+    val repHistory: List<RepRecord> = emptyList(),
     // Frame navigation
     val currentFrameIndex: Int = 0,
     val currentFrameTimestampMs: Long = 0L,
@@ -161,6 +212,67 @@ data class MuscleFocusResult(
     val confidence: String,
 )
 
+data class CoachInsight(
+    val message: String = "",
+    val priority: String = "low",
+    val localizationKey: String = "",
+    val backend: String = "fallback",
+    val functionName: String = "",
+    val argsJson: String = "{}",
+    val selectionBasis: String = "",
+    val evidenceRefs: List<String> = emptyList(),
+    val summaryNarrative: String = "",
+    val modelInfo: String = "{}",
+    val fallback: Boolean = true,
+)
+
+data class SessionCoachContext(
+    val totalFrames: Int,
+    val totalReps: Int,
+    val avgFormScore: Float,
+    val durationSeconds: Int,
+    val mainExercise: String,
+    val exerciseConfidence: Float,
+    val detectedExercises: Map<String, Int>,
+    val safetyEvents: List<SafetyEvent>,
+    val formScores: List<FormScorePoint>,
+    val viewLimitedCount: Int,
+    val lowConfidenceCount: Int,
+    val notApplicableCounts: Map<String, Int>,
+    val muscleFocusDistribution: Map<String, Int>,
+    val repHistory: List<RepRecord>,
+    val capabilityContract: CapabilityContract = CapabilityContract(),
+    val evidenceRefs: List<String> = emptyList(),
+)
+
+data class SessionCoachInsight(
+    val headline: String = "",
+    val whatISaw: String = "",
+    val whyItMatters: String = "",
+    val notJudged: String = "",
+    val nextFocus: String = "",
+    val backend: String = "fallback",
+    val functionName: String = "",
+    val evidenceRefs: List<String> = emptyList(),
+    val selectionBasis: String = "",
+    val inferenceTimeMs: Double = 0.0,
+    val fallback: Boolean = true,
+)
+
+enum class CoachTriggerEvent {
+    WARNING_CHANGED,
+    REP_COMPLETED,
+    FULL_ANALYSIS_COMPLETE,
+}
+
+object CoachTriggerPolicy {
+    const val MODE = "SUMMARY_ONLY"
+
+    fun shouldTrigger(event: CoachTriggerEvent): Boolean {
+        return event == CoachTriggerEvent.FULL_ANALYSIS_COMPLETE
+    }
+}
+
 data class QualityFlag(
     val id: String,
     val status: String,  // OK, MONITOR, WARNING, CRITICAL, NOT_APPLICABLE, LOW_CONFIDENCE, VIEW_LIMITED
@@ -171,6 +283,52 @@ data class QualityFlag(
     val rule: Int = 0,
     val joint: String = "",
 )
+
+data class EvidenceDagNode(
+    val id: String,
+    val type: String,
+    val label: String,
+    val metric: String,
+    val value: Float,
+    val unit: String,
+    val confidence: Float,
+    val status: String,
+    val sourceModule: String,
+    val sourceFunction: String,
+    val frameRange: String,
+    val landmarkRefs: List<String> = emptyList(),
+)
+
+data class EvidenceDagEdge(
+    val from: String,
+    val to: String,
+    val relation: String,
+)
+
+data class EvidenceDag(
+    val nodes: List<EvidenceDagNode> = emptyList(),
+    val edges: List<EvidenceDagEdge> = emptyList(),
+) {
+    val ids: Set<String> get() = nodes.map { it.id }.toSet()
+}
+
+data class CapabilityJudgment(
+    val metric: String,
+    val reason: String = "",
+    val confidenceCeiling: Float = 0f,
+    val requiredEvidence: List<String> = emptyList(),
+    val evidenceRefs: List<String> = emptyList(),
+)
+
+data class CapabilityContract(
+    val canJudge: List<CapabilityJudgment> = emptyList(),
+    val cannotJudge: List<CapabilityJudgment> = emptyList(),
+) {
+    val evidenceRefs: List<String>
+        get() = (canJudge.flatMap { it.evidenceRefs } + cannotJudge.flatMap { it.evidenceRefs })
+            .filter { it.isNotBlank() }
+            .distinct()
+}
 
 data class TrustMatrixItem(
     val status: String,
@@ -189,6 +347,9 @@ data class EvidenceCard(
     val reason: String = "No active issue.",
     val evidence: List<EvidenceItem> = emptyList(),
     val trustFlags: List<String> = emptyList(),
+    val evidenceRefs: List<String> = emptyList(),
+    val capabilityCanJudge: List<String> = emptyList(),
+    val capabilityCannotJudge: List<String> = emptyList(),
     val unsupportedJudgments: List<String> = listOf(
         "joint_force",
         "clinical_injury_risk",

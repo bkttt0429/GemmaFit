@@ -16,6 +16,68 @@ validity.
 | C | Coaching guideline or practical screening framework | Use for coaching language and UX, not hard diagnostic claims |
 | H | Heuristic derived for this prototype | Must be validated on local data before claiming performance |
 
+## Evidence Backbone
+
+These sources support the system architecture and policy boundary rather than
+any single threshold. Current implementation maps this layer into a
+Capability Contract and an Evidence DAG: the app declares `can_judge` and
+`cannot_judge` before Gemma runs, then requires model `evidence_refs` to point
+back to structured evidence ids.
+
+| Topic | Current anchor | Project use |
+|---|---|---|
+| Evidence provenance | W3C PROV-DM / PROV-O (deep review pending) | Model outputs should be traceable to metric, gate, and source module nodes instead of post-hoc prose. |
+| Model/data documentation | Model Cards and Datasheets (deep review pending) | Document what the model can and cannot support; do not hide missing provenance behind broad claims. |
+| Selective prediction / reject option | Geifman & El-Yaniv, SelectiveNet, conformal prediction for NLP (deep review pending) | Treat unsupported metrics as metric-level abstention, not full-session failure when other evidence is reliable. |
+| Pose confidence calibration | BlazePose / MediaPipe confidence docs plus biomechanical validation papers | Confidence gates and confidence ceilings prevent precise-sounding unsupported metric claims. |
+| Health-AI transparency | WHO AI health ethics guidance | Users should see useful evidence first and skipped judgments second; GemmaFit remains non-diagnostic. |
+
+## Prototype Thresholds
+
+The following values are implementation thresholds or proxy metrics until
+GemmaFit has local calibration evidence. They may appear in debug evidence and
+demo explanations, but not as clinically validated claims.
+
+| Metric / rule | Current threshold | Label |
+|---|---:|---|
+| Knee/ankle ratio | `0.8` | `prototype_threshold` |
+| FPPA warning | `10 deg` | `prototype_threshold` |
+| Trunk / body-line deviation | exercise-specific `15-55 deg` ranges | `prototype_threshold` |
+| Bilateral asymmetry | `10 deg` legacy / template-gated | `prototype_threshold` |
+| Rapid movement | `600 deg/s` | `prototype_threshold` |
+| ROM insufficient | `<50% expected ROM` | `prototype_threshold` |
+
+## Product Claims
+
+Use the literature to justify a safety-bounded coaching product, not a clinical
+diagnostic tool. Product copy should say:
+
+- `camera-limited evidence should abstain from unsupported metrics`
+- `pose-only muscle focus is an estimate, not activation percentage`
+- `local AI does not override deterministic gates`
+- `single-camera metrics are movement-quality proxies`
+
+Do not claim:
+
+- validated injury prediction
+- precise joint force or lumbar loading
+- EMG-style muscle activation
+- clinical improvement, diagnosis, fall-risk score, or sarcopenia detection
+
+## Research Gaps To Fill After Deep Review
+
+- Metric-level abstention is less mature than sample-level selective
+  classification; GemmaFit can contribute a practical contract for partial
+  movement judgments.
+- Pose visibility does not automatically calibrate downstream biomechanical
+  error; GemmaFit should treat confidence ceilings per metric as an engineering
+  safeguard until validated.
+- Quantization-aware tool-call safety for small on-device LLMs is thin; v3
+  benchmarks should compare Q4/Q5 schema validity, forbidden-claim rate, and
+  evidence-ref validity.
+- Augmented feedback evidence supports specificity and timing, but health and
+  older-adult claims need conservative non-clinical wording.
+
 ## High-Priority Sources
 
 | Source | Evidence | Project use | Notes and limits |

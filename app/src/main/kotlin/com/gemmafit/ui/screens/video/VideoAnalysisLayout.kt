@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -68,7 +70,14 @@ fun VideoAnalysisLayout(
     isPaused: Boolean,
     isProcessing: Boolean,
     videoUri: Uri?,
+    analysisProgress: Float = 0f,
+    analysisCurrentFrame: Int = 0,
+    analysisTotalFrames: Int = 0,
+    analysisLabel: String = "",
+    showTrajectory: Boolean = false,
     onPickVideo: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onToggleTrajectory: () -> Unit = {},
     onResetCamera: () -> Unit,
     onPrevFrame: () -> Unit,
     onNextFrame: () -> Unit,
@@ -98,6 +107,9 @@ fun VideoAnalysisLayout(
         // ── Compact top bar ─────────────────────────────────────────
         CompactTopBar(
             onPickVideo = onPickVideo,
+            onOpenSettings = onOpenSettings,
+            showTrajectory = showTrajectory,
+            onToggleTrajectory = onToggleTrajectory,
             onResetCamera = onResetCamera,
         )
 
@@ -109,6 +121,10 @@ fun VideoAnalysisLayout(
                 live = live,
                 videoUri = videoUri,
                 isPlaying = !isPaused && !isProcessing && live.totalFramesAnalyzed > 0,
+                isAnalyzing = isProcessing,
+                analysisProgress = analysisProgress,
+                analysisFrameText = analysisFrameText(analysisCurrentFrame, analysisTotalFrames),
+                showTrajectory = showTrajectory,
                 onPlaybackPosition = onPlaybackPosition,
                 onSubjectTap = onSubjectTap,
                 modifier = Modifier
@@ -123,7 +139,7 @@ fun VideoAnalysisLayout(
         }
 
         // ── Scrollable detail section (~55%) ────────────────────────
-        val isPlaying = !isPaused && live.totalFramesAnalyzed > 1
+        val isPlaying = !isPaused && !isProcessing && live.totalFramesAnalyzed > 1
         Column(
             modifier = Modifier
                 .weight(0.55f)
@@ -134,7 +150,13 @@ fun VideoAnalysisLayout(
         ) {
             Spacer(Modifier.height(4.dp))
 
-            if (live.totalFramesAnalyzed > 1) {
+            if (isProcessing) {
+                AnalysisProgressBanner(
+                    label = analysisLabelFor(analysisLabel),
+                    progress = analysisProgress,
+                    frameText = analysisFrameText(analysisCurrentFrame, analysisTotalFrames),
+                )
+            } else if (live.totalFramesAnalyzed > 1) {
                 FrameScrubber(
                     current = live.currentFrameIndex,
                     total = live.totalFramesAnalyzed,
@@ -162,7 +184,7 @@ fun VideoAnalysisLayout(
             CoachPanel(
                 message = effectiveCoachMessage,
                 priority = live.coachPriority,
-                source = if (live.coachMessage.isNotEmpty()) "mock_gemma_feedback" else "",
+                source = if (live.coachMessage.isNotEmpty()) live.coachInsight.backend else "",
             )
 
             // Evidence (always visible, collapsed by default inside)
@@ -193,6 +215,9 @@ fun VideoAnalysisLayout(
 @Composable
 private fun CompactTopBar(
     onPickVideo: () -> Unit,
+    onOpenSettings: () -> Unit,
+    showTrajectory: Boolean,
+    onToggleTrajectory: () -> Unit,
     onResetCamera: () -> Unit,
 ) {
     Row(
@@ -235,12 +260,36 @@ private fun CompactTopBar(
         }
 
         IconButton(
+            onClick = onToggleTrajectory,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                Icons.Filled.SlowMotionVideo,
+                contentDescription = if (showTrajectory) "Hide trajectory" else "Show trajectory",
+                tint = if (showTrajectory) Green else TextSecondary,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+
+        IconButton(
             onClick = onResetCamera,
             modifier = Modifier.size(40.dp),
         ) {
             Icon(
                 Icons.Filled.Refresh,
                 contentDescription = "Back to camera",
+                tint = TextSecondary,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+
+        IconButton(
+            onClick = onOpenSettings,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = "Settings",
                 tint = TextSecondary,
                 modifier = Modifier.size(22.dp),
             )
@@ -299,5 +348,79 @@ private fun MinimalBottomBar(
                 fontSize = 15.sp,
             )
         }
+    }
+}
+
+@Composable
+private fun AnalysisProgressBanner(
+    label: String,
+    progress: Float,
+    frameText: String,
+) {
+    val safeProgress = progress.coerceIn(0f, 0.99f)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(SurfaceColor)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = label,
+                color = TextPrimary,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "${(safeProgress * 100).toInt()}%",
+                color = Green,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(5.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(Color(0x33FFFFFF)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(safeProgress)
+                    .height(5.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(Blue),
+            )
+        }
+        Text(
+            text = frameText.ifBlank { "Preparing frames..." },
+            color = TextSecondary,
+            fontSize = 12.sp,
+        )
+    }
+}
+
+private fun analysisLabelFor(label: String): String {
+    return when (label) {
+        "preview_loading" -> "Preparing preview"
+        "preview_analysis" -> "Preview analysis"
+        "full_analysis" -> "Full analysis"
+        "complete" -> "Analysis complete"
+        else -> label.replace("_", " ").ifBlank { "Analyzing video" }
+    }
+}
+
+private fun analysisFrameText(currentFrame: Int, totalFrames: Int): String {
+    return if (totalFrames > 0) {
+        "Frame ${currentFrame.coerceAtLeast(0)} / $totalFrames"
+    } else {
+        ""
     }
 }

@@ -11,6 +11,7 @@ local.properties
 
 # Native build
 native/build/
+native/build_local/
 native/llama.cpp/build/
 
 # 模型（體積過大）
@@ -34,8 +35,17 @@ Thumbs.db
 # Other outputs & IDE settings
 finetune/output/
 .gradle/
+.kotlin/errors/
 .vscode/
 .claude/
+app/.cxx/
+
+# Local debug/test artifacts
+debug_phone_report*.json
+phone_*.png
+perf_artifacts/
+prototype/outputs/
+test_assets/videos/internet_public/
 
 # Large media & datasets
 *.zip

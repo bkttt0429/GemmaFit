@@ -1,8 +1,39 @@
 #include <jni.h>
+#include <exception>
 #include <string>
 #include <vector>
 
 #include "kinematics_bridge.h"
+
+namespace {
+
+std::string json_escape(const std::string& value) {
+    std::string escaped;
+    escaped.reserve(value.size() + 16);
+    for (unsigned char c : value) {
+        switch (c) {
+            case '\"': escaped += "\\\""; break;
+            case '\\': escaped += "\\\\"; break;
+            case '\n': escaped += "\\n"; break;
+            case '\r': escaped += "\\r"; break;
+            case '\t': escaped += "\\t"; break;
+            default:
+                escaped += static_cast<char>(c);
+                break;
+        }
+    }
+    return escaped;
+}
+
+jstring safe_error(JNIEnv* env, const std::string& message) {
+    if (env->ExceptionCheck()) {
+        env->ExceptionClear();
+    }
+    std::string json = "{\"error\":\"" + json_escape(message) + "\"}";
+    return env->NewStringUTF(json.c_str());
+}
+
+}  // namespace
 
 // JNI wrapper for KinematicsBridge.processFrame()
 // Signature: (Ljava/lang/String;[F[FF)Ljava/lang/String;
@@ -14,13 +45,21 @@ Java_com_gemmafit_jni_KinematicsBridge_processFrame(
     jfloatArray prevLandmarks,
     jfloat visibilityThreshold) {
 
+    try {
+    if (landmarks == nullptr) {
+        return safe_error(env, "Missing landmarks array");
+    }
+
     // Extract float array from Java
     jsize len = env->GetArrayLength(landmarks);
     if (len != 99) {
-        return env->NewStringUTF("{\"error\":\"Invalid landmarks array size\"}");
+        return safe_error(env, "Invalid landmarks array size");
     }
 
     jfloat* landmarks_ptr = env->GetFloatArrayElements(landmarks, nullptr);
+    if (landmarks_ptr == nullptr) {
+        return safe_error(env, "Unable to access landmarks array");
+    }
     std::vector<float> landmarks_vec(landmarks_ptr, landmarks_ptr + len);
     env->ReleaseFloatArrayElements(landmarks, landmarks_ptr, JNI_ABORT);
 
@@ -31,9 +70,11 @@ Java_com_gemmafit_jni_KinematicsBridge_processFrame(
         jsize prev_len = env->GetArrayLength(prevLandmarks);
         if (prev_len == 99) {
             jfloat* prev = env->GetFloatArrayElements(prevLandmarks, nullptr);
-            prev_landmarks_vec.assign(prev, prev + prev_len);
-            prev_ptr = prev_landmarks_vec.data();
-            env->ReleaseFloatArrayElements(prevLandmarks, prev, JNI_ABORT);
+            if (prev != nullptr) {
+                prev_landmarks_vec.assign(prev, prev + prev_len);
+                prev_ptr = prev_landmarks_vec.data();
+                env->ReleaseFloatArrayElements(prevLandmarks, prev, JNI_ABORT);
+            }
         }
     }
 
@@ -45,10 +86,15 @@ Java_com_gemmafit_jni_KinematicsBridge_processFrame(
     );
 
     if (!output.success) {
-        return env->NewStringUTF("{\"error\":\"Pipeline failed\"}");
+        return safe_error(env, "Pipeline failed");
     }
 
     return env->NewStringUTF(output.combined_json.c_str());
+    } catch (const std::exception& e) {
+        return safe_error(env, e.what());
+    } catch (...) {
+        return safe_error(env, "Unknown native exception");
+    }
 }
 
 // JNI wrapper for KinematicsBridge companion methods
@@ -60,16 +106,29 @@ Java_com_gemmafit_jni_KinematicsBridge_getJointAnglesJson(
     jobject /*thiz*/,
     jfloatArray landmarks) {
 
+    try {
+    if (landmarks == nullptr) {
+        return safe_error(env, "Missing landmarks array");
+    }
+
     jsize len = env->GetArrayLength(landmarks);
     if (len != 99) {
-        return env->NewStringUTF("{\"error\":\"Invalid size\"}");
+        return safe_error(env, "Invalid size");
     }
 
     jfloat* ptr = env->GetFloatArrayElements(landmarks, nullptr);
+    if (ptr == nullptr) {
+        return safe_error(env, "Unable to access landmarks array");
+    }
     auto landmarks_arr = gemmafit::kinematics::landmarks_from_float99(ptr, len);
     auto angles = gemmafit::kinematics::compute_all_joint_angles(landmarks_arr);
     std::string json = gemmafit::bridge::to_json(angles);
     env->ReleaseFloatArrayElements(landmarks, ptr, JNI_ABORT);
 
     return env->NewStringUTF(json.c_str());
+    } catch (const std::exception& e) {
+        return safe_error(env, e.what());
+    } catch (...) {
+        return safe_error(env, "Unknown native exception");
+    }
 }

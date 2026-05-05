@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <set>
 #include <string>
 
 using gemmafit::kinematics::ComResult;
@@ -114,6 +115,44 @@ bool has_flag(const std::vector<gemmafit::kinematics::QualityFlag>& flags,
     return false;
 }
 
+bool has_can_judge(const MotionQualityReport& report, const std::string& metric) {
+    for (const auto& item : report.capability_contract.can_judge) {
+        if (item.metric == metric) return true;
+    }
+    return false;
+}
+
+bool has_cannot_judge(const MotionQualityReport& report, const std::string& metric) {
+    for (const auto& item : report.capability_contract.cannot_judge) {
+        if (item.metric == metric) return true;
+    }
+    return false;
+}
+
+bool every_quality_flag_has_evidence_node(const MotionQualityReport& report) {
+    for (const auto& flag : report.quality_flags) {
+        bool found = false;
+        for (const auto& node : report.evidence_dag.nodes) {
+            if (node.metric == flag.id &&
+                (node.type == "quality_gate" || node.type == "safety_rule")) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}
+
+bool every_edge_endpoint_exists(const MotionQualityReport& report) {
+    std::set<std::string> ids;
+    for (const auto& node : report.evidence_dag.nodes) ids.insert(node.id);
+    for (const auto& edge : report.evidence_dag.edges) {
+        if (ids.count(edge.from) == 0 || ids.count(edge.to) == 0) return false;
+    }
+    return true;
+}
+
 void test_squat_frontal_metrics() {
     std::cout << "\n-- Motion Quality: frontal squat --\n";
     auto report = analyze(base_landmarks());
@@ -121,6 +160,10 @@ void test_squat_frontal_metrics() {
     check("frontal view inferred", report.view == "frontal");
     check("template metrics populated", report.template_metrics.size() >= 4);
     check("knee valgus gate applicable", !has_flag(report.not_applicable, "knee_valgus_fppa"));
+    check("frontal knee valgus can be judged",
+          has_can_judge(report, "frontal_knee_valgus"));
+    check("evidence DAG edges are valid",
+          every_edge_endpoint_exists(report));
 }
 
 void test_side_squat_refuses_fppa() {
@@ -130,6 +173,10 @@ void test_side_squat_refuses_fppa() {
     check("side view inferred", report.view == "side");
     check("FPPA not applicable in side view",
           has_flag(report.not_applicable, "knee_valgus_fppa", "NOT_APPLICABLE"));
+    check("side view still judges depth",
+          has_can_judge(report, "squat_depth"));
+    check("side view cannot judge frontal knee valgus",
+          has_cannot_judge(report, "frontal_knee_valgus"));
 }
 
 void test_push_up_template_gates() {
@@ -140,6 +187,8 @@ void test_push_up_template_gates() {
           has_flag(report.not_applicable, "knee_valgus_fppa", "NOT_APPLICABLE"));
     check("COM not applicable for push-up",
           has_flag(report.not_applicable, "com_offset", "NOT_APPLICABLE"));
+    check("push-up can judge elbow angle",
+          has_can_judge(report, "elbow_angle"));
 }
 
 void test_lunge_asymmetry_downgrade() {
@@ -148,6 +197,8 @@ void test_lunge_asymmetry_downgrade() {
     check("lunge detected", report.exercise == "lunge");
     check("bilateral asymmetry not single-frame critical",
           has_flag(report.not_applicable, "bilateral_asymmetry", "NOT_APPLICABLE"));
+    check("lunge cannot judge bilateral asymmetry",
+          has_cannot_judge(report, "bilateral_asymmetry"));
 }
 
 void test_low_confidence_gate() {
@@ -156,6 +207,12 @@ void test_low_confidence_gate() {
     check("low confidence status", report.overall_status == "LOW_CONFIDENCE");
     check("low confidence flag present",
           has_flag(report.low_confidence, "visibility", "LOW_CONFIDENCE"));
+    check("low confidence blocks hard form judgment",
+          has_cannot_judge(report, "hard_form_judgment"));
+    check("quality flags have evidence nodes",
+          every_quality_flag_has_evidence_node(report));
+    check("low confidence evidence DAG edges are valid",
+          every_edge_endpoint_exists(report));
 }
 
 }  // namespace

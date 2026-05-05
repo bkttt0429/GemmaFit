@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package com.gemmafit.memory.proto;
+
+option java_multiple_files = true;
+option java_package = "com.gemmafit.memory.proto";
+
+// Hot-config records persisted via androidx.datastore.proto.
+// See implementation_plan.md §11.6.
+//
+// NOTE: enum values mirror the Kotlin enums in Schemas.kt. The Proto
+// enums are deliberately separate so a Kotlin enum reorder cannot
+// silently change the on-disk serialization.
+
+enum CueStyleProto {
+    CUE_STYLE_UNSPECIFIED = 0;
+    CUE_STYLE_ENCOURAGING = 1;
+    CUE_STYLE_TERSE       = 2;
+    CUE_STYLE_DETAILED    = 3;
+}
+
+enum SupportTypeProto {
+    SUPPORT_TYPE_UNSPECIFIED = 0;
+    SUPPORT_TYPE_CHAIR       = 1;
+    SUPPORT_TYPE_WALL        = 2;
+    SUPPORT_TYPE_NONE        = 3;
+}
+
+// Stored as `profile.pb`. Single-user device — no user_id key.
+message UserProfileMemoryProto {
+    string         language        = 1;   // e.g. "zh-TW", "en"
+    float          voice_speed     = 2;   // 0.7 .. 1.3
+    float          font_scale      = 3;   // 1.0, 1.5, 2.0
+    bool           assisted_mode   = 4;   // Senior Mode toggle
+    CueStyleProto  cue_preference  = 5;
+    int32          schema_version  = 6;
+}
+
+// One file per exercise: `calibration/<exercise>.pb`.
+message CalibrationMemoryProto {
+    string             exercise                   = 1;
+    // Optional fields use the proto3 wrapper pattern: presence is
+    // signaled by `has_*` (the Kotlin layer maps these to nullable).
+    bool               has_baseline_rom_proxy     = 2;
+    double             baseline_rom_proxy         = 3;
+    bool               has_baseline_tempo_sec     = 4;
+    double             baseline_tempo_sec         = 5;
+
+    string             camera_distance_bucket     = 6;   // "near", "mid", "far"
+    string             camera_angle_bucket        = 7;   // "frontal", "side", "oblique"
+    string             camera_lighting_bucket     = 8;   // "dim", "ok", "bright"
+
+    SupportTypeProto   support_type               = 9;
+    int64              captured_at_ms             = 10;
+    int32              sessions_since_calibration = 11;
+    int32              clean_reps_collected       = 12;
+    int32              low_confidence_streak      = 13;
+}

@@ -48,6 +48,8 @@ Current output:
    `[domain, Glaive, HH]`.
 5. Use production-format validation from `fc["validation"]["production"]`.
 6. Use run suffix `gemmafit_v2_format_expand`.
+7. Preserve the merged HF/safetensors export for LiteRT-LM conversion before
+   deleting Colab artifacts.
 
 Implementation note: the notebook materializes a finite mixed dataset instead
 of passing a HuggingFace streaming `interleave_datasets` object to Unsloth.
@@ -59,6 +61,25 @@ HH-RLHF rows.
 The v2 run intentionally keeps `metric_for_best_model="eval_loss"` for now and
 relies on post-hoc `prototype/eval_compare.py` for function-match benchmarking.
 
+## v3 Evidence Router Prep
+
+Do not retrain until the deep literature report and native Evidence DAG contract
+are stable. The next dataset should be named separately from v2, for example
+`gemmafit_v3_evidence_router`, and should add these fields to the domain input:
+
+- `capability_contract.can_judge`
+- `capability_contract.cannot_judge`
+- compact `evidence_dag.nodes`
+- compact `evidence_dag.edges`
+- metric-level `confidence_ceiling`
+
+The target output should still be a single function call, but every output must
+include `evidence_refs`, `selection_basis`, and `refusal_level`. Old
+`warn_poor_visibility` examples should be mapped to
+`refuse_unsupported_question(reason="insufficient_evidence")` once the v3
+benchmark is created; keep v2 unchanged so existing benchmark artifacts remain
+reproducible.
+
 ## Reproduce
 
 ```bash
@@ -67,4 +88,9 @@ python generate_synthetic.py
 python format_expand.py
 ```
 
-Then run the notebook from Section 1 through Section 8 in Colab.
+Then run the notebook from Section 1 through Section 9 in Colab. After the
+`.litertlm` artifact is produced, copy it back and finalize it with:
+
+```bash
+python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v2-fc.litertlm --run-smoke
+```

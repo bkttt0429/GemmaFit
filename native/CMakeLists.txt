@@ -45,7 +45,13 @@ if(ANDROID)
     )
 endif()
 
-add_library(gemmafit_bridge SHARED
+if(ANDROID)
+    set(GEMMAFIT_BRIDGE_LIBRARY_TYPE SHARED)
+else()
+    set(GEMMAFIT_BRIDGE_LIBRARY_TYPE STATIC)
+endif()
+
+add_library(gemmafit_bridge ${GEMMAFIT_BRIDGE_LIBRARY_TYPE}
     ${GEMMAFIT_BRIDGE_SOURCES}
 )
 
@@ -102,6 +108,15 @@ target_link_libraries(test_kinematics_bridge
         gemmafit_kinematics
 )
 add_test(NAME test_kinematics_bridge COMMAND test_kinematics_bridge)
+
+add_executable(test_llm_bridge
+    tests/test_llm_bridge.cpp
+)
+target_link_libraries(test_llm_bridge
+    PRIVATE
+        gemmafit_bridge
+)
+add_test(NAME test_llm_bridge COMMAND test_llm_bridge)
 
 # Enable CTest
 enable_testing()

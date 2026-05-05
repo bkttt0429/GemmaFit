@@ -145,6 +145,7 @@ private:
 
     void remember_previous(const std::vector<CandidateRef>& refs);
     void reset_pending_auto();
+    void clear_lost_locked_subject();
 };
 
 std::string to_json(const SubjectSelection& selection);

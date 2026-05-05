@@ -19,6 +19,11 @@ constexpr std::array<int, 12> kMotionKeypoints = {
 };
 
 constexpr std::array<int, 4> kTorsoKeypoints = {11, 12, 23, 24};
+constexpr std::array<int, 8> kUpperBodyKeypoints = {11, 12, 13, 14, 15, 16, 23, 24};
+constexpr double kPresenceMinAvgVisibility = 0.18;
+constexpr double kPresenceVisibilityFloor = 0.25;
+constexpr int kPresenceMinVisibleKeypoints = 8;
+constexpr double kPresenceMinBboxArea = 0.01;
 constexpr double kFrameCenterX = 0.50;
 constexpr double kFrameCenterY = 0.55;
 constexpr double kAutoCenterRadius = 0.75;
@@ -56,6 +61,64 @@ bool valid_point(const Point3& p) {
     return std::isfinite(p.x) && std::isfinite(p.y);
 }
 
+struct PosePresenceStats {
+    double avg_visibility = 0.0;
+    int high_visibility_count = 0;
+    int torso_visible_count = 0;
+    int upper_body_visible_count = 0;
+    PoseBBox bbox;
+
+    bool can_render() const {
+        return avg_visibility >= kPresenceMinAvgVisibility &&
+               high_visibility_count >= kPresenceMinVisibleKeypoints &&
+               bbox.area() >= kPresenceMinBboxArea &&
+               (torso_visible_count >= 2 || upper_body_visible_count >= 4);
+    }
+};
+
+bool contains_index(const std::array<int, 4>& values, int needle) {
+    return std::find(values.begin(), values.end(), needle) != values.end();
+}
+
+bool contains_index(const std::array<int, 8>& values, int needle) {
+    return std::find(values.begin(), values.end(), needle) != values.end();
+}
+
+PosePresenceStats evaluate_presence(const LandmarkArray& landmarks) {
+    PosePresenceStats stats;
+    double visibility_sum = 0.0;
+    double min_x = 1.0;
+    double min_y = 1.0;
+    double max_x = 0.0;
+    double max_y = 0.0;
+
+    for (std::size_t i = 0; i < kPoseLandmarkCount; ++i) {
+        const auto& p = landmarks[i];
+        const double visibility = std::isfinite(p.z) ? clamp01(p.z) : 0.0;
+        visibility_sum += visibility;
+        if (visibility >= kPresenceVisibilityFloor && valid_point(p)) {
+            const int idx = static_cast<int>(i);
+            stats.high_visibility_count++;
+            if (contains_index(kTorsoKeypoints, idx)) stats.torso_visible_count++;
+            if (contains_index(kUpperBodyKeypoints, idx)) stats.upper_body_visible_count++;
+            min_x = std::min(min_x, clamp01(p.x));
+            min_y = std::min(min_y, clamp01(p.y));
+            max_x = std::max(max_x, clamp01(p.x));
+            max_y = std::max(max_y, clamp01(p.y));
+        }
+    }
+
+    stats.avg_visibility = visibility_sum / static_cast<double>(kPoseLandmarkCount);
+    if (stats.high_visibility_count > 0) {
+        stats.bbox = PoseBBox{min_x, min_y, max_x, max_y};
+    }
+    return stats;
+}
+
+bool passes_presence_gate(const LandmarkArray& landmarks) {
+    return evaluate_presence(landmarks).can_render();
+}
+
 }  // namespace
 
 const char* status_name(SubjectLockStatus s) {
@@ -74,45 +137,22 @@ SubjectSelector::SubjectSelector(SubjectSelectorConfig cfg) : cfg_(cfg) {}
 std::optional<PoseCandidate> SubjectSelector::build_candidate(
     const LandmarkArray& landmarks,
     double keypoint_visibility_floor) {
+    (void) keypoint_visibility_floor;
 
-    std::vector<int> visible_indices;
-    visible_indices.reserve(kPoseLandmarkCount);
-    for (std::size_t i = 0; i < kPoseLandmarkCount; ++i) {
-        if (valid_point(landmarks[i]) && landmarks[i].z > keypoint_visibility_floor) {
-            visible_indices.push_back(static_cast<int>(i));
-        }
-    }
-
-    std::vector<int> pick_indices = visible_indices;
-    if (pick_indices.empty()) {
-        for (std::size_t i = 0; i < kPoseLandmarkCount; ++i) {
-            if (valid_point(landmarks[i])) pick_indices.push_back(static_cast<int>(i));
-        }
-    }
-    if (pick_indices.empty()) return std::nullopt;
-
-    double min_x = 1.0;
-    double min_y = 1.0;
-    double max_x = 0.0;
-    double max_y = 0.0;
-    for (int idx : pick_indices) {
-        const auto& p = landmarks[static_cast<std::size_t>(idx)];
-        min_x = std::min(min_x, clamp01(p.x));
-        min_y = std::min(min_y, clamp01(p.y));
-        max_x = std::max(max_x, clamp01(p.x));
-        max_y = std::max(max_y, clamp01(p.y));
-    }
+    const PosePresenceStats presence = evaluate_presence(landmarks);
+    if (!presence.can_render()) return std::nullopt;
 
     PoseCandidate candidate;
     candidate.landmarks = landmarks;
-    candidate.bbox = PoseBBox{min_x, min_y, max_x, max_y};
+    candidate.bbox = presence.bbox;
 
     double tx_sum = 0.0;
     double ty_sum = 0.0;
     int torso_count = 0;
     for (int idx : kTorsoKeypoints) {
         const auto& p = landmarks[static_cast<std::size_t>(idx)];
-        if (valid_point(p) && p.z > keypoint_visibility_floor) {
+        const double visibility = std::isfinite(p.z) ? clamp01(p.z) : 0.0;
+        if (valid_point(p) && visibility >= kPresenceVisibilityFloor) {
             tx_sum += p.x;
             ty_sum += p.y;
             torso_count++;
@@ -126,11 +166,7 @@ std::optional<PoseCandidate> SubjectSelector::build_candidate(
         candidate.center_y = clamp01((candidate.bbox.top + candidate.bbox.bottom) * 0.5);
     }
 
-    double visibility_sum = 0.0;
-    for (const auto& p : landmarks) {
-        visibility_sum += std::isfinite(p.z) ? p.z : 0.0;
-    }
-    candidate.avg_visibility = visibility_sum / static_cast<double>(kPoseLandmarkCount);
+    candidate.avg_visibility = presence.avg_visibility;
     return candidate;
 }
 
@@ -174,6 +210,14 @@ void SubjectSelector::reset_pending_auto() {
     pending_auto_subject_frames_ = 0;
 }
 
+void SubjectSelector::clear_lost_locked_subject() {
+    locked_subject_.reset();
+    locked_track_id_ = -1;
+    manual_lock_ = false;
+    pending_tap_.reset();
+    reset_pending_auto();
+}
+
 std::vector<SubjectSelector::CandidateRef> SubjectSelector::visible_refs(
     const std::vector<PoseCandidate>& candidates) const {
 
@@ -182,8 +226,7 @@ std::vector<SubjectSelector::CandidateRef> SubjectSelector::visible_refs(
     refs.reserve(take);
     for (std::size_t i = 0; i < take; ++i) {
         const auto& c = candidates[i];
-        if (c.avg_visibility >= cfg_.subject_min_visibility ||
-            c.bbox.area() > 0.01) {
+        if (passes_presence_gate(c.landmarks)) {
             refs.push_back(CandidateRef{c, static_cast<int>(i)});
         }
     }
@@ -420,8 +463,13 @@ SubjectSelection SubjectSelector::update(const std::vector<PoseCandidate>& candi
         }
         selection.status = SubjectLockStatus::kSubjectLost;
         selection.track_id = locked_track_id_;
-        selection.reason = locked_subject_ ? "locked_subject_lost" : "no_subject_detected";
+        selection.reason = (locked_subject_ || manual_lock_) ? "locked_subject_lost" : "no_person_detected";
         selection.trust_flags = {"SUBJECT_LOST"};
+        if (locked_subject_ || manual_lock_) {
+            const int track_id = locked_track_id_;
+            clear_lost_locked_subject();
+            selection.track_id = track_id;
+        }
         return finish(selection);
     }
 
@@ -494,6 +542,9 @@ SubjectSelection SubjectSelector::update(const std::vector<PoseCandidate>& candi
             selection.track_id = locked_track_id_;
             selection.reason = "locked_subject_lost";
             selection.trust_flags = {"SUBJECT_LOST"};
+            const int track_id = locked_track_id_;
+            clear_lost_locked_subject();
+            selection.track_id = track_id;
             return finish(selection);
         }
     }

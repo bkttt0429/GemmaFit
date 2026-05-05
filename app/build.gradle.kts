@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
+    id("com.google.protobuf")
 }
 
 android {
@@ -21,6 +23,7 @@ android {
         // MediaPipe models path
         buildConfigField("String", "MODEL_PATH",
             "\"/sdcard/Android/data/com.gemmafit/files/models/\"")
+        manifestPlaceholders["debugProviderEnabled"] = "false"
 
         // NDK / CMake
         externalNativeBuild {
@@ -50,6 +53,7 @@ android {
         debug {
             isDebuggable = true
             buildConfigField("boolean", "SHOW_DEBUG_OVERLAY", "true")
+            manifestPlaceholders["debugProviderEnabled"] = "true"
         }
     }
 
@@ -71,6 +75,21 @@ android {
         cmake {
             path = file("${project.rootDir}/native/CMakeLists.txt")
             version = "3.22.1"
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
         }
     }
 }
@@ -109,19 +128,31 @@ dependencies {
     // MediaPipe
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
 
+    // LiteRT-LM local Gemma inference. Pinned from Google Maven metadata for reproducible builds.
+    implementation("com.google.ai.edge.litertlm:litertlm-android:0.11.0-rc1")
+
     // Smooth local video playback for analysis overlays
     val media3Version = "1.3.1"
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
 
-    // DataStore (preferences)
+    // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("com.google.protobuf:protobuf-javalite:3.25.3")
+
+    // Room append-only memory store
+    val roomVersion = "2.8.4"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")

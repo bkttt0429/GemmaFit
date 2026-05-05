@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
@@ -39,10 +40,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gemmafit.camera.CameraPreviewWithOverlay
+import com.gemmafit.settings.AppSettings
 import com.gemmafit.ui.overlay.PoseLandmark
 import com.gemmafit.ui.overlay.PoseOverlay
 import com.gemmafit.ui.overlay.PoseOverlayState
@@ -80,6 +84,8 @@ import com.gemmafit.video.VideoSource
 @Composable
 fun WorkoutScreen(
     onViewSummary: (com.gemmafit.video.SessionSummary) -> Unit,
+    onOpenSettings: () -> Unit = {},
+    settings: AppSettings = AppSettings(),
     modifier: Modifier = Modifier,
     viewModel: VideoAnalysisViewModel = viewModel(),
 ) {
@@ -88,6 +94,11 @@ fun WorkoutScreen(
     var isPaused by remember { mutableStateOf(false) }
     var cameraImageWidth by remember { mutableStateOf(1080) }
     var cameraImageHeight by remember { mutableStateOf(1920) }
+    var showTrajectory by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(settings) {
+        viewModel.configureCoachVoice(settings)
+    }
 
     val videoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -104,7 +115,7 @@ fun WorkoutScreen(
     val videoUri = (state.source as? VideoSource.VideoFile)?.let { Uri.parse(it.uri) }
 
     // Reset pause state when switching video sources to prevent old data flashing
-    androidx.compose.runtime.LaunchedEffect(state.source) {
+    LaunchedEffect(state.source) {
         if (state.source is VideoSource.VideoFile) {
             isPaused = true
         }
@@ -125,10 +136,13 @@ fun WorkoutScreen(
                         cameraImageWidth = w
                         viewModel.onCameraFrame(result)
                     },
-                    poseOverlayState = rememberCameraPoseOverlayState(live),
+                    poseOverlayState = rememberCameraPoseOverlayState(live, showTrajectory),
                     imageW = cameraImageWidth,
                     imageH = cameraImageHeight,
                     onPickVideo = { videoPickerLauncher.launch("*/*") },
+                    onOpenSettings = onOpenSettings,
+                    showTrajectory = showTrajectory,
+                    onToggleTrajectory = { showTrajectory = !showTrajectory },
                     onTogglePause = { isPaused = !isPaused },
                     onViewSummary = { onViewSummary(viewModel.sessionSummary.value) },
                     onSubjectTap = { x, y -> viewModel.selectSubjectAt(x, y) },
@@ -144,6 +158,9 @@ fun WorkoutScreen(
                     isProcessing = isProcessing,
                     videoUri = videoUri,
                     onPickVideo = { videoPickerLauncher.launch("*/*") },
+                    onOpenSettings = onOpenSettings,
+                    showTrajectory = showTrajectory,
+                    onToggleTrajectory = { showTrajectory = !showTrajectory },
                     onResetCamera = { viewModel.resetToCamera() },
                     onPrevFrame = {
                         isPaused = true
@@ -180,6 +197,9 @@ private fun VideoModeContent(
     isProcessing: Boolean,
     videoUri: Uri?,
     onPickVideo: () -> Unit,
+    onOpenSettings: () -> Unit,
+    showTrajectory: Boolean,
+    onToggleTrajectory: () -> Unit,
     onResetCamera: () -> Unit,
     onPrevFrame: () -> Unit,
     onNextFrame: () -> Unit,
@@ -204,9 +224,16 @@ private fun VideoModeContent(
                 VideoAnalysisLayout(
                     live = live,
                     isPaused = isPaused,
-                    isProcessing = false,
+                    isProcessing = isProcessing,
                     videoUri = videoUri,
+                    analysisProgress = state.progress,
+                    analysisCurrentFrame = state.currentFrame,
+                    analysisTotalFrames = state.totalFrames,
+                    analysisLabel = state.subPhase,
                     onPickVideo = onPickVideo,
+                    onOpenSettings = onOpenSettings,
+                    showTrajectory = showTrajectory,
+                    onToggleTrajectory = onToggleTrajectory,
                     onResetCamera = onResetCamera,
                     onPrevFrame = onPrevFrame,
                     onNextFrame = onNextFrame,
@@ -255,6 +282,9 @@ private fun VideoModeContent(
                     isProcessing = isProcessing,
                     videoUri = targetUri,
                     onPickVideo = onPickVideo,
+                    onOpenSettings = onOpenSettings,
+                    showTrajectory = showTrajectory,
+                    onToggleTrajectory = onToggleTrajectory,
                     onResetCamera = onResetCamera,
                     onPrevFrame = onPrevFrame,
                     onNextFrame = onNextFrame,
@@ -280,6 +310,9 @@ private fun CameraLiveLayout(
     imageW: Int,
     imageH: Int,
     onPickVideo: () -> Unit,
+    onOpenSettings: () -> Unit,
+    showTrajectory: Boolean,
+    onToggleTrajectory: () -> Unit,
     onTogglePause: () -> Unit,
     onViewSummary: () -> Unit,
     onSubjectTap: (Float, Float) -> Unit,
@@ -323,6 +356,9 @@ private fun CameraLiveLayout(
         // Compact top bar (same style as Video mode)
         CameraCompactTopBar(
             onPickVideo = onPickVideo,
+            onOpenSettings = onOpenSettings,
+            showTrajectory = showTrajectory,
+            onToggleTrajectory = onToggleTrajectory,
             modifier = Modifier.align(Alignment.TopCenter),
         )
 
@@ -354,8 +390,18 @@ private fun CameraLiveLayout(
 }
 
 @Composable
-private fun rememberCameraPoseOverlayState(live: LiveWorkoutState): PoseOverlayState {
-    return remember(live.poseLandmarks, live.poseCandidates, live.activeSubjectIndex, live.activeWarnings) {
+private fun rememberCameraPoseOverlayState(
+    live: LiveWorkoutState,
+    showTrajectory: Boolean,
+): PoseOverlayState {
+    return remember(
+        live.poseLandmarks,
+        live.poseTrajectory,
+        live.poseCandidates,
+        live.activeSubjectIndex,
+        live.activeWarnings,
+        showTrajectory,
+    ) {
         val violationJoints = live.activeWarnings
             .filter { it.joint.isNotEmpty() }
             .mapNotNull { w -> jointIndexFromName(w.joint) }
@@ -370,6 +416,13 @@ private fun rememberCameraPoseOverlayState(live: LiveWorkoutState): PoseOverlayS
         PoseOverlayState(
             landmarks = live.poseLandmarks.map { PoseLandmark(it.x, it.y, it.visibility) },
             secondarySubjects = secondarySubjects,
+            trajectoryFrames = if (showTrajectory) {
+                live.poseTrajectory.map { frame ->
+                    frame.map { PoseLandmark(it.x, it.y, it.visibility) }
+                }
+            } else {
+                emptyList()
+            },
             violationJoints = violationJoints,
             violationSegments = buildViolationSegments(live.activeWarnings),
             showConfidenceFade = true,
@@ -440,6 +493,9 @@ private fun SubjectLockChip(
 @Composable
 private fun CameraCompactTopBar(
     onPickVideo: () -> Unit,
+    onOpenSettings: () -> Unit,
+    showTrajectory: Boolean,
+    onToggleTrajectory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -474,6 +530,28 @@ private fun CameraCompactTopBar(
                 Icons.Filled.Videocam,
                 contentDescription = "Pick video",
                 tint = Green,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+        IconButton(
+            onClick = onToggleTrajectory,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                Icons.Filled.SlowMotionVideo,
+                contentDescription = if (showTrajectory) "Hide trajectory" else "Show trajectory",
+                tint = if (showTrajectory) Green else TextSecondary,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+        IconButton(
+            onClick = onOpenSettings,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = "Settings",
+                tint = TextSecondary,
                 modifier = Modifier.size(22.dp),
             )
         }

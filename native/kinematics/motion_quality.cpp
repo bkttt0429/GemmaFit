@@ -1,10 +1,12 @@
 #include "motion_quality.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <iomanip>
 #include <set>
 #include <sstream>
+#include <utility>
 
 namespace gemmafit::kinematics {
 namespace {
@@ -564,6 +566,364 @@ void append_string_array_json(std::ostringstream& ss, const std::vector<std::str
     ss << "]";
 }
 
+std::string evidence_key(const std::string& value) {
+    std::string out;
+    out.reserve(value.size());
+    for (char c : value) {
+        const bool ok = (c >= 'a' && c <= 'z') ||
+                        (c >= 'A' && c <= 'Z') ||
+                        (c >= '0' && c <= '9');
+        out.push_back(ok ? static_cast<char>(std::tolower(static_cast<unsigned char>(c))) : '_');
+    }
+    while (out.find("__") != std::string::npos) {
+        out.replace(out.find("__"), 2, "_");
+    }
+    if (!out.empty() && out.back() == '_') out.pop_back();
+    if (!out.empty() && out.front() == '_') out.erase(out.begin());
+    return out.empty() ? "unknown" : out;
+}
+
+std::string metric_node_id(const std::string& exercise, const std::string& metric) {
+    return "metric." + evidence_key(exercise) + "." + evidence_key(metric);
+}
+
+bool metric_exists(const MotionQualityReport& report, const std::string& metric) {
+    return std::any_of(
+        report.template_metrics.begin(), report.template_metrics.end(),
+        [&](const NamedMetric& item) { return item.name == metric; });
+}
+
+void add_node(EvidenceDag& dag, EvidenceNode node) {
+    const auto existing = std::find_if(
+        dag.nodes.begin(), dag.nodes.end(),
+        [&](const EvidenceNode& item) { return item.id == node.id; });
+    if (existing == dag.nodes.end()) {
+        dag.nodes.push_back(std::move(node));
+    }
+}
+
+void add_edge(EvidenceDag& dag,
+              const std::string& from,
+              const std::string& to,
+              const std::string& relation) {
+    if (from.empty() || to.empty()) return;
+    dag.edges.push_back({from, to, relation});
+}
+
+std::vector<std::string> refs_for_metrics(const MotionQualityReport& report,
+                                          const std::vector<std::string>& metrics) {
+    std::vector<std::string> refs;
+    for (const auto& metric : metrics) {
+        if (metric_exists(report, metric)) {
+            refs.push_back(metric_node_id(report.exercise, metric));
+        }
+    }
+    return refs;
+}
+
+void add_capability_node(MotionQualityReport& report,
+                         const std::string& mode,
+                         const std::string& metric,
+                         const std::string& reason,
+                         double confidence_ceiling,
+                         const std::vector<std::string>& required_evidence,
+                         const std::vector<std::string>& evidence_refs) {
+    const std::string id = "capability." + mode + "." + evidence_key(metric);
+    add_node(report.evidence_dag, {
+        id,
+        "capability",
+        mode + ":" + metric,
+        metric,
+        confidence_ceiling,
+        "confidence_ceiling",
+        confidence_ceiling,
+        mode == "can" ? "OK" : "NOT_APPLICABLE",
+        "motion_quality",
+        "build_capability_contract",
+        "current_frame",
+        required_evidence,
+    });
+    for (const auto& ref : evidence_refs) {
+        add_edge(report.evidence_dag, id, ref, mode == "can" ? "supports" : "blocks");
+    }
+}
+
+void add_can_judge(MotionQualityReport& report,
+                   const std::string& metric,
+                   double confidence_ceiling,
+                   const std::vector<std::string>& source_metrics,
+                   const std::vector<std::string>& required_evidence) {
+    std::vector<std::string> refs = refs_for_metrics(report, source_metrics);
+    if (refs.empty() && !source_metrics.empty()) return;
+    report.capability_contract.can_judge.push_back({
+        metric,
+        "supported_by_current_session_evidence",
+        confidence_ceiling,
+        required_evidence,
+        refs,
+    });
+    add_capability_node(report, "can", metric, "", confidence_ceiling, required_evidence, refs);
+}
+
+void add_cannot_judge(MotionQualityReport& report,
+                      const std::string& metric,
+                      const std::string& reason,
+                      const std::vector<std::string>& required_evidence,
+                      const std::vector<std::string>& evidence_refs = {}) {
+    report.capability_contract.cannot_judge.push_back({
+        metric,
+        reason,
+        0.0,
+        required_evidence,
+        evidence_refs,
+    });
+    add_capability_node(report, "cannot", metric, reason, 0.0, required_evidence, evidence_refs);
+}
+
+void add_boundary_capabilities(MotionQualityReport& report) {
+    add_cannot_judge(report, "joint_force", "single_camera_proxy",
+                     {"force_plate_or_inverse_dynamics"});
+    add_cannot_judge(report, "clinical_injury_risk", "non_diagnostic_product_scope",
+                     {"clinical_validation", "clinician_review"});
+    add_cannot_judge(report, "medical_diagnosis", "movement_quality_only",
+                     {"medical_device_clearance", "clinician_review"});
+    add_cannot_judge(report, "muscle_activation_percentage", "pose_only_not_emg",
+                     {"emg_sensor"});
+}
+
+void build_evidence_dag_and_capability_contract(MotionQualityReport& report) {
+    report.evidence_dag.nodes.clear();
+    report.evidence_dag.edges.clear();
+    report.capability_contract.can_judge.clear();
+    report.capability_contract.cannot_judge.clear();
+
+    const std::string visibility_id = "visibility." + evidence_key(report.exercise) + ".keypoints";
+    const double visibility_value = report.low_confidence.empty()
+        ? 1.0
+        : report.low_confidence.front().value;
+    add_node(report.evidence_dag, {
+        visibility_id,
+        "landmark_visibility",
+        "exercise keypoint visibility",
+        "keypoint_visibility",
+        visibility_value,
+        "mean_visibility",
+        visibility_value,
+        report.low_confidence.empty() ? "OK" : "LOW_CONFIDENCE",
+        "motion_quality",
+        "analyze_motion_quality",
+        "current_frame",
+        {},
+    });
+
+    for (const auto& metric : report.template_metrics) {
+        add_node(report.evidence_dag, {
+            metric_node_id(report.exercise, metric.name),
+            "template_metric",
+            metric.name,
+            metric.name,
+            metric.value,
+            metric.name.find("angle") != std::string::npos ||
+                    metric.name.find("lean") != std::string::npos ||
+                    metric.name.find("tempo") != std::string::npos ||
+                    metric.name.find("fppa") != std::string::npos
+                ? "deg_or_deg_s"
+                : "proxy",
+            0.85,
+            "OK",
+            "motion_quality",
+            "extract_template_metrics",
+            "current_frame",
+            {},
+        });
+        add_edge(report.evidence_dag, metric_node_id(report.exercise, metric.name), visibility_id, "gated_by");
+    }
+
+    auto append_flag_nodes = [&](const std::vector<QualityFlag>& flags,
+                                 const std::string& prefix,
+                                 const std::string& node_type) {
+        for (std::size_t i = 0; i < flags.size(); ++i) {
+            const auto& flag = flags[i];
+            const std::string node_id = prefix + "." + evidence_key(flag.id) + "." + std::to_string(i);
+            const std::string effective_type = node_type == "not_applicable_gate"
+                ? node_type
+                : (flag.rule > 0 ? "safety_rule" : node_type);
+            add_node(report.evidence_dag, {
+                node_id,
+                effective_type,
+                flag.reason.empty() ? flag.id : flag.reason,
+                flag.id,
+                flag.value,
+                flag.threshold == 0.0 ? "proxy" : "threshold",
+                flag.status == "LOW_CONFIDENCE" ? flag.value : 0.85,
+                flag.status,
+                "motion_quality",
+                effective_type == "not_applicable_gate" ? "apply_template_gates" : "analyze_motion_quality",
+                "current_frame",
+                {},
+            });
+            const std::string metric_ref = metric_node_id(report.exercise, flag.id);
+            if (metric_exists(report, flag.id)) {
+                add_edge(report.evidence_dag, node_id, metric_ref, "thresholded_by");
+            } else if (flag.id == "visibility") {
+                add_edge(report.evidence_dag, node_id, visibility_id, "gated_by");
+            }
+        }
+    };
+    append_flag_nodes(report.quality_flags, "gate." + evidence_key(report.overall_status), "quality_gate");
+    append_flag_nodes(report.not_applicable, "gate.not_applicable", "not_applicable_gate");
+
+    if (!report.low_confidence.empty()) {
+        add_cannot_judge(report, "hard_form_judgment", "low_confidence",
+                         {"stable_pose_visibility"}, {visibility_id});
+        add_boundary_capabilities(report);
+        return;
+    }
+
+    if (report.exercise == "unknown") {
+        add_cannot_judge(report, "template_metrics", "unknown_or_ambiguous_exercise",
+                         {"clear_exercise_template"}, {visibility_id});
+        add_cannot_judge(report, "hard_form_judgment", "unknown_or_ambiguous_exercise",
+                         {"clear_exercise_template"}, {visibility_id});
+        add_boundary_capabilities(report);
+        return;
+    }
+
+    if (report.exercise == "squat") {
+        add_can_judge(report, "squat_depth", 0.90, {"depth"}, {"hip_knee_ankle_visible"});
+        add_can_judge(report, "knee_angle", 0.90, {"knee_angle"}, {"hip_knee_ankle_visible"});
+        add_can_judge(report, "hip_angle", 0.85, {"hip_angle"}, {"shoulder_hip_knee_visible"});
+        add_can_judge(report, "trunk_lean", 0.85, {"trunk_lean"}, {"shoulder_hip_visible"});
+        add_can_judge(report, "tempo", 0.80, {"tempo_deg_s"}, {"temporal_trace"});
+        if (is_frontal_view(report.view)) {
+            add_can_judge(report, "frontal_knee_valgus", 0.85,
+                          {"fppa_deg", "knee_valgus_ratio"},
+                          {"frontal_view", "hip_knee_ankle_visible"});
+        } else {
+            add_cannot_judge(
+                report, "frontal_knee_valgus", "side_view",
+                {"frontal_view", "hip_knee_ankle_visible"},
+                refs_for_metrics(report, {"fppa_deg", "knee_valgus_ratio"}));
+        }
+    } else if (report.exercise == "push_up") {
+        add_can_judge(report, "elbow_angle", 0.90, {"elbow_angle"}, {"shoulder_elbow_wrist_visible"});
+        add_can_judge(report, "push_up_depth", 0.85, {"push_up_depth"}, {"shoulder_elbow_wrist_visible"});
+        add_can_judge(report, "tempo", 0.80, {"tempo_deg_s"}, {"temporal_trace"});
+        if (metric_value(report.template_metrics, "body_line_view_limited", 0.0) < 0.5) {
+            add_can_judge(report, "body_line", 0.80, {"body_line_deviation"}, {"shoulder_hip_lower_body_visible"});
+            add_can_judge(report, "hip_sag", 0.75, {"hip_sag"}, {"shoulder_hip_lower_body_visible"});
+        } else {
+            add_cannot_judge(report, "body_line", "lower_body_reference_not_visible",
+                             {"shoulder_hip_lower_body_visible"});
+        }
+        add_cannot_judge(report, "frontal_knee_valgus", "wrong_exercise_template",
+                         {"frontal_squat_or_single_leg_screen"});
+        add_cannot_judge(report, "com_offset", "push_up_template_not_high_confidence",
+                         {"standing_support_polygon"});
+        add_cannot_judge(report, "standing_trunk_angle", "push_up_uses_body_line_metric",
+                         {"standing_template"});
+    } else if (report.exercise == "lunge") {
+        add_can_judge(report, "front_knee_angle", 0.85, {"front_knee_angle"}, {"front_leg_visible"});
+        add_can_judge(report, "step_length_proxy", 0.75, {"step_length_proxy"}, {"ankles_visible"});
+        add_can_judge(report, "trunk_uprightness", 0.85, {"trunk_uprightness"}, {"shoulder_hip_visible"});
+        add_can_judge(report, "stability", 0.65, {"stability"}, {"single_camera_com_proxy"});
+        add_can_judge(report, "tempo", 0.80, {"tempo_deg_s"}, {"temporal_trace"});
+        add_cannot_judge(report, "bilateral_asymmetry", "unilateral_template",
+                         {"bilateral_exercise_template"},
+                         refs_for_metrics(report, {"knee_asymmetry_expected"}));
+        add_cannot_judge(report, "frontal_knee_valgus", "wrong_exercise_template",
+                         {"frontal_squat_or_single_leg_screen"});
+    } else if (report.exercise == "deadlift") {
+        add_can_judge(report, "hip_hinge", 0.85, {"hip_hinge"}, {"shoulder_hip_knee_visible"});
+        add_can_judge(report, "trunk_angle", 0.85, {"trunk_angle"}, {"shoulder_hip_visible"});
+        add_can_judge(report, "bar_or_body_path_proxy", 0.70, {"bar_or_body_path_proxy"}, {"wrist_ankle_visible"});
+        add_can_judge(report, "knee_angle", 0.80, {"knee_angle"}, {"hip_knee_ankle_visible"});
+        add_can_judge(report, "tempo", 0.80, {"tempo_deg_s"}, {"temporal_trace"});
+        add_cannot_judge(report, "frontal_knee_valgus", "wrong_exercise_template",
+                         {"frontal_squat_or_single_leg_screen"});
+    }
+
+    add_boundary_capabilities(report);
+}
+
+void append_evidence_nodes_json(std::ostringstream& ss, const std::vector<EvidenceNode>& nodes) {
+    ss << "[";
+    bool first = true;
+    for (const auto& node : nodes) {
+        if (!first) ss << ",";
+        first = false;
+        ss << "{"
+           << "\"id\":\"" << json_escape(node.id) << "\","
+           << "\"type\":\"" << json_escape(node.type) << "\","
+           << "\"label\":\"" << json_escape(node.label) << "\","
+           << "\"metric\":\"" << json_escape(node.metric) << "\","
+           << "\"value\":" << node.value << ","
+           << "\"unit\":\"" << json_escape(node.unit) << "\","
+           << "\"confidence\":" << node.confidence << ","
+           << "\"status\":\"" << json_escape(node.status) << "\","
+           << "\"source_module\":\"" << json_escape(node.source_module) << "\","
+           << "\"source_function\":\"" << json_escape(node.source_function) << "\","
+           << "\"frame_range\":\"" << json_escape(node.frame_range) << "\","
+           << "\"landmark_refs\":";
+        append_string_array_json(ss, node.landmark_refs);
+        ss << "}";
+    }
+    ss << "]";
+}
+
+void append_evidence_edges_json(std::ostringstream& ss, const std::vector<EvidenceEdge>& edges) {
+    ss << "[";
+    bool first = true;
+    for (const auto& edge : edges) {
+        if (!first) ss << ",";
+        first = false;
+        ss << "{"
+           << "\"from\":\"" << json_escape(edge.from) << "\","
+           << "\"to\":\"" << json_escape(edge.to) << "\","
+           << "\"relation\":\"" << json_escape(edge.relation) << "\""
+           << "}";
+    }
+    ss << "]";
+}
+
+void append_capability_items_json(std::ostringstream& ss, const std::vector<CapabilityItem>& items) {
+    ss << "[";
+    bool first = true;
+    for (const auto& item : items) {
+        if (!first) ss << ",";
+        first = false;
+        ss << "{"
+           << "\"metric\":\"" << json_escape(item.metric) << "\","
+           << "\"reason\":\"" << json_escape(item.reason) << "\","
+           << "\"confidence_ceiling\":" << item.confidence_ceiling << ","
+           << "\"required_evidence\":";
+        append_string_array_json(ss, item.required_evidence);
+        ss << ",\"evidence_refs\":";
+        append_string_array_json(ss, item.evidence_refs);
+        ss << "}";
+    }
+    ss << "]";
+}
+
+void append_capability_contract_json(std::ostringstream& ss, const CapabilityContract& contract) {
+    ss << "{"
+       << "\"can_judge\":";
+    append_capability_items_json(ss, contract.can_judge);
+    ss << ",\"cannot_judge\":";
+    append_capability_items_json(ss, contract.cannot_judge);
+    ss << "}";
+}
+
+void append_evidence_dag_json(std::ostringstream& ss, const EvidenceDag& dag) {
+    ss << "{"
+       << "\"version\":\"evidence_dag_v1\","
+       << "\"nodes\":";
+    append_evidence_nodes_json(ss, dag.nodes);
+    ss << ",\"edges\":";
+    append_evidence_edges_json(ss, dag.edges);
+    ss << "}";
+}
+
 }  // namespace
 
 ExerciseTemplateDetection detect_exercise_template(
@@ -721,12 +1081,14 @@ MotionQualityReport analyze_motion_quality(
             report.low_confidence.push_back(flag);
             report.quality_flags.push_back(flag);
             report.overall_status = "LOW_CONFIDENCE";
+            build_evidence_dag_and_capability_contract(report);
             return report;
         }
     }
 
     apply_template_gates(report, angles, safety, com);
     report.overall_status = overall_status(report);
+    build_evidence_dag_and_capability_contract(report);
     return report;
 }
 
@@ -760,6 +1122,10 @@ std::string to_json(const MotionQualityReport& report) {
     append_flags_json(ss, report.not_applicable);
     ss << ",\"low_confidence\":";
     append_flags_json(ss, report.low_confidence);
+    ss << ",\"capability_contract\":";
+    append_capability_contract_json(ss, report.capability_contract);
+    ss << ",\"evidence_dag\":";
+    append_evidence_dag_json(ss, report.evidence_dag);
     ss << ",\"overall_status\":\"" << json_escape(report.overall_status) << "\","
        << "\"unsupported_judgments\":["
        << "\"joint_force\","

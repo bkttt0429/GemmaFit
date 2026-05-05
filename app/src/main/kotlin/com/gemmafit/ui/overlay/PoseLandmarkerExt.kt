@@ -1,5 +1,6 @@
 package com.gemmafit.ui.overlay
 
+import com.gemmafit.pose.PosePresenceGate
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 
 fun PoseLandmarkerResult.toPoseOverlayState(
@@ -12,8 +13,12 @@ fun PoseLandmarkerResult.toPoseOverlayState(
         PoseLandmark(
             x = landmark.x(),
             y = landmark.y(),
-            visibility = landmark.visibility().orElse(1.0f),
+            visibility = landmark.visibility().orElse(0.0f),
         )
+    }
+
+    if (!PosePresenceGate.canRender(poseLandmarks, { it.x }, { it.y }, { it.visibility })) {
+        return PoseOverlayState()
     }
 
     return PoseOverlayState(

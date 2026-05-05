@@ -2,10 +2,11 @@
 
 GemmaFit is a Kaggle Gemma 4 Impact Challenge project for a local-first, explainable movement feedback system. It combines pose-derived motion evidence, deterministic quality gates, and Gemma-generated coaching feedback. The system improves access to exercise feedback while explicitly refusing unsupported judgments.
 
-Core claim:
+Core claims:
 
 ```text
 Trustworthy motion feedback that knows its limits.
+A local movement coach that remembers training evidence, not medical assumptions.
 ```
 
 Core pipeline:
@@ -21,9 +22,10 @@ GemmaFit is not a universal posture judge. It only judges when evidence supports
 
 | Track | Positioning |
 | --- | --- |
-| Main Track | Multi-exercise motion understanding, local-first app workflow, explainable coaching, and real-world access to movement feedback. |
-| Safety & Trust | Primary impact category. Every verdict includes evidence, confidence, applicability gates, and unsupported-judgment boundaries. |
-| Health & Sciences | Secondary relevance only. Framed as pose-based movement quality feedback, not medical diagnosis or force estimation. |
+| Main Track | Dual-mode local movement feedback. Senior Strength Mode is the hero demo for older adults at risk of strength decline; General Fitness Mode is the broader multi-exercise foundation. |
+| Safety & Trust | Primary impact category. Every verdict includes evidence, confidence, applicability gates, unsupported-judgment boundaries, memory write rules, and refusal-on-medical-question handling. |
+| Health & Sciences | Sarcopenia-aware strength-maintenance support. Framed as pose-based movement quality feedback, not sarcopenia detection, fall-risk scoring, or treatment. |
+| Digital Equity & Inclusion | Offline, voice-first, large-text UI for older adults. No cloud dependency, no account required. |
 | LiteRT / Google AI Edge | Preferred special technology path for local Android inference and official Google AI Edge alignment. |
 | llama.cpp | Fallback local inference path using existing GGUF models if LiteRT / AI Edge integration is not ready. |
 | Unsloth | Optional P2 path only if fine-tune benchmark evidence is produced. |
@@ -43,10 +45,16 @@ GemmaFit is not a universal posture judge. It only judges when evidence supports
 
 - Medical diagnosis.
 - Clinical injury prediction.
+- Sarcopenia detection or treatment.
+- Fall-risk prediction or scoring.
+- Rehabilitation prescription.
+- Muscle mass estimate.
+- Clinical improvement claim.
 - Precise joint force, lumbar loading, or inverse dynamics.
 - EMG-style muscle activation percentages.
 - Full all-exercise error detection.
 - Multi-view 3D reconstruction.
+- Storing raw video by default. (Memory layer holds structured records only.)
 
 Preferred wording:
 
@@ -115,12 +123,29 @@ MediaPipe landmarks
 
 Each exercise uses a small, high-confidence metric set. Rules are not shared globally without applicability checks.
 
+General Fitness Mode templates:
+
 | Exercise | Metrics | Unsupported / limited judgments |
 | --- | --- | --- |
 | `squat` | depth, knee angle, hip angle, trunk lean, tempo, COM monitor | Knee valgus only from frontal or near-frontal view; no joint force estimate. |
 | `push_up` | elbow angle, body line, hip sag, depth proxy, tempo | Knee valgus and COM/BoS are not high-confidence push-up metrics. |
 | `lunge` | front knee angle, step length proxy, trunk uprightness, stability, tempo | Single-frame bilateral asymmetry is not critical because the motion is unilateral. |
 | `deadlift` | hip hinge, trunk angle, bar/body path proxy, tempo | No lumbar force, disc loading, or injury-risk prediction. |
+
+Senior Strength Mode templates:
+
+| Exercise | Metrics | Unsupported / limited judgments |
+| --- | --- | --- |
+| `chair_sit_to_stand` | rep count, tempo, trunk control proxy, knee/hip ROM proxy, low-confidence count | No sarcopenia diagnosis, fall-risk, or rehab prescription. |
+| `supported_squat` | depth proxy, support contact, trunk lean, tempo | `knee_valgus_fppa` is `NOT_APPLICABLE` when wall/chair support obstructs frontal view. |
+| `balance_hold` | stability proxy (COM excursion within BoS), hold duration, sway frequency | No vestibular assessment, no clinical balance score. |
+| `step_touch` (optional) | cadence, step length proxy, trunk uprightness | No gait disorder classification. |
+
+Senior Mode templates always populate the Evidence Card's
+`unsupported_judgments` list with at least: `sarcopenia_diagnosis`,
+`fall_risk_prediction`, `rehabilitation_prescription`,
+`muscle_mass_estimate`, `clinical_improvement_claim` — even when
+the metric itself is healthy.
 
 Example template:
 
@@ -244,6 +269,60 @@ Structured report:
       "reason": "side_view_not_frontal_lower_body"
     }
   ],
+  "capability_contract": {
+    "can_judge": [
+      {
+        "metric": "squat_depth",
+        "confidence_ceiling": 0.9,
+        "evidence_refs": ["metric.squat.depth"]
+      },
+      {
+        "metric": "trunk_lean",
+        "confidence_ceiling": 0.85,
+        "evidence_refs": ["metric.squat.trunk_lean"]
+      }
+    ],
+    "cannot_judge": [
+      {
+        "metric": "frontal_knee_valgus",
+        "reason": "side_view",
+        "required_evidence": ["frontal_view", "hip_knee_ankle_visible"],
+        "evidence_refs": ["metric.squat.fppa_deg"]
+      },
+      {
+        "metric": "joint_force",
+        "reason": "single_camera_proxy",
+        "required_evidence": ["force_plate_or_inverse_dynamics"]
+      }
+    ]
+  },
+  "evidence_dag": {
+    "version": "evidence_dag_v1",
+    "nodes": [
+      {
+        "id": "metric.squat.depth",
+        "type": "template_metric",
+        "metric": "depth",
+        "value": 0.82,
+        "confidence": 0.85,
+        "source_module": "motion_quality",
+        "source_function": "extract_template_metrics"
+      },
+      {
+        "id": "capability.cannot.frontal_knee_valgus",
+        "type": "capability",
+        "metric": "frontal_knee_valgus",
+        "status": "NOT_APPLICABLE"
+      }
+    ],
+    "edges": [
+      {
+        "from": "capability.cannot.frontal_knee_valgus",
+        "to": "metric.squat.fppa_deg",
+        "relation": "blocks"
+      }
+    ]
+  },
   "notes": [
     "not_medical_diagnosis",
     "single_camera_pose_based_feedback"
@@ -279,17 +358,44 @@ Evidence Card:
 
 Requirement: every `WARNING` or `CRITICAL` verdict must include explainable evidence. Unsupported judgments must be shown explicitly instead of hidden.
 
+Capability Contract requirement: before Gemma is called, the app must declare
+which metrics are currently judgeable and which are not. `VIEW_LIMITED` and
+`NOT_APPLICABLE` block only the affected metric, not the entire workout. For
+example, a side-view squat can still judge depth, tempo, and trunk lean while
+blocking frontal knee valgus. Gemma may cite only `evidence_refs` that exist in
+the Evidence DAG, and the app falls back to deterministic coaching if the model
+selects a tool for a `cannot_judge` metric.
+
 ## 8. Gemma Role and Safe Prompt
 
-Gemma is not the vision model and not the rule engine. Gemma is the local explanation and coaching layer.
+Gemma is not the vision model and not the rule engine. Gemma is the summary-only local evidence router and explanation layer. **Gemma never decides state changes.** The app's policy engine owns all writes, exports, recalibration decisions, capability gates, and fallback behavior.
 
 Gemma responsibilities:
 
 - convert evidence cards into short coaching feedback
 - explain uncertainty and view limitations
-- summarize session trends
+- summarize session trends from memory slices the app provides
+- choose one supported function call from `can_judge` metrics only
+- cite Evidence DAG ids in `evidence_refs`
 - support multilingual feedback
-- refuse unsupported medical, force, or injury claims
+- refuse unsupported medical, force, injury, sarcopenia, or fall-risk claims
+
+Gemma boundaries (the policy engine, not Gemma, decides):
+
+- whether a `MemoryUpdateRequest` is written
+- whether a calibration baseline is replaced
+- whether a caregiver export is produced
+- whether a session is finalized
+
+Function-calling vocabulary used by Gemma:
+
+| Function | Direction | Purpose |
+| --- | --- | --- |
+| Coaching FCs (v1: 9 functions) | model -> app | per-frame coaching cue |
+| `read_memory(scope, exercise?)` | model -> app -> model | request a closed-set memory slice |
+| `request_memory_update(...)` | model -> app | proposes a memory write; app validates |
+| `summarize_trend(scope)` | model -> app | read-only prose summary for the user |
+| `refuse_unsupported_question(reason)` | model -> app | safe refusal path for medical / fall-risk / sarcopenia questions |
 
 Safe prompt constraints:
 
@@ -378,6 +484,233 @@ EvidenceCard
 MuscleFocusEstimate
 ```
 
+## 11.5 Dual-Mode Product: Senior Strength + General Fitness
+
+GemmaFit ships in two modes. **General Fitness Mode** preserves the
+existing multi-exercise foundation (squat, push-up, lunge, deadlift).
+**Senior Strength Mode** is the hero demo: safe, offline home movement
+coaching for older adults at risk of strength decline.
+
+The two modes share the pose pipeline, kinematics modules, and Evidence
+Card schema. They diverge in:
+
+- exercise template set (see §4)
+- default UI scale, voice speed, and cue style (see §11.7)
+- mandatory `unsupported_judgments` payload on every Evidence Card
+
+## 11.6 Evidence-Bounded Long-Term Memory
+
+```text
+GemmaFit uses evidence-triggered local memory: critical events are
+saved immediately, caregiver exports are human-readable but
+non-clinical, and calibration updates are proposed only from
+repeated high-confidence clean reps.
+```
+
+Trust boundary:
+
+- Gemma summarizes; the app's policy engine decides what is written,
+  exported, or used to recalibrate.
+- Gemma may emit `request_memory_update` and `read_memory(scope)` via
+  function calling, but the app applies refusal regex, evidence
+  thresholds, and idempotency checks before any state change.
+- Raw video is never stored by default. Only structured records are
+  persisted.
+
+### Storage layers
+
+Single-device, single-user. No multi-tenant key.
+
+| Layer | Contents | Backend | Why |
+| --- | --- | --- | --- |
+| Hot config | `UserProfileMemory`, `CalibrationMemory` | Android DataStore (Proto) | small, frequent reads at startup |
+| Append-only log | `SessionSummary`, `EvidenceMemoryEntry` | SQLite (Room, WAL mode) | by-date / by-exercise aggregation |
+| Audit | every memory write/reject decision | JSONL `audit.log` | tamper-evident, exportable, 90-day retention |
+
+Filesystem layout:
+
+```text
+/data/data/com.gemmafit/files/memory/
+  profile.pb
+  calibration/<exercise>.pb
+  sessions.db
+  audit.log
+exports/                  (caregiver exports, user-initiated only)
+```
+
+### Schemas
+
+```text
+UserProfileMemory:
+  language               (e.g. zh-TW, en)
+  voice_speed            (0.7 .. 1.3)
+  font_scale             (1.0, 1.5, 2.0)
+  assisted_mode          (Senior Mode toggle)
+  cue_preference         (ENCOURAGING | TERSE | DETAILED)
+  schema_version
+
+CalibrationMemory:
+  exercise
+  baseline_rom_proxy     (nullable until first calibration)
+  baseline_tempo_sec
+  camera_setup_hint      (distance, angle, lighting hint)
+  support_type           (CHAIR | WALL | NONE)
+  captured_at
+  sessions_since_calibration
+  clean_reps_collected   (used by adaptive recalibration)
+  low_confidence_streak
+
+SessionSummary:
+  session_id, date, mode (SENIOR | GENERAL)
+  exercise, reps, duration_sec
+  warnings_count, low_confidence_count, not_applicable_count
+  trend_notes            (closed enum: tempo_slowing, rom_stable, ...)
+  evidence_card_ids      (FK into evidence log)
+
+EvidenceMemoryEntry:
+  evidence_card_id, session_id
+  exercise, status (OK | WARNING | NOT_APPLICABLE | LOW_CONFIDENCE)
+  metric_id, value, confidence
+  unsupported_judgments  (always populated for Senior Mode)
+  created_at
+
+MemoryUpdateRequest:
+  request_id (idempotency key)
+  type (PROFILE | CALIBRATION | TREND_NOTE)
+  proposed_value (structured payload, not freeform text)
+  evidence_ids (>= 1 required for TREND_NOTE)
+  confidence
+  app_validation_status (PENDING | ACCEPTED | REJECTED | NEEDS_REVIEW)
+
+CaregiverSummary:
+  period_start, period_end
+  sessions_completed
+  common_camera_limitations
+  common_cues
+  unsupported_judgments_acknowledged (mandatory)
+  no_medical_diagnosis (sentinel = true)
+```
+
+### Read protocol (tool round-trip)
+
+Gemma never sees memory unless it asks. The single FC function:
+
+```json
+{ "function": "read_memory",
+  "args": { "scope": "TRENDS_7D", "exercise": "chair_sit_to_stand" } }
+```
+
+Closed scope set:
+
+| Scope | Returns | Approx tokens |
+| --- | ---: | ---: |
+| `PROFILE` | UserProfileMemory | ~50 |
+| `CALIBRATION` | CalibrationMemory for exercise | ~80 |
+| `TRENDS_7D` | aggregated SessionSummary, last 7 days | ~110 (compact JSON) |
+| `TRENDS_30D` | aggregated SessionSummary, last 30 days | ~200 |
+| `EVIDENCE_FOR_SESSION` | EvidenceMemoryEntry list for one session | caregiver flow only |
+
+Raw `EvidenceMemoryEntry` rows are **never** sent into a coaching
+prompt. They feed the Evidence Card UI and the caregiver export, not
+model context.
+
+Latency mitigations on Pixel 8 Pro:
+
+- pre-warm cache when an exercise starts (`PROFILE` + current
+  `CALIBRATION` + `TRENDS_7D` resident in memory before first frame)
+- llama.cpp KV cache reuse across the round-trip
+- compact JSON keys for memory return values
+
+Expected memory round-trip cost: **0.4 - 0.7 s**, not 1 - 2 s.
+
+### Write policy (event-driven)
+
+Session writes are event-driven, not fixed-cadence:
+
+| Event | Action |
+| --- | --- |
+| Rep completed | append rep metrics to in-memory buffer |
+| Quality flag is `WARNING` or `CRITICAL` | flush buffer immediately |
+| Every 5 reps OR every 60 seconds | checkpoint to SQLite (whichever first) |
+| App backgrounded / paused | flush |
+| Session ended (user stop or auto-end) | flush + finalize SessionSummary |
+| `MemoryUpdateRequest` accepted | flush so the request and stored state agree |
+
+`MemoryWritePolicy` validates every `MemoryUpdateRequest`:
+
+```text
+1. Schema validation (proto)
+2. Provenance: TREND_NOTE requires >= 1 evidence_id
+3. Refusal regex against avoid-words from CLAUDE.md
+4. Confidence floor (TREND_NOTE: confidence >= 0.6)
+5. Idempotency (request_id seen before -> no-op)
+6. Audit (accept and reject both write to audit.log)
+```
+
+A rejected update never crashes the LLM call. The next prompt informs
+Gemma that the request was rejected with the policy reason so it does
+not retry identically.
+
+### Adaptive recalibration
+
+The fixed `N=10 sessions` cadence is only a fallback. The primary
+trigger is evidence quality, not elapsed sessions:
+
+- Collect `OK` / `MONITOR` reps with high landmark visibility and no
+  warnings into `clean_reps_collected`.
+- Propose a new baseline candidate only when:
+  - `clean_reps_collected >= 30`
+  - reps span at least 3 distinct sessions
+- If the candidate baseline differs from the stored baseline by more
+  than 15 percent, do NOT auto-overwrite; surface a confirmation
+  prompt.
+- If `camera_setup_hint` changes (different distance / angle), force
+  recalibration on the next session.
+- If `low_confidence_streak >= 2`, do not update the baseline; instead
+  prompt the user to adjust the camera.
+
+### Caregiver export
+
+Two artifacts per export, both opt-in and user-initiated:
+
+- `caregiver_export_v1.json` (machine-readable canonical form)
+- in-app human-readable summary, shareable as `.txt` or `.html`
+
+Summary tone is care, not clinic. It includes:
+
+- sessions completed this week
+- which movements completed consistently
+- most common training cues
+- count of camera-limited or low-confidence interruptions
+- mandatory disclaimer block (sarcopenia, fall risk, diagnosis)
+
+PDF export is deferred; users can use Android system print/share for
+a one-off PDF if needed.
+
+## 11.7 Senior Mode UI
+
+Four screens, designed for older-adult accessibility:
+
+| Screen | Primary purpose | Accessibility requirements |
+| --- | --- | --- |
+| Senior Home | start a session | Three large buttons (Sit-to-Stand, Supported Squat, Balance Hold), voice-first controls, `font_scale` 2.0 default, high contrast |
+| Live Coach | per-rep guidance | camera preview, skeleton overlay, current cue text, Trust Matrix badge, large stop/reset button, TTS cooldown >= 3 s |
+| Evidence Card | explainability | what was observed, why feedback was given, what was NOT judged (always populated for Senior Mode) |
+| Memory & Trends | session history | weekly sessions, completion count, common cues, low-confidence interruptions, clear-memory and export controls |
+
+Cross-cutting requirements:
+
+- Every screen exposes a one-tap stop / reset action.
+- Every screen with feedback shows the source label
+  (`mock_gemma_feedback`, `litert_local_gemma`, or
+  `llama_cpp_fallback`).
+- Memory & Trends always shows clear-memory and export controls; the
+  export confirmation reminds the user that the report is non-clinical.
+
+Figma note: this section defines behavior, states, accessibility, and
+the data shown per screen. Concrete Figma node implementation is
+deferred until a Figma URL or selected node is available.
+
 ## 12. Safety and Trust Requirements
 
 The system must:
@@ -387,10 +720,18 @@ The system must:
 - show unsupported judgments in the UI
 - avoid medical diagnosis language
 - avoid exact force, EMG, muscle activation, or injury-risk claims
-- separate `prototype_threshold` from validated thresholds
+- avoid sarcopenia detection, fall-risk scoring, or rehab prescription claims
+- separate `prototype_threshold` from literature-backed or locally calibrated thresholds
 - state when a metric is a single-camera proxy
 - avoid critical warnings when a rule is not applicable to the exercise context
 - preserve a refusal path when evidence is insufficient
+- never store raw video by default
+- never write a `TREND_NOTE` memory entry without at least one evidence id
+- require ≥ 30 clean reps across ≥ 3 sessions before proposing a calibration baseline update
+- force recalibration when `camera_setup_hint` changes
+- skip baseline updates when `low_confidence_streak >= 2`; prompt the user to adjust the camera instead
+- always include the unsupported-judgment disclaimer block in caregiver exports
+- ensure memory writes go through `MemoryWritePolicy`, not directly from Gemma output
 
 Required disclaimer:
 

@@ -26,9 +26,11 @@ import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,7 +57,10 @@ import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
 
 @Composable
-fun OnboardingScreen(onComplete: () -> Unit) {
+fun OnboardingScreen(
+    onComplete: () -> Unit,
+    onOpenSettings: () -> Unit = {},
+) {
     var currentPage by remember { mutableIntStateOf(0) }
 
     val pages = listOf(
@@ -95,6 +100,19 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                 ),
             ),
     ) {
+        IconButton(
+            onClick = onOpenSettings,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 20.dp, end = 20.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Settings",
+                tint = TextPrimary,
+            )
+        }
+
         Column(
             modifier = Modifier.fillMaxSize().padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

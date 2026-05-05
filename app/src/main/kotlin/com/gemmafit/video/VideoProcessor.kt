@@ -16,9 +16,11 @@ import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -66,6 +68,8 @@ class VideoProcessor(
 ) {
     companion object {
         private const val TAG = "GemmaFit.VideoProc"
+        private const val CODEC_FIRST_FRAME_TIMEOUT_MS = 3_000L
+        private const val CODEC_IDLE_TIMEOUT_MS = 5_000L
     }
 
     private data class QueuedFrame(
@@ -125,6 +129,7 @@ class VideoProcessor(
         val handler = Handler(handlerThread.looper)
         val eosReached = AtomicBoolean(false)
         val decodeFinished = AtomicBoolean(false)
+        val codecStopping = AtomicBoolean(false)
         val decodeLatch = CountDownLatch(1)
         var decodeError: Exception? = null
         val yuvQueue = LinkedBlockingQueue<QueuedFrame>()
@@ -132,6 +137,7 @@ class VideoProcessor(
         var processJob: Job? = null
         var outputColorFormat = -1
         var emittedFrames = 0
+        var codecWatchdogTriggered = false
 
         var decoder: MediaCodec? = null
         try {
@@ -142,15 +148,24 @@ class VideoProcessor(
                 private var lastQueuedTimestampMs = Long.MIN_VALUE
 
                 override fun onInputBufferAvailable(mc: MediaCodec, index: Int) {
-                    if (eosReached.get()) return
-                    val buf = mc.getInputBuffer(index) ?: return
-                    val sampleSize = extractor.readSampleData(buf, 0)
-                    if (sampleSize < 0) {
-                        mc.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                        eosReached.set(true)
-                    } else {
-                        mc.queueInputBuffer(index, 0, sampleSize, extractor.sampleTime, 0)
-                        extractor.advance()
+                    if (eosReached.get() || codecStopping.get()) return
+                    try {
+                        val buf = mc.getInputBuffer(index) ?: return
+                        val sampleSize = extractor.readSampleData(buf, 0)
+                        if (sampleSize < 0) {
+                            mc.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+                            eosReached.set(true)
+                        } else {
+                            mc.queueInputBuffer(index, 0, sampleSize, extractor.sampleTime, 0)
+                            extractor.advance()
+                        }
+                    } catch (e: IllegalStateException) {
+                        if (!codecStopping.get()) {
+                            Log.e(TAG, "Codec input error: ${e.message}", e)
+                            decodeError = e
+                        }
+                        decodeFinished.set(true)
+                        decodeLatch.countDown()
                     }
                 }
 
@@ -225,10 +240,10 @@ class VideoProcessor(
             decoder!!.start()
 
             // Launch parallel pose detection coroutine (runs concurrently with decode)
-            processJob = CoroutineScope(Dispatchers.Default).launch {
+            processJob = CoroutineScope(kotlin.coroutines.coroutineContext + Dispatchers.Default).launch {
                 var frameIdx = 0
                 var outputFinished = false
-                while (!outputFinished || yuvQueue.isNotEmpty()) {
+                while (isActive && (!outputFinished || yuvQueue.isNotEmpty())) {
                     val queued = try {
                         yuvQueue.poll(100, TimeUnit.MILLISECONDS)
                     } catch (_: InterruptedException) {
@@ -249,21 +264,46 @@ class VideoProcessor(
             }
 
             val timeoutMs = ((durationUs / 1000L).coerceAtLeast(10_000L) + 15_000L)
+            val waitStartMs = System.currentTimeMillis()
+            var lastEmitMs = waitStartMs
             val deadline = System.currentTimeMillis() + timeoutMs
             while (System.currentTimeMillis() < deadline) {
+                val now = System.currentTimeMillis()
                 val result = resultQueue.poll(100, TimeUnit.MILLISECONDS)
                 if (result != null) {
                     emitFrame(result)
                     emittedFrames++
+                    lastEmitMs = now
                 }
                 if (decodeFinished.get() && yuvQueue.isEmpty() && resultQueue.isEmpty() && processJob?.isCompleted == true) {
                     break
                 }
+                val noQueuedWork = yuvQueue.isEmpty() && resultQueue.isEmpty()
+                if (emittedFrames == 0 && noQueuedWork && now - waitStartMs > CODEC_FIRST_FRAME_TIMEOUT_MS) {
+                    Log.w(TAG, "Codec[$pass] no first frame after ${now - waitStartMs}ms; falling back to retriever")
+                    codecWatchdogTriggered = true
+                    codecStopping.set(true)
+                    decodeFinished.set(true)
+                    decodeLatch.countDown()
+                    break
+                }
+                if (emittedFrames > 0 && noQueuedWork && !decodeFinished.get() && now - lastEmitMs > CODEC_IDLE_TIMEOUT_MS) {
+                    Log.w(TAG, "Codec[$pass] idle after $emittedFrames frames; falling back to retriever")
+                    codecWatchdogTriggered = true
+                    codecStopping.set(true)
+                    decodeFinished.set(true)
+                    decodeLatch.countDown()
+                    break
+                }
             }
-            if (!decodeFinished.get()) {
+            if (!decodeFinished.get() && !codecWatchdogTriggered) {
                 Log.w(TAG, "Codec[$pass] timed out after ${timeoutMs}ms")
             }
-            processJob?.join()
+            if (codecWatchdogTriggered) {
+                processJob?.cancelAndJoin()
+            } else {
+                processJob?.join()
+            }
             while (true) {
                 val result = resultQueue.poll() ?: break
                 emitFrame(result)
@@ -276,9 +316,17 @@ class VideoProcessor(
             Log.e(TAG, "Codec extraction error: ${e.message}", e)
             decodeError = e
         } finally {
+            codecStopping.set(true)
+            decodeFinished.set(true)
+            processJob?.let { job ->
+                if (!job.isCompleted) {
+                    job.cancelAndJoin()
+                }
+            }
             try { decoder?.stop() } catch (_: Exception) {}
             try { decoder?.release() } catch (_: Exception) {}
             handlerThread.quitSafely()
+            try { handlerThread.join(1_000L) } catch (_: InterruptedException) {}
             extractor.release()
             while (true) { yuvQueue.poll()?.bitmap?.recycle() ?: break }
         }
@@ -425,7 +473,7 @@ class VideoProcessor(
             val landmarks = if (result.landmarks().isNotEmpty()) {
                 result.landmarks().map { lmList ->
                     lmList.map { lm ->
-                        NormalizedLandmark(lm.x(), lm.y(), lm.z(), lm.visibility().orElse(1.0f))
+                        NormalizedLandmark(lm.x(), lm.y(), lm.z(), lm.visibility().orElse(0.0f))
                     }
                 }
             } else {

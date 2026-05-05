@@ -115,7 +115,7 @@ fun CoachPanel(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "Pose-based feedback · not medical diagnosis",
+                    text = "Pose-based feedback - not medical diagnosis",
                     color = TextSecondary,
                     style = MaterialTheme.typography.labelSmall,
                 )

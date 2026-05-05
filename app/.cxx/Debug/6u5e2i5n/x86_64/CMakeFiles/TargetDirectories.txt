@@ -1,8 +1,0 @@
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/gemmafit_kinematics.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/gemmafit_bridge.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/test_com_tracker.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/test_safety_monitor.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/test_kinematics_pipeline.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/test.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/edit_cache.dir
-C:/Users/ken/OneDrive/桌面/GemmaFit/app/.cxx/Debug/6u5e2i5n/x86_64/CMakeFiles/rebuild_cache.dir
