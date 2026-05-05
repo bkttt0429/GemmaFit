@@ -142,6 +142,10 @@ def _angle3(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
     return math.degrees(math.acos(float(np.clip(cos, -1.0, 1.0))))
 
 
+def _mean_vis(lm_arr: np.ndarray, names: List[str]) -> float:
+    return float(np.mean([_vis(lm_arr, name) for name in names]))
+
+
 def _extract_features(lm_arr: np.ndarray) -> Dict[str, float]:
     f = {}
 
@@ -195,15 +199,42 @@ def _extract_features(lm_arr: np.ndarray) -> Dict[str, float]:
     # wrists near ankle/floor level (push-up floor support)
     wri_vs_ank = abs(float(wri_mid[1] - ank_mid[1]))
     f["wrists_near_floor"]      = float(np.clip(1.0 - wri_vs_ank / 0.25, 0.0, 1.0))
+    # Upper-body-only support proxy for push-up views where lower body is cropped.
+    wri_below_sho = float(wri_mid[1] - sho_mid[1])
+    wri_sho_dist = float(np.linalg.norm(wri_mid - sho_mid))
+    f["wrists_below_shoulders"] = float(np.clip(wri_below_sho / 0.22, 0.0, 1.0))
+    f["wrist_shoulder_separation"] = float(np.clip(wri_sho_dist / 0.28, 0.0, 1.0))
+    f["upper_body_hand_support"] = float(max(
+        f["wrists_below_shoulders"],
+        f["wrist_shoulder_separation"],
+    ))
 
     # ── Bipedal feet separation (proxy for standing vs prone) ───────────────
     ankle_sep = float(np.linalg.norm(l_ank - r_ank))
     f["bipedal_stance"] = float(np.clip(ankle_sep / 0.25, 0.0, 1.0))
 
-    # ── Average visibility of key joints ────────────────────────────────────
-    vis_joints = ["left_shoulder", "right_shoulder", "left_hip", "right_hip",
-                  "left_knee", "right_knee", "left_ankle", "right_ankle"]
-    f["visibility"] = float(np.mean([_vis(lm_arr, j) for j in vis_joints]))
+    # ── Region visibility gates ─────────────────────────────────────────────
+    upper_body = ["left_shoulder", "right_shoulder", "left_elbow", "right_elbow",
+                  "left_wrist", "right_wrist"]
+    torso = ["left_shoulder", "right_shoulder", "left_hip", "right_hip"]
+    lower_body = ["left_hip", "right_hip", "left_knee", "right_knee",
+                  "left_ankle", "right_ankle"]
+    f["upper_body_visibility"] = _mean_vis(lm_arr, upper_body)
+    f["torso_visibility"] = _mean_vis(lm_arr, torso)
+    f["lower_body_visibility"] = _mean_vis(lm_arr, lower_body)
+    f["upper_template_visibility"] = min(
+        f["upper_body_visibility"],
+        f["torso_visibility"],
+    )
+    f["lower_template_visibility"] = min(
+        f["lower_body_visibility"],
+        f["torso_visibility"],
+    )
+    f["visibility"] = float(np.mean([
+        f["upper_body_visibility"],
+        f["torso_visibility"],
+        f["lower_body_visibility"],
+    ]))
 
     return f
 
@@ -227,19 +258,24 @@ def detect_exercise(
     if f["knee_symmetry"] > 0.65: sq_b.append("symmetric_knees")
     sq += 0.10 * f["wrists_above_hip"]
     sq += 0.05 * f["bipedal_stance"]
+    sq *= f["lower_template_visibility"]
+    if f["lower_template_visibility"] >= 0.5: sq_b.append("lower_body_visible")
     scores["squat"] = float(np.clip(sq, 0, 1))
     bases["squat"] = sq_b
 
-    # ── Push-up: horizontal body + elbow flexion + wrists near shoulders ────
+    # ── Push-up: upper-body support + elbow flexion, independent of ankles ──
     pu = 0.0; pu_b: List[str] = []
-    pu += 0.45 * f["trunk_horizontal"]
-    if f["trunk_horizontal"] > 0.5: pu_b.append("horizontal_body")
-    pu += 0.25 * f["bilateral_elbow_flexion"]
+    support_with_arm_evidence = f["upper_body_hand_support"] * (
+        0.35 + 0.65 * f["bilateral_elbow_flexion"]
+    )
+    pu += 0.35 * f["bilateral_elbow_flexion"]
     if f["bilateral_elbow_flexion"] > 0.2: pu_b.append("elbow_flexion")
-    pu += 0.20 * f["wrists_near_shoulder"]
-    if f["wrists_near_shoulder"] > 0.4: pu_b.append("wrists_near_shoulders")
-    pu += 0.10 * f["wrists_near_floor"]
-    if f["wrists_near_floor"] > 0.4: pu_b.append("floor_support")
+    pu += 0.45 * support_with_arm_evidence
+    if support_with_arm_evidence > 0.4: pu_b.append("upper_body_hand_support")
+    pu += 0.10 * f["trunk_horizontal"]
+    if f["trunk_horizontal"] > 0.5: pu_b.append("horizontal_body")
+    pu += 0.10 * f["upper_template_visibility"]
+    if f["upper_template_visibility"] >= 0.5: pu_b.append("upper_body_visible")
     scores["push_up"] = float(np.clip(pu, 0, 1))
     bases["push_up"] = pu_b
 
@@ -254,6 +290,8 @@ def detect_exercise(
     lu += 0.10 * f["bipedal_stance"]
     # Penalize if knees are too symmetric (that's squat, not lunge)
     lu -= 0.15 * f["knee_symmetry"]
+    lu *= f["lower_template_visibility"]
+    if f["lower_template_visibility"] >= 0.5: lu_b.append("lower_body_visible")
     scores["lunge"] = float(np.clip(lu, 0, 1))
     bases["lunge"] = lu_b
 
@@ -269,6 +307,8 @@ def detect_exercise(
     if 0.3 < f["trunk_vertical"] < 0.85: dl_b.append("forward_trunk_lean")
     # Penalize knee-dominant flexion (that's squat)
     dl -= 0.10 * f["bilateral_knee_flexion"]
+    dl *= f["lower_template_visibility"]
+    if f["lower_template_visibility"] >= 0.5: dl_b.append("lower_body_visible")
     scores["deadlift"] = float(np.clip(dl, 0, 1))
     bases["deadlift"] = dl_b
 
@@ -284,10 +324,15 @@ def detect_exercise(
         status = STATUS_VIEW_LIMITED
         basis = ["insufficient_detection_confidence"]
     else:
-        status = STATUS_OK if f["visibility"] >= 0.5 else STATUS_VIEW_LIMITED
+        required_visibility = (
+            f["upper_template_visibility"]
+            if best == "push_up"
+            else f["lower_template_visibility"]
+        )
+        status = STATUS_OK if required_visibility >= 0.5 else STATUS_VIEW_LIMITED
         basis = bases.get(best, [])
-        if f["visibility"] < 0.5:
-            basis.append("low_landmark_visibility")
+        if required_visibility < 0.5:
+            basis.append("low_required_landmark_visibility")
 
     return ExerciseDetectionResult(
         exercise=best,
@@ -296,6 +341,106 @@ def detect_exercise(
         basis=basis,
         status=status,
     )
+
+
+# ── Temporal smoothing for exercise label (Algorithm #3) ─────────────────────
+#
+# Single-frame `detect_exercise` flickers when the user is at the static
+# top of a squat (trunk vertical, knees ≈170°): squat / deadlift scores
+# get very close and the winner can swap each frame. SmoothedExerciseDetector
+# wraps the per-frame call with:
+#   - a sliding majority vote over the last `window_frames` frames
+#   - hysteresis: requires `switch_min_streak` consecutive winning votes
+#     against the current label before switching
+#
+# Behavior parity: when smoothing decides "no switch yet", the returned
+# result keeps the previously-stable label but reports the raw winner's
+# score under `candidate_scores` for diagnostics. status, basis, and
+# candidate_scores still reflect the latest underlying frame.
+
+from collections import Counter, deque
+
+
+class SmoothedExerciseDetector:
+    """Stateful wrapper around `detect_exercise` that suppresses single-frame flicker."""
+
+    def __init__(
+        self,
+        window_frames: int = 9,
+        switch_min_streak: int = 4,
+        unknown_passthrough: bool = True,
+    ):
+        if window_frames < 1:
+            raise ValueError("window_frames must be >= 1")
+        if switch_min_streak < 1:
+            raise ValueError("switch_min_streak must be >= 1")
+        self.window_frames = window_frames
+        self.switch_min_streak = switch_min_streak
+        self.unknown_passthrough = unknown_passthrough
+        self._votes: deque = deque(maxlen=window_frames)
+        self._stable_label: Optional[str] = None
+        self._switch_streak = 0
+        self._raw_label_history: List[str] = []   # diagnostics
+        self.flips_raw = 0
+        self.flips_smoothed = 0
+
+    def reset(self) -> None:
+        self._votes.clear()
+        self._stable_label = None
+        self._switch_streak = 0
+        self._raw_label_history.clear()
+        self.flips_raw = 0
+        self.flips_smoothed = 0
+
+    def update(
+        self,
+        lm_arr: np.ndarray,
+        angle_history: Optional[list] = None,
+    ) -> "ExerciseDetectionResult":
+        raw = detect_exercise(lm_arr, angle_history=angle_history)
+        self._votes.append(raw.exercise)
+
+        # Diagnostics: count raw flips vs smoothed flips.
+        if self._raw_label_history and raw.exercise != self._raw_label_history[-1]:
+            self.flips_raw += 1
+        self._raw_label_history.append(raw.exercise)
+
+        # Unknown bypasses smoothing — we want VIEW_LIMITED to surface immediately.
+        if self.unknown_passthrough and raw.exercise == "unknown":
+            new_label = "unknown"
+        else:
+            counter = Counter(self._votes)
+            top_label, _ = counter.most_common(1)[0]
+            if self._stable_label is None:
+                # First non-unknown frame seeds the stable label.
+                new_label = raw.exercise
+            elif top_label == self._stable_label:
+                self._switch_streak = 0
+                new_label = self._stable_label
+            else:
+                self._switch_streak += 1
+                if self._switch_streak >= self.switch_min_streak:
+                    new_label = top_label
+                else:
+                    new_label = self._stable_label
+
+        if new_label != self._stable_label and self._stable_label is not None:
+            self.flips_smoothed += 1
+        self._stable_label = new_label
+
+        # Build the same dataclass shape, but with the smoothed label.
+        # Diagnostics live on the detector instance, not the result, to
+        # keep ExerciseDetectionResult's downstream consumers unchanged.
+        smoothed_basis = list(raw.basis)
+        if new_label != raw.exercise and raw.exercise != "unknown":
+            smoothed_basis.append(f"smoothed_held_against_raw={raw.exercise}")
+        return ExerciseDetectionResult(
+            exercise=new_label,
+            exercise_confidence=raw.exercise_confidence,
+            candidate_scores=raw.candidate_scores,
+            basis=smoothed_basis,
+            status=raw.status,
+        )
 
 
 # ── Quality Flags and NOT_APPLICABLE ─────────────────────────────────────────
