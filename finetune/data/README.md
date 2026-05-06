@@ -105,10 +105,12 @@ python format_expand.py
 python generate_v3_evidence_router.py --validate
 ```
 
-Then run the notebook from Section 1 through Section 9 in Colab. For LiteRT
-conversion, restart into a conversion-only runtime after installing
-`litert-torch-nightly` / `litert-lm`; do not import Unsloth in that runtime.
-The notebook packages the converted model and small metadata files into
+Then run the training notebook from Section 1 through the merged HF export in
+Colab. For LiteRT conversion, use the dedicated conversion-only notebook
+`finetune/convert_gemmafit_v3_litert_colab.ipynb`; restart into a clean
+runtime after installing `litert-torch-nightly` / `litert-lm` and do not import
+Unsloth in that runtime. The conversion notebook packages the converted model
+and small metadata files into
 `GemmaFit_train/gemmafit-v3-evidence-router-local-artifacts.zip`.
 
 After downloading the bundle, finalize it locally with:

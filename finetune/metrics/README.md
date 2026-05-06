@@ -39,10 +39,11 @@ CSV, and PNG summary files are small.
    `RUN_STATE_<model>_gemmafit_v3_evidence_router.json`,
    `RUN_EVENTS_<model>_gemmafit_v3_evidence_router.jsonl`, and
    `DISCONNECT_POINTS_<model>_gemmafit_v3_evidence_router.jsonl`.
-6. For v3, run the notebook's LiteRT conversion section in a conversion-only
-   Colab runtime. Use the long `--quantization_recipe` exporter flag; the
-   short `-q` flag can be treated as an ignored extra kwarg by the current
-   nightly exporter.
+6. For v3, prefer the dedicated conversion-only Colab notebook
+   `finetune/convert_gemmafit_v3_litert_colab.ipynb` after the merged
+   HF/safetensors export exists. It avoids importing Unsloth and uses
+   `--prefill_lengths=[256]` so Fire does not parse prefill as a bare integer.
+   Keep the explicit `--quantization_recipe=dynamic_wi4_afp32` exporter flag.
 7. Download the generated bundle
    `GemmaFit_train/gemmafit-v3-evidence-router-local-artifacts.zip`, then run:
    `python finetune/prepare_litert_artifact.py --source-bundle path/to/gemmafit-v3-evidence-router-local-artifacts.zip --run-smoke`.
