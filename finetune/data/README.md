@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | `fc_training_data.json` | v1 raw dataset with `input` and `output` pairs | `generate_synthetic.py` |
 | `fc_training_data_chat.json` | v2 chat-formatted dataset with prompt-format expansion | `format_expand.py` |
+| `gemmafit_v3_evidence_router.json` | v3 chat-formatted Capability-Bounded Evidence Router dataset | `generate_v3_evidence_router.py` |
 | `data/fc_training_data.json` | older snapshot kept for diff reference | legacy |
 
 ## Pipeline
@@ -63,22 +64,37 @@ relies on post-hoc `prototype/eval_compare.py` for function-match benchmarking.
 
 ## v3 Evidence Router Prep
 
-Do not retrain until the deep literature report and native Evidence DAG contract
-are stable. The next dataset should be named separately from v2, for example
-`gemmafit_v3_evidence_router`, and should add these fields to the domain input:
+`generate_v3_evidence_router.py` creates the v3 training set for the
+Capability-Bounded Evidence Router. This is separate from v2 and must not
+overwrite v2 metrics or model artifacts.
+
+The v3 domain input contains compact structured evidence only:
 
 - `capability_contract.can_judge`
 - `capability_contract.cannot_judge`
-- compact `evidence_dag.nodes`
-- compact `evidence_dag.edges`
+- compact `evidence_dag_compact`
 - metric-level `confidence_ceiling`
+- session-level summary statistics, not raw video or raw landmarks
 
 The target output should still be a single function call, but every output must
-include `evidence_refs`, `selection_basis`, and `refusal_level`. Old
-`warn_poor_visibility` examples should be mapped to
-`refuse_unsupported_question(reason="insufficient_evidence")` once the v3
-benchmark is created; keep v2 unchanged so existing benchmark artifacts remain
-reproducible.
+include `evidence_refs`, `selection_basis`, and `refusal_level`. Movement
+coaching tools also carry `coach_cue` and `next_focus`. Unsupported medical,
+force, EMG, fall-risk, sarcopenia, injury, and insufficient-evidence prompts
+route to `refuse_unsupported_question`.
+
+The default row mix is:
+
+| Row Type | Ratio |
+| --- | ---: |
+| Clean positive | 20% |
+| Warning correction | 25% |
+| Partial judgment | 20% |
+| Low confidence / view limited | 15% |
+| Unsupported medical / force / EMG | 10% |
+| Memory / trend tools | 10% |
+
+The Colab notebook run suffix is `gemmafit_v3_evidence_router`, with a
+domain/Glaive/HH mixture of `70/20/10`.
 
 ## Reproduce
 
@@ -86,11 +102,12 @@ reproducible.
 cd finetune/data
 python generate_synthetic.py
 python format_expand.py
+python generate_v3_evidence_router.py --validate
 ```
 
 Then run the notebook from Section 1 through Section 9 in Colab. After the
 `.litertlm` artifact is produced, copy it back and finalize it with:
 
 ```bash
-python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v2-fc.litertlm --run-smoke
+python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v3-evidence-router.litertlm --run-smoke
 ```

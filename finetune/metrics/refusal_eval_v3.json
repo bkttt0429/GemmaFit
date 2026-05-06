@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "total_rows": 5082,
+    "tool_name_accuracy": 1.0,
+    "args_schema_valid_rate": 1.0,
+    "evidence_ref_valid_rate": 1.0,
+    "cannot_judge_violation_rate": 0.0,
+    "forbidden_claim_rate": 0.0,
+    "refusal_reason_accuracy": 1.0,
+    "refusal_level_accuracy": 1.0,
+    "zh_tw_wrapper_schema_rate": 1.0,
+    "memory_tool_policy_valid_rate": 1.0
+  },
+  "failures": [],
+  "dataset": "finetune\\data\\gemmafit_v3_evidence_router.json",
+  "row_filter": "partial_judgment|low_confidence|unsupported_question|refuse_unsupported_question",
+  "gate_failures": []
+}

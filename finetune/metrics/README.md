@@ -19,6 +19,11 @@ CSV, and PNG summary files are small.
 | `trainer_state_v2.json` | `trained_outputs/checkpoints/<model>_gemmafit_v2_format_expand/trainer_state.json` | v2 HF Trainer state and loss curve source |
 | `loss_curve_v2.png` | optional, plotted from `trainer_state_v2.json` | v2 loss curve image for the writeup |
 | `tool_call_eval.json` | `finetune/litert_tool_smoke.py` | 8-tool LiteRT-LM smoke-test results for `models/gemmafit-v2-fc.litertlm` |
+| `training_done_v3.json` | `trained_outputs/TRAINING_DONE_<model>_gemmafit_v3_evidence_router.json` | v3 Evidence Router run summary plus resume/conversion metadata |
+| `trainer_state_v3.json` | `trained_outputs/checkpoints/<model>_gemmafit_v3_evidence_router/trainer_state.json` | v3 HF Trainer state and loss curve source |
+| `tool_call_eval_v3.json` | `finetune/eval_v3_evidence_router.py` / `finetune/litert_tool_smoke.py` | 12-tool schema/evidence-ref compliance and LiteRT smoke output |
+| `refusal_eval_v3.json` | v3 post-hoc eval | Refusal reason / refusal level eval for unsupported and insufficient-evidence prompts |
+| `adversarial_eval_v3.json` | v3 post-hoc eval | Prompt-injection and boundary-probing eval summary |
 
 ## How To Update After A Colab Run
 
@@ -29,7 +34,15 @@ CSV, and PNG summary files are small.
    `gemmafit-v2-q4_k_m.gguf` and optionally `gemmafit-v2-q5_k_m.gguf`.
 4. Copy the converted LiteRT-LM artifact to `models/gemmafit-v2-fc.litertlm`
    and run `python finetune/litert_tool_smoke.py --model models/gemmafit-v2-fc.litertlm`.
-5. Commit metrics after benchmark numbers are written, not before.
+5. For v3, copy the Drive files:
+   `TRAINING_DONE_<model>_gemmafit_v3_evidence_router.json`,
+   `RUN_STATE_<model>_gemmafit_v3_evidence_router.json`,
+   `RUN_EVENTS_<model>_gemmafit_v3_evidence_router.jsonl`, and
+   `DISCONNECT_POINTS_<model>_gemmafit_v3_evidence_router.jsonl`.
+6. For v3, copy the converted LiteRT-LM artifact to
+   `models/gemmafit-v3-evidence-router.litertlm` and run
+   `python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v3-evidence-router.litertlm --run-smoke`.
+7. Commit metrics after benchmark numbers are written, not before.
 
 ## Schema
 
@@ -64,6 +77,31 @@ CSV, and PNG summary files are small.
 }
 ```
 
+v3 adds resume and evidence-router fields:
+
+```json
+{
+  "version": "v3_evidence_router",
+  "run_name": "<model>_gemmafit_v3_evidence_router",
+  "run_suffix": "gemmafit_v3_evidence_router",
+  "status": "training_complete|complete",
+  "last_completed_phase": "6_training|8_5_litert_metadata|11_eval_done",
+  "dataset_path": "finetune/data/gemmafit_v3_evidence_router.json",
+  "dataset_sha256": "...",
+  "train_rows": 10000,
+  "validation_rows": 1200,
+  "best_checkpoint": "...",
+  "adapter_path": "...",
+  "merged_hf_path": "...",
+  "gguf_q4_path": "models/gemmafit-v3-evidence-router-q4_k_m.gguf",
+  "litertlm_path": "models/gemmafit-v3-evidence-router.litertlm",
+  "conversion_status": "not_started|ready_for_android|smoke_failed",
+  "tool_call_eval": "finetune/metrics/tool_call_eval_v3.json",
+  "resume_log": "RUN_EVENTS_<run>.jsonl",
+  "disconnect_points": "DISCONNECT_POINTS_<run>.jsonl"
+}
+```
+
 ## Current Status
 
 - v1 Q4 exists as `models/gemmafit-q4_k_m.gguf` and should remain labeled v1.
@@ -73,5 +111,9 @@ CSV, and PNG summary files are small.
   run name `gemmafit_v2_format_expand`.
 - v2 LiteRT-LM app testing expects `models/gemmafit-v2-fc.litertlm`; GGUF is
   retained only as llama.cpp fallback evidence.
+- v3 training uses `finetune/data/gemmafit_v3_evidence_router.json`, run suffix
+  `gemmafit_v3_evidence_router`, and 12 tools with evidence-ref validation.
+- v3 LiteRT-LM app testing expects
+  `models/gemmafit-v3-evidence-router.litertlm`; GGUF remains fallback-only.
 - Any `.crdownload` model file is incomplete and must not be used as benchmark
   evidence.

@@ -52,6 +52,10 @@ Native motion_quality
   in `cannot_judge`.
 - [x] Docs now describe Capability Contract, Evidence DAG, summary-only Gemma,
   and evidence-first UX.
+- [x] Full deep literature report imported into the docs with Chinese working
+  review and English canonical review.
+- [x] Product Claims matrix added for allowed wording, required qualifiers, and
+  forbidden claim boundaries.
 - [x] Fine-tune docs now reserve v3 for the evidence-router dataset instead of
   mutating v2 benchmark data.
 
@@ -66,10 +70,9 @@ Native motion_quality
 
 ### Still open
 
-- [ ] Full deep literature report import and citation cleanup.
-- [ ] Product Claims matrix: `claim`, `source`, `allowed wording`,
-  `forbidden wording`, `code/doc target`.
-- [ ] Fine-tune v3 data generator for Capability Contract + Evidence DAG input.
+- [x] Fine-tune v3 data generator for Capability Contract + Evidence DAG input.
+- [ ] Run the v3 Colab training job and copy back `training_done_v3.json`,
+  `trainer_state_v3.json`, and conversion metadata.
 - [ ] LiteRT-LM real model smoke on Pixel 8 Pro with `gemmafit-v2-fc.litertlm`
   or later v3 artifact.
 - [ ] Summary UI deeper display of capability/evidence refs, beyond prompt/debug
@@ -78,6 +81,41 @@ Native motion_quality
   videos.
 - [ ] Cleanup of unrelated dirty build artifacts and existing `VideoStates.kt`
   EOF whitespace warning.
+
+### Next Slice - Evidence Contract Hardening (P0)
+
+Roadmap boundary: the literature supports claim boundaries, calibration paths,
+selective abstention, and provenance design. It does **not** mean the current
+prototype thresholds are clinically validated.
+
+- [x] `EVID-P0-01` Native evidence id stabilization: every `template_metric`,
+  `quality_flag`, `not_applicable`, and `capability` has a stable
+  `evidence_id`.
+- [x] `EVID-P0-02` Evidence node fields: include `id`, `type`, `metric`,
+  `value`, `source`, `confidence`, `evidence_level`, and `reason`.
+- [x] `EVID-P0-03` Evidence edge validation: all `derived_from`, `gated_by`,
+  `thresholded_by`, `supports`, and `blocks` endpoints exist.
+- [x] `EVID-P0-04` Capability Contract view gating: side-view squat can judge
+  `depth`, `tempo`, and `trunk_lean`, but cannot judge
+  `frontal_knee_valgus`.
+- [x] `EVID-P0-05` Confidence boundary: low confidence blocks hard judgment but
+  still emits evidence nodes and blocked reasons.
+- [x] `EVID-P0-06` Android compact ledger: Gemma prompts include compact
+  evidence refs and capability contract only; no raw landmarks or raw video.
+- [x] `EVID-P0-07` Gemma validation hardening: missing `evidence_refs` or
+  `cannot_judge` metric tool calls must use deterministic fallback.
+- [x] `EVID-P0-08` Summary UI/debug: expose backend, function, evidence refs,
+  and fallback status.
+- [x] `EVID-P0-09` Native tests: cover side-view, frontal-view, low-confidence,
+  edge endpoint, and quality-flag evidence-node cases.
+- [x] `EVID-P0-10` Android tests: cover missing DAG compatibility, full DAG
+  parse, invalid evidence refs fallback, and summary-only trigger behavior.
+- [ ] `EVID-P0-11` Video acceptance: export debug JSON for
+  correct/wrong/view-limited/no-person clips and confirm `capability_contract`,
+  `evidence_dag`, and `coach_summary` are inspectable.
+- [x] `EVID-P0-12` Research extraction backlog: list only FPPA, confidence
+  ceiling, and coverage-risk benchmark work; do not label prototype thresholds
+  as validated. See `docs/papers/research_extraction_backlog.md`.
 
 ## Phase Overview
 
@@ -130,13 +168,37 @@ local path, intended use, expected behavior, and known limitations.
 | P0 | Safety & Trust video benchmark v1 | Prove correct judgment and correct refusal for demo/writeup. | `test_assets/benchmarks/safety_trust_v1/` | Build `manifest.json` with clip id, source, view, expected statuses, and evidence refs. |
 | P0 | Current public demo clips | Regression for squat, push-up, lunge, and deadlift templates. | `test_assets/videos/`, `test_assets/videos/internet_public*/` | Normalize source metadata into `test_assets/asset_manifest.json`; mark lunge/deadlift source attribution before final writeup. |
 | P0 | Pixel 8 Pro acceptance clips | Final on-device APK smoke: correct/wrong movement, low confidence, no-person, and subject-lost cases. | Phone: `/sdcard/DCIM/GemmaFitTest/`; repo only stores derived reports unless clip is public/demo-safe. | Record or copy a small fixed set; export `motion_report` JSON and screenshots into `docs/benchmark/`. |
-| P0 | Fine-tune v3 evidence-router dataset | Train/evaluate safe Gemma routing from Capability Contract + Evidence DAG, not raw pose. | `finetune/data/gemmafit_v3_evidence_router.json` | Generate from native report fixtures plus synthetic edge cases; keep v2 files unchanged. |
+| P0 | Fine-tune v3 evidence-router dataset | Train/evaluate safe Gemma routing from Capability Contract + Evidence DAG, not raw pose. | `finetune/data/gemmafit_v3_evidence_router.json` | v3 generator/evaluator exists; next add native report fixtures on top of synthetic edge cases. |
 | P0 | No-person / occlusion / multi-person fixtures | Guard against stale skeletons, false candidates, and overconfident warnings. | `test_assets/videos/`, `prototype/outputs/`, native JSON fixtures | Add expected `LOW_CONFIDENCE`, `VIEW_LIMITED`, or `SUBJECT_LOST` assertions. |
 | P1 | Zenodo Squat static image benchmark | Static threshold sanity check for squat back/heel proxies. Not valid for timing or Rule 6. | `test_assets/datasets/zenodo_squat_good_bad_back_bad_heel/` | Finish checksum/status cleanup and document which metrics are valid vs invalid. |
 | P1 | Kaggle Squat Pose Dataset | Extra squat landmark diversity and threshold sensitivity tests. | `test_assets/datasets/` or ignored local cache | Use only if license and schema are documented; do not let it dominate multi-exercise claims. |
 | P1 | Exercise Recognition Time Series | Temporal smoothing / rep-count / Rule 6 stress tests. | `test_assets/datasets/` or ignored local cache | Map columns to GemmaFit motion traces; use for timing behavior, not medical or force claims. |
 | P1 | Senior-mode public clips | Chair sit-to-stand, supported squat, balance hold, and step-touch demo coverage. | `test_assets/videos/internet_public*/` | Keep as product demo and accessibility validation, not sarcopenia/fall-risk evidence. |
 | P2 | User-recorded optional clips | Robustness and UX tuning after MVP. | Ignored local cache by default | Store raw video only with explicit consent; commit derived landmarks/reports when useful. |
+
+### Dataset Size Budget
+
+Measured sizes are from the local checkout and attached Pixel 8 Pro on
+2026-05-05. Planned external datasets that are not present locally are listed
+with a project budget instead of a claimed exact size.
+
+| Dataset / Asset Set | Current measured size | Project budget / cap | Notes |
+| --- | --- | --- | --- |
+| Safety & Trust video benchmark v1 | Missing | <= 250 MiB local video set; <= 20 MiB committed derived reports | Prefer short, compressed public or Pixel clips plus JSON reports. |
+| Current public demo clips | 169.45 MiB in `test_assets/videos` | <= 250 MiB | Includes public, phone-ready, synthetic, and small preview clips. Avoid keeping duplicate encodes unless needed for phone playback. |
+| Public source clips | 69.04 MiB in `test_assets/videos/internet_public` | Keep canonical public sources | WebM originals for attribution and reproducibility. |
+| MP4 converted public clips | 35.07 MiB in `test_assets/videos/internet_public_mp4` | Keep only if app/device tests require MP4 | Derived convenience copies; can be regenerated from manifest. |
+| Phone-ready public clips | 43.65 MiB in `test_assets/videos/internet_public_phone` | Keep only final demo subset | Used for `/sdcard/DCIM/GemmaFitTest/` acceptance runs. |
+| Pixel 8 Pro acceptance clips | 44 MiB on `/sdcard/DCIM/GemmaFitTest/` | <= 100 MiB on device; commit derived reports only | Current phone set: chair stand, balance, lunge, deadlift, short squat preview. |
+| Fine-tune v2 data | 2.98 MiB in `finetune/data` | Keep as immutable benchmark | `fc_training_data_chat.json` is 2.09 MiB. |
+| Fine-tune v3 evidence-router data | 24.36 MiB in `finetune/data/gemmafit_v3_evidence_router.json` | <= 25 MiB for JSON train/validation | Generated from synthetic evidence-router edge cases; next layer native report fixtures. |
+| No-person / occlusion / multi-person fixtures | Partly present; `synthetic_two_person_squat.mp4` is 2.71 MiB; `prototype/outputs` is 98.33 KiB | <= 50 MiB | Add only short clips and compact expected-output fixtures. |
+| Zenodo squat static image benchmark | 785.89 MiB zip | <= 1 GiB local cache; commit summaries only | Static images only; not valid for Rule 6 timing. |
+| Kaggle Squat Pose Dataset | 13.01 MiB local cache, including 2.27 MiB zip | <= 500 MiB local cache | Downloaded from Kaggle; use only after license/schema check. |
+| Exercise Recognition Time Series | 204.89 MiB local cache, including 64.59 MiB zip | <= 250 MiB local cache | Downloaded from Kaggle; use for temporal smoothing and rep-count stress tests only. |
+| Senior-mode public clips | Present inside public clip folders; current senior phone copies are about 31.68 MiB | <= 100 MiB final demo subset | Product/accessibility demo data, not clinical evidence. |
+| User-recorded optional clips | None committed | Case-by-case ignored cache | Commit only derived landmarks/reports unless explicitly approved. |
+| Benchmark reports | 1.07 MiB in `docs/benchmark` | <= 20 MiB committed | Good place for final tables, screenshots, and compact JSON evidence. |
 
 Safety & Trust benchmark v1 should cover these minimum cases:
 
@@ -163,16 +225,17 @@ native motion_report fixture
 
 V3 acceptance rules:
 
-- [ ] Keep `fc_training_data_chat.json` as the immutable v2 benchmark file.
-- [ ] Add `gemmafit_v3_evidence_router.json` with separate run suffix
+- [x] Keep `fc_training_data_chat.json` as the immutable v2 benchmark file.
+- [x] Add `gemmafit_v3_evidence_router.json` with separate run suffix
   `gemmafit_v3_evidence_router`.
-- [ ] Include positive tool-call rows and refusal rows in the same schema.
-- [ ] Include view-limited, low-confidence, not-applicable, and unsupported
+- [x] Include positive tool-call rows and refusal rows in the same schema.
+- [x] Include view-limited, low-confidence, not-applicable, and unsupported
   medical/force/muscle-activation prompts.
-- [ ] Validation set must include exact evidence-ref checks, invalid tool
-  rejection, and Traditional Chinese prompt wrappers.
-- [ ] Do not include raw user video, private filenames, or free-form medical
+- [x] Validation set must include exact evidence-ref checks and Traditional
+  Chinese prompt wrappers.
+- [x] Do not include raw user video, private filenames, or free-form medical
   labels in fine-tune data.
+- [ ] Add post-training invalid tool rejection tests against real model output.
 
 ## Phase 1 - Completed Python Prototypes
 
