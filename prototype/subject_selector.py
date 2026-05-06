@@ -41,6 +41,19 @@ _FRAME_CENTER_Y = 0.55
 _AUTO_CENTER_RADIUS = 0.75
 _MATCH_CENTER_RADIUS = 0.45
 _KEYPOINT_MATCH_RADIUS = 0.35
+_IDENTITY_MOTION_WEIGHT = 0.45
+_IDENTITY_KEYPOINT_WEIGHT = 0.25
+_IDENTITY_APPEARANCE_WEIGHT = 0.25
+_IDENTITY_AREA_VIS_WEIGHT = 0.05
+_IDENTITY_AMBIGUITY_MARGIN = 0.08
+_IDENTITY_OVERLAP_IOU = 0.20
+_IDENTITY_CENTER_CLOSE = 0.08
+_IDENTITY_APPEARANCE_ACCEPT = 0.42
+_IDENTITY_APPEARANCE_STRONG = 0.55
+_IDENTITY_DUPLICATE_IOU = 0.35
+_IDENTITY_DUPLICATE_CENTER_CLOSE = 0.04
+_IDENTITY_REACQUIRE_ACCEPT = 0.56
+_IDENTITY_REACQUIRE_MARGIN = 0.10
 
 
 class SubjectLockStatus(str, Enum):
@@ -70,6 +83,50 @@ class PoseBBox:
 
 
 @dataclass
+class SubjectAppearanceSignature:
+    histogram: np.ndarray = field(default_factory=lambda: np.zeros(0, dtype=np.float32))
+
+    @property
+    def is_valid(self) -> bool:
+        return self.histogram.size > 0 and float(np.sum(self.histogram)) > 0.0
+
+    def normalized(self) -> np.ndarray:
+        if self.histogram.size == 0:
+            return self.histogram.astype(np.float32)
+        hist = np.nan_to_num(self.histogram.astype(np.float32), nan=0.0, posinf=0.0, neginf=0.0)
+        hist = np.maximum(hist, 0.0)
+        total = float(hist.sum())
+        if total <= 0.0:
+            return np.zeros_like(hist, dtype=np.float32)
+        return hist / total
+
+    def similarity(self, other: Optional["SubjectAppearanceSignature"]) -> float:
+        if other is None or not self.is_valid or not other.is_valid:
+            return 0.5
+        a = self.normalized()
+        b = other.normalized()
+        if a.shape != b.shape:
+            return 0.5
+        return _clamp01(float(np.minimum(a, b).sum()))
+
+    def blend(
+        self,
+        other: Optional["SubjectAppearanceSignature"],
+        alpha: float = 0.12,
+    ) -> "SubjectAppearanceSignature":
+        if other is None or not other.is_valid:
+            return self
+        if not self.is_valid:
+            return other
+        a = self.normalized()
+        b = other.normalized()
+        if a.shape != b.shape:
+            return self
+        alpha = _clamp01(alpha)
+        return SubjectAppearanceSignature(((1.0 - alpha) * a + alpha * b).astype(np.float32))
+
+
+@dataclass
 class PoseCandidate:
     landmarks: np.ndarray            # (33, 3) — (x, y, visibility)
     bbox: PoseBBox = field(default_factory=PoseBBox)
@@ -78,6 +135,10 @@ class PoseCandidate:
     avg_visibility: float = 0.0
     track_score: float = 0.0
     track_id: int = -1
+    appearance: Optional[SubjectAppearanceSignature] = None
+    appearance_score: float = 0.5
+    match_margin: float = 0.0
+    identity_score: float = 0.0
 
 
 @dataclass
@@ -115,12 +176,32 @@ class SubjectSelection:
     candidate: Optional[PoseCandidate] = None
 
 
+@dataclass
+class _IdentityMatch:
+    index: int = -1
+    score: float = -1.0
+    hold: bool = False
+    reason: str = ""
+
+
 def _clamp01(v: float) -> float:
     return 0.0 if v < 0.0 else (1.0 if v > 1.0 else v)
 
 
 def _euclid(ax: float, ay: float, bx: float, by: float) -> float:
     return math.hypot(ax - bx, ay - by)
+
+
+def _bbox_iou(a: PoseBBox, b: PoseBBox) -> float:
+    left = max(a.left, b.left)
+    top = max(a.top, b.top)
+    right = min(a.right, b.right)
+    bottom = min(a.bottom, b.bottom)
+    inter = max(0.0, right - left) * max(0.0, bottom - top)
+    union = a.area + b.area - inter
+    if union <= 0.0:
+        return 0.0
+    return _clamp01(inter / union)
 
 
 def _candidate_passes_presence_gate(landmarks: np.ndarray) -> bool:
@@ -298,6 +379,7 @@ class SubjectSelector:
     def __init__(self, cfg: Optional[SubjectSelectorConfig] = None):
         self.cfg = cfg or SubjectSelectorConfig()
         self._locked: Optional[PoseCandidate] = None
+        self._locked_appearance: Optional[SubjectAppearanceSignature] = None
         self._kalman: Optional[_KalmanTrack] = None
         self._last_timestamp_ms: Optional[int] = None
         self._locked_track_id: int = -1
@@ -307,6 +389,7 @@ class SubjectSelector:
         self._pending_auto_frames: int = 0
         self._manual_lock: bool = False
         self._pending_tap: Optional[Tuple[float, float]] = None
+        self._identity_hold_frames: int = 0
 
     # ── public API ───────────────────────────────────────────────────
 
@@ -315,19 +398,23 @@ class SubjectSelector:
 
     def clear_lock(self) -> None:
         self._locked = None
+        self._locked_appearance = None
         self._kalman = None
         self._last_timestamp_ms = None
         self._locked_track_id = -1
         self._manual_lock = False
         self._lost_subject_frames = 0
+        self._identity_hold_frames = 0
         self._reset_pending_auto()
 
     def _clear_lost_locked_subject(self) -> None:
         self._locked = None
+        self._locked_appearance = None
         self._kalman = None
         self._locked_track_id = -1
         self._manual_lock = False
         self._pending_tap = None
+        self._identity_hold_frames = 0
         self._reset_pending_auto()
 
     @property
@@ -400,9 +487,11 @@ class SubjectSelector:
                 self._locked_track_id = trk
                 chosen.track_id = trk
                 self._locked = chosen
+                self._locked_appearance = chosen.appearance
                 self._reset_kalman(chosen)
                 self._reset_pending_auto()
                 self._lost_subject_frames = 0
+                self._identity_hold_frames = 0
                 return self._make_selection(
                     chosen, visible_to_source[chosen_visible_idx], trk,
                     SubjectLockStatus.LOCKED, candidates_in,
@@ -410,28 +499,21 @@ class SubjectSelector:
 
         # 4. Already locked: re-match.
         if self._locked is not None:
-            if cfg.kalman_enabled:
-                best_idx, best_score = self._select_kalman_match(visible, dt_s)
-            else:
-                best_idx = -1
-                best_score = -1.0
-                for i, c in enumerate(visible):
-                    s = self._score_subject_match(self._locked, c)
-                    if s > best_score:
-                        best_score = s
-                        best_idx = i
-                if best_score < cfg.subject_match_threshold:
-                    best_idx = -1
+            match = self._select_identity_match(visible, dt_s)
+            if match.hold:
+                self._reset_pending_auto()
+                return self._make_hold_selection(match.reason, candidates_in)
 
-            if best_idx >= 0:
+            if match.index >= 0:
                 status = SubjectLockStatus.LOCKED if self._manual_lock else SubjectLockStatus.AUTO_LOCKED
                 trk = self._locked_track_id if self._locked_track_id >= 0 else self._next_track_id
                 if self._locked_track_id < 0:
                     self._next_track_id += 1
                 self._locked_track_id = trk
-                best = visible[best_idx]
+                best = visible[match.index]
                 best.track_id = trk
-                best.track_score = best_score
+                best.track_score = match.score
+                best.identity_score = match.score
                 self._locked = best
                 if cfg.kalman_enabled:
                     if self._kalman is None:
@@ -440,12 +522,14 @@ class SubjectSelector:
                         self._kalman.update(best)
                 self._reset_pending_auto()
                 self._lost_subject_frames = 0
+                self._identity_hold_frames = 0
                 return self._make_selection(
-                    best, visible_to_source[best_idx], trk, status, candidates_in,
+                    best, visible_to_source[match.index], trk, status, candidates_in,
                 )
             if not self._manual_lock:
                 # Auto-lock lost subject — drop and re-select below.
                 self._locked = None
+                self._locked_appearance = None
                 self._kalman = None
                 self._locked_track_id = -1
             else:
@@ -474,9 +558,11 @@ class SubjectSelector:
             self._locked_track_id = trk
             chosen.track_id = trk
             self._locked = chosen
+            self._locked_appearance = chosen.appearance
             self._reset_kalman(chosen)
             self._reset_pending_auto()
             self._lost_subject_frames = 0
+            self._identity_hold_frames = 0
             return self._make_selection(
                 chosen, visible_to_source[0], trk,
                 SubjectLockStatus.SINGLE_AUTO, candidates_in,
@@ -507,10 +593,12 @@ class SubjectSelector:
             self._locked_track_id = trk
             chosen.track_id = trk
             self._locked = chosen
+            self._locked_appearance = chosen.appearance
             self._reset_kalman(chosen)
             self._manual_lock = False
             self._reset_pending_auto()
             self._lost_subject_frames = 0
+            self._identity_hold_frames = 0
             return self._make_selection(
                 chosen, visible_to_source[visible_idx], trk,
                 SubjectLockStatus.AUTO_LOCKED, candidates_in,
@@ -557,6 +645,32 @@ class SubjectSelector:
             candidate=chosen,
         )
 
+    def _make_hold_selection(
+        self,
+        reason: str,
+        candidates_in: List[PoseCandidate],
+    ) -> SubjectSelection:
+        self._identity_hold_frames += 1
+        status = SubjectLockStatus.LOCKED if self._manual_lock else SubjectLockStatus.AUTO_LOCKED
+        flags = self._trust_flags_for(candidates_in, status)
+        flags.append("subject_hold")
+        flags.append(reason if reason == "subject_temporarily_occluded" else "subject_identity_uncertain")
+        seen = set()
+        out = []
+        for flag in flags:
+            if flag not in seen:
+                seen.add(flag)
+                out.append(flag)
+        return SubjectSelection(
+            active_index=-1,
+            track_id=self._locked_track_id,
+            status=status,
+            trust_flags=out,
+            reason=reason,
+            has_candidate=False,
+            candidate=None,
+        )
+
     def _trust_flags_for(self, candidates: List[PoseCandidate], status: SubjectLockStatus) -> List[str]:
         flags: List[str] = []
         if len(candidates) > 1:
@@ -576,6 +690,148 @@ class SubjectSelector:
                 seen.add(f)
                 out.append(f)
         return out
+
+    def _center_match_score(self, prev: PoseCandidate, cur: PoseCandidate) -> float:
+        center_dist = _euclid(prev.center_x, prev.center_y, cur.center_x, cur.center_y)
+        return _clamp01(1.0 - center_dist / _MATCH_CENTER_RADIUS)
+
+    def _appearance_similarity(self, prev: PoseCandidate, cur: PoseCandidate) -> float:
+        anchor = self._locked_appearance if self._locked_appearance is not None else prev.appearance
+        if anchor is None:
+            return 0.5
+        return anchor.similarity(cur.appearance)
+
+    def _score_identity_match(
+        self,
+        prev: PoseCandidate,
+        cur: PoseCandidate,
+        motion_score: float,
+    ) -> float:
+        area_base = max(prev.bbox.area, cur.bbox.area, 0.001)
+        area_score = _clamp01(1.0 - abs(prev.bbox.area - cur.bbox.area) / area_base)
+        keypoint_score = _clamp01(
+            1.0 - self._mean_keypoint_distance(prev.landmarks, cur.landmarks) /
+            _KEYPOINT_MATCH_RADIUS
+        )
+        appearance_score = self._appearance_similarity(prev, cur)
+        area_visibility_score = 0.60 * area_score + 0.40 * _clamp01(cur.avg_visibility)
+        cur.appearance_score = appearance_score
+        score = (
+            _IDENTITY_MOTION_WEIGHT * _clamp01(motion_score) +
+            _IDENTITY_KEYPOINT_WEIGHT * keypoint_score +
+            _IDENTITY_APPEARANCE_WEIGHT * appearance_score +
+            _IDENTITY_AREA_VIS_WEIGHT * area_visibility_score
+        )
+        cur.identity_score = _clamp01(score)
+        return cur.identity_score
+
+    def _select_identity_match(
+        self,
+        candidates: List[PoseCandidate],
+        dt_s: float,
+    ) -> _IdentityMatch:
+        if not candidates or self._locked is None:
+            return _IdentityMatch()
+
+        predicted = False
+        if self.cfg.kalman_enabled:
+            if self._kalman is None:
+                self._reset_kalman(self._locked)
+            if self._kalman is not None:
+                self._kalman.predict(dt_s)
+                predicted = True
+
+        scored: List[Tuple[int, float]] = []
+        for i, candidate in enumerate(candidates):
+            motion_score = self._center_match_score(self._locked, candidate)
+            if predicted and self._kalman is not None:
+                d2 = self._kalman.mahalanobis_d2(candidate)
+                if math.isfinite(d2) and d2 <= self.cfg.kalman_chi2_gate_3df:
+                    motion_score = _clamp01(1.0 - d2 / self.cfg.kalman_chi2_gate_3df)
+                else:
+                    # Geometry can jump during partial occlusion. Keep a weak
+                    # motion score so appearance/keypoints can veto wrong IDs.
+                    motion_score *= 0.50
+            scored.append((i, self._score_identity_match(self._locked, candidate, motion_score)))
+
+        scored.sort(key=lambda t: t[1], reverse=True)
+        best_i, best_score = scored[0]
+        second_score = scored[1][1] if len(scored) > 1 else -1.0
+        margin = best_score - second_score if second_score >= 0.0 else 1.0
+        candidates[best_i].match_margin = margin
+        if len(scored) > 1:
+            candidates[scored[1][0]].match_margin = margin
+
+        anchor = self._locked_appearance if self._locked_appearance is not None else self._locked.appearance
+        if anchor is not None and anchor.is_valid:
+            if candidates[best_i].appearance_score < _IDENTITY_APPEARANCE_ACCEPT:
+                return _IdentityMatch(
+                    index=-1,
+                    score=best_score,
+                    hold=True,
+                    reason="subject_appearance_mismatch",
+                )
+
+        if best_score < self.cfg.subject_match_threshold:
+            return _IdentityMatch()
+
+        if self._is_ambiguous_identity_match(candidates, scored, margin):
+            return _IdentityMatch(
+                index=-1,
+                score=best_score,
+                hold=True,
+                reason="subject_temporarily_occluded",
+            )
+
+        if self._identity_hold_frames > 0 and anchor is not None and anchor.is_valid:
+            reacquire_is_clear = (
+                candidates[best_i].appearance_score >= _IDENTITY_REACQUIRE_ACCEPT and
+                margin >= _IDENTITY_REACQUIRE_MARGIN
+            )
+            if not reacquire_is_clear:
+                return _IdentityMatch(
+                    index=-1,
+                    score=best_score,
+                    hold=True,
+                    reason="subject_identity_reacquiring",
+                )
+
+        return _IdentityMatch(index=best_i, score=best_score)
+
+    def _is_ambiguous_identity_match(
+        self,
+        candidates: List[PoseCandidate],
+        scored: List[Tuple[int, float]],
+        margin: float,
+    ) -> bool:
+        if len(scored) < 2:
+            return False
+        anchor = self._locked_appearance if self._locked_appearance is not None else self._locked.appearance if self._locked is not None else None
+        if anchor is None or not anchor.is_valid:
+            return False
+        best = candidates[scored[0][0]]
+        second = candidates[scored[1][0]]
+        appearance_gap = best.appearance_score - second.appearance_score
+        center_distance = _euclid(best.center_x, best.center_y, second.center_x, second.center_y)
+        box_overlap = _bbox_iou(best.bbox, second.bbox)
+        duplicate_same_subject = (
+            box_overlap >= _IDENTITY_DUPLICATE_IOU and
+            center_distance <= _IDENTITY_DUPLICATE_CENTER_CLOSE and
+            best.appearance_score >= _IDENTITY_APPEARANCE_ACCEPT and
+            second.appearance_score >= _IDENTITY_APPEARANCE_ACCEPT
+        )
+        if duplicate_same_subject:
+            return False
+        identity_is_clear = (
+            best.appearance_score >= _IDENTITY_APPEARANCE_STRONG and
+            appearance_gap >= 0.12
+        )
+        if identity_is_clear:
+            return False
+        center_close = center_distance <= _IDENTITY_CENTER_CLOSE
+        boxes_overlap = box_overlap >= _IDENTITY_OVERLAP_IOU
+        score_tie = margin < _IDENTITY_AMBIGUITY_MARGIN
+        return score_tie or center_close or boxes_overlap
 
     def _select_auto_candidate(
         self, candidates: List[PoseCandidate],
@@ -631,10 +887,20 @@ class SubjectSelector:
                 best_idx = i
 
         if best_idx < 0 or best_d2 > self.cfg.kalman_chi2_gate_3df:
-            if len(candidates) == 1 and self._locked is not None:
-                heuristic_score = self._score_subject_match(self._locked, candidates[0])
-                if heuristic_score >= self.cfg.subject_match_threshold:
-                    return 0, 0.5 * heuristic_score
+            if self._locked is not None:
+                # Real MediaPipe multi-pose output can briefly split one body
+                # into several plausible candidates or jump the torso center
+                # outside the Kalman covariance. Fall back to the established
+                # keypoint/area/visibility match instead of dropping the lock.
+                fallback_idx = -1
+                fallback_score = -1.0
+                for i, c in enumerate(candidates):
+                    heuristic_score = self._score_subject_match(self._locked, c)
+                    if heuristic_score > fallback_score:
+                        fallback_idx = i
+                        fallback_score = heuristic_score
+                if fallback_idx >= 0 and fallback_score >= self.cfg.subject_match_threshold:
+                    return fallback_idx, 0.5 * fallback_score
             return -1, -1.0
         score = _clamp01(1.0 - best_d2 / self.cfg.kalman_chi2_gate_3df)
         return best_idx, score
