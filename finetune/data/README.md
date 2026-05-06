@@ -105,8 +105,19 @@ python format_expand.py
 python generate_v3_evidence_router.py --validate
 ```
 
-Then run the notebook from Section 1 through Section 9 in Colab. After the
-`.litertlm` artifact is produced, copy it back and finalize it with:
+Then run the notebook from Section 1 through Section 9 in Colab. For LiteRT
+conversion, restart into a conversion-only runtime after installing
+`litert-torch-nightly` / `litert-lm`; do not import Unsloth in that runtime.
+The notebook packages the converted model and small metadata files into
+`GemmaFit_train/gemmafit-v3-evidence-router-local-artifacts.zip`.
+
+After downloading the bundle, finalize it locally with:
+
+```bash
+python finetune/prepare_litert_artifact.py --source-bundle path/to/gemmafit-v3-evidence-router-local-artifacts.zip --run-smoke
+```
+
+If you download only the `.litertlm` artifact instead of the bundle, use:
 
 ```bash
 python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v3-evidence-router.litertlm --run-smoke

@@ -7,17 +7,47 @@ import json
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source-litertlm", type=Path, required=True)
+    parser.add_argument("--source-litertlm", type=Path)
+    parser.add_argument("--source-bundle", type=Path, help="Zip created by the Colab v3 LiteRT export cell")
     parser.add_argument("--dest", type=Path, default=Path("models/gemmafit-v3-evidence-router.litertlm"))
     parser.add_argument("--training-done", type=Path, default=Path("finetune/metrics/training_done_v3.json"))
     parser.add_argument("--smoke-output", type=Path, default=Path("finetune/metrics/tool_call_eval_v3.json"))
     parser.add_argument("--run-smoke", action="store_true")
     args = parser.parse_args()
+
+    if not args.source_litertlm and not args.source_bundle:
+        raise SystemExit("Provide --source-litertlm or --source-bundle")
+
+    if args.source_bundle:
+        if not args.source_bundle.exists():
+            raise SystemExit(f"Bundle not found: {args.source_bundle}")
+        with zipfile.ZipFile(args.source_bundle) as bundle:
+            names = bundle.namelist()
+            unsafe = [
+                name for name in names
+                if Path(name).is_absolute() or ".." in Path(name).parts
+            ]
+            if unsafe:
+                raise SystemExit(f"Unsafe path in bundle: {unsafe[0]}")
+            litert_members = [name for name in names if name.endswith(".litertlm")]
+            if not litert_members:
+                raise SystemExit("Bundle does not contain a .litertlm artifact")
+            args.dest.parent.mkdir(parents=True, exist_ok=True)
+            with bundle.open(litert_members[0]) as src, args.dest.open("wb") as dst:
+                shutil.copyfileobj(src, dst)
+            for name in names:
+                if name.startswith("finetune/metrics/"):
+                    out = Path(name)
+                    out.parent.mkdir(parents=True, exist_ok=True)
+                    with bundle.open(name) as src, out.open("wb") as dst:
+                        shutil.copyfileobj(src, dst)
+        args.source_litertlm = args.dest
 
     if not args.source_litertlm.exists():
         raise SystemExit(f"Converted .litertlm not found: {args.source_litertlm}")
@@ -25,7 +55,8 @@ def main() -> int:
         raise SystemExit("Expected a .litertlm source artifact")
 
     args.dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(args.source_litertlm, args.dest)
+    if args.source_litertlm.resolve() != args.dest.resolve():
+        shutil.copy2(args.source_litertlm, args.dest)
 
     smoke_status = "not_run"
     smoke_output = str(args.smoke_output)
@@ -52,7 +83,13 @@ def main() -> int:
             "version": done.get("version", "v3_evidence_router"),
             "run_suffix": done.get("run_suffix", "gemmafit_v3_evidence_router"),
             "litertlm_path": str(args.dest),
-            "conversion_status": "ready_for_android" if smoke_status in {"pass", "not_run"} else "smoke_failed",
+            "conversion_status": (
+                "ready_for_android"
+                if smoke_status == "pass"
+                else "converted_unverified"
+                if smoke_status == "not_run"
+                else "smoke_failed"
+            ),
             "conversion_log": {
                 "source_litertlm": str(args.source_litertlm),
                 "dest": str(args.dest),

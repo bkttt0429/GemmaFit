@@ -39,10 +39,17 @@ CSV, and PNG summary files are small.
    `RUN_STATE_<model>_gemmafit_v3_evidence_router.json`,
    `RUN_EVENTS_<model>_gemmafit_v3_evidence_router.jsonl`, and
    `DISCONNECT_POINTS_<model>_gemmafit_v3_evidence_router.jsonl`.
-6. For v3, copy the converted LiteRT-LM artifact to
-   `models/gemmafit-v3-evidence-router.litertlm` and run
+6. For v3, run the notebook's LiteRT conversion section in a conversion-only
+   Colab runtime. Use the long `--quantization_recipe` exporter flag; the
+   short `-q` flag can be treated as an ignored extra kwarg by the current
+   nightly exporter.
+7. Download the generated bundle
+   `GemmaFit_train/gemmafit-v3-evidence-router-local-artifacts.zip`, then run:
+   `python finetune/prepare_litert_artifact.py --source-bundle path/to/gemmafit-v3-evidence-router-local-artifacts.zip --run-smoke`.
+8. If you download only the model instead of the bundle, copy the converted
+   LiteRT-LM artifact to `models/gemmafit-v3-evidence-router.litertlm` and run:
    `python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v3-evidence-router.litertlm --run-smoke`.
-7. Commit metrics after benchmark numbers are written, not before.
+9. Commit metrics after benchmark numbers are written, not before.
 
 ## Schema
 
@@ -64,7 +71,7 @@ CSV, and PNG summary files are small.
   "trained_output_dir": "...",
   "merged_hf_path": "...",
   "litertlm_path": "models/gemmafit-v2-fc.litertlm",
-  "conversion_status": "not_started|ready_for_android|smoke_failed",
+  "conversion_status": "not_started|converted_unverified|ready_for_android|smoke_failed",
   "conversion_log": {},
   "tool_call_eval": "finetune/metrics/tool_call_eval.json",
   "domain_data": "fc_training_data_chat.json",
@@ -115,5 +122,7 @@ v3 adds resume and evidence-router fields:
   `gemmafit_v3_evidence_router`, and 12 tools with evidence-ref validation.
 - v3 LiteRT-LM app testing expects
   `models/gemmafit-v3-evidence-router.litertlm`; GGUF remains fallback-only.
+- `converted_unverified` means the `.litertlm` file exists but the 12-tool
+  smoke has not passed yet. Only `ready_for_android` is demo-ready.
 - Any `.crdownload` model file is incomplete and must not be used as benchmark
   evidence.
