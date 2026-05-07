@@ -82,6 +82,207 @@ Native motion_quality
 - [ ] Cleanup of unrelated dirty build artifacts and existing `VideoStates.kt`
   EOF whitespace warning.
 
+### Immediate Next Todo - Senior Hero Demo Closure (2026-05-07)
+
+This is the next execution list. Work in this order unless a device/model
+blocker forces a fallback path. The goal is a demonstrable Senior Hero flow,
+not a broad refactor.
+
+- [ ] `NEXT-P0-01` Senior state wiring: add a ViewModel/state reducer that owns
+  selected senior activity, dual-task prompt state, latest gesture/voice
+  attempt, care-log context, generated care log, backend, fallback, and
+  evidence refs.
+  - Acceptance: Senior UI can show prompt card, response status, and care-log
+    summary from one state object; no mock-only UI path is required for the
+    demo.
+- [ ] `NEXT-P0-02` Live gesture pipeline: connect camera pose landmarks to
+  `SeniorGestureDetector`, then emit `DualTaskAttempt` for left-hand A,
+  right-hand B, clap confirm, and two-hand skip/cancel.
+  - Acceptance: one live Pixel run records gesture attempts with
+    `metric.dual_task.gesture.*` evidence refs and low-confidence fallback.
+- [ ] `NEXT-P0-03` Care-log context builder: convert senior session summary +
+  capability contract + evidence ledger into `CareLogContext`.
+  - Acceptance: sit-to-stand and balance-hold sessions produce deterministic
+    `CareLogContext` without raw landmarks, raw video, or medical labels.
+- [ ] `NEXT-P0-04` Care-log render and memory write path: route through local
+  model when available, otherwise use `SeniorCareLogRenderer`; write
+  `CARE_ACTIVITY_LOG` only when evidence ids pass policy.
+  - Acceptance: debug JSON shows `care_log.backend`, `function_name`,
+    `evidence_refs`, `fallback`, and rejected unsupported judgments.
+- [ ] `NEXT-P0-05` Native senior evidence ids: emit
+  `metric.senior.reps`, `metric.senior.tempo`,
+  `metric.senior.trunk_control`, `metric.senior.stability_events`, and dual-task
+  gesture evidence nodes where applicable.
+  - Acceptance: native tests cover sit-to-stand clean, low confidence,
+    stability proxy event, and blocked fall-risk/sarcopenia capability nodes.
+- [ ] `NEXT-P0-06` Official FunctionGemma baseline smoke: use the official
+  FunctionGemma `.litertlm` path as a real LiteRT sanity check before trusting
+  any GemmaFit v4 fine-tune artifact.
+  - Acceptance: Android debug report shows a real `litert-lm:*` backend or a
+    clear fallback reason; no demo claim depends on an unverified local model.
+- [ ] `NEXT-P0-07` FunctionGemma v4 training/export: run
+  `train_functiongemma_v4_senior_router.ipynb`, copy back `training_done_v4`,
+  eval report, and `.litertlm` only after smoke passes.
+  - Acceptance: `tool_call_eval_v4_senior.json` passes gates, LiteRT artifact
+    loads, and unsupported claims still route to `refuse_unsupported_question`.
+- [ ] `NEXT-P0-08` Pixel Senior acceptance pack: prepare or record short clips
+  for clean sit-to-stand, stability proxy, balance hold, no person, and one live
+  dual-task gesture.
+  - Acceptance: exported debug reports in `docs/benchmark/` include
+    `care_log`, `dual_task`, `capability_contract`, `evidence_dag`, backend,
+    fallback, and evidence refs.
+- [ ] `NEXT-P0-09` Caregiver export polish: produce a readable caregiver-facing
+  export entrypoint using the five-section care log.
+  - Acceptance: export text says activity completed, visible movement quality,
+    what was not judged, next focus, and caregiver note; no fall-risk,
+    sarcopenia, rehab-progress, force, EMG, or diagnosis claim.
+- [ ] `NEXT-P0-10` Demo script update: make Senior Hero the first 90 seconds and
+  keep General Fitness as the evidence/biomechanics foundation.
+  - Acceptance: script shows offline mode, dual-task prompt, care log, refusal
+    for fall-risk question, and evidence/debug trace.
+
+### Immediate Next Todo - P1 After Demo Path Is Stable
+
+- [ ] `NEXT-P1-01` Optional ASR wrapper behind feature flag using Android
+  `SpeechRecognizer`; bounded parser remains authoritative.
+- [ ] `NEXT-P1-02` Add Senior-specific UI copy localization for zh-TW and en-US.
+- [ ] `NEXT-P1-03` Add trend memory summary for 7D/30D senior activity logs,
+  using app-provided aggregates only.
+- [ ] `NEXT-P1-04` Add small synthetic/no-person/occlusion Senior benchmark
+  clips and compact expected-output fixtures.
+- [ ] `NEXT-P1-05` Clean unrelated dirty artifacts after demo-critical files are
+  committed or explicitly ignored.
+
+### Next Todo Validation Commands
+
+Run these after each implementation slice:
+
+```powershell
+python finetune/data/generate_v4_senior_router.py --validate
+python finetune/eval_v4_senior_router.py --dataset finetune/data/gemmafit_v4_senior_evidence_router.json --strict
+.\gradlew.bat :app:testDebugUnitTest --console=plain
+.\gradlew.bat :app:assembleDebug --console=plain
+git diff --check
+```
+
+### Training Data Source Plan - Senior v4
+
+Use this before starting FunctionGemma v4 training. The router SFT dataset should
+be structured evidence-to-function-call data. Public video/skeleton datasets are
+used to improve scenario coverage, fixtures, and acceptance tests; they are not
+used to train medical conclusions.
+
+| ID | Source | Use in GemmaFit | Data to extract | Status / action | Boundary |
+| --- | --- | --- | --- | --- | --- |
+| `DATA-P0-01` | GemmaFit synthetic senior evidence router data (`finetune/data/generate_v4_senior_router.py`) | Primary FunctionGemma v4 SFT source. | `care_log_context`, `dual_task_context`, `activity_context`, `motion_context`, `capability_contract`, `evidence_ledger`, expected tool call. | Ready; current generator/eval passes 9200-row strict gates. Expand with native fixtures after `NEXT-P0-05`. | This teaches routing and refusal, not biomechanics or clinical labels. |
+| `DATA-P0-02` | Pixel / local Senior Hero demo clips | Gold acceptance and hard-negative fixtures. | MediaPipe landmarks -> native report -> compact evidence ledger; no raw video in fine-tune rows. | Record short clips for sit-to-stand, balance hold, step touch, no-person, low-confidence, and live dual-task gestures. | Local/private video stays ignored unless explicitly approved; commit derived JSON only. |
+| `DATA-P0-03` | ETRI-Activity3D elderly daily-activity dataset: https://ai4robot.github.io/etri-activity3d-en/ | Senior activity-context coverage and ADL priors. | Elderly RGB-D/skeleton action classes, especially standing, sitting, reaching, household ADLs. | Request/download samples first; check full access terms before use. | Use for activity recognition/fixture diversity only; no fall-risk, sarcopenia, or rehab claims. |
+| `DATA-P0-04` | Toyota Smarthome / Toyota Smarthome Untrimmed | Real-world senior ADL context and noisy home-environment scenarios. | Activity labels, coarse/fine ADL segments, pose-derived evidence if accessible. | Check dataset access and license; use paper/sample metadata until access is approved. | Research-use dataset; do not redistribute raw clips. Not a clinical dataset. |
+| `DATA-P0-05` | NTU RGB+D / NTU RGB+D 120: https://rose1.ntu.edu.sg/dataset/actionRecognition/ | Broad skeleton action, gesture coverage, and motion-intensity proxy coverage for context gates. | Skeleton sequences for stand up, sit down, clapping, hand waving, squat down, stagger/fall, plus derived joint velocity / angular velocity / tempo-band proxies. | Register/request access if needed; skeleton modality is much smaller than RGB/depth. | Academic/non-commercial terms; use fall/stagger classes only for refusal/boundary tests, not prediction. Derived velocities are proxy features, not force or injury labels. |
+| `DATA-P0-06` | Public fall datasets for refusal/boundary corpus: UP-Fall, UR Fall, SisFall/KFall | Negative examples and claim-boundary prompts. | Names of unsupported claims, edge-case motion contexts, sensor limitations. | Use literature/dataset descriptions first; only download if needed for explicit no-claim benchmark. | GemmaFit must not output fall-risk score or fall prediction from these datasets. |
+| `DATA-P0-07` | App-generated care-log templates | High-quality Data-to-Text examples for family/caregiver logs. | Synthetic JSON -> five-section care log in en-US and zh-TW. | Generate controlled rows from product templates; add reviewer-authored gold examples. | Logs are wellness activity summaries, not medical notes or rehab progress reports. |
+| `DATA-P0-08` | Dual-task prompt templates | Low-impact cognitive/motor prompt selection rows. | Bounded A/B, yes/no, 1-4 options; gesture and voice fallback cases. | Generate from safe templates: memory recall, category sorting, attention switching, arithmetic, orientation. | Do not train dementia risk, cognitive impairment, or cognitive screening outputs. |
+| `DATA-P0-14` | AddBiomechanics Dataset: https://addbiomechanics.org/download_data.html | Ground-truth biomechanics reference for motion-intensity boundary setting and claim limits. | Optical mocap, ground reaction force, joint torque, center-of-mass kinematics, and derived kinematics/kinetics where license permits. | Use for research notes and calibration design first; only derive aggregate thresholds/proxy sanity checks if terms allow. | This is not a single-camera dataset. Do not train GemmaFit to claim phone-only force, torque, GRF, ligament load, or clinical risk. |
+| `DATA-P0-15` | OpenCap validation literature / available exports: https://pmc.ncbi.nlm.nih.gov/articles/PMC10586693/ | Markerless biomechanics reference for what video-based systems can and cannot claim. | Reported kinematic/kinetic validation ranges, task coverage, camera requirements, and optional public example exports if available. | Use as Product Claims and calibration-path support before using any generated rows. | OpenCap is not equivalent to GemmaFit single-camera BlazePose; do not transfer force/muscle activation claims. |
+| `DATA-P0-16` | AMASS + BABEL: https://amass.is.tue.mpg.de/ and https://babel.is.tue.mpg.de/ | Large-scale mocap + language labels for activity-aware motion-intensity distributions. | 3D motion sequences, action labels, phase/window labels where available, derived velocity/angular-velocity/ROM/smoothness proxies. | Request/download after source/licensing note is written; start with a small subset. | Use for context and expected-movement distributions only; not medical, force, or injury supervision. |
+| `DATA-P0-17` | AIST++ Dance Motion Dataset: https://google.github.io/aistplusplus_dataset/ | High-rotation / high-ROM motion examples to reduce false positives in dance-like tasks. | 3D dance motion, rotation speed, asymmetry, airborne/turning phase proxies, activity labels. | Use as motion-intensity stress data after `motion_context` schema is finalized. | Dance intensity is task context, not automatic safety warning; no joint-force or injury claim. |
+| `DATA-P0-18` | GemmaFit motion-intensity synthetic rows | Bridge public motion datasets into the FunctionGemma router schema. | `motion_context`, `momentum_proxy`, `tempo_band`, `phase`, `rule_interpretation`, `capability_contract`, evidence refs. | Add after native `motion_intensity` evidence ids exist. | The model learns interpretation states, not true momentum measurement. Deterministic gates remain authoritative. |
+
+Immediate data tasks:
+
+- [ ] `DATA-P0-09` Add a `finetune/data_sources/senior_v4_sources.md` file with
+  source URL, access status, license/terms, intended use, excluded claims, and
+  citation for every external dataset above.
+- [ ] `DATA-P0-10` Add `test_assets/benchmarks/senior_v4/manifest.json` with
+  local Pixel clips and public/sample clips mapped to expected evidence ids.
+- [ ] `DATA-P0-11` Add 20 native-report-derived rows to the v4 generator from
+  real app reports before training the final FunctionGemma v4 artifact.
+- [ ] `DATA-P0-12` Add 50 adversarial caregiver prompts covering fall risk,
+  sarcopenia, rehab progress, diagnosis, clinical improvement, joint force,
+  EMG, and muscle activation.
+- [ ] `DATA-P0-13` Add 50 zh-TW care-log rows and 50 zh-TW dual-task rows after
+  English schema gates remain green.
+- [ ] `DATA-P0-19` Add a `motion_intensity_sources` subsection to
+  `finetune/data_sources/senior_v4_sources.md` covering AddBiomechanics,
+  OpenCap, AMASS/BABEL, AIST++, NTU, license/access status, and excluded claims.
+- [ ] `DATA-P0-20` Add motion-intensity row families to the v4 generator:
+  controlled senior fast motion -> monitor pace, sport explosive movement ->
+  expected movement, airborne COM offset -> not applicable/expected, landing
+  stabilization instability -> monitor/warning, and force/ACL/EMG questions ->
+  refusal.
+- [ ] `DATA-P0-21` Add evaluator checks for motion-intensity outputs:
+  no true momentum, GRF, joint force, ACL load, ligament strain, EMG, or muscle
+  activation claims from single-camera pose.
+
+### Next Slice - Senior Hero v4 (P0)
+
+Senior Hero is now the primary demo storyline: offline older-adult home
+movement support, care activity logs, and low-impact dual-task prompts. General
+Fitness remains the shared biomechanics foundation. The claim boundary stays
+non-diagnostic wellness and movement quality.
+
+- [x] `SENIOR-P0-01` Define public Senior contracts: `CareLogContext`,
+  `CareActivityLog`, `DualTaskSessionPlan`, `DualTaskAttempt`,
+  `activity_context`, and `motion_context`.
+- [x] `SENIOR-P0-02` Extend FunctionRegistry with v4 senior tools:
+  `create_care_activity_log`, `select_dual_task_prompt`, and
+  `record_dual_task_result`.
+- [x] `SENIOR-P0-03` Extend memory policy to allow
+  `CARE_ACTIVITY_LOG` and `DUAL_TASK_RESULT` writes only with evidence ids.
+- [x] `SENIOR-P0-04` Add deterministic care-log fallback renderer that keeps
+  fall-risk, sarcopenia, rehab, force, EMG, and clinical claims out of the log.
+- [x] `SENIOR-P0-05` Add deterministic dual-task gesture detector for
+  left-hand A, right-hand B, clap confirm, and two-hand skip/cancel.
+- [x] `SENIOR-P0-06` Add bounded voice answer parser with low-confidence
+  gesture fallback.
+- [x] `SENIOR-P0-07` Add debug endpoints for
+  `content://com.gemmafit.debug/care_log` and
+  `content://com.gemmafit.debug/dual_task`.
+- [ ] `SENIOR-P0-08` Wire Senior screens to live view-model state for dual-task
+  prompt card, gesture/voice status, and care-log summary.
+- [ ] `SENIOR-P0-09` Add native Senior evidence ids:
+  `metric.senior.reps`, `metric.senior.tempo`,
+  `metric.senior.trunk_control`, `metric.senior.stability_events`,
+  `metric.dual_task.gesture.left_arm_raise`, and
+  `metric.dual_task.gesture.right_arm_raise`.
+- [x] `SENIOR-P0-10` Add v4 synthetic generator and evaluator for
+  FunctionGemma senior evidence routing.
+- [x] `SENIOR-P0-11` Add Colab notebook skeleton for resumable FunctionGemma
+  v4 senior-router fine-tune.
+- [ ] `SENIOR-P0-12` v4 dataset/eval now passes; next smoke a real
+  `gemmafit-v4-senior-router.litertlm` before enabling the backend by default.
+- [ ] `SENIOR-P0-13` Pixel acceptance: clean sit-to-stand care log, 2 stability
+  proxy events without fall-risk claim, gesture A/B, low ASR confidence
+  fallback, caregiver fall-risk question refusal.
+
+### Next Slice - Senior Hero v4.1 Subjective Check-in (P0)
+
+v4.1 avoids camera-only momentum, heart-rate, force, or clinical claims by
+adding bounded self-report evidence and persona-specific activity reports.
+
+- [x] `SENIOR41-P0-01` Define subjective check-in contracts:
+  `SubjectiveCheckIn`, `SubjectiveLevel`, self-report evidence refs, and JSON
+  serialization.
+- [x] `SENIOR41-P0-02` Add persona report contract:
+  `PersonaActivityReport` with `senior`, `caregiver`, and
+  `professional_share` personas.
+- [x] `SENIOR41-P0-03` Extend FunctionRegistry with
+  `ask_subjective_checkin`, `record_subjective_checkin`, and
+  `create_persona_activity_report`.
+- [x] `SENIOR41-P0-04` Add deterministic persona report fallback that combines
+  objective movement evidence with self-report while rejecting heart-rate,
+  fall-risk, sarcopenia, rehab, force, EMG, and diagnosis claims.
+- [x] `SENIOR41-P0-05` Update v4 generator/evaluator to v4.1 row families:
+  care log, subjective prompt, subjective record, persona report, memory,
+  unsupported, and adversarial rows.
+- [x] `SENIOR41-P0-06` Add debug sections/endpoints for
+  `subjective_checkin` and `persona_report`.
+- [ ] `SENIOR41-P0-07` Wire the post-session large-button/TTS check-in card
+  into the live Senior state flow.
+- [ ] `SENIOR41-P0-08` Pixel acceptance: clean sit-to-stand + mild RPE
+  generates all three persona reports; discomfort/strong breathlessness gives
+  stop/rest boundary without diagnosis.
+
 ### Next Slice - Evidence Contract Hardening (P0)
 
 Roadmap boundary: the literature supports claim boundaries, calibration paths,
@@ -116,6 +317,83 @@ prototype thresholds are clinically validated.
 - [x] `EVID-P0-12` Research extraction backlog: list only FPPA, confidence
   ceiling, and coverage-risk benchmark work; do not label prototype thresholds
   as validated. See `docs/papers/research_extraction_backlog.md`.
+
+### Next Slice - Realtime Person Detection and Evidence Sampling (P0)
+
+Design source: `docs/design/realtime_person_detection_and_finetune_plan.md`.
+The mobile path is MediaPipe-first. YOLO is a burst fallback for subject loss,
+multi-person ambiguity, or ROI drift, not an always-on realtime dependency.
+
+- [ ] `REALTIME-P0-01` MediaPipe primary tracking state: emit
+  `PersonTrackingState` with selected subject, ROI confidence, pose confidence,
+  `observed/predicted/lost/multi_person_ambiguous` state, and hard-judgment
+  eligibility.
+- [ ] `REALTIME-P0-02` Kalman ROI/landmark smoother: smooth ROI and landmark
+  trajectories while marking predicted points as UI-only and ineligible for
+  hard evidence refs.
+- [ ] `REALTIME-P0-03` YOLO burst fallback design: define the fallback trigger
+  policy, subject reacquisition behavior, multi-person handling, and mobile
+  performance budget before adding any always-on detector.
+- [ ] `REALTIME-P0-04` MotionFeatureWindow builder: aggregate pose frames into
+  compact event windows with hip displacement, knee angle min/max, rep duration,
+  velocity proxy, stabilization time, confidence floor, and estimated phase
+  sequence.
+- [ ] `REALTIME-P0-05` Visual Evidence Packet exporter: produce optional
+  RGB keyframes, ROI contact sheets, pose overlays, and pose-flow images for
+  event-level model review without making images authoritative.
+- [ ] `REALTIME-P0-06` EventTriggerPolicy: call E2B only for rep completion,
+  persistent warning/monitor windows, subject lost/recovered summaries,
+  session end, user questions, or care-log/persona-report events.
+- [ ] `REALTIME-P0-07` E2B function-call validator: reject invalid JSON,
+  unknown tools, missing evidence refs, `cannot_judge` violations, and medical,
+  force, GRF, EMG, fall-risk, heart-rate, or clinical claims.
+- [ ] `REALTIME-P0-08` Offline video capability benchmark: run the local E2B
+  capability notebook on representative clips and store pass/fail summaries for
+  tool choice, evidence refs, refusal behavior, and forbidden-claim checks.
+- [ ] `REALTIME-P0-09` Pixel realtime acceptance test: verify MediaPipe primary
+  tracking, no-person handling, multi-person abstention or stable selection,
+  event-only E2B triggering, and debug output for backend/function/evidence
+  refs/fallback/tracking state.
+
+### Next Slice - E2B Evidence-to-Function Fine-tune (P0)
+
+Fine-tune E2B only on compact evidence-to-function/report behavior. Do not train
+raw video, raw skeleton math, force, GRF, EMG, heart-rate, clinical labels,
+fall-risk prediction, or medical conclusions.
+
+- [x] `FT-E2B-P0-01` Evidence-to-function dataset schema: define the v5 row
+  format for `activity_context`, `person_tracking_state`,
+  `motion_feature_window`, `visual_summary`, `capability_contract`,
+  `evidence_ledger`, and one expected function-call output.
+- [x] `FT-E2B-P0-02` v5 dataset generator: create row families for clean care
+  logs, observation logs, subjective check-ins, persona reports, dual-task
+  prompts/results, activity uncertainty, unsupported questions, adversarial
+  boundaries, and memory trends.
+- [x] `FT-E2B-P0-03` Public dataset source mapping: map ETRI Activity3D,
+  Toyota Smarthome, NTU RGB+D, AddBiomechanics, AMASS/BABEL, AIST++, and fall
+  datasets to allowed uses, extracted features, license status, and excluded
+  claims.
+- [x] `FT-E2B-P0-04` E2B eval gates: require tool accuracy, args schema
+  validity, evidence-ref validity, refusal rate, persona schema validity, and
+  `forbidden_claim_rate = 0` before any LiteRT export or Android backend enable.
+- [x] `FT-E2B-P0-05` 270M necessity decision gate: keep FunctionGemma 270M out
+  of the main path unless E2B fails function-call/refusal stability or latency
+  targets; if added, use 270M for fast routing and E2B for richer reports.
+- [x] `FT-E2B-P0-06` v5.1 hard-case generator: add schema fuzz, tracking
+  uncertainty, parent-task uncertainty, sub-action fallback, conflicting
+  evidence, memory-policy, and zh-TW refusal families behind `--hard-cases`.
+- [x] `FT-E2B-P0-07` v5.1 hard-case eval gates: add
+  `judgment_disallowed_hard_coaching_rate`,
+  `parent_task_uncertain_hard_warning_rate`, `schema_fuzz_schema_rate`, and
+  `hard_case_pass_rate` checks.
+- [x] `FT-E2B-P0-08` Colab v5.1 dataset switch: update
+  `finetune/train_e2b_v5_evidence_router.ipynb` to default to the 50k
+  hard-case dataset while preserving `DATASET_VARIANT=v5` for old smoke runs.
+- [ ] `FT-E2B-P1-01` Real app event-packet mining: export anonymized Pixel
+  debug packets from Senior clips and convert failures into regression rows.
+- [ ] `FT-E2B-P1-02` External-source conversion prototype: convert one
+  BABEL/FineGym-style phase sample into `parent_task_uncertain` or
+  `sub_action_fallback` evidence packets without committing raw data.
 
 ## Phase Overview
 

@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "total_rows": 900,
+    "tool_name_accuracy": 1.0,
+    "args_schema_valid_rate": 1.0,
+    "evidence_ref_valid_rate": 1.0,
+    "cannot_judge_violation_rate": 0.0,
+    "unsupported_refusal_rate": 1.0,
+    "persona_schema_valid_rate": 1.0,
+    "subjective_schema_valid_rate": 1.0,
+    "tracking_state_policy_valid_rate": 1.0,
+    "judgment_disallowed_hard_coaching_rate": 0.0,
+    "parent_task_uncertain_hard_warning_rate": 0.0,
+    "schema_fuzz_schema_rate": 1.0,
+    "hard_case_pass_rate": 1.0,
+    "memory_write_policy_valid_rate": 1.0,
+    "zh_tw_wrapper_schema_rate": 1.0,
+    "forbidden_claim_rate": 0.0
+  },
+  "failures": [],
+  "dataset": "finetune\\data\\gemmafit_v5_1_e2b_evidence_router_smoke.json",
+  "gate_failures": []
+}

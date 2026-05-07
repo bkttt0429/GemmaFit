@@ -77,6 +77,20 @@ clinical risk
 muscle activation percentage
 ```
 
+Literature and claim policy:
+
+- Canonical literature source: `docs/papers/literature_review.md`.
+- Chinese working review: `docs/papers/literature_review_zh.md`.
+- Product claims must stay inside non-diagnostic movement-quality coaching.
+- Evidence provenance, selective abstention, pose-metric calibration, motor
+  learning feedback, and bounded function calling support the architecture.
+- Benchmarks can support schema compliance, refusal behavior, evidence-ref
+  validity, and local inference status. They do not validate clinical
+  biomechanics thresholds.
+- Product UI should show judged evidence first and skipped judgments second;
+  refusal is a capability boundary, not the main coaching message when useful
+  evidence exists.
+
 ## 3. System Architecture
 
 ```mermaid
@@ -118,6 +132,27 @@ MediaPipe landmarks
 -> local feedback via LiteRT / AI Edge or llama.cpp fallback
 -> dashboard / Android UI / TTS
 ```
+
+### Realtime Evidence and E2B Fine-tune Policy
+
+Realtime analysis follows a tools-first policy:
+
+```text
+CameraX -> MediaPipe Pose -> Kalman ROI / landmark smoothing
+-> optional YOLO burst fallback -> Motion Feature Window
+-> Capability Contract -> E2B function-call router
+```
+
+YOLO is a recovery/fallback path for subject loss, multi-person ambiguity, or
+ROI drift; it is not the always-on mobile path. Deterministic tools compute
+person tracking state, pose confidence, angles, velocity proxies, rep windows,
+and capability boundaries before any model call. E2B receives compact event
+packets and may explain or route one function call, but it may not override
+deterministic gates or invent force, GRF, EMG, heart-rate, fall-risk, clinical,
+or raw-video judgments.
+
+Detailed implementation and fine-tune spec:
+`docs/design/realtime_person_detection_and_finetune_plan.md`.
 
 ## 4. MVP Exercise Templates
 
@@ -710,6 +745,174 @@ Cross-cutting requirements:
 Figma note: this section defines behavior, states, accessibility, and
 the data shown per screen. Concrete Figma node implementation is
 deferred until a Figma URL or selected node is available.
+
+## 11.8 Senior Hero v4: Care Log + Dual-task
+
+Senior Hero Mode is the primary demo storyline for v4. The product remains a
+non-diagnostic movement-quality coach, but the user-facing value shifts from
+"AI form critique" toward offline home activity support for older adults:
+
+```text
+Senior movement evidence
+-> Capability Contract
+-> Evidence Ledger
+-> care activity log / dual-task prompt / bounded summary
+```
+
+General Fitness Mode remains the shared biomechanics foundation. Senior Hero
+adds two bounded workflows:
+
+| Workflow | Output | Boundary |
+| --- | --- | --- |
+| Care Log | A caregiver-readable activity log with completion, visible movement quality, skipped judgments, next-session focus, and caregiver note. | No fall-risk score, sarcopenia detection, rehab prescription, clinical improvement claim, muscle mass estimate, force, EMG, or injury prediction. |
+| Dual-task | A low-impact cognitive-plus-movement prompt using gesture-first and voice-optional answers. | No cognitive diagnosis, dementia screening, clinical interpretation, fast turns, high-impact jumping, or unsupported rehab tasks. |
+
+### Care Log Contract
+
+Care logs are generated from `CareLogContext`, not raw video:
+
+```json
+{
+  "schema_version": "care_log_v1",
+  "activity": "chair_sit_to_stand",
+  "duration_sec": 180,
+  "completed_reps": 12,
+  "stability_events": 2,
+  "capability_contract": {},
+  "evidence_refs": ["metric.senior.reps", "metric.senior.stability_events"],
+  "unsupported_judgments": [
+    "fall_risk_prediction",
+    "sarcopenia_detection",
+    "rehabilitation_prescription",
+    "muscle_mass_estimate",
+    "clinical_improvement_claim"
+  ]
+}
+```
+
+The rendered log always follows:
+
+```text
+What was completed
+Observed movement quality
+What was not judged
+Next session focus
+Caregiver note
+```
+
+If local model output is missing, cites invalid evidence, or uses unsupported
+language, the deterministic renderer produces a safe `create_care_activity_log`
+fallback.
+
+### Dual-task Contract
+
+Dual-task items are selected from bounded, low-impact activities:
+
+- Primary response mode: gesture.
+- Secondary response mode: voice.
+- Gesture meanings: left hand = A, right hand = B, clap = confirm, two-hand
+  raise = skip/cancel.
+- Voice parser accepts only bounded answer sets such as A/B, yes/no, 1-4, or
+  short options. Low ASR confidence falls back to gesture.
+
+Supported cognitive targets are memory recall, category sorting, attention
+switching, simple arithmetic, and orientation. The app records whether the
+bounded answer matched and whether the expected movement was completed, but it
+does **not** judge cognition or dementia risk.
+
+### v4 FunctionGemma Fine-tune Target
+
+v4 fine-tuning targets a small FunctionGemma evidence router:
+
+```text
+activity_context + motion_context + capability_contract + evidence_ledger
+-> one function call
+```
+
+Target base model: `google/functiongemma-270m-it`.
+
+Target artifact:
+
+```text
+models/gemmafit-v4-senior-router.litertlm
+```
+
+The model learns tool selection and evidence citation only. It does not learn
+biomechanics thresholds, medical labels, raw video, raw landmarks, force, EMG,
+fall risk, sarcopenia, or rehab progress.
+
+New v4 tools:
+
+| Function | Role |
+| --- | --- |
+| `create_care_activity_log` | Generate the bounded caregiver activity log. |
+| `select_dual_task_prompt` | Select a supported low-impact dual-task prompt. |
+| `record_dual_task_result` | Record bounded attempt outcome without cognitive diagnosis. |
+
+### v4.1 Subjective Check-in and Persona Reports
+
+v4.1 does **not** ask the camera or model to estimate true momentum, force,
+GRF, heart rate, or medical risk. Instead, the app combines objective movement
+evidence with bounded self-report:
+
+```text
+objective pose summary evidence
++ subjective check-in evidence
+-> persona-specific activity report
+```
+
+Post-session check-in uses large buttons, bounded voice, or caregiver-assisted
+input:
+
+```json
+{
+  "schema_version": "subjective_checkin_v1",
+  "rpe_0_10": 4,
+  "breathlessness": "mild",
+  "leg_soreness": "mild",
+  "needed_rest": false,
+  "discomfort_reported": false,
+  "evidence_refs": [
+    "subjective.rpe",
+    "subjective.breathlessness",
+    "subjective.leg_soreness",
+    "subjective.needed_rest",
+    "subjective.discomfort_reported"
+  ]
+}
+```
+
+Subjective evidence nodes use `type=self_report` and `source=user_checkin`.
+They can contextualize a report, but they are never converted into heart-rate,
+diagnosis, injury, fall-risk, sarcopenia, or rehabilitation-progress claims.
+If a user reports strong breathlessness, discomfort, dizziness, chest
+tightness, pain, or needing rest, the app gives a stop/rest/caregiver/professional
+help boundary without diagnosing the cause.
+
+Persona reports are generated by `create_persona_activity_report`:
+
+| Persona | Output tone | Boundary |
+| --- | --- | --- |
+| `senior` | Short, encouraging, large-text friendly. | No clinical or sensor claims. |
+| `caregiver` | Completion, visible stability proxy, self-report, next support focus. | No fall-risk or rehab interpretation. |
+| `professional_share` | Structured activity summary for sharing with a clinician. | Explicitly non-clinical and no heart-rate/force/status claim. |
+
+Additional v4.1 tools:
+
+| Function | Role |
+| --- | --- |
+| `ask_subjective_checkin` | Ask bounded post-session exertion questions. |
+| `record_subjective_checkin` | Record RPE, breathlessness, soreness, rest, and discomfort as self-report evidence. |
+| `create_persona_activity_report` | Generate `senior`, `caregiver`, or `professional_share` report text from objective + subjective evidence. |
+
+Debug endpoints:
+
+```text
+content://com.gemmafit.debug/care_log
+content://com.gemmafit.debug/dual_task
+content://com.gemmafit.debug/subjective_checkin
+content://com.gemmafit.debug/persona_report
+```
 
 ## 12. Safety and Trust Requirements
 

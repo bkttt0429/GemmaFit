@@ -24,6 +24,11 @@ CSV, and PNG summary files are small.
 | `tool_call_eval_v3.json` | `finetune/eval_v3_evidence_router.py` / `finetune/litert_tool_smoke.py` | 12-tool schema/evidence-ref compliance and LiteRT smoke output |
 | `refusal_eval_v3.json` | v3 post-hoc eval | Refusal reason / refusal level eval for unsupported and insufficient-evidence prompts |
 | `adversarial_eval_v3.json` | v3 post-hoc eval | Prompt-injection and boundary-probing eval summary |
+| `training_done_v5_e2b.json` | `trained_outputs/TRAINING_DONE_<model>_gemmafit_v5_e2b_evidence_router.json` | v5 E2B Evidence Router run summary plus resume/conversion metadata |
+| `trainer_state_v5_e2b.json` | `trained_outputs/checkpoints/<model>_gemmafit_v5_e2b_evidence_router/trainer_state.json` | v5 HF Trainer state and loss curve source |
+| `tool_call_eval_v5_e2b.json` | `finetune/eval_v5_e2b_evidence_router.py` / `finetune/litert_tool_smoke.py` | v5 E2B tool schema, evidence-ref, tracking-state, refusal, and LiteRT smoke output |
+| `refusal_eval_v5_e2b.json` | v5 post-hoc eval | Unsupported medical/sensor-only refusal eval summary |
+| `adversarial_eval_v5_e2b.json` | v5 post-hoc eval | Prompt-injection and missing-evidence boundary eval summary |
 
 ## How To Update After A Colab Run
 
@@ -50,7 +55,18 @@ CSV, and PNG summary files are small.
 8. If you download only the model instead of the bundle, copy the converted
    LiteRT-LM artifact to `models/gemmafit-v3-evidence-router.litertlm` and run:
    `python finetune/prepare_litert_artifact.py --source-litertlm path/to/gemmafit-v3-evidence-router.litertlm --run-smoke`.
-9. Commit metrics after benchmark numbers are written, not before.
+9. For v5 E2B, run the dedicated dataset/eval gates first:
+   `python finetune/data/generate_v5_e2b_evidence_router.py --validate`
+   and
+   `python finetune/eval_v5_e2b_evidence_router.py --dataset finetune/data/gemmafit_v5_e2b_evidence_router.json --strict`.
+10. For v5.1 hard-case main training, generate the expanded dataset in Colab
+    or locally with:
+    `python finetune/data/generate_v5_e2b_evidence_router.py --hard-cases --train-size 50000 --validation-size 6000 --zh-tw-ratio 0.45 --schema-fuzz-ratio 0.25 --output finetune/data/gemmafit_v5_1_e2b_evidence_router.json --validate`.
+    The dedicated notebook defaults to this hard-case dataset; set
+    `DATASET_VARIANT=v5` only when reproducing the original 8k v5 smoke set.
+11. Finalize a converted v5 artifact with:
+   `python finetune/prepare_litert_artifact.py --profile v5-e2b --source-litertlm path/to/gemmafit-v5-e2b-evidence-router.litertlm --run-smoke`.
+12. Commit metrics after benchmark numbers are written, not before.
 
 ## Schema
 
@@ -110,6 +126,35 @@ v3 adds resume and evidence-router fields:
 }
 ```
 
+v5 E2B uses the same resume shape with these stable fields:
+
+```json
+{
+  "version": "v5_e2b_evidence_router",
+  "run_name": "<model>_gemmafit_v5_e2b_evidence_router",
+  "run_suffix": "gemmafit_v5_e2b_evidence_router",
+  "dataset_path": "finetune/data/gemmafit_v5_e2b_evidence_router.json",
+  "adapter_path": "...",
+  "merged_hf_path": "...",
+  "litertlm_path": "models/gemmafit-v5-e2b-evidence-router.litertlm",
+  "conversion_status": "not_started|converted_unverified|ready_for_android|smoke_failed",
+  "tool_call_eval": "finetune/metrics/tool_call_eval_v5_e2b.json",
+  "resume_log": "RUN_EVENTS_<run>.jsonl",
+  "disconnect_points": "DISCONNECT_POINTS_<run>.jsonl"
+}
+```
+
+For v5.1 hard-case runs, the same shape is used with:
+
+```json
+{
+  "version": "v5_1_e2b_evidence_router_hard_cases",
+  "run_suffix": "gemmafit_v5_1_e2b_evidence_router_hard_cases",
+  "dataset_path": "finetune/data/gemmafit_v5_1_e2b_evidence_router.json",
+  "hard_cases": true
+}
+```
+
 ## Current Status
 
 - v1 Q4 exists as `models/gemmafit-q4_k_m.gguf` and should remain labeled v1.
@@ -123,6 +168,17 @@ v3 adds resume and evidence-router fields:
   `gemmafit_v3_evidence_router`, and 12 tools with evidence-ref validation.
 - v3 LiteRT-LM app testing expects
   `models/gemmafit-v3-evidence-router.litertlm`; GGUF remains fallback-only.
+- v5 E2B training uses `finetune/data/gemmafit_v5_e2b_evidence_router.json`,
+  run suffix `gemmafit_v5_e2b_evidence_router`, and the v5 tool preset
+  `finetune/litert_gemmafit_tools_v5.py`.
+- v5.1 hard-case E2B training uses
+  `finetune/data/gemmafit_v5_1_e2b_evidence_router.json`, run suffix
+  `gemmafit_v5_1_e2b_evidence_router_hard_cases`, and adds schema fuzz,
+  tracking uncertainty, parent-task uncertainty, sub-action fallback,
+  conflicting evidence, memory-policy, and zh-TW refusal hard cases.
+- v5 LiteRT-LM app testing expects
+  `models/gemmafit-v5-e2b-evidence-router.litertlm`; it is Android-ready only
+  after v5 eval gates and Pixel smoke pass.
 - `converted_unverified` means the `.litertlm` file exists but the 12-tool
   smoke has not passed yet. Only `ready_for_android` is demo-ready.
 - Any `.crdownload` model file is incomplete and must not be used as benchmark

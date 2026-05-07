@@ -13,13 +13,44 @@ from pathlib import Path
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--profile",
+        choices=("v3", "v5-e2b"),
+        default="v3",
+        help="Default artifact naming profile. Explicit path args still win.",
+    )
     parser.add_argument("--source-litertlm", type=Path)
     parser.add_argument("--source-bundle", type=Path, help="Zip created by the Colab v3 LiteRT export cell")
-    parser.add_argument("--dest", type=Path, default=Path("models/gemmafit-v3-evidence-router.litertlm"))
-    parser.add_argument("--training-done", type=Path, default=Path("finetune/metrics/training_done_v3.json"))
-    parser.add_argument("--smoke-output", type=Path, default=Path("finetune/metrics/tool_call_eval_v3.json"))
+    parser.add_argument("--dest", type=Path)
+    parser.add_argument("--training-done", type=Path)
+    parser.add_argument("--smoke-output", type=Path)
+    parser.add_argument("--smoke-preset", type=Path)
     parser.add_argument("--run-smoke", action="store_true")
     args = parser.parse_args()
+
+    defaults = {
+        "v3": {
+            "dest": Path("models/gemmafit-v3-evidence-router.litertlm"),
+            "training_done": Path("finetune/metrics/training_done_v3.json"),
+            "smoke_output": Path("finetune/metrics/tool_call_eval_v3.json"),
+            "smoke_preset": Path("finetune/litert_gemmafit_tools.py"),
+            "version": "v3_evidence_router",
+            "run_suffix": "gemmafit_v3_evidence_router",
+        },
+        "v5-e2b": {
+            "dest": Path("models/gemmafit-v5-e2b-evidence-router.litertlm"),
+            "training_done": Path("finetune/metrics/training_done_v5_e2b.json"),
+            "smoke_output": Path("finetune/metrics/tool_call_eval_v5_e2b.json"),
+            "smoke_preset": Path("finetune/litert_gemmafit_tools_v5.py"),
+            "version": "v5_e2b_evidence_router",
+            "run_suffix": "gemmafit_v5_e2b_evidence_router",
+        },
+    }[args.profile]
+
+    args.dest = args.dest or defaults["dest"]
+    args.training_done = args.training_done or defaults["training_done"]
+    args.smoke_output = args.smoke_output or defaults["smoke_output"]
+    args.smoke_preset = args.smoke_preset or defaults["smoke_preset"]
 
     if not args.source_litertlm and not args.source_bundle:
         raise SystemExit("Provide --source-litertlm or --source-bundle")
@@ -67,6 +98,8 @@ def main() -> int:
                 "finetune/litert_tool_smoke.py",
                 "--model",
                 str(args.dest),
+                "--preset",
+                str(args.smoke_preset),
                 "--output",
                 smoke_output,
             ],
@@ -80,8 +113,8 @@ def main() -> int:
         done = json.loads(args.training_done.read_text(encoding="utf-8"))
     done.update(
         {
-            "version": done.get("version", "v3_evidence_router"),
-            "run_suffix": done.get("run_suffix", "gemmafit_v3_evidence_router"),
+            "version": done.get("version", defaults["version"]),
+            "run_suffix": done.get("run_suffix", defaults["run_suffix"]),
             "litertlm_path": str(args.dest),
             "conversion_status": (
                 "ready_for_android"
@@ -91,8 +124,10 @@ def main() -> int:
                 else "smoke_failed"
             ),
             "conversion_log": {
+                "profile": args.profile,
                 "source_litertlm": str(args.source_litertlm),
                 "dest": str(args.dest),
+                "smoke_preset": str(args.smoke_preset),
                 "smoke_status": smoke_status,
             },
             "tool_call_eval": smoke_output if args.run_smoke else done.get("tool_call_eval", smoke_output),
