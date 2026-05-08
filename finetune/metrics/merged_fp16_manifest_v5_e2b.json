@@ -1,0 +1,32 @@
+{
+  "exists": true,
+  "path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
+  "file_count_listed": 6,
+  "total_bytes_listed": 10241045313,
+  "files": [
+    {
+      "relative_path": "config.json",
+      "size_bytes": 4980
+    },
+    {
+      "relative_path": "generation_config.json",
+      "size_bytes": 203
+    },
+    {
+      "relative_path": "model.safetensors",
+      "size_bytes": 10208850958
+    },
+    {
+      "relative_path": "chat_template.jinja",
+      "size_bytes": 16804
+    },
+    {
+      "relative_path": "tokenizer_config.json",
+      "size_bytes": 2742
+    },
+    {
+      "relative_path": "tokenizer.json",
+      "size_bytes": 32169626
+    }
+  ]
+}

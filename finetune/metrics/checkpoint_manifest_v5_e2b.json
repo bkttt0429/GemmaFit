@@ -1,0 +1,144 @@
+{
+  "exists": true,
+  "path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
+  "file_count_listed": 34,
+  "total_bytes_listed": 131433434,
+  "files": [
+    {
+      "relative_path": "README.md",
+      "size_bytes": 1497
+    },
+    {
+      "relative_path": "checkpoint-50/README.md",
+      "size_bytes": 5208
+    },
+    {
+      "relative_path": "checkpoint-50/adapter_model.safetensors",
+      "size_bytes": 11449888
+    },
+    {
+      "relative_path": "checkpoint-50/adapter_config.json",
+      "size_bytes": 1149
+    },
+    {
+      "relative_path": "checkpoint-50/chat_template.jinja",
+      "size_bytes": 16804
+    },
+    {
+      "relative_path": "checkpoint-50/tokenizer_config.json",
+      "size_bytes": 2742
+    },
+    {
+      "relative_path": "checkpoint-50/tokenizer.json",
+      "size_bytes": 32169626
+    },
+    {
+      "relative_path": "checkpoint-50/training_args.bin",
+      "size_bytes": 5841
+    },
+    {
+      "relative_path": "checkpoint-50/optimizer.pt",
+      "size_bytes": 2297
+    },
+    {
+      "relative_path": "checkpoint-50/scheduler.pt",
+      "size_bytes": 1465
+    },
+    {
+      "relative_path": "checkpoint-50/rng_state.pth",
+      "size_bytes": 14645
+    },
+    {
+      "relative_path": "checkpoint-50/trainer_state.json",
+      "size_bytes": 2573
+    },
+    {
+      "relative_path": "checkpoint-6200/README.md",
+      "size_bytes": 5208
+    },
+    {
+      "relative_path": "checkpoint-6200/adapter_model.safetensors",
+      "size_bytes": 11449888
+    },
+    {
+      "relative_path": "checkpoint-6200/adapter_config.json",
+      "size_bytes": 1149
+    },
+    {
+      "relative_path": "checkpoint-6200/chat_template.jinja",
+      "size_bytes": 16804
+    },
+    {
+      "relative_path": "checkpoint-6200/tokenizer_config.json",
+      "size_bytes": 2742
+    },
+    {
+      "relative_path": "checkpoint-6200/tokenizer.json",
+      "size_bytes": 32169626
+    },
+    {
+      "relative_path": "checkpoint-6200/training_args.bin",
+      "size_bytes": 5841
+    },
+    {
+      "relative_path": "checkpoint-6200/optimizer.pt",
+      "size_bytes": 2297
+    },
+    {
+      "relative_path": "checkpoint-6200/scheduler.pt",
+      "size_bytes": 1465
+    },
+    {
+      "relative_path": "checkpoint-6200/rng_state.pth",
+      "size_bytes": 14645
+    },
+    {
+      "relative_path": "checkpoint-6200/trainer_state.json",
+      "size_bytes": 209349
+    },
+    {
+      "relative_path": "checkpoint-6250/README.md",
+      "size_bytes": 5208
+    },
+    {
+      "relative_path": "checkpoint-6250/adapter_model.safetensors",
+      "size_bytes": 11449888
+    },
+    {
+      "relative_path": "checkpoint-6250/adapter_config.json",
+      "size_bytes": 1149
+    },
+    {
+      "relative_path": "checkpoint-6250/chat_template.jinja",
+      "size_bytes": 16804
+    },
+    {
+      "relative_path": "checkpoint-6250/tokenizer_config.json",
+      "size_bytes": 2742
+    },
+    {
+      "relative_path": "checkpoint-6250/tokenizer.json",
+      "size_bytes": 32169626
+    },
+    {
+      "relative_path": "checkpoint-6250/training_args.bin",
+      "size_bytes": 5841
+    },
+    {
+      "relative_path": "checkpoint-6250/optimizer.pt",
+      "size_bytes": 2297
+    },
+    {
+      "relative_path": "checkpoint-6250/scheduler.pt",
+      "size_bytes": 1465
+    },
+    {
+      "relative_path": "checkpoint-6250/rng_state.pth",
+      "size_bytes": 14645
+    },
+    {
+      "relative_path": "checkpoint-6250/trainer_state.json",
+      "size_bytes": 211020
+    }
+  ]
+}
