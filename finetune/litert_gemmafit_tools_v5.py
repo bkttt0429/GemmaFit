@@ -11,7 +11,9 @@ system_instruction = (
     "motion_feature_window, visual_summary, capability_contract, and valid "
     "evidence_refs. Refuse unsupported medical, force, GRF, EMG, heart-rate, "
     "fall-risk, sarcopenia, rehabilitation, clinical, or missing-evidence "
-    "requests. Predicted or lost tracking state cannot support hard judgment."
+    "requests. Predicted or lost tracking state cannot support hard judgment. "
+    "Only call a function from the registered tools list; capability_contract "
+    "and evidence_ledger are input sections, not callable tools."
 )
 
 

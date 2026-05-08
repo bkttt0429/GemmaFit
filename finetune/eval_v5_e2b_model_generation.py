@@ -31,9 +31,8 @@ from eval_v5_e2b_evidence_router import (
 )
 
 
-DEFAULT_DATASET = Path("finetune/data/gemmafit_v5_1_e2b_evidence_router.json")
+DEFAULT_DATASET = Path("finetune/data/gemmafit_v5_2_e2b_evidence_router.json")
 DEFAULT_OUTPUT = Path("finetune/metrics/model_generation_eval_v5_e2b.json")
-DATASET_ZIP_MEMBER = "finetune/data/gemmafit_v5_1_e2b_evidence_router.json"
 
 
 def repo_root() -> Path:
@@ -48,31 +47,41 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def expected_dataset_sha256() -> str:
+def expected_dataset_sha256(dataset_path: Path) -> str:
     metrics_path = repo_root() / "finetune" / "metrics" / "training_done_v5_e2b.json"
     if not metrics_path.exists():
         return ""
     try:
-        return json.loads(metrics_path.read_text(encoding="utf-8")).get("dataset_sha256", "")
+        payload = json.loads(metrics_path.read_text(encoding="utf-8"))
     except Exception:
         return ""
+    done_dataset = payload.get("dataset_path", "")
+    if done_dataset and Path(done_dataset).name != dataset_path.name:
+        return ""
+    return payload.get("dataset_sha256", "")
 
 
 def restore_dataset_from_drive_package(dataset_path: Path, package_dir: Path) -> bool:
     if not package_dir.exists():
         return False
+    member = dataset_path.as_posix()
+    if not member.startswith("finetune/data/"):
+        member = f"finetune/data/{dataset_path.name}"
     packages = sorted(
-        package_dir.glob("gemmafit-v5-1-e2b-training-metadata-*.zip"),
+        [
+            *package_dir.glob("gemmafit-v5-2-e2b-training-metadata-*.zip"),
+            *package_dir.glob("gemmafit-v5-1-e2b-training-metadata-*.zip"),
+        ],
         key=lambda path: path.stat().st_mtime,
         reverse=True,
     )
     for zip_path in packages:
         print(f"Checking dataset package: {zip_path}")
         with zipfile.ZipFile(zip_path) as zf:
-            if DATASET_ZIP_MEMBER not in zf.namelist():
+            if member not in zf.namelist():
                 continue
             dataset_path.parent.mkdir(parents=True, exist_ok=True)
-            with zf.open(DATASET_ZIP_MEMBER) as source, dataset_path.open("wb") as target:
+            with zf.open(member) as source, dataset_path.open("wb") as target:
                 for chunk in iter(lambda: source.read(1024 * 1024), b""):
                     target.write(chunk)
             print(f"Restored dataset from package: {zip_path}")
@@ -80,11 +89,12 @@ def restore_dataset_from_drive_package(dataset_path: Path, package_dir: Path) ->
     return False
 
 
-def regenerate_v5_1_dataset(dataset_path: Path) -> None:
+def regenerate_dataset(dataset_path: Path) -> None:
     generator = repo_root() / "finetune" / "data" / "generate_v5_e2b_evidence_router.py"
     if not generator.exists():
         raise FileNotFoundError(f"Dataset generator not found: {generator}")
-    print("No Drive dataset package found; regenerating deterministic v5.1 hard-case dataset.")
+    is_v5_2 = "v5_2" in dataset_path.name
+    print(f"No Drive dataset package found; regenerating deterministic {'v5.2' if is_v5_2 else 'v5.1'} hard-case dataset.")
     cmd = [
         sys.executable,
         str(generator),
@@ -101,6 +111,8 @@ def regenerate_v5_1_dataset(dataset_path: Path) -> None:
         "--schema-fuzz-ratio",
         "0.25",
     ]
+    if is_v5_2:
+        cmd.append("--tool-contract-v2")
     print("Running:", " ".join(cmd))
     subprocess.run(cmd, check=True, cwd=str(repo_root()))
 
@@ -116,11 +128,11 @@ def ensure_dataset_available(dataset_path: Path, package_dir: Path, allow_regene
                 f"Dataset not found and restore package unavailable: {dataset_path}. "
                 "Pass --allow-regenerate-dataset to rebuild it."
             )
-        regenerate_v5_1_dataset(dataset_path)
+        regenerate_dataset(dataset_path)
     if not dataset_path.exists():
         raise FileNotFoundError(f"Dataset still missing after restore/generate: {dataset_path}")
 
-    expected_sha = expected_dataset_sha256()
+    expected_sha = expected_dataset_sha256(dataset_path)
     if expected_sha:
         actual_sha = file_sha256(dataset_path)
         print(f"Dataset SHA256: {actual_sha}")

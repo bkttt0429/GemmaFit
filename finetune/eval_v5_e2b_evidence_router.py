@@ -89,6 +89,7 @@ REFUSAL_REASONS = {
     "sarcopenia_detection",
     "injury_prediction",
     "force_or_emg_claim",
+    "heart_rate_status",
     "rehabilitation_prescription",
     "clinical_improvement_claim",
     "insufficient_evidence",
