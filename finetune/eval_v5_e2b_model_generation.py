@@ -11,12 +11,15 @@ evaluate raw video understanding, force/GRF/EMG estimation, or clinical claims.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import copy
 import json
 import os
 import random
+import subprocess
 import sys
 import time
+import zipfile
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -30,6 +33,100 @@ from eval_v5_e2b_evidence_router import (
 
 DEFAULT_DATASET = Path("finetune/data/gemmafit_v5_1_e2b_evidence_router.json")
 DEFAULT_OUTPUT = Path("finetune/metrics/model_generation_eval_v5_e2b.json")
+DATASET_ZIP_MEMBER = "finetune/data/gemmafit_v5_1_e2b_evidence_router.json"
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def expected_dataset_sha256() -> str:
+    metrics_path = repo_root() / "finetune" / "metrics" / "training_done_v5_e2b.json"
+    if not metrics_path.exists():
+        return ""
+    try:
+        return json.loads(metrics_path.read_text(encoding="utf-8")).get("dataset_sha256", "")
+    except Exception:
+        return ""
+
+
+def restore_dataset_from_drive_package(dataset_path: Path, package_dir: Path) -> bool:
+    if not package_dir.exists():
+        return False
+    packages = sorted(
+        package_dir.glob("gemmafit-v5-1-e2b-training-metadata-*.zip"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    for zip_path in packages:
+        print(f"Checking dataset package: {zip_path}")
+        with zipfile.ZipFile(zip_path) as zf:
+            if DATASET_ZIP_MEMBER not in zf.namelist():
+                continue
+            dataset_path.parent.mkdir(parents=True, exist_ok=True)
+            with zf.open(DATASET_ZIP_MEMBER) as source, dataset_path.open("wb") as target:
+                for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                    target.write(chunk)
+            print(f"Restored dataset from package: {zip_path}")
+            return True
+    return False
+
+
+def regenerate_v5_1_dataset(dataset_path: Path) -> None:
+    generator = repo_root() / "finetune" / "data" / "generate_v5_e2b_evidence_router.py"
+    if not generator.exists():
+        raise FileNotFoundError(f"Dataset generator not found: {generator}")
+    print("No Drive dataset package found; regenerating deterministic v5.1 hard-case dataset.")
+    cmd = [
+        sys.executable,
+        str(generator),
+        "--train-count",
+        "50000",
+        "--validation-count",
+        "6000",
+        "--out",
+        str(dataset_path),
+        "--validate",
+        "--hard-cases",
+        "--zh-tw-ratio",
+        "0.45",
+        "--schema-fuzz-ratio",
+        "0.25",
+    ]
+    print("Running:", " ".join(cmd))
+    subprocess.run(cmd, check=True, cwd=str(repo_root()))
+
+
+def ensure_dataset_available(dataset_path: Path, package_dir: Path, allow_regenerate: bool) -> None:
+    if dataset_path.exists():
+        return
+    print(f"Dataset missing: {dataset_path}")
+    restored = restore_dataset_from_drive_package(dataset_path, package_dir)
+    if not restored:
+        if not allow_regenerate:
+            raise FileNotFoundError(
+                f"Dataset not found and restore package unavailable: {dataset_path}. "
+                "Pass --allow-regenerate-dataset to rebuild it."
+            )
+        regenerate_v5_1_dataset(dataset_path)
+    if not dataset_path.exists():
+        raise FileNotFoundError(f"Dataset still missing after restore/generate: {dataset_path}")
+
+    expected_sha = expected_dataset_sha256()
+    if expected_sha:
+        actual_sha = file_sha256(dataset_path)
+        print(f"Dataset SHA256: {actual_sha}")
+        print(f"Expected SHA256: {expected_sha}")
+        if actual_sha != expected_sha:
+            raise RuntimeError("Dataset SHA256 mismatch. Refusing to evaluate against a different dataset.")
 
 
 def parse_csv(value: str) -> set[str]:
@@ -222,6 +319,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True, help="Merged HF model path or Hub model id.")
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
+    parser.add_argument(
+        "--dataset-package-dir",
+        type=Path,
+        default=Path(os.environ.get("GEMMAFIT_DATASET_PACKAGE_DIR", "/content/drive/MyDrive/GemmaFit_train/artifact_packages")),
+        help="Directory containing gemmafit-v5-1-e2b-training-metadata-*.zip packages.",
+    )
+    parser.add_argument(
+        "--allow-regenerate-dataset",
+        action="store_true",
+        default=os.environ.get("ALLOW_REGENERATE_DATASET", "1") == "1",
+        help="Regenerate the deterministic v5.1 dataset if no Drive package is found.",
+    )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--predictions-output", type=Path)
     parser.add_argument("--limit", type=int, default=200, help="Number of held-out rows to generate. Use <=0 for all.")
@@ -243,6 +352,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_arg_parser().parse_args()
 
+    ensure_dataset_available(args.dataset, args.dataset_package_dir, args.allow_regenerate_dataset)
     dataset = json.loads(args.dataset.read_text(encoding="utf-8"))
     rows = iter_selected_rows(
         dataset,
