@@ -350,7 +350,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--splits", default="all", help="Validation split names, comma-separated, or all.")
     parser.add_argument("--row-types", default="all", help="Row types, comma-separated, or all.")
     parser.add_argument("--include-train", action="store_true", help="Also sample train rows. Off by default.")
-    parser.add_argument("--max-new-tokens", type=int, default=256)
+    parser.add_argument("--max-new-tokens", type=int, default=768)
     parser.add_argument("--device-map", default="auto")
     parser.add_argument("--dtype", choices=["auto", "float16", "bfloat16", "float32"], default="float16")
     parser.add_argument("--load-in-4bit", action="store_true")
