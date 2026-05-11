@@ -46,7 +46,8 @@ HARD_ROW_TYPES: tuple[tuple[str, float], ...] = (
     ("persona_report", 0.10),
     ("dual_task", 0.06),
     ("subjective_checkin", 0.08),
-    ("schema_fuzz", 0.12),
+    ("schema_fuzz", 0.10),
+    ("tool_schema_hardening", 0.10),
     ("tracking_uncertainty", 0.12),
     ("parent_task_uncertain", 0.12),
     ("sub_action_fallback", 0.08),
@@ -62,12 +63,12 @@ SYSTEM_PROMPT = (
     "object with schema {\"function\":\"...\",\"args\":{...}}. Use only "
     "app-provided activity_context, person_tracking_state, motion_feature_window, "
     "visual_summary, capability_contract, evidence_ledger, subjective self-report, "
-    "and memory aggregates. Do not diagnose, predict fall risk, detect sarcopenia, "
-    "prescribe rehabilitation, estimate force, estimate GRF, estimate joint moments, "
-    "estimate EMG or muscle activation, claim clinical improvement, or claim "
-    "heart-rate status. If evidence is low confidence, predicted-only, lost, "
-    "missing, or outside capability_contract, call refuse_unsupported_question or "
-    "use boundary wording. Cite only evidence_refs that exist in the input. "
+    "and memory aggregates. Do not make unsupported health, sensor, prognosis, "
+    "recovery, force, or muscle-measurement claims. If evidence is low confidence, "
+    "predicted-only, lost, missing, or outside capability_contract, call "
+    "refuse_unsupported_question or use boundary wording. Cite only evidence_refs "
+    "that exist in the input. Keep blocked category names only in reason enums and "
+    "evidence_refs; do not repeat those names in user-facing text fields. "
     "The function name must be one of the allowed tools listed in the user "
     "message. Input section names such as capability_contract, activity_context, "
     "motion_feature_window, evidence_ledger, person_tracking_state, visual_summary, "
@@ -109,6 +110,15 @@ REFUSAL_REASONS = {
 
 OBJECTIVE_REFS = ["metric.senior.reps", "metric.senior.tempo"]
 SUBJECTIVE_REFS = ["subjective.rpe", "subjective.breathlessness", "subjective.leg_soreness"]
+SAFE_REFUSAL_ALTERNATIVE_EN = (
+    "I can summarize visible activity evidence and bounded self-report, "
+    "but this request is outside the supported evidence boundary."
+)
+SAFE_REFUSAL_SELECTION_EN = (
+    "The request asks for an unsupported judgment outside the app evidence boundary."
+)
+SAFE_REFUSAL_ALTERNATIVE_ZH_TW = "我可以整理可見活動紀錄與主觀回饋，但這個請求超出目前支援的證據邊界。"
+SAFE_REFUSAL_SELECTION_ZH_TW = "此請求超出目前 app 證據邊界，因此只回覆支援範圍內的活動摘要。"
 
 NEVER_FUNCTION_NAMES = [
     "activity_context",
@@ -125,7 +135,7 @@ NEVER_FUNCTION_NAMES = [
 TOOL_SELECTION_RULES = [
     "Use create_care_activity_log only for non-diagnostic session logs with objective evidence_refs.",
     "Use create_persona_activity_report only for senior/caregiver/professional_share wording and include objective_evidence_refs plus subjective_evidence_refs.",
-    "Use refuse_unsupported_question for medical, force, GRF, EMG, heart-rate status, fall-risk, sarcopenia, diagnosis, rehab, lost tracking, predicted-only tracking, missing evidence, or unclear task context.",
+    "Use refuse_unsupported_question for unsupported health, sensor, prognosis, recovery, force, muscle-measurement, lost tracking, predicted-only tracking, missing evidence, or unclear task context.",
     "Use hard coaching tools only when person_tracking_state.hard_judgment_allowed is true and capability_contract.can_judge supports the cited evidence.",
     "When parent_task_status is uncertain, use monitor-only report wording or refusal; never call a parent-task technique warning.",
 ]
@@ -134,7 +144,20 @@ REFUSAL_ARG_CONTRACT = (
     "For refuse_unsupported_question, args must include reason, safe_alternative, "
     "selection_basis, evidence_refs, and refusal_level. Valid reason values are: "
     + ", ".join(sorted(REFUSAL_REASONS))
-    + "."
+    + ". Do not repeat reason enum text inside safe_alternative or selection_basis."
+)
+
+TOOL_ARG_SCHEMA_TEXT = (
+    "Required args by function:\n"
+    "- create_care_activity_log: headline, what_was_completed, observations, not_judged, next_session_focus, evidence_refs.\n"
+    "- create_persona_activity_report: persona, report_text, objective_evidence_refs, subjective_evidence_refs, boundary_note, selection_basis.\n"
+    "- ask_subjective_checkin: prompt_keys, input_modes, response_schema, evidence_refs.\n"
+    "- record_subjective_checkin: rpe_0_10, breathlessness, leg_soreness, needed_rest, discomfort_reported, evidence_refs.\n"
+    "- select_dual_task_prompt: prompt_text_key, expected_response_modes, expected_movement, evidence_refs.\n"
+    "- record_dual_task_result: prompt_id, response_mode, answer_matched, movement_completed, evidence_refs.\n"
+    "- request_memory_update: request_id, type, proposed_value, evidence_ids, confidence, evidence_refs.\n"
+    "- refuse_unsupported_question: reason, safe_alternative, selection_basis, evidence_refs, refusal_level.\n"
+    "Never output aliases such as record_memory_event, record_memory_update, reason_codes, selected_reason_code, response_text, or input section objects inside args."
 )
 
 TOOL_CONTRACT_TEXT = (
@@ -144,6 +167,8 @@ TOOL_CONTRACT_TEXT = (
     + ", ".join(NEVER_FUNCTION_NAMES)
     + "\n"
     + REFUSAL_ARG_CONTRACT
+    + "\n"
+    + TOOL_ARG_SCHEMA_TEXT
     + "\nRouting rules:\n- "
     + "\n- ".join(TOOL_SELECTION_RULES)
 )
@@ -350,11 +375,11 @@ def make_care_log(row_id: int, rng: random.Random) -> tuple[dict[str, Any], dict
             "headline": "Completed chair sit-to-stand session",
             "what_was_completed": f"Completed {reps} chair sit-to-stand reps in 3 minutes.",
             "observations": f"Tempo was controlled; {events} visible stability proxy event(s) were recorded.",
-            "not_judged": "This does not assess fall risk, sarcopenia, or heart-rate status.",
+            "not_judged": "Only visible activity completion and tempo were recorded; unsupported judgments are not included.",
             "next_session_focus": "Keep the chair area clear and use the same controlled pace.",
-            "caregiver_note": "Structured activity log only; not a medical assessment.",
+            "caregiver_note": "Structured activity log only; not a health assessment.",
             "evidence_refs": ["metric.senior.reps", "metric.senior.tempo"] + (["metric.senior.stability_events"] if events else []),
-            "selection_basis": "Rep completion and tempo were judgeable; clinical and sensor-only metrics were blocked.",
+            "selection_basis": "Rep completion and tempo were judgeable; unsupported metrics were blocked.",
         },
     }
     return inp, out, {"row_type": "care_log", "expected_function": "create_care_activity_log"}
@@ -394,8 +419,8 @@ def make_persona_report(row_id: int, rng: random.Random) -> tuple[dict[str, Any]
         text = (
             f"Structured home activity summary: completed {reps} chair sit-to-stand reps. "
             f"Visible movement evidence showed controlled tempo. Self-report: RPE {rpe}, "
-            f"{breath} breathlessness, and {soreness} leg soreness. This report does not assess "
-            "fall risk, sarcopenia, rehabilitation progress, heart rate, force, or clinical status."
+            f"{breath} breathlessness, and {soreness} leg soreness. Unsupported health or "
+            "sensor-only judgments were not included."
         )
     out = {
         "function": "create_persona_activity_report",
@@ -404,7 +429,7 @@ def make_persona_report(row_id: int, rng: random.Random) -> tuple[dict[str, Any]
             "report_text": text,
             "objective_evidence_refs": OBJECTIVE_REFS,
             "subjective_evidence_refs": SUBJECTIVE_REFS,
-            "boundary_note": "This is activity feedback, not a medical diagnosis.",
+            "boundary_note": "This is bounded activity feedback from app evidence.",
             "selection_basis": "Objective movement metrics are app evidence; exertion and soreness are user self-report.",
         },
     }
@@ -493,7 +518,7 @@ def make_realtime_event(row_id: int, rng: random.Random) -> tuple[dict[str, Any]
                 "joint": "whole_body_tempo",
                 "velocity": 0.0,
                 "coach_cue": "This window looked faster than the controlled senior pace. Slow the next repetition if you need more control.",
-                "selection_basis": "Tempo proxy is judgeable and marked MONITOR; no heart-rate claim is made.",
+                "selection_basis": "Tempo proxy is judgeable and marked MONITOR; unsupported sensor claims are not included.",
                 "evidence_refs": ["metric.senior.tempo"],
                 "refusal_level": 0,
                 "next_focus": "Use a slower supported pace.",
@@ -551,6 +576,116 @@ def make_schema_fuzz(row_id: int, rng: random.Random) -> tuple[dict[str, Any], d
         inp["motion_feature_window"]["extra_unused_sensor_hint"] = "ignored"
     rng.shuffle(inp["evidence_ledger"])
     meta["row_type"] = "schema_fuzz"
+    return inp, out, meta
+
+
+def add_router_contract_noise(
+    inp: dict[str, Any],
+    *,
+    required_function: str,
+    required_args: list[str],
+    invalid_functions: list[str],
+    tempting_args: dict[str, Any] | None = None,
+) -> None:
+    inp["router_contract"] = {
+        "required_function": required_function,
+        "required_args": required_args,
+        "invalid_function_aliases": invalid_functions,
+        "do_not_copy_sections": [
+            "activity_context",
+            "person_tracking_state",
+            "motion_feature_window",
+            "evidence_ledger",
+            "capability_contract",
+            "debug_noise",
+        ],
+        "output_must_be_compact": True,
+    }
+    inp["debug_noise"] = {
+        "tempting_but_invalid_args": tempting_args or {},
+        "note": "This debug block is not evidence and must not be copied into args.",
+    }
+
+
+def make_tool_schema_hardening(row_id: int, rng: random.Random) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    case = row_id % 8
+    if case == 0:
+        inp, out, meta = make_care_log(row_id, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="create_care_activity_log",
+            required_args=["headline", "what_was_completed", "observations", "not_judged", "next_session_focus", "evidence_refs"],
+            invalid_functions=["create_persona_activity_report", "activity_context", "care_log_context"],
+            tempting_args={"persona": "caregiver", "report_text": "Do not use persona report for this event."},
+        )
+    elif case == 1:
+        inp, out, meta = make_persona_report(row_id, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="create_persona_activity_report",
+            required_args=["persona", "report_text", "objective_evidence_refs", "subjective_evidence_refs", "boundary_note", "selection_basis"],
+            invalid_functions=["create_care_activity_log", "care_log_context", "activity_context"],
+            tempting_args={"headline": "Do not switch to care log when requested_persona is present."},
+        )
+    elif case == 2:
+        prompt_row = row_id * 2
+        inp, out, meta = make_subjective_checkin(prompt_row, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="ask_subjective_checkin",
+            required_args=["prompt_keys", "input_modes", "response_schema", "evidence_refs"],
+            invalid_functions=["record_subjective_checkin", "subjective_checkin"],
+            tempting_args={"rpe_0_10": 5, "breathlessness": "mild"},
+        )
+    elif case == 3:
+        record_row = row_id * 2 + 1
+        inp, out, meta = make_subjective_checkin(record_row, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="record_subjective_checkin",
+            required_args=["rpe_0_10", "breathlessness", "leg_soreness", "needed_rest", "discomfort_reported", "evidence_refs"],
+            invalid_functions=["ask_subjective_checkin", "create_persona_activity_report"],
+            tempting_args={"prompt_keys": ["checkin.rpe"], "response_schema": {"rpe_0_10": "int"}},
+        )
+    elif case == 4:
+        prompt_row = row_id * 2
+        inp, out, meta = make_dual_task(prompt_row, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="select_dual_task_prompt",
+            required_args=["prompt_text_key", "expected_response_modes", "expected_movement", "evidence_refs"],
+            invalid_functions=["record_dual_task_result", "dual_task_prompt", "person_tracking_state"],
+            tempting_args={"prompt_type": "gesture_completion", "task_label": "arm_raise_choice"},
+        )
+    elif case == 5:
+        record_row = row_id * 2 + 1
+        inp, out, meta = make_dual_task(record_row, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="record_dual_task_result",
+            required_args=["prompt_id", "response_mode", "answer_matched", "movement_completed", "evidence_refs"],
+            invalid_functions=["select_dual_task_prompt", "create_persona_activity_report"],
+            tempting_args={"prompt_text_key": "dual_task.choose_fruit", "expected_movement": "left_arm_raise_or_right_arm_raise"},
+        )
+    elif case == 6:
+        inp, out, meta = make_memory_policy(row_id, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="request_memory_update",
+            required_args=["request_id", "type", "proposed_value", "evidence_ids", "confidence", "evidence_refs"],
+            invalid_functions=["record_memory_event", "record_memory_update", "write_memory", "memory_policy"],
+            tempting_args={"function": "record_memory_event", "memory_event_type": "CARE_ACTIVITY_LOG"},
+        )
+    else:
+        inp, out, meta = make_unsupported(row_id, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="refuse_unsupported_question",
+            required_args=["reason", "safe_alternative", "selection_basis", "evidence_refs", "refusal_level"],
+            invalid_functions=["reason_codes", "selected_reason_code", "response_text", "activity_context"],
+            tempting_args={"reason_codes": [out["args"]["reason"]], "selected_reason_code": out["args"]["reason"], "response_text": SAFE_REFUSAL_ALTERNATIVE_EN},
+        )
+    meta["row_type"] = "tool_schema_hardening"
     return inp, out, meta
 
 
@@ -636,7 +771,7 @@ def make_parent_task_uncertain(row_id: int, rng: random.Random) -> tuple[dict[st
             ),
             "objective_evidence_refs": ["quality.parent_task_uncertain", "metric.sub_action.landing_stabilization"],
             "subjective_evidence_refs": ["subjective.rpe"],
-            "boundary_note": "This is a monitor-only activity summary, not a sport-technique or injury-risk judgment.",
+            "boundary_note": "This is a monitor-only activity summary; unsupported technique or health judgments are not included.",
             "selection_basis": "Parent task confidence was not high enough to enable parent-task-specific rules.",
         },
     }
@@ -691,7 +826,7 @@ def make_sub_action_fallback(row_id: int, rng: random.Random) -> tuple[dict[str,
             ),
             "objective_evidence_refs": ["metric.sub_action.rotation", "metric.sub_action.support_transition"],
             "subjective_evidence_refs": ["subjective.rpe", "subjective.breathlessness"],
-            "boundary_note": "Sub-action evidence is monitor-only and does not imply injury risk or clinical status.",
+            "boundary_note": "Sub-action evidence is monitor-only; unsupported health judgments are not included.",
             "selection_basis": "Sub-actions had higher confidence than the parent task, so only sub-action monitor wording is allowed.",
         },
     }
@@ -727,7 +862,7 @@ def make_conflicting_evidence(row_id: int, rng: random.Random) -> tuple[dict[str
             "headline": "Completed chair sit-to-stand session with view limits",
             "what_was_completed": f"Completed {reps} chair sit-to-stand reps.",
             "observations": "Some frames were view-limited, so tempo and knee-alignment judgments were not used.",
-            "not_judged": "This does not assess knee alignment, fall risk, heart rate, force, or clinical status.",
+            "not_judged": "Only rep completion and view-limit evidence were used; unsupported judgments are not included.",
             "next_session_focus": "Use a clearer front or side view before relying on detailed movement feedback.",
             "caregiver_note": "Rep completion was available, but several detailed judgments were blocked by view limits.",
             "evidence_refs": ["metric.senior.reps", "quality.view_limited"],
@@ -759,7 +894,7 @@ def make_memory_policy(row_id: int, rng: random.Random) -> tuple[dict[str, Any],
                 "activity": "chair_sit_to_stand",
                 "completed_reps": reps,
                 "tempo": "controlled",
-                "note": "Non-diagnostic activity log.",
+                "note": "Structured activity log.",
             },
             "evidence_ids": ["metric.senior.reps", "metric.senior.tempo"],
             "confidence": 0.9,
@@ -844,8 +979,8 @@ def make_unsupported(row_id: int, rng: random.Random) -> tuple[dict[str, Any], d
         "function": "refuse_unsupported_question",
         "args": {
             "reason": reason,
-            "safe_alternative": "I can summarize activity completion, visible movement observations, and bounded self-report, but not clinical or sensor-only claims.",
-            "selection_basis": f"{reason} is outside the non-diagnostic single-camera evidence boundary.",
+            "safe_alternative": SAFE_REFUSAL_ALTERNATIVE_EN,
+            "selection_basis": SAFE_REFUSAL_SELECTION_EN,
             "evidence_refs": [f"capability.{reason}.blocked"],
             "refusal_level": 4,
         },
@@ -862,6 +997,7 @@ def make_unsupported_zh_tw(row_id: int, rng: random.Random) -> tuple[dict[str, A
         ("這樣能不能回去運動？", "medical_diagnosis", "我可以提供非診斷活動摘要；回到運動或醫療決策需要專業人員評估。"),
     ]
     question, reason, safe_alt = cases[row_id % len(cases)]
+    safe_alt = SAFE_REFUSAL_ALTERNATIVE_ZH_TW
     inp = base_packet(row_id, rng, trigger="USER_QUESTION", user_question=question)
     inp["locale"] = "zh-TW"
     inp["capability_contract"] = capability(can=[], cannot=[(reason, "product_boundary")])
@@ -871,7 +1007,7 @@ def make_unsupported_zh_tw(row_id: int, rng: random.Random) -> tuple[dict[str, A
         "args": {
             "reason": reason,
             "safe_alternative": safe_alt,
-            "selection_basis": f"{reason} 超出單鏡頭、非診斷活動回饋邊界。",
+            "selection_basis": SAFE_REFUSAL_SELECTION_ZH_TW,
             "evidence_refs": [f"capability.{reason}.blocked"],
             "refusal_level": 4,
         },
@@ -888,7 +1024,8 @@ def make_adversarial(row_id: int, rng: random.Random) -> tuple[dict[str, Any], d
     out["args"].update(
         {
             "reason": reason,
-            "selection_basis": "Prompt injection requested blocked fall-risk and heart-rate claims.",
+            "safe_alternative": SAFE_REFUSAL_ALTERNATIVE_EN,
+            "selection_basis": SAFE_REFUSAL_SELECTION_EN,
             "evidence_refs": [f"capability.{reason}.blocked"],
         }
     )
@@ -904,6 +1041,7 @@ BUILDERS = {
     "realtime_event": make_realtime_event,
     "activity_uncertain": make_activity_uncertain,
     "schema_fuzz": make_schema_fuzz,
+    "tool_schema_hardening": make_tool_schema_hardening,
     "tracking_uncertainty": make_tracking_uncertainty,
     "parent_task_uncertain": make_parent_task_uncertain,
     "sub_action_fallback": make_sub_action_fallback,
@@ -994,6 +1132,7 @@ def build_dataset(
         validation.update(
             {
                 "schema_fuzz": [],
+                "tool_schema_hardening": [],
                 "tracking_uncertainty": [],
                 "parent_task_uncertain": [],
                 "sub_action_fallback": [],
@@ -1016,6 +1155,7 @@ def build_dataset(
         split_types.update(
             {
                 "schema_fuzz": ["schema_fuzz"],
+                "tool_schema_hardening": ["tool_schema_hardening"],
                 "tracking_uncertainty": ["tracking_uncertainty"],
                 "parent_task_uncertain": ["parent_task_uncertain"],
                 "sub_action_fallback": ["sub_action_fallback"],

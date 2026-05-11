@@ -124,6 +124,7 @@ FORBIDDEN_PATTERNS = [
 
 HARD_CASE_ROW_TYPES = {
     "schema_fuzz",
+    "tool_schema_hardening",
     "tracking_uncertainty",
     "parent_task_uncertain",
     "sub_action_fallback",
