@@ -29,6 +29,7 @@ INPUT_SECTION_NAMES = {
     "evidence_ledger",
     "motion_context",
     "motion_feature_window",
+    "output_contract",
     "person_tracking_state",
     "phase_context",
     "router_contract",
@@ -40,6 +41,7 @@ FORBIDDEN_OUTPUT_FRAGMENTS = {
     "capability_contract",
     "evidence_ledger",
     "motion_feature_window",
+    "output_contract",
     "person_tracking_state",
     "visual_summary",
 }
