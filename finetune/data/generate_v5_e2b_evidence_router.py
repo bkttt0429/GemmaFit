@@ -42,12 +42,12 @@ ROW_TYPES: tuple[tuple[str, float], ...] = (
 )
 
 HARD_ROW_TYPES: tuple[tuple[str, float], ...] = (
-    ("care_log", 0.10),
-    ("persona_report", 0.10),
+    ("care_log", 0.09),
+    ("persona_report", 0.09),
     ("dual_task", 0.06),
-    ("subjective_checkin", 0.08),
+    ("subjective_checkin", 0.07),
     ("schema_fuzz", 0.10),
-    ("tool_schema_hardening", 0.10),
+    ("tool_schema_hardening", 0.16),
     ("tracking_uncertainty", 0.12),
     ("parent_task_uncertain", 0.12),
     ("sub_action_fallback", 0.08),
@@ -443,11 +443,10 @@ def make_dual_task(row_id: int, rng: random.Random) -> tuple[dict[str, Any], dic
     inp["activity_context"]["activity_family"] = "senior_dual_task"
     inp["capability_contract"] = capability(
         can=[("left_right_arm_raise", [gesture_ref], 0.89)],
-        cannot=[("cognitive_impairment", "non_diagnostic_app")],
+        cannot=[],
     )
     inp["evidence_ledger"] = [
         evidence_node(gesture_ref, "gesture_completion", "visible", 0.88, source="pose_sequence"),
-        *blocked_nodes(["cognitive_impairment"]),
     ]
     if prompt_mode:
         out = {
@@ -608,7 +607,7 @@ def add_router_contract_noise(
 
 
 def make_tool_schema_hardening(row_id: int, rng: random.Random) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    case = row_id % 8
+    case = row_id % 12
     if case == 0:
         inp, out, meta = make_care_log(row_id, rng)
         add_router_contract_noise(
@@ -676,7 +675,7 @@ def make_tool_schema_hardening(row_id: int, rng: random.Random) -> tuple[dict[st
             invalid_functions=["record_memory_event", "record_memory_update", "write_memory", "memory_policy"],
             tempting_args={"function": "record_memory_event", "memory_event_type": "CARE_ACTIVITY_LOG"},
         )
-    else:
+    elif case == 7:
         inp, out, meta = make_unsupported(row_id, rng)
         add_router_contract_noise(
             inp,
@@ -684,6 +683,58 @@ def make_tool_schema_hardening(row_id: int, rng: random.Random) -> tuple[dict[st
             required_args=["reason", "safe_alternative", "selection_basis", "evidence_refs", "refusal_level"],
             invalid_functions=["reason_codes", "selected_reason_code", "response_text", "activity_context"],
             tempting_args={"reason_codes": [out["args"]["reason"]], "selected_reason_code": out["args"]["reason"], "response_text": SAFE_REFUSAL_ALTERNATIVE_EN},
+        )
+    elif case == 8:
+        event_row = row_id * 4 + 3
+        inp, out, meta = make_realtime_event(event_row, rng)
+        add_router_contract_noise(
+            inp,
+            required_function="positive_reinforcement",
+            required_args=["pattern", "streak", "coach_cue", "selection_basis", "evidence_refs"],
+            invalid_functions=["record_dual_task_result", "create_care_activity_log", "record_subjective_checkin"],
+            tempting_args={"prompt_id": f"dual-task-{event_row}", "answer_matched": True, "movement_completed": True},
+        )
+    elif case == 9:
+        inp, out, meta = make_persona_report(row_id, rng)
+        inp["report_request"] = {
+            "requested_function": "create_persona_activity_report",
+            "requested_persona": out["args"]["persona"],
+            "include_subjective_self_report": True,
+        }
+        add_router_contract_noise(
+            inp,
+            required_function="create_persona_activity_report",
+            required_args=["persona", "report_text", "objective_evidence_refs", "subjective_evidence_refs", "boundary_note", "selection_basis"],
+            invalid_functions=["record_subjective_checkin", "create_care_activity_log", "record_persona_activity_report"],
+            tempting_args={"rpe_0_10": 4, "breathlessness": "mild", "leg_soreness": "mild"},
+        )
+    elif case == 10:
+        inp, out, meta = make_memory_policy(row_id, rng)
+        inp["memory_context"]["allowed_output_function"] = "request_memory_update"
+        inp["memory_context"]["do_not_copy_fields"] = ["payload", "scope", "raw_video_storage", "memory_event_type"]
+        add_router_contract_noise(
+            inp,
+            required_function="request_memory_update",
+            required_args=["request_id", "type", "proposed_value", "evidence_ids", "confidence", "evidence_refs"],
+            invalid_functions=["record_memory_event", "record_memory_update", "write_memory", "payload"],
+            tempting_args={
+                "payload": {
+                    "activity_family": "senior_strength",
+                    "selected_subject_id": "subject_0",
+                    "raw_video_storage": False,
+                },
+                "scope": "local_device_only",
+            },
+        )
+    else:
+        inp, out, meta = make_care_log(row_id, rng)
+        inp["care_log_context"]["requested_output"] = "care_activity_log"
+        add_router_contract_noise(
+            inp,
+            required_function="create_care_activity_log",
+            required_args=["headline", "what_was_completed", "observations", "not_judged", "next_session_focus", "evidence_refs"],
+            invalid_functions=["create_persona_activity_report", "record_subjective_checkin", "record_persona_activity_report"],
+            tempting_args={"persona": "caregiver", "report_text": "Do not create a persona report for care-log packets."},
         )
     meta["row_type"] = "tool_schema_hardening"
     return inp, out, meta
@@ -1085,14 +1136,36 @@ def build_row(row_id: int, row_type: str, rng: random.Random, fmt: str = "produc
     return row
 
 
-def row_type_mix(hard_cases: bool, schema_fuzz_ratio: float | None) -> tuple[tuple[str, float], ...]:
+def clamp_ratio(value: float | None, *, high: float = 0.6) -> float | None:
+    if value is None:
+        return None
+    return max(0.0, min(high, value))
+
+
+def row_type_mix(
+    hard_cases: bool,
+    schema_fuzz_ratio: float | None,
+    tool_schema_hardening_ratio: float | None,
+) -> tuple[tuple[str, float], ...]:
     base = list(HARD_ROW_TYPES if hard_cases else ROW_TYPES)
-    if hard_cases and schema_fuzz_ratio is not None:
-        target = max(0.0, min(0.6, schema_fuzz_ratio))
-        others = [(name, weight) for name, weight in base if name != "schema_fuzz"]
+    if hard_cases and (schema_fuzz_ratio is not None or tool_schema_hardening_ratio is not None):
+        fixed = {
+            name: ratio
+            for name, ratio in {
+                "schema_fuzz": clamp_ratio(schema_fuzz_ratio),
+                "tool_schema_hardening": clamp_ratio(tool_schema_hardening_ratio),
+            }.items()
+            if ratio is not None
+        }
+        fixed_total = sum(fixed.values())
+        if fixed_total >= 0.9:
+            scale_down = 0.9 / fixed_total
+            fixed = {name: ratio * scale_down for name, ratio in fixed.items()}
+            fixed_total = sum(fixed.values())
+        others = [(name, weight) for name, weight in base if name not in fixed]
         other_total = sum(weight for _, weight in others)
-        scale = (1.0 - target) / other_total if other_total else 0.0
-        base = [(name, weight * scale) for name, weight in others] + [("schema_fuzz", target)]
+        scale = (1.0 - fixed_total) / other_total if other_total else 0.0
+        base = [(name, weight * scale) for name, weight in others] + sorted(fixed.items())
     total = sum(weight for _, weight in base)
     return tuple((name, weight / total) for name, weight in base)
 
@@ -1110,9 +1183,10 @@ def build_dataset(
     tool_contract_v2: bool = False,
     zh_tw_ratio: float = 0.0,
     schema_fuzz_ratio: float | None = None,
+    tool_schema_hardening_ratio: float | None = None,
 ) -> dict[str, Any]:
     rng = random.Random(seed)
-    type_mix = row_type_mix(hard_cases, schema_fuzz_ratio)
+    type_mix = row_type_mix(hard_cases, schema_fuzz_ratio, tool_schema_hardening_ratio)
     train = []
     for i, row_type in enumerate(weighted_types(train_count, rng, type_mix)):
         fmt = "zh_tw" if rng.random() < zh_tw_ratio or row_type == "unsupported_zh_tw" else "production"
@@ -1185,6 +1259,7 @@ def build_dataset(
         "tool_contract_v2": tool_contract_v2,
         "zh_tw_ratio": zh_tw_ratio,
         "schema_fuzz_ratio": schema_fuzz_ratio,
+        "tool_schema_hardening_ratio": tool_schema_hardening_ratio,
         "train_rows": len(train),
         "validation_rows": {key: len(value) for key, value in validation.items()},
         "row_type_ratios": dict(type_mix),
@@ -1208,6 +1283,7 @@ def main() -> int:
     parser.add_argument("--tool-contract-v2", action="store_true", help="Mark output as the v5.2 tool-contract hard-case dataset.")
     parser.add_argument("--zh-tw-ratio", type=float, default=0.0, help="Fraction of train rows wrapped in zh-TW prompt format.")
     parser.add_argument("--schema-fuzz-ratio", type=float, default=None, help="Override schema_fuzz ratio in hard-case mix.")
+    parser.add_argument("--tool-schema-hardening-ratio", type=float, default=None, help="Override tool_schema_hardening ratio in hard-case mix.")
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
 
@@ -1234,6 +1310,7 @@ def main() -> int:
         tool_contract_v2=args.tool_contract_v2,
         zh_tw_ratio=args.zh_tw_ratio,
         schema_fuzz_ratio=args.schema_fuzz_ratio,
+        tool_schema_hardening_ratio=args.tool_schema_hardening_ratio,
     )
     text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     payload["metadata"]["sha256"] = sha256_text(text)

@@ -90,7 +90,8 @@ def build_sample_dataset(train_count: int, validation_count: int) -> dict[str, A
         hard_cases=True,
         tool_contract_v2=True,
         zh_tw_ratio=0.45,
-        schema_fuzz_ratio=0.25,
+        schema_fuzz_ratio=0.18,
+        tool_schema_hardening_ratio=0.25,
     )
 
 
