@@ -145,7 +145,7 @@ def _is_ignorable_json_tail(tail: str) -> bool:
     return not normalized or set(normalized) <= {"}"}
 
 
-def extract_json_object(text: str) -> dict[str, Any]:
+def _decode_json_object_from(text: str, *, require_ignorable_tail: bool) -> dict[str, Any]:
     start = text.find("{")
     if start < 0:
         raise ValueError("no JSON object found")
@@ -154,9 +154,26 @@ def extract_json_object(text: str) -> dict[str, Any]:
     if not isinstance(parsed, dict):
         raise ValueError("JSON root is not an object")
     tail = text[start + end :]
-    if not _is_ignorable_json_tail(tail):
+    if require_ignorable_tail and not _is_ignorable_json_tail(tail):
         raise ValueError(f"extra data after JSON object: {tail[:80].strip()}")
     return parsed
+
+
+def _extract_fenced_json_object(text: str) -> dict[str, Any] | None:
+    match = re.search(r"```(?:json)?\s*", text, re.I)
+    if not match:
+        return None
+    end = text.find("```", match.end())
+    if end < 0:
+        return None
+    return _decode_json_object_from(text[match.end() : end], require_ignorable_tail=True)
+
+
+def extract_json_object(text: str) -> dict[str, Any]:
+    fenced = _extract_fenced_json_object(text)
+    if fenced is not None:
+        return fenced
+    return _decode_json_object_from(text, require_ignorable_tail=True)
 
 
 def assistant_json(row: dict[str, Any]) -> dict[str, Any]:
@@ -169,7 +186,10 @@ def assistant_json(row: dict[str, Any]) -> dict[str, Any]:
 def user_input(row: dict[str, Any]) -> dict[str, Any]:
     for msg in row.get("messages", []):
         if msg.get("role") == "user":
-            return extract_json_object(msg.get("content", ""))
+            fenced = _extract_fenced_json_object(msg.get("content", ""))
+            if fenced is not None:
+                return fenced
+            return _decode_json_object_from(msg.get("content", ""), require_ignorable_tail=False)
     raise ValueError("missing user message")
 
 
