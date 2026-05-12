@@ -381,6 +381,12 @@ def main() -> int:
     rows = balanced_sample(rows, args.limit, args.seed)
     if not rows:
         raise SystemExit("No rows selected for generation eval.")
+    print(
+        "GEN_EVAL_SELECTED "
+        f"rows={len(rows)} limit={args.limit} splits={args.splits} row_types={args.row_types} "
+        f"progress_every={args.progress_every}"
+    )
+    sys.stdout.flush()
 
     if args.dry_run:
         preview = {
@@ -394,7 +400,12 @@ def main() -> int:
         print(json.dumps(preview, indent=2, ensure_ascii=False))
         return 0
 
+    load_started = time.time()
+    print(f"GEN_EVAL_LOAD_MODEL_START model={args.model}")
+    sys.stdout.flush()
     tokenizer, text_gen = load_generation_pipeline(args)
+    print(f"GEN_EVAL_LOAD_MODEL_DONE elapsed_min={(time.time() - load_started) / 60.0:.1f}")
+    sys.stdout.flush()
     generated_rows: list[dict[str, Any]] = []
     predictions: list[dict[str, Any]] = []
     parse_success = 0
@@ -403,6 +414,9 @@ def main() -> int:
     progress_every = max(args.progress_every, 0)
 
     for index, row in enumerate(rows, start=1):
+        if progress_every and (index == 1 or index % progress_every == 0):
+            print(f"GEN_EVAL_ROW_START {index}/{total_rows} row_type={row.get('row_type', '')}")
+            sys.stdout.flush()
         prompt = render_prompt(row, tokenizer)
         raw = generate_one(prompt, text_gen, args)
         parsed = None
