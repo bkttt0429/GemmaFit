@@ -134,15 +134,29 @@ HARD_CASE_ROW_TYPES = {
 }
 
 
+def _is_ignorable_json_tail(tail: str) -> bool:
+    """Allow generation stop markers without hiding a second tool call."""
+    normalized = tail.strip()
+    if not normalized:
+        return True
+    for token in ("```", "<eos>", "</s>", "<end_of_turn>", "<|eot_id|>"):
+        normalized = normalized.replace(token, "")
+    normalized = normalized.strip()
+    return not normalized or set(normalized) <= {"}"}
+
+
 def extract_json_object(text: str) -> dict[str, Any]:
-    fenced = re.search(r"```json\s*(\{.*?\})\s*```", text, re.S)
-    if fenced:
-        return json.loads(fenced.group(1))
     start = text.find("{")
-    end = text.rfind("}")
-    if start < 0 or end < start:
+    if start < 0:
         raise ValueError("no JSON object found")
-    return json.loads(text[start:end + 1])
+    decoder = json.JSONDecoder()
+    parsed, end = decoder.raw_decode(text[start:])
+    if not isinstance(parsed, dict):
+        raise ValueError("JSON root is not an object")
+    tail = text[start + end :]
+    if not _is_ignorable_json_tail(tail):
+        raise ValueError(f"extra data after JSON object: {tail[:80].strip()}")
+    return parsed
 
 
 def assistant_json(row: dict[str, Any]) -> dict[str, Any]:
