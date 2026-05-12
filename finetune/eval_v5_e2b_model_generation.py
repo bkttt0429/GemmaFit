@@ -356,6 +356,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--load-in-4bit", action="store_true")
     parser.add_argument("--trust-remote-code", action="store_true")
     parser.add_argument("--sample-output-count", type=int, default=12)
+    parser.add_argument(
+        "--progress-every",
+        type=int,
+        default=10,
+        help="Print generation progress every N rows. Use <=0 to disable.",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Select rows and render prompt previews without loading model.")
     parser.add_argument("--strict", action="store_true", help="Return non-zero when generation eval gates fail.")
     return parser
@@ -393,6 +399,8 @@ def main() -> int:
     predictions: list[dict[str, Any]] = []
     parse_success = 0
     started = time.time()
+    total_rows = len(rows)
+    progress_every = max(args.progress_every, 0)
 
     for index, row in enumerate(rows, start=1):
         prompt = render_prompt(row, tokenizer)
@@ -417,8 +425,19 @@ def main() -> int:
                 "raw_tail": raw[-1200:],
             }
         )
-        if index == 1 or index % 10 == 0 or index == len(rows):
-            print(f"generated {index}/{len(rows)}")
+        if progress_every and (index == 1 or index % progress_every == 0 or index == total_rows):
+            elapsed = time.time() - started
+            avg_sec = elapsed / max(index, 1)
+            eta_sec = avg_sec * max(total_rows - index, 0)
+            pct = (index / total_rows * 100.0) if total_rows else 100.0
+            print(
+                "GEN_EVAL_PROGRESS "
+                f"{index}/{total_rows} ({pct:.1f}%) "
+                f"parse_ok={parse_success}/{index} "
+                f"elapsed_min={elapsed / 60.0:.1f} "
+                f"avg_sec_per_row={avg_sec:.2f} "
+                f"eta_min={eta_sec / 60.0:.1f}"
+            )
             sys.stdout.flush()
 
     report = evaluate_rows(generated_rows)
@@ -437,6 +456,7 @@ def main() -> int:
         "device_map": args.device_map,
         "dtype": args.dtype,
         "load_in_4bit": args.load_in_4bit,
+        "progress_every": args.progress_every,
     }
     report["generation"] = generation_summary
     if generation_summary["json_parse_rate"] < 0.98:
