@@ -1,0 +1,185 @@
+﻿{
+    "generated_at":  "2026-05-13T18:56:34",
+    "downloaded":  [
+                       {
+                           "id":  "abdominal_curl-cdc_strength_training_for_older_adults",
+                           "title":  "Abdominal curl-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Abdominal_curl-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  50085,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "backstretch-cdc_strength_training_for_older_adults",
+                           "title":  "Backstretch-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Backstretch-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  16957,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "biceps_curl-cdc_strength_training_for_older_adults",
+                           "title":  "Biceps curl-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Biceps_curl-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  17787,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "chest_press-cdc_strength_training_for_older_adults",
+                           "title":  "Chest press-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Chest_press-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  9741,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "chest_stretch-cdc_strength_training_for_older_adults",
+                           "title":  "Chest stretch-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Chest_stretch-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  9819,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "finger_marching2-cdc_strength_training_for_older_adults",
+                           "title":  "Finger marching2-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Finger_marching2-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  9888,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "finger_marching-cdc_strength_training_for_older_adults",
+                           "title":  "Finger marching-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Finger_marching-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  15666,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "floor_back_extensions-cdc_strength_training_for_older_adults",
+                           "title":  "Floor back extensions-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Floor_back_extensions-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  63111,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "grip_strength-cdc_strength_training_for_older_adults",
+                           "title":  "Grip strength-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Grip_strength-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  9267,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "hamstring_stretch-cdc_strength_training_for_older_adults",
+                           "title":  "Hamstring stretch-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Hamstring_stretch-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  33041,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "hip_abduction-cdc_strength_training_for_older_adults",
+                           "title":  "Hip abduction-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Hip_abduction-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  25818,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "knee_curl-cdc_strength_training_for_older_adults",
+                           "title":  "Knee curl-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Knee_curl-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  17245,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "knee_extension-cdc_strength_training_for_older_adults",
+                           "title":  "Knee extension-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Knee_extension-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  20895,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "lunge-cdc_strength_training_for_older_adults",
+                           "title":  "Lunge-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Lunge-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  27048,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "overhead_press-cdc_strength_training_for_older_adults",
+                           "title":  "Overhead press-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Overhead_press-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  14192,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "pelvic_tilt-cdc_strength_training_for_older_adults",
+                           "title":  "Pelvic tilt-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Pelvic_tilt-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  5477,
+                           "status":  "downloaded"
+                       },
+                       {
+                           "id":  "quad_stretch-cdc_strength_training_for_older_adults",
+                           "title":  "Quad stretch-CDC strength training for older adults.gif",
+                           "local_path":  "test_assets/videos/internet_public_gif/Quad_stretch-CDC_strength_training_for_older_adults.gif",
+                           "license":  "Public domain, US HHS CDC work",
+                           "attribution":  "Centers for Disease Control and Prevention",
+                           "bytes":  21738,
+                           "status":  "downloaded"
+                       }
+                   ],
+    "missing":  [
+                    {
+                        "title":  "Squat-CDC_strength_training_for_older_adults.gif",
+                        "status":  "blocked_by_wikimedia_429",
+                        "local_path":  null
+                    },
+                    {
+                        "title":  "Step_up-CDC_strength_training_for_older_adults.gif",
+                        "status":  "blocked_by_wikimedia_429",
+                        "local_path":  null
+                    },
+                    {
+                        "title":  "Toe_stand-CDC_strength_training_for_older_adults.gif",
+                        "status":  "blocked_by_wikimedia_429",
+                        "local_path":  null
+                    },
+                    {
+                        "title":  "Upward_row-CDC_strength_training_for_older_adults.gif",
+                        "status":  "blocked_by_wikimedia_429",
+                        "local_path":  null
+                    },
+                    {
+                        "title":  "Wallpushup-CDC_strength_training_for_older_adults.gif",
+                        "status":  "blocked_by_wikimedia_429",
+                        "local_path":  null
+                    }
+                ]
+}

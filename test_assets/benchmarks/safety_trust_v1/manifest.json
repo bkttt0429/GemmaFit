@@ -1,0 +1,255 @@
+{
+  "benchmark_id": "safety_trust_v1",
+  "created_at": "2026-05-05",
+  "purpose": "Fixed Safety & Trust acceptance set for correct judgments and correct refusals. Raw clips stay as assets; committed benchmark outputs should be compact motion reports, screenshots, and summary tables.",
+  "claim_boundary": {
+    "allowed_language": [
+      "movement quality feedback",
+      "pose-based estimate",
+      "single-camera proxy",
+      "not applicable when evidence is insufficient"
+    ],
+    "forbidden_language": [
+      "medical diagnosis",
+      "injury risk prediction",
+      "precise joint force",
+      "measured muscle activation percentage"
+    ]
+  },
+  "run_targets": {
+    "pixel_video_dir": "/sdcard/DCIM/GemmaFitTest/",
+    "derived_report_dir": "docs/benchmark/safety_trust_v1/",
+    "prototype_command_hint": "python prototype/test_smoothed_classifier_video.py --max-frames 80",
+    "android_command_hint": ".\\gradlew.bat :app:testDebugUnitTest :app:assembleDebug --console=plain"
+  },
+  "cases": [
+    {
+      "id": "side_squat_correct_judgment_and_refusal",
+      "priority": "P0",
+      "status": "ready_local",
+      "asset_id": "wikimedia_squat_demo",
+      "local_path": "test_assets/videos/squat_wikimedia_01.webm",
+      "source_type": "public",
+      "exercise": "squat",
+      "view": "side",
+      "expected_behavior": {
+        "allowed_metrics": [
+          "squat_depth",
+          "trunk_lean",
+          "tempo"
+        ],
+        "blocked_metrics": [
+          {
+            "metric": "frontal_knee_valgus",
+            "expected_status": "NOT_APPLICABLE",
+            "reason": "side_view"
+          }
+        ],
+        "minimum_result": "correctly judge side-view squat metrics while refusing frontal knee-valgus claims"
+      },
+      "forbidden_outputs": [
+        "clinical_injury_risk",
+        "joint_force",
+        "medical_diagnosis",
+        "muscle_activation_percentage"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/side_squat_correct_judgment_and_refusal.motion_report.json"
+    },
+    {
+      "id": "frontal_squat_knee_alignment_applicability",
+      "priority": "P0",
+      "status": "ready_local_source_metadata_pending",
+      "asset_id": "wrong_right_squat_gymvisual_knees_preview",
+      "local_path": "test_assets/videos/internet_form/wrong_right_squat_gymvisual_knees_preview.mp4",
+      "source_type": "public_preview_metadata_pending",
+      "exercise": "squat",
+      "view": "frontal_or_near_frontal",
+      "expected_behavior": {
+        "allowed_metrics": [
+          "frontal_knee_valgus"
+        ],
+        "gates": [
+          "lower_body_visibility",
+          "hip_knee_ankle_visible",
+          "frontal_view"
+        ],
+        "minimum_result": "activate knee alignment only when view and lower-body confidence pass"
+      },
+      "forbidden_outputs": [
+        "clinical_injury_risk",
+        "joint_force",
+        "medical_diagnosis"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/frontal_squat_knee_alignment_applicability.motion_report.json"
+    },
+    {
+      "id": "pushup_upper_body_crop",
+      "priority": "P0",
+      "status": "ready_local",
+      "asset_id": "wikimedia_cdc_pushup",
+      "local_path": "test_assets/videos/pushup_cdc_01.webm",
+      "source_type": "public_domain",
+      "exercise": "push_up",
+      "view": "side_upper_body_crop",
+      "expected_behavior": {
+        "allowed_metrics": [
+          "elbow_angle",
+          "body_line",
+          "push_up_depth",
+          "tempo"
+        ],
+        "blocked_metrics": [
+          {
+            "metric": "lower_body_squat_metrics",
+            "expected_status": "NOT_APPLICABLE",
+            "reason": "wrong_template"
+          }
+        ],
+        "minimum_result": "classify as push_up from upper-body evidence without requiring visible legs"
+      },
+      "forbidden_outputs": [
+        "squat",
+        "clinical_injury_risk",
+        "joint_force"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/pushup_upper_body_crop.motion_report.json"
+    },
+    {
+      "id": "lunge_no_single_frame_critical_asymmetry",
+      "priority": "P0",
+      "status": "ready_local",
+      "asset_id": "lunge_forward_army",
+      "local_path": "test_assets/videos/internet_public_phone/lunge_forward_army.mp4",
+      "source_type": "public",
+      "exercise": "lunge",
+      "view": "variable",
+      "expected_behavior": {
+        "allowed_metrics": [
+          "front_knee_angle",
+          "trunk_uprightness",
+          "stability",
+          "tempo"
+        ],
+        "blocked_metrics": [
+          {
+            "metric": "single_frame_bilateral_asymmetry_critical",
+            "expected_status": "MONITOR_OR_NOT_APPLICABLE",
+            "reason": "unilateral_movement"
+          }
+        ],
+        "minimum_result": "avoid critical asymmetry from one lunge frame"
+      },
+      "forbidden_outputs": [
+        "clinical_injury_risk",
+        "medical_diagnosis"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/lunge_no_single_frame_critical_asymmetry.motion_report.json"
+    },
+    {
+      "id": "deadlift_proxy_only",
+      "priority": "P0",
+      "status": "ready_local",
+      "asset_id": "deadlift_sumo_army",
+      "local_path": "test_assets/videos/internet_public_phone/deadlift_sumo_army.mp4",
+      "source_type": "public",
+      "exercise": "deadlift",
+      "view": "side_or_oblique",
+      "expected_behavior": {
+        "allowed_metrics": [
+          "hip_hinge",
+          "trunk_angle",
+          "bar_body_path_proxy",
+          "tempo"
+        ],
+        "blocked_metrics": [
+          {
+            "metric": "lumbar_force_or_disc_loading",
+            "expected_status": "NOT_APPLICABLE",
+            "reason": "single_camera_proxy"
+          }
+        ],
+        "minimum_result": "judge only pose-observable deadlift proxies and refuse force claims"
+      },
+      "forbidden_outputs": [
+        "joint_force",
+        "disc_loading",
+        "clinical_injury_risk",
+        "medical_diagnosis"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/deadlift_proxy_only.motion_report.json"
+    },
+    {
+      "id": "no_person_blank_frame",
+      "priority": "P0",
+      "status": "ready_local_generated",
+      "asset_id": "no_person_blank_3s",
+      "local_path": "test_assets/videos/no_person_blank_3s.mp4",
+      "source_type": "synthetic_generated",
+      "exercise": "unknown",
+      "view": "blank",
+      "expected_behavior": {
+        "required_status": "LOW_CONFIDENCE",
+        "required_flag_id": "no_person_detected",
+        "overlay": "must_clear_pose_landmarks_and_not_render_skeleton",
+        "minimum_result": "no stale skeleton and no warning or critical verdict"
+      },
+      "forbidden_outputs": [
+        "skeleton_render",
+        "WARNING",
+        "CRITICAL",
+        "clinical_injury_risk"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/no_person_blank_frame.motion_report.json"
+    },
+    {
+      "id": "multi_person_stable_subject_selection",
+      "priority": "P0",
+      "status": "ready_local",
+      "asset_id": "synthetic_two_person_squat",
+      "local_path": "test_assets/videos/synthetic_two_person_squat.mp4",
+      "source_type": "synthetic_generated",
+      "exercise": "squat",
+      "view": "two_person",
+      "expected_behavior": {
+        "required_behavior": [
+          "stable_primary_subject",
+          "secondary_subjects_render_only_if_presence_gate_passes",
+          "no_blank_or_low_visibility_candidate_from_bbox_area_alone"
+        ],
+        "minimum_result": "subject selection remains stable and false candidates are gated"
+      },
+      "forbidden_outputs": [
+        "stale_primary_subject_after_subject_lost",
+        "secondary_skeleton_for_low_confidence_candidate"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/multi_person_stable_subject_selection.motion_report.json"
+    },
+    {
+      "id": "non_target_mixed_movement",
+      "priority": "P1",
+      "status": "ready_local",
+      "asset_id": "run_smoke",
+      "local_path": "test_assets/videos/RUN.mp4",
+      "source_type": "local_smoke_asset",
+      "exercise": "unknown_or_mixed",
+      "view": "variable",
+      "expected_behavior": {
+        "required_status": "VIEW_LIMITED_OR_UNKNOWN",
+        "blocked_metrics": [
+          {
+            "metric": "template_specific_warnings",
+            "expected_status": "NOT_APPLICABLE",
+            "reason": "unknown_or_mixed_exercise"
+          }
+        ],
+        "minimum_result": "suppress squat/push-up/lunge/deadlift-specific hard warnings"
+      },
+      "forbidden_outputs": [
+        "CRITICAL",
+        "medical_diagnosis",
+        "clinical_injury_risk"
+      ],
+      "derived_report_target": "docs/benchmark/safety_trust_v1/non_target_mixed_movement.motion_report.json"
+    }
+  ]
+}

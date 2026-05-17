@@ -54,6 +54,38 @@
       "local_zip": "test_assets/datasets/zenodo_squat_good_bad_back_bad_heel/Dataset.zip",
       "partial_download": "test_assets/datasets/zenodo_squat_good_bad_back_bad_heel/Dataset.zip.partial",
       "status": "partial_download_only_not_usable_yet"
+    },
+    "kaggle_squat_pose": {
+      "page": "https://www.kaggle.com/datasets/thashmiladewmini/squat-exercise-pose-dataset",
+      "slug": "thashmiladewmini/squat-exercise-pose-dataset",
+      "local_dir": "test_assets/datasets/squat_kaggle",
+      "local_zip": "test_assets/datasets/squat_kaggle/squat-exercise-pose-dataset.zip",
+      "primary_file": "test_assets/datasets/squat_kaggle/squat_dataset/squat_features_augmented.csv",
+      "zip_size_bytes": 2384137,
+      "local_total_size_bytes": 13646724,
+      "sha256": "ba9c5a5928bd7e2d42f8deb384f80a1f420739320e51760ce4fe9ac3b167358b",
+      "license": "Kaggle page reports CC BY-SA 4.0; verify before final writeup citation.",
+      "status": "downloaded_and_extracted",
+      "intended_use": "squat landmark-feature threshold sensitivity checks only"
+    },
+    "kaggle_exercise_recognition_timeseries": {
+      "page": "https://www.kaggle.com/datasets/muhannadtuameh/exercise-recognition-time-series",
+      "slug": "muhannadtuameh/exercise-recognition-time-series",
+      "local_dir": "test_assets/datasets/exercise_timeseries",
+      "local_zip": "test_assets/datasets/exercise_timeseries/exercise-recognition-time-series.zip",
+      "primary_files": [
+        "test_assets/datasets/exercise_timeseries/landmarks.csv",
+        "test_assets/datasets/exercise_timeseries/angles.csv",
+        "test_assets/datasets/exercise_timeseries/labels.csv",
+        "test_assets/datasets/exercise_timeseries/xyz_distances.csv",
+        "test_assets/datasets/exercise_timeseries/calculated_3d_distances.csv"
+      ],
+      "zip_size_bytes": 67727872,
+      "local_total_size_bytes": 214842543,
+      "sha256": "b29f8fd4e458d958affd8f05a1bcd55cbf7d773cf9267feb1bcb12203bfe5fa9",
+      "license": "CC BY-NC-SA 4.0",
+      "status": "downloaded_and_extracted",
+      "intended_use": "temporal smoothing, rep-count, and Rule 6 stress tests only"
     }
   }
 }

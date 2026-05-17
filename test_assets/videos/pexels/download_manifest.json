@@ -1,0 +1,45 @@
+﻿{
+    "generated_at":  "2026-05-13T18:56:35",
+    "videos":  [
+                   {
+                       "id":  "6023249",
+                       "title":  "Elderly People Exercising",
+                       "page":  "https://www.pexels.com/video/elderly-people-exercising-6023249/",
+                       "local_path":  "test_assets/videos/pexels/elderly_people_exercising_6023249.mp4",
+                       "license":  "Pexels license, free to use; do not imply endorsement",
+                       "attribution":  "Kampus Production",
+                       "bytes":  25209860,
+                       "status":  "downloaded"
+                   },
+                   {
+                       "id":  "7531373",
+                       "title":  "Elderly Woman Exercising",
+                       "page":  "https://www.pexels.com/video/elderly-woman-exercising-7531373/",
+                       "local_path":  "test_assets/videos/pexels/elderly_woman_exercising_7531373.mp4",
+                       "license":  "Pexels license, free to use; do not imply endorsement",
+                       "attribution":  "Mikhail Nilov",
+                       "bytes":  12681225,
+                       "status":  "downloaded"
+                   },
+                   {
+                       "id":  "9058239",
+                       "title":  "Elderly Man Working Out",
+                       "page":  "https://www.pexels.com/video/elderly-man-working-out-9058239/",
+                       "local_path":  "test_assets/videos/pexels/elderly_man_working_out_9058239.mp4",
+                       "license":  "Pexels license, free to use; do not imply endorsement",
+                       "attribution":  "SHVETS production",
+                       "bytes":  20258692,
+                       "status":  "downloaded"
+                   },
+                   {
+                       "id":  "6023224",
+                       "title":  "Elderly People Working Out",
+                       "page":  "https://www.pexels.com/video/elderly-people-working-out-6023224/",
+                       "local_path":  "test_assets/videos/pexels/elderly_people_working_out_6023224.mp4",
+                       "license":  "Pexels license, free to use; do not imply endorsement",
+                       "attribution":  "Kampus Production",
+                       "bytes":  23053639,
+                       "status":  "downloaded"
+                   }
+               ]
+}
