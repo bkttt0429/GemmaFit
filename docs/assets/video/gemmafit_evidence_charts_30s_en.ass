@@ -1,0 +1,18 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Caption,Noto Sans TC,44,&H0016202B,&H000000FF,&H00FFFFFF,&H08F8FAFC,0,0,0,0,100,100,0,0,3,8,0,2,230,230,54,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:05.00,Caption,,0,0,0,,Taiwan is now super-aged.\NMore than 4.6 million people here are 65 or older.\NThat is one in five.
+Dialogue: 0,0:00:05.00,0:00:10.00,Caption,,0,0,0,,Among them, sarcopenia - the gradual loss of muscle and strength -\Nmay affect roughly one in ten older adults, or more.
+Dialogue: 0,0:00:10.00,0:00:16.00,Caption,,0,0,0,,Falls are the number two cause of accidental injury death in this age group:\Nabout 25 deaths per 100,000 each year.
+Dialogue: 0,0:00:16.00,0:00:21.00,Caption,,0,0,0,,Sarcopenia is linked to about 1.5 to 2 times higher fall risk.\NThat makes movement quality matter.
+Dialogue: 0,0:00:21.00,0:00:26.00,Caption,,0,0,0,,What helps is well established:\Nregular strength and balance training,\Nfrom sit-to-stand to balance holds and supported squats.
+Dialogue: 0,0:00:26.00,0:00:30.00,Caption,,0,0,0,,Taiwan has nearly 5,000 community care centers.\NBut one worker cannot watch every movement.\NThat is the gap GemmaFit is built to fill.

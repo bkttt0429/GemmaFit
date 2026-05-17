@@ -1,0 +1,183 @@
+{
+  "schema_version": "motionzip_model_equivalence_result_v1",
+  "overall_pass": true,
+  "key_fact_pass_rate": 1.0,
+  "runtime_status": {
+    "windows_litert_lm_cli": "missing",
+    "actual_model_outputs": "not_run",
+    "reason": "This script prepares model-ready prompts and validates oracle equivalence. Use model_prompt_pair.jsonl with a LiteRT runner to compare real model outputs."
+  },
+  "input_sizes": {
+    "dense_frame_rows": 335,
+    "dense_event_window_rows": 18,
+    "motionzip_event_blocks": 2,
+    "dense_prompt_bytes": 111418,
+    "motionzip_prompt_bytes": 6632,
+    "model_prompt_pair_bytes": 77971,
+    "compact_dense_prompt_bytes": 5878,
+    "compact_motionzip_prompt_bytes": 6738,
+    "compact_model_prompt_pair_bytes": 8768
+  },
+  "dense_understanding": {
+    "activity": "lunge_like_unilateral_motion",
+    "states": [
+      "abstain",
+      "monitor_only"
+    ],
+    "events": [
+      {
+        "state": "abstain",
+        "frame": 258,
+        "reason": "low_keypoint_visibility"
+      },
+      {
+        "state": "monitor_only",
+        "frame": 1440,
+        "reason": null
+      }
+    ],
+    "velocity": {
+      "band": "high",
+      "peak_deg_s": 857.147
+    },
+    "confidence": {
+      "floor": 0.5145,
+      "low_confidence_reason": "low_keypoint_visibility"
+    },
+    "limits": [
+      "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views",
+      "derived_from_single_camera_pose",
+      "no_emg_or_muscle_activation",
+      "no_force_or_grf",
+      "no_joint_force_or_grf",
+      "no_joint_moment_or_ligament_load",
+      "no_medical_or_fall_risk_claim",
+      "sampled_video_pose_not_every_frame"
+    ],
+    "evidence_refs": [
+      "layer2.activity.lunge_like_unilateral_motion",
+      "layer2.event.abstain",
+      "layer2.event.monitor_only",
+      "metric.motion.angle_extrema",
+      "metric.motion.confidence_floor",
+      "metric.motion.peak_velocity",
+      "video.frame.1440",
+      "video.frame.258"
+    ]
+  },
+  "motionzip_understanding": {
+    "activity": "lunge_like_unilateral_motion",
+    "states": [
+      "abstain",
+      "monitor_only"
+    ],
+    "events": [
+      {
+        "state": "abstain",
+        "frame": 258,
+        "reason": "low_keypoint_visibility"
+      },
+      {
+        "state": "monitor_only",
+        "frame": 1434,
+        "reason": null
+      }
+    ],
+    "velocity": {
+      "band": "high",
+      "peak_deg_s": 840.93
+    },
+    "confidence": {
+      "floor": 0.5145,
+      "low_confidence_reason": "low_keypoint_visibility"
+    },
+    "limits": [
+      "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views",
+      "derived_from_single_camera_pose",
+      "no_emg_or_muscle_activation",
+      "no_force_or_grf",
+      "no_joint_force_or_grf",
+      "no_joint_moment_or_ligament_load",
+      "no_medical_or_fall_risk_claim",
+      "sampled_video_pose_not_every_frame"
+    ],
+    "evidence_refs": [
+      "layer2.activity.lunge_like_unilateral_motion",
+      "layer2.event.abstain",
+      "layer2.event.monitor_only",
+      "metric.motion.angle_extrema",
+      "metric.motion.confidence_floor",
+      "metric.motion.peak_velocity",
+      "video.frame.1434",
+      "video.frame.258"
+    ]
+  },
+  "checks": [
+    {
+      "key": "activity",
+      "dense": "lunge_like_unilateral_motion",
+      "motionzip": "lunge_like_unilateral_motion",
+      "pass": true
+    },
+    {
+      "key": "states",
+      "dense": [
+        "abstain",
+        "monitor_only"
+      ],
+      "motionzip": [
+        "abstain",
+        "monitor_only"
+      ],
+      "pass": true
+    },
+    {
+      "key": "event_count",
+      "dense": 2,
+      "motionzip": 2,
+      "pass": true
+    },
+    {
+      "key": "event_frames",
+      "dense": [
+        258,
+        1440
+      ],
+      "motionzip": [
+        258,
+        1434
+      ],
+      "tolerance_frames": 12,
+      "max_frame_diff": 6,
+      "pass": true
+    },
+    {
+      "key": "velocity_band",
+      "dense": "high",
+      "motionzip": "high",
+      "pass": true
+    },
+    {
+      "key": "velocity_peak",
+      "dense": 857.147,
+      "motionzip": 840.93,
+      "relative_error": 0.0189,
+      "tolerance_ratio": 0.05,
+      "pass": true
+    },
+    {
+      "key": "confidence_floor",
+      "dense": 0.5145,
+      "motionzip": 0.5145,
+      "absolute_error": 0.0,
+      "tolerance": 0.02,
+      "pass": true
+    },
+    {
+      "key": "low_confidence_reason",
+      "dense": "low_keypoint_visibility",
+      "motionzip": "low_keypoint_visibility",
+      "pass": true
+    }
+  ]
+}

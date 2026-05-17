@@ -1,0 +1,16 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "engine_create_ms": 2,
+  "engine_initialize_ms": 15586,
+  "session_create_ms": 0,
+  "ttl_ms": 180000,
+  "reused_engine": false,
+  "requested_model": "v5",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemmafit-v5-e2b-evidence-router.litertlm",
+  "model_size_bytes": 5071689680,
+  "elapsed_ms": 15628,
+  "attempts": []
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108" role="img" aria-labelledby="title desc">
+  <title id="title">GemmaFit app icon</title>
+  <desc id="desc">Dark adaptive icon with a green pose skeleton, motion ring, blue evidence marker, and red safety hotspot.</desc>
+  <defs>
+    <clipPath id="mask">
+      <rect width="108" height="108" rx="24"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#mask)">
+    <rect width="108" height="108" fill="#121212"/>
+    <path d="M0 74 108 31v77H0z" fill="#0A1E1A"/>
+    <path d="M0 0h108v43L0 89z" fill="#0A1730" opacity=".56"/>
+    <path d="M80 0h28v108H93z" fill="#00E676" opacity=".24"/>
+    <path d="M76 23C62 12 39 15 28 32 15 52 23 78 45 87 63 94 83 85 91 67" fill="none" stroke="#00E676" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" opacity=".88"/>
+    <path d="M70 54h21v13" fill="none" stroke="#448AFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 32 49 50 55 65M39 43l15-5 16 5M49 50 37 73" fill="none" stroke="#00E676" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M49 50 68 73" fill="none" stroke="#FF1744" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="54" cy="26" r="6" fill="#00E676"/>
+    <circle cx="39" cy="43" r="4" fill="#00E676"/>
+    <circle cx="70" cy="43" r="4" fill="#00E676"/>
+    <circle cx="49" cy="50" r="5" fill="#00E676"/>
+    <circle cx="37" cy="73" r="5" fill="#00E676"/>
+    <circle cx="68" cy="73" r="5" fill="#FF1744"/>
+    <circle cx="88" cy="54" r="3.5" fill="#448AFF"/>
+  </g>
+</svg>

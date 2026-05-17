@@ -1,0 +1,20 @@
+﻿{
+  "section": "model_readiness",
+  "data": {
+    "status": "local_gemma_ready",
+    "label": "Local Gemma ready",
+    "requested_model": "official",
+    "model_priority": [
+      "gemma-4-E2B-it.litertlm",
+      "gemma4_2b_v09_obfus_fix_all_modalities_thinking.litertlm",
+      "gemmafit-v5-e2b-evidence-router.litertlm",
+      "gemmafit-v3-evidence-router.litertlm",
+      "gemmafit-v2-fc.litertlm"
+    ],
+    "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+    "model_file_name": "gemma-4-E2B-it.litertlm",
+    "model_size_bytes": 2538766336,
+    "backend": "litert-lm:available",
+    "fallback_reason": ""
+  }
+}

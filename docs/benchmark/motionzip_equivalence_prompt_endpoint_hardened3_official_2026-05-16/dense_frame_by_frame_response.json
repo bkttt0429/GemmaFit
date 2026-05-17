@@ -1,0 +1,22 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "generation_success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "elapsed_ms": 54650,
+  "attempt_elapsed_ms": 54650,
+  "engine_create_ms": 1,
+  "engine_initialize_ms": 20210,
+  "session_create_ms": 9,
+  "generate_content_ms": 34428,
+  "total_elapsed_ms": 54650,
+  "reused_engine": false,
+  "requested_model": "official",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+  "model_size_bytes": 2538766336,
+  "prompt_chars": 4484,
+  "request_file": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/motionzip_equiv_dense_frame_by_frame.json",
+  "raw_response": "\n{\n\"activity\": \"lunge_like_unilateral_motion\",\n\"states\": [\n\"abstain\",\n\"monitor_only\"\n],\n\"events\": [\n{\n\"state\": \"abstain\",\n\"frame\": 258,\n\"reason\": \"low_keypoint_visibility\"\n},\n{\n\"state\": \"monitor_only\",\n\"frame\": 1440,\n\"reason\": null\n}\n],\n\"velocity\": {\n\"band\": \"high\",\n\"peak_deg_s\": 857.147\n},\n\"confidence\": {\n\"floor\": 0.5145,\n\"low_confidence_reason\": null\n},\n\"limits\": [\n\"derived_from_single_camera_pose\",\n\"dense_frame_by_frame_event_windows\",\n\"no_raw_video\",\n\"no_raw_landmarks\",\n\"no_force_or_grf\",\n\"no_emg_or_muscle_activation\",\n\"no_medical_or_fall_risk_claim\"\n]\n}",
+  "attempts": []
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="520" viewBox="0 0 1220 520">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+    <path d="M0,0 L10,4 L0,8 Z" fill="#64748b"/>
+  </marker>
+</defs>
+<rect width="1220" height="520" fill="#f8fafc"/>
+<text x="42" y="54" font-size="28" font-weight="800" fill="#0f172a">Model-level equivalence protocol</text>
+<text x="42" y="84" font-size="15" fill="#475569">Both paths ask the same model for the same KeyMotionUnderstanding schema; A+B is not used.</text>
+<rect x="60" y="135" width="280" height="120" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="82" y="170" font-size="18" font-weight="700" fill="#0f172a">Dense frame-by-frame</text>
+<text x="82" y="202" font-size="14" fill="#334155">335 derived pose samples</text>
+<text x="82" y="228" font-size="14" fill="#334155">No raw video, one row per frame</text>
+<line x1="340" y1="195" x2="475" y2="195" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="475" y="135" width="260" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="497" y="170" font-size="18" font-weight="700" fill="#0f172a">Same model task</text>
+<text x="497" y="202" font-size="14" fill="#334155">Extract activity/state/event</text>
+<text x="497" y="228" font-size="14" fill="#334155">velocity/confidence facts</text>
+<line x1="735" y1="195" x2="875" y2="195" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="875" y="135" width="285" height="120" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="897" y="170" font-size="18" font-weight="700" fill="#0f172a">KeyMotionUnderstanding</text>
+<text x="897" y="202" font-size="14" fill="#334155">Canonical output schema</text>
+<text x="897" y="228" font-size="14" fill="#334155">Used for equivalence check</text>
+<rect x="60" y="315" width="280" height="120" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+<text x="82" y="350" font-size="18" font-weight="700" fill="#0f172a">MotionZip compressed</text>
+<text x="82" y="382" font-size="14" fill="#334155">2 sparse event blocks</text>
+<text x="82" y="408" font-size="14" fill="#334155">No raw video or landmarks</text>
+<line x1="340" y1="375" x2="475" y2="375" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="735" y1="375" x2="875" y2="375" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="475" y="315" width="260" height="120" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="497" y="350" font-size="18" font-weight="700" fill="#0f172a">Same model task</text>
+<text x="497" y="382" font-size="14" fill="#334155">Identical output schema</text>
+<text x="497" y="408" font-size="14" fill="#334155">No access to dense frames</text>
+<rect x="875" y="315" width="285" height="120" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+<text x="897" y="350" font-size="18" font-weight="700" fill="#0f172a">Equivalence result</text>
+<text x="897" y="382" font-size="14" fill="#334155">Key fact pass rate: 100.0%</text>
+<text x="897" y="408" font-size="14" fill="#334155">A+B path excluded from proof</text>
+</svg>

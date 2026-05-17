@@ -1,0 +1,73 @@
+{
+  "status": "pass_with_runtime_state_gap",
+  "tests": [
+    {
+      "class": "MemoryWritePolicyTest",
+      "status": "pass",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.044,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.memory.MemoryWritePolicyTest.xml",
+      "mtime": "2026-05-17T14:14:47"
+    },
+    {
+      "class": "MemoryAwarePromptBuilderTest",
+      "status": "pass",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.012,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.memory.MemoryAwarePromptBuilderTest.xml",
+      "mtime": "2026-05-17T14:14:47"
+    },
+    {
+      "class": "CaregiverExportBuilderTest",
+      "status": "pass",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.258,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.export.CaregiverExportBuilderTest.xml",
+      "mtime": "2026-05-17T14:14:47"
+    },
+    {
+      "class": "SeniorCareLogRendererTest",
+      "status": "pass",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.038,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.senior.SeniorCareLogRendererTest.xml",
+      "mtime": "2026-05-14T15:32:23"
+    }
+  ],
+  "care_log_endpoint": {
+    "section": "care_log",
+    "status": "missing"
+  },
+  "persona_report_endpoint": {
+    "section": "persona_report",
+    "status": "missing"
+  },
+  "raw_json_files": [
+    "care_log.json",
+    "events.json",
+    "events_after_video_smokes.json",
+    "layer2_smoke.json",
+    "litert_prewarm_official.json",
+    "litert_prompt_infer_official_constrained.json",
+    "model_invocation_smoke.json",
+    "model_readiness_official.json",
+    "motion_zip_packet.json",
+    "persona_report.json",
+    "state.json",
+    "state_after_video_smokes.json",
+    "video_realtime_smoke_no_person_blank_3s.mp4.json",
+    "video_realtime_smoke_senior_balance_4stage_cdc_phonewin_t060.mp4.json",
+    "video_realtime_smoke_senior_chair_stand_cdc_phonewin_t004.mp4.json",
+    "video_realtime_smoke_senior_chair_stand_cdc_phonewin_t062.mp4.json",
+    "video_realtime_smoke_senior_occluded_720p.json"
+  ],
+  "unexpected_boundary_hits": []
+}

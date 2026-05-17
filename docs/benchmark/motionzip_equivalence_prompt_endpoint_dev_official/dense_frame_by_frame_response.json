@@ -1,0 +1,22 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "generation_success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "elapsed_ms": 59666,
+  "attempt_elapsed_ms": 59666,
+  "engine_create_ms": 3,
+  "engine_initialize_ms": 20613,
+  "session_create_ms": 2,
+  "generate_content_ms": 39047,
+  "total_elapsed_ms": 59666,
+  "reused_engine": false,
+  "requested_model": "official",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+  "model_size_bytes": 2538766336,
+  "prompt_chars": 4447,
+  "request_file": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/motionzip_equiv_dense_frame_by_frame.json",
+  "raw_response": "\n{\"activity\":\"lunge_like_unilateral_motion\",\"states\":[\"abstain\",\"monitor_only\"],\"events\":[{\"state\":\"abstain\",\"frame\":258,\"reason\":\"low_keypoint_visibility\"}],\"velocity\":{\"band\":\"high\",\"peak_deg_s\":776.422},\"confidence\":{\"floor\":0.5145,\"low_confidence_reason\":\"low_keypoint_visibility\"},\"limits\":[\"derived_from_single_camera_pose\",\"dense_frame_by_frame_event_windows\",\"no_raw_video\",\"no_raw_landmarks\",\"no_force_or_grf\",\"no_emg_or_muscle_activation\",\"no_medical_or_fall_risk_claim\"],\"evidence_refs\":[\"metric.motion.peak_velocity\",\"metric.motion.angle_extrema\",\"metric.motion.confidence_floor\",\"layer2.activity.lunge_like_unilateral_motion\",\"layer2.event.abstain\",\"video.frame.258\",\"metric.motion.peak_velocity\",\"metric.motion.angle_extrema\",\"metric.motion.confidence_floor\",\"layer2.activity.lunge_like_unilateral_motion\",\"layer2.event.monitor_only\",\"video.frame.1440\"]}",
+  "attempts": []
+}

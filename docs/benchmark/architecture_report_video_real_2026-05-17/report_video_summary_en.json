@@ -1,0 +1,122 @@
+{
+  "source_video": "test_assets/Real/800432825.004389.mp4",
+  "output_video": "docs/assets/video/gemmafit_architecture_motionzip_real_report_en.mp4",
+  "thumbnail": "docs/assets/video/gemmafit_architecture_motionzip_real_report_thumb_en.jpg",
+  "contact_sheet": "docs/assets/video/gemmafit_architecture_motionzip_real_report_contact_sheet_en.jpg",
+  "vision_scene_anchor": "docs/benchmark/architecture_report_video_real_2026-05-17/vision_scene_anchor_en.jpg",
+  "vision_motionzip_panel": "docs/benchmark/architecture_report_video_real_2026-05-17/vision_motionzip_panel_en.jpg",
+  "motionzip_packet": "docs/benchmark/architecture_report_video_real_2026-05-17/motionzip_packet.json",
+  "e2b_prompt": "docs/benchmark/architecture_report_video_real_2026-05-17/motionzip_e2b_prompt.json",
+  "formula_report": "prototype/data/validation/results/800432825.004389_architecture_report_real_800432825_formula_report.json",
+  "landmark_csv": "prototype/data/processed/landmarks/800432825.004389_architecture_report_real_800432825.csv",
+  "angle_csv": "prototype/data/processed/angles/800432825.004389_architecture_report_real_800432825_angles.csv",
+  "source_frames": 525,
+  "pose_samples": 88,
+  "sample_every_frames": 6,
+  "motionzip_blocks": 3,
+  "output_state": "abstain",
+  "low_visibility_abstain_blocks": 3,
+  "max_angular_velocity_dps": 43.721,
+  "source_video_bytes": 4739593,
+  "motionzip_packet_bytes": 6038,
+  "e2b_prompt_bytes": 7894,
+  "packet_vs_video_reduction_x": 784.96,
+  "prompt_vs_video_reduction_x": 600.4,
+  "technical_highlights": [
+    "785x less data sent to Gemma than the source video",
+    "~43% less wall time in the dense-vs-MotionZip equivalence run",
+    "8/8 key facts preserved by the compressed packet",
+    "Vision adds scene/support context only after deterministic analysis"
+  ],
+  "proof_artifacts": [
+    {
+      "title": "100-run reliability",
+      "metric": "100/100",
+      "note": "Pixel parsed every local Gemma JSON result, so the summary contract is stable.",
+      "path": "docs/benchmark/litert_prompt_smoke_constrained_100_official_2026-05-16/summary.json"
+    },
+    {
+      "title": "Same key facts",
+      "metric": "8/8",
+      "note": "Compressed MotionZip evidence matched the dense evidence checks.",
+      "path": "docs/benchmark/motionzip_equivalence_prompt_endpoint_hardened4_official_2026-05-16/summary.json"
+    },
+    {
+      "title": "Less waiting",
+      "metric": "~43%",
+      "note": "Dense evidence 69.3s -> MotionZip 39.8s in the equivalence run.",
+      "path": "docs/benchmark/motionzip_equivalence_prompt_endpoint_hardened4_official_2026-05-16/summary.json"
+    },
+    {
+      "title": "First text appears",
+      "metric": "0.96s",
+      "note": "Warm streaming can show coach-summary progress quickly.",
+      "path": "docs/benchmark/litert_prompt_stream_dev_2_warm_official_2026-05-16/summary.json"
+    },
+    {
+      "title": "Live safety stays local",
+      "metric": "PASS",
+      "note": "Live frames stay deterministic; Gemma explains later, not every frame.",
+      "path": "docs/benchmark/live_safety_contract_report_2026-05-16/report.md"
+    },
+    {
+      "title": "Camera CPU known",
+      "metric": "~0.3ms",
+      "note": "RGBA saves conversion CPU; the main cost is still model generation.",
+      "path": "docs/benchmark/rgba_pipeline_audit/2026-05-16_pixel8pro/summary.md"
+    }
+  ],
+  "vision_sidecar": {
+    "strategy": "low_frequency_scene_context_sidecar",
+    "image_1": "scene_anchor_environment_support_person",
+    "image_2": "motionzip_panel_selected_windows_compact_facts",
+    "allowed_triggers": [
+      "SESSION_ENDED",
+      "USER_QUESTION",
+      "CAREGIVER_EXPORT",
+      "WARNING_PERSISTED_optional"
+    ],
+    "blocked_triggers": [
+      "LIVE_FRAME",
+      "SETUP_CHECK"
+    ],
+    "budget_gates": [
+      "low_battery",
+      "high_thermal_load",
+      "model_disabled",
+      "sidecar_already_in_flight"
+    ],
+    "raw_response": "env=outdoor;support=chair;person=visible;overlay_readable=true;limited=false",
+    "normalized_visual_context": {
+      "env": "outdoor",
+      "support": "chair",
+      "person": "visible",
+      "overlay_readable": true,
+      "limited": false,
+      "source": "litert_vision_sidecar",
+      "evidence_refs": [
+        "visual_context.env",
+        "visual_context.support",
+        "visual_context.person",
+        "visual_context.overlay_readable",
+        "visual_context.limited"
+      ]
+    },
+    "mode": "scene_only",
+    "budget_reason": "scene_only_fallback:motion_zip_unavailable",
+    "source_event": {
+      "path": "docs/benchmark/local_validation_run_2026-05-17/raw/events.json",
+      "event_key": "session_visual|75|0",
+      "trigger": "SESSION_ENDED"
+    },
+    "cannot_override": [
+      "deterministic_safety_verdict",
+      "warning_state",
+      "rep_count",
+      "form_score"
+    ]
+  },
+  "rendered_video_frames": 263,
+  "fps": 15.0,
+  "note": "This report video is a visualization artifact. It does not send raw video to Gemma and does not change the deterministic live path."
+}

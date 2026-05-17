@@ -1,0 +1,32 @@
+1
+00:00:00,000 --> 00:00:05,000
+Taiwan is now super-aged.
+More than 4.6 million people here are 65 or older.
+That is one in five.
+
+2
+00:00:05,000 --> 00:00:10,000
+Among them, sarcopenia - the gradual loss of muscle and strength -
+may affect roughly one in ten older adults, or more.
+
+3
+00:00:10,000 --> 00:00:16,000
+Falls are the number two cause of accidental injury death in this age group:
+about 25 deaths per 100,000 each year.
+
+4
+00:00:16,000 --> 00:00:21,000
+Sarcopenia is linked to about 1.5 to 2 times higher fall risk.
+That makes movement quality matter.
+
+5
+00:00:21,000 --> 00:00:26,000
+What helps is well established:
+regular strength and balance training,
+from sit-to-stand to balance holds and supported squats.
+
+6
+00:00:26,000 --> 00:00:30,000
+Taiwan has nearly 5,000 community care centers.
+But one worker cannot watch every movement.
+That is the gap GemmaFit is built to fill.

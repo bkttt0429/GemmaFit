@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="248" viewBox="0 0 920 248">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="32" y="38" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#0f172a">MotionZip Compression Overview</text>
+<text x="32" y="94" font-family="Arial, sans-serif" font-size="15" fill="#334155">Raw video frames</text>
+<rect x="270" y="77" width="560" height="24" rx="4" fill="#e2e8f0"/>
+<rect x="270" y="77" width="560" height="24" rx="4" fill="#2563eb"/>
+<text x="846" y="95" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">4074</text>
+<text x="32" y="140" font-family="Arial, sans-serif" font-size="15" fill="#334155">Pose samples</text>
+<rect x="270" y="123" width="560" height="24" rx="4" fill="#e2e8f0"/>
+<rect x="270" y="123" width="92" height="24" rx="4" fill="#0f766e"/>
+<text x="846" y="141" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">670</text>
+<text x="32" y="186" font-family="Arial, sans-serif" font-size="15" fill="#334155">Sparse event blocks</text>
+<rect x="270" y="169" width="560" height="24" rx="4" fill="#e2e8f0"/>
+<rect x="270" y="169" width="3" height="24" rx="4" fill="#0f766e"/>
+<text x="846" y="187" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">4</text>
+</svg>

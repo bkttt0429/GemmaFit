@@ -1,0 +1,156 @@
+﻿{
+    "model":  "official",
+    "prompt_pair":  "docs\\benchmark\\motionzip_model_equivalence\\model_prompt_pair_compact.jsonl",
+    "prompt_mode":  "canonical_copy",
+    "case_count":  2,
+    "success":  false,
+    "overall_pass":  false,
+    "pass_count":  0,
+    "total":  8,
+    "pass_rate":  0,
+    "cases":  [
+                  {
+                      "id":  "dense_frame_by_frame",
+                      "success":  true,
+                      "wall_ms":  57245,
+                      "backend":  "litert-lm:isolated:gpu",
+                      "elapsed_ms":  54650,
+                      "generate_content_ms":  34428,
+                      "request_file":  "motionzip_equiv_dense_frame_by_frame.json",
+                      "response_file":  "dense_frame_by_frame_response.json",
+                      "raw_response_chars":  564,
+                      "expected_understanding":  {
+                                                     "activity":  "",
+                                                     "states":  [
+
+                                                                ],
+                                                     "events":  [
+                                                                    {
+                                                                        "state":  "",
+                                                                        "frame":  0,
+                                                                        "reason":  null
+                                                                    }
+                                                                ],
+                                                     "velocity":  {
+                                                                      "band":  "unknown",
+                                                                      "peak_deg_s":  null
+                                                                  },
+                                                     "confidence":  {
+                                                                        "floor":  null,
+                                                                        "low_confidence_reason":  null
+                                                                    },
+                                                     "limits":  [
+
+                                                                ],
+                                                     "evidence_refs":  [
+
+                                                                       ]
+                                                 },
+                      "understanding":  {
+                                            "activity":  "lunge_like_unilateral_motion",
+                                            "states":  [
+                                                           "abstain",
+                                                           "monitor_only"
+                                                       ],
+                                            "events":  [
+                                                           {
+                                                               "state":  "abstain",
+                                                               "frame":  258,
+                                                               "reason":  "low_keypoint_visibility"
+                                                           },
+                                                           {
+                                                               "state":  "monitor_only",
+                                                               "frame":  1440,
+                                                               "reason":  null
+                                                           }
+                                                       ],
+                                            "velocity":  {
+                                                             "band":  "high",
+                                                             "peak_deg_s":  857.147
+                                                         },
+                                            "confidence":  {
+                                                               "floor":  0.5145,
+                                                               "low_confidence_reason":  null
+                                                           },
+                                            "limits":  [
+                                                           "derived_from_single_camera_pose",
+                                                           "dense_frame_by_frame_event_windows",
+                                                           "no_raw_video",
+                                                           "no_raw_landmarks",
+                                                           "no_force_or_grf",
+                                                           "no_emg_or_muscle_activation",
+                                                           "no_medical_or_fall_risk_claim"
+                                                       ]
+                                        }
+                  },
+                  {
+                      "id":  "motionzip_compressed",
+                      "success":  false,
+                      "wall_ms":  37299,
+                      "backend":  "",
+                      "elapsed_ms":  null,
+                      "generate_content_ms":  null,
+                      "request_file":  "motionzip_equiv_motionzip_compressed.json",
+                      "response_file":  "motionzip_compressed_response.json",
+                      "raw_response_chars":  0,
+                      "expected_understanding":  {
+                                                     "activity":  "lunge_like_unilateral_motion",
+                                                     "states":  [
+                                                                    "abstain",
+                                                                    "monitor_only"
+                                                                ],
+                                                     "events":  [
+                                                                    {
+                                                                        "state":  "abstain",
+                                                                        "frame":  258,
+                                                                        "reason":  "low_keypoint_visibility"
+                                                                    },
+                                                                    {
+                                                                        "state":  "monitor_only",
+                                                                        "frame":  1434,
+                                                                        "reason":  null
+                                                                    }
+                                                                ],
+                                                     "velocity":  {
+                                                                      "band":  "high",
+                                                                      "peak_deg_s":  840.93
+                                                                  },
+                                                     "confidence":  {
+                                                                        "floor":  0.5145,
+                                                                        "low_confidence_reason":  "low_keypoint_visibility"
+                                                                    },
+                                                     "limits":  [
+                                                                    "derived_from_single_camera_pose",
+                                                                    "sampled_video_pose_not_every_frame",
+                                                                    "no_force_or_grf",
+                                                                    "no_joint_force_or_grf",
+                                                                    "no_joint_moment_or_ligament_load",
+                                                                    "no_emg_or_muscle_activation",
+                                                                    "no_medical_or_fall_risk_claim",
+                                                                    "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views"
+                                                                ],
+                                                     "evidence_refs":  [
+                                                                           "metric.motion.peak_velocity",
+                                                                           "metric.motion.angle_extrema",
+                                                                           "metric.motion.confidence_floor",
+                                                                           "layer2.activity.lunge_like_unilateral_motion",
+                                                                           "layer2.event.abstain",
+                                                                           "video.frame.258",
+                                                                           "layer2.event.monitor_only",
+                                                                           "video.frame.1434"
+                                                                       ]
+                                                 },
+                      "understanding":  null
+                  }
+              ],
+    "comparison":  {
+                       "overall_pass":  false,
+                       "pass_count":  0,
+                       "total":  8,
+                       "pass_rate":  0,
+                       "checks":  [
+
+                                  ],
+                       "error":  "missing_dense_or_motionzip_understanding"
+                   }
+}

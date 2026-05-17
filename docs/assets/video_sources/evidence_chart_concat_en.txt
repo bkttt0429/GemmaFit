@@ -1,0 +1,13 @@
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_01.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_02.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_03.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_04.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_05.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_06.png'
+duration 5
+file 'D:/GemmaFit/docs/assets/video_sources/evidence_chart_slides_en/evidence_chart_en_06.png'

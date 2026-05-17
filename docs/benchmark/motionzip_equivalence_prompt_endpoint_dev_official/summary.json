@@ -1,0 +1,212 @@
+﻿{
+    "model":  "official",
+    "prompt_pair":  "docs\\benchmark\\motionzip_model_equivalence\\model_prompt_pair_compact.jsonl",
+    "case_count":  2,
+    "success":  true,
+    "overall_pass":  false,
+    "pass_count":  3,
+    "total":  8,
+    "pass_rate":  0.375,
+    "cases":  [
+                  {
+                      "id":  "dense_frame_by_frame",
+                      "success":  true,
+                      "wall_ms":  64120,
+                      "backend":  "litert-lm:isolated:gpu",
+                      "elapsed_ms":  59666,
+                      "generate_content_ms":  39047,
+                      "request_file":  "motionzip_equiv_dense_frame_by_frame.json",
+                      "response_file":  "dense_frame_by_frame_response.json",
+                      "raw_response_chars":  868,
+                      "understanding":  {
+                                            "activity":  "lunge_like_unilateral_motion",
+                                            "states":  [
+                                                           "abstain",
+                                                           "monitor_only"
+                                                       ],
+                                            "events":  [
+                                                           {
+                                                               "state":  "abstain",
+                                                               "frame":  258,
+                                                               "reason":  "low_keypoint_visibility"
+                                                           }
+                                                       ],
+                                            "velocity":  {
+                                                             "band":  "high",
+                                                             "peak_deg_s":  776.422
+                                                         },
+                                            "confidence":  {
+                                                               "floor":  0.5145,
+                                                               "low_confidence_reason":  "low_keypoint_visibility"
+                                                           },
+                                            "limits":  [
+                                                           "derived_from_single_camera_pose",
+                                                           "dense_frame_by_frame_event_windows",
+                                                           "no_raw_video",
+                                                           "no_raw_landmarks",
+                                                           "no_force_or_grf",
+                                                           "no_emg_or_muscle_activation",
+                                                           "no_medical_or_fall_risk_claim"
+                                                       ],
+                                            "evidence_refs":  [
+                                                                  "metric.motion.peak_velocity",
+                                                                  "metric.motion.angle_extrema",
+                                                                  "metric.motion.confidence_floor",
+                                                                  "layer2.activity.lunge_like_unilateral_motion",
+                                                                  "layer2.event.abstain",
+                                                                  "video.frame.258",
+                                                                  "metric.motion.peak_velocity",
+                                                                  "metric.motion.angle_extrema",
+                                                                  "metric.motion.confidence_floor",
+                                                                  "layer2.activity.lunge_like_unilateral_motion",
+                                                                  "layer2.event.monitor_only",
+                                                                  "video.frame.1440"
+                                                              ]
+                                        }
+                  },
+                  {
+                      "id":  "motionzip_compressed",
+                      "success":  true,
+                      "wall_ms":  40467,
+                      "backend":  "litert-lm:isolated:gpu",
+                      "elapsed_ms":  38871,
+                      "generate_content_ms":  38867,
+                      "request_file":  "motionzip_equiv_motionzip_compressed.json",
+                      "response_file":  "motionzip_compressed_response.json",
+                      "raw_response_chars":  844,
+                      "understanding":  {
+                                            "activity":  "lunge_like_unilateral_motion",
+                                            "states":  [
+                                                           "abstain",
+                                                           "monitor_only"
+                                                       ],
+                                            "events":  [
+                                                           {
+                                                               "state":  "abstain",
+                                                               "frame":  258,
+                                                               "reason":  "low_keypoint_visibility"
+                                                           },
+                                                           {
+                                                               "state":  "monitor_only",
+                                                               "frame":  1434,
+                                                               "reason":  null
+                                                           }
+                                                       ],
+                                            "velocity":  {
+                                                             "band":  "high",
+                                                             "peak_deg_s":  840.93
+                                                         },
+                                            "confidence":  {
+                                                               "floor":  0.5746,
+                                                               "low_confidence_reason":  null
+                                                           },
+                                            "limits":  [
+                                                           "derived_from_single_camera_pose",
+                                                           "sampled_video_pose_not_every_frame",
+                                                           "no_force_or_grf",
+                                                           "no_joint_force_or_grf",
+                                                           "no_joint_moment_or_ligament_load",
+                                                           "no_emg_or_muscle_activation",
+                                                           "no_medical_or_fall_risk_claim",
+                                                           "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views"
+                                                       ],
+                                            "evidence_refs":  [
+                                                                  "layer2.activity.lunge_like_unilateral_motion",
+                                                                  "layer2.event.abstain",
+                                                                  "layer2.event.monitor_only",
+                                                                  "metric.motion.angle_extrema",
+                                                                  "metric.motion.confidence_floor",
+                                                                  "metric.motion.peak_velocity",
+                                                                  "video.frame.1434",
+                                                                  "video.frame.258"
+                                                              ]
+                                        }
+                  }
+              ],
+    "comparison":  {
+                       "overall_pass":  false,
+                       "pass_count":  3,
+                       "total":  8,
+                       "pass_rate":  0.375,
+                       "checks":  [
+                                      {
+                                          "key":  "activity",
+                                          "dense_value":  "lunge_like_unilateral_motion",
+                                          "motionzip_value":  "lunge_like_unilateral_motion",
+                                          "pass":  true,
+                                          "extra":  null
+                                      },
+                                      {
+                                          "key":  "states",
+                                          "dense_value":  [
+                                                              "abstain",
+                                                              "monitor_only"
+                                                          ],
+                                          "motionzip_value":  [
+                                                                  "abstain",
+                                                                  "monitor_only"
+                                                              ],
+                                          "pass":  true,
+                                          "extra":  null
+                                      },
+                                      {
+                                          "key":  "event_count",
+                                          "dense_value":  1,
+                                          "motionzip_value":  2,
+                                          "pass":  false,
+                                          "extra":  null
+                                      },
+                                      {
+                                          "key":  "event_frames",
+                                          "dense_value":  [
+                                                              258
+                                                          ],
+                                          "motionzip_value":  [
+                                                                  258,
+                                                                  1434
+                                                              ],
+                                          "pass":  false,
+                                          "extra":  {
+                                                        "diffs":  [
+                                                                      0
+                                                                  ],
+                                                        "tolerance":  6
+                                                    }
+                                      },
+                                      {
+                                          "key":  "velocity_band",
+                                          "dense_value":  "high",
+                                          "motionzip_value":  "high",
+                                          "pass":  true,
+                                          "extra":  null
+                                      },
+                                      {
+                                          "key":  "velocity_peak",
+                                          "dense_value":  776.422,
+                                          "motionzip_value":  840.93,
+                                          "pass":  false,
+                                          "extra":  {
+                                                        "relative_error":  0.083083683872945277,
+                                                        "tolerance_ratio":  0.05
+                                                    }
+                                      },
+                                      {
+                                          "key":  "confidence_floor",
+                                          "dense_value":  0.5145,
+                                          "motionzip_value":  0.5746,
+                                          "pass":  false,
+                                          "extra":  {
+                                                        "absolute_error":  0.060100000000000042,
+                                                        "tolerance":  0.02
+                                                    }
+                                      },
+                                      {
+                                          "key":  "low_confidence_reason",
+                                          "dense_value":  "low_keypoint_visibility",
+                                          "motionzip_value":  null,
+                                          "pass":  false,
+                                          "extra":  null
+                                      }
+                                  ]
+                   }
+}

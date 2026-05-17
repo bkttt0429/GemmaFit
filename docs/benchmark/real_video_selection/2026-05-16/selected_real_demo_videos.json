@@ -1,0 +1,34 @@
+[
+  {
+    "rank": 1,
+    "slug": "best_chair_front",
+    "file": "800432268.335036.mp4",
+    "path": "D:\\GemmaFit\\test_assets\\Real\\800432268.335036.mp4",
+    "duration_s": 12.205,
+    "reason": "Best main demo: front chair sit-to-stand, full body, clear rep phases."
+  },
+  {
+    "rank": 2,
+    "slug": "best_supported_squat_side",
+    "file": "800432435.743618.mp4",
+    "path": "D:\\GemmaFit\\test_assets\\Real\\800432435.743618.mp4",
+    "duration_s": 16.14,
+    "reason": "Best side-view supported squat/chair movement, clear depth and support object."
+  },
+  {
+    "rank": 3,
+    "slug": "best_indoor_chair",
+    "file": "IMG_7708.MOV",
+    "path": "D:\\GemmaFit\\test_assets\\Real\\IMG_7708.MOV",
+    "duration_s": 14.968,
+    "reason": "Indoor chair sit-to-stand candidate; relatable but backlit."
+  },
+  {
+    "rank": 4,
+    "slug": "good_step_or_balance",
+    "file": "800433258.745668.mp4",
+    "path": "D:\\GemmaFit\\test_assets\\Real\\800433258.745668.mp4",
+    "duration_s": 12.538,
+    "reason": "Good alternate for knee lift / step-touch style movement; clear full-body side view."
+  }
+]

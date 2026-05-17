@@ -1,0 +1,230 @@
+{
+  "schema_version": "motionzip_model_equivalence_compact_v1",
+  "protocol": "dense_frame_by_frame_event_windows",
+  "task": "call record_key_motion_understanding",
+  "output_schema": {
+    "activity": "string",
+    "states": [
+      "abstain|monitor_only|judgeable|unknown"
+    ],
+    "events": [
+      {
+        "state": "string",
+        "frame": "integer",
+        "reason": "string|null"
+      }
+    ],
+    "velocity": {
+      "band": "low|medium|high|unknown",
+      "peak_deg_s": "number|null"
+    },
+    "confidence": {
+      "floor": "number|null",
+      "low_confidence_reason": "string|null"
+    },
+    "limits": [
+      "string"
+    ],
+    "evidence_refs": [
+      "string"
+    ]
+  },
+  "instructions": [
+    "Use only the frame rows and event-window metadata below.",
+    "Frame rows are dense derived pose samples inside the key event windows.",
+    "Use event_frame as the event location for each event window.",
+    "Velocity band rule: high if any velocity_deg_s or peak_velocity_deg_s is >= 600; otherwise low_or_medium.",
+    "Return JSON only.",
+    "Do not make medical, fall-risk, force, GRF, EMG, or raw-video claims."
+  ],
+  "input": {
+    "activity_candidate": "lunge_like_unilateral_motion",
+    "event_windows": [
+      {
+        "state": "abstain",
+        "source_frames": [
+          210,
+          258
+        ],
+        "event_frame": 258,
+        "peak_velocity_deg_s": 776.422,
+        "confidence_floor": 0.5145,
+        "abstain_reason": "low_keypoint_visibility",
+        "evidence_refs": [
+          "metric.motion.peak_velocity",
+          "metric.motion.angle_extrema",
+          "metric.motion.confidence_floor",
+          "layer2.activity.lunge_like_unilateral_motion",
+          "layer2.event.abstain",
+          "video.frame.258"
+        ]
+      },
+      {
+        "state": "monitor_only",
+        "source_frames": [
+          1392,
+          1440
+        ],
+        "event_frame": 1440,
+        "peak_velocity_deg_s": 857.147,
+        "confidence_floor": 0.5682,
+        "abstain_reason": null,
+        "evidence_refs": [
+          "metric.motion.peak_velocity",
+          "metric.motion.angle_extrema",
+          "metric.motion.confidence_floor",
+          "layer2.activity.lunge_like_unilateral_motion",
+          "layer2.event.monitor_only",
+          "video.frame.1440"
+        ]
+      }
+    ],
+    "frame_rows": [
+      {
+        "frame": 210,
+        "velocity_deg_s": 47.386,
+        "confidence": 0.7724,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 216,
+        "velocity_deg_s": 17.107,
+        "confidence": 0.7657,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 222,
+        "velocity_deg_s": 19.534,
+        "confidence": 0.7284,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 228,
+        "velocity_deg_s": 47.665,
+        "confidence": 0.672,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 234,
+        "velocity_deg_s": 11.634,
+        "confidence": 0.6318,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 240,
+        "velocity_deg_s": 35.86,
+        "confidence": 0.5839,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 246,
+        "velocity_deg_s": 9.573,
+        "confidence": 0.5857,
+        "flags": [
+          "extreme_angle_geometry_caution"
+        ]
+      },
+      {
+        "frame": 252,
+        "velocity_deg_s": 442.748,
+        "confidence": 0.5528,
+        "flags": [
+          "extreme_angle_geometry_caution",
+          "2d_fppa_unreliable_extreme"
+        ]
+      },
+      {
+        "frame": 258,
+        "velocity_deg_s": 776.422,
+        "confidence": 0.5145,
+        "flags": [
+          "low_keypoint_visibility",
+          "extreme_angle_geometry_caution",
+          "2d_fppa_unreliable_extreme",
+          "rapid_motion_proxy_high"
+        ]
+      },
+      {
+        "frame": 1392,
+        "velocity_deg_s": 64.294,
+        "confidence": 0.8436,
+        "flags": []
+      },
+      {
+        "frame": 1398,
+        "velocity_deg_s": 41.704,
+        "confidence": 0.7949,
+        "flags": []
+      },
+      {
+        "frame": 1404,
+        "velocity_deg_s": 54.787,
+        "confidence": 0.7346,
+        "flags": []
+      },
+      {
+        "frame": 1410,
+        "velocity_deg_s": 9.122,
+        "confidence": 0.6868,
+        "flags": []
+      },
+      {
+        "frame": 1416,
+        "velocity_deg_s": 18.576,
+        "confidence": 0.6502,
+        "flags": []
+      },
+      {
+        "frame": 1422,
+        "velocity_deg_s": 13.305,
+        "confidence": 0.6101,
+        "flags": []
+      },
+      {
+        "frame": 1428,
+        "velocity_deg_s": 24.384,
+        "confidence": 0.5682,
+        "flags": []
+      },
+      {
+        "frame": 1434,
+        "velocity_deg_s": 840.93,
+        "confidence": 0.5746,
+        "flags": [
+          "extreme_angle_geometry_caution",
+          "2d_fppa_unreliable_extreme",
+          "rapid_motion_proxy_high"
+        ]
+      },
+      {
+        "frame": 1440,
+        "velocity_deg_s": 857.147,
+        "confidence": 0.5747,
+        "flags": [
+          "rapid_motion_proxy_high"
+        ]
+      }
+    ],
+    "limits": [
+      "derived_from_single_camera_pose",
+      "dense_frame_by_frame_event_windows",
+      "no_raw_video",
+      "no_raw_landmarks",
+      "no_force_or_grf",
+      "no_emg_or_muscle_activation",
+      "no_medical_or_fall_risk_claim"
+    ]
+  }
+}

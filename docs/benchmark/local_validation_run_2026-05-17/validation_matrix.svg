@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="430" viewBox="0 0 1120 430">
+<rect width="100%" height="100%" fill="#fbfbf8"/>
+<text x="40" y="40" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="#1c2321">GemmaFit local validation proof matrix</text>
+<rect x="40" y="70" width="1040" height="48" rx="8" fill="#ffffff" stroke="#d8ddd8"/>
+<text x="60" y="101" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#1c2321">Live safety</text>
+<rect x="305" y="80" width="150" height="28" rx="14" fill="#247a4b"/>
+<text x="380" y="100" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PASS</text>
+<text x="485" y="101" font-family="Inter, Arial, sans-serif" font-size="16" fill="#39423e">LIVE_FRAME skips Gemma/multimodal</text>
+<rect x="40" y="132" width="1040" height="48" rx="8" fill="#ffffff" stroke="#d8ddd8"/>
+<text x="60" y="163" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#1c2321">Person recovery</text>
+<rect x="305" y="142" width="150" height="28" rx="14" fill="#a56a00"/>
+<text x="380" y="162" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PASS + GAP</text>
+<text x="485" y="163" font-family="Inter, Arial, sans-serif" font-size="16" fill="#39423e">no-person/occlusion pass; fresh multi-person clip needed</text>
+<rect x="40" y="194" width="1040" height="48" rx="8" fill="#ffffff" stroke="#d8ddd8"/>
+<text x="60" y="225" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#1c2321">LiteRT runtime</text>
+<rect x="305" y="204" width="150" height="28" rx="14" fill="#a56a00"/>
+<text x="380" y="224" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PASS + CAVEAT</text>
+<text x="485" y="225" font-family="Inter, Arial, sans-serif" font-size="16" fill="#39423e">ready/prewarm/prompt pass; constrained single run false</text>
+<rect x="40" y="256" width="1040" height="48" rx="8" fill="#ffffff" stroke="#d8ddd8"/>
+<text x="60" y="287" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#1c2321">Memory export</text>
+<rect x="305" y="266" width="150" height="28" rx="14" fill="#a56a00"/>
+<text x="380" y="286" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PASS + GAP</text>
+<text x="485" y="287" font-family="Inter, Arial, sans-serif" font-size="16" fill="#39423e">unit policy pass; runtime export state missing</text>
+<rect x="40" y="318" width="1040" height="48" rx="8" fill="#ffffff" stroke="#d8ddd8"/>
+<text x="60" y="349" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#1c2321">Senior replay</text>
+<rect x="305" y="328" width="150" height="28" rx="14" fill="#3366a8"/>
+<text x="380" y="348" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PASS + NOTE</text>
+<text x="485" y="349" font-family="Inter, Arial, sans-serif" font-size="16" fill="#39423e">Layer2 smoke + replay clips pass</text>
+<text x="40" y="400" font-family="Inter, Arial, sans-serif" font-size="14" fill="#5d6762">Use in video: 70% demo, 20% proof overlay, 10% impact. Do not present gaps as completed.</text>
+</svg>

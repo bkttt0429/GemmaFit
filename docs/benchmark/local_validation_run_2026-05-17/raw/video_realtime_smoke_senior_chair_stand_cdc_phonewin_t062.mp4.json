@@ -1,0 +1,460 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "video_name": "senior_chair_stand_cdc_phonewin_t062.mp4",
+  "video_path": "\/data\/user\/0\/com.gemmafit\/files\/test_videos\/senior_chair_stand_cdc_phonewin_t062.mp4",
+  "video_size_bytes": 185592,
+  "elapsed_ms": 7134,
+  "pose_realtime": {
+    "success": true,
+    "skeleton_correct": true,
+    "realtime_enough": true,
+    "delegate": "GPU",
+    "sample_interval_ms": 200,
+    "sample_cap_frames": 96,
+    "long_side": 256,
+    "max_poses": 1,
+    "analyzed_frames": 16,
+    "pose_hits": 15,
+    "pose_misses": 1,
+    "pose_hit_rate": 0.9375,
+    "landmark_33_rate": 0.9375,
+    "first_pose_frame": 0,
+    "first_pose_timestamp_ms": 0,
+    "avg_visibility": 0.7161234263217808,
+    "avg_pose_ms": 74.5625,
+    "p95_pose_ms": 84,
+    "avg_pose_budget_ms": 120,
+    "p95_pose_budget_ms": 180,
+    "avg_extract_ms": 42.625,
+    "p95_extract_ms": 52,
+    "avg_convert_ms": 41.75,
+    "p95_convert_ms": 50,
+    "processing_fps": 2.2427810485001403,
+    "timestamp_monotonic": true,
+    "source_counts": {
+      "codec": 16
+    },
+    "native_motion_quality": {
+      "analyzed_frames": 15,
+      "gate_blocked_frames": 2,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 2,
+      "monitor_frames": 13,
+      "first_hard_block_frame": 12,
+      "first_hard_block_reason": "lower_body_reference_not_visible_for_body_line",
+      "exercise_counts": {
+        "squat": 7,
+        "deadlift": 4,
+        "push_up": 2
+      },
+      "reason_counts": {
+        "squat:Knee frontal-plane deviation (FPPA)": 6,
+        "squat:Spinal flexion (rounded back)": 3,
+        "squat:Bilateral asymmetry": 3,
+        "squat:Center of mass outside support base": 7,
+        "squat:Joint locked at full extension": 2,
+        "exercise_keypoint_visibility_partial": 9,
+        "squat:Neck hyperextension": 3,
+        "deadlift:Spinal flexion (rounded back)": 4,
+        "deadlift:Center of mass outside support base": 4,
+        "deadlift:Neck hyperextension": 4,
+        "deadlift:Joint locked at full extension": 2,
+        "push_up:Spinal flexion (rounded back)": 2,
+        "push_up:Joint locked at full extension": 2,
+        "push_up:Neck hyperextension": 2,
+        "lower_body_reference_not_visible_for_body_line": 2,
+        "Low overall landmark visibility (0.587229 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.575528 < 0.6). Adjust camera angle, distance, or lighting.": 1
+      }
+    },
+    "first_frames": [
+      {
+        "frame": 0,
+        "timestamp_ms": 0,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 53,
+        "pose_ms": 155,
+        "convert_ms": 50,
+        "knee_angle_deg": 172.59448,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.9001106800455035,
+          "bbox": {
+            "min_x": 0.656451940536499,
+            "min_y": 0.16849032044410706,
+            "max_x": 0.8023008108139038,
+            "max_y": 0.9182261228561401
+          }
+        }
+      },
+      {
+        "frame": 1,
+        "timestamp_ms": 200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 52,
+        "pose_ms": 63,
+        "convert_ms": 50,
+        "knee_angle_deg": 176.54988,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.8980139981616627,
+          "bbox": {
+            "min_x": 0.6626021862030029,
+            "min_y": 0.16915062069892883,
+            "max_x": 0.8019283413887024,
+            "max_y": 0.9179755449295044
+          }
+        }
+      },
+      {
+        "frame": 2,
+        "timestamp_ms": 400,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 35,
+        "convert_ms": 45,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 3,
+        "timestamp_ms": 600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 83,
+        "convert_ms": 41,
+        "knee_angle_deg": 179.28381,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.8539194663365682,
+          "bbox": {
+            "min_x": 0.23537713289260864,
+            "min_y": 0.28030920028686523,
+            "max_x": 0.7958781123161316,
+            "max_y": 3.1842103004455566
+          }
+        }
+      },
+      {
+        "frame": 4,
+        "timestamp_ms": 800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 59,
+        "convert_ms": 38,
+        "knee_angle_deg": 179.39256,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.8150829356728178,
+          "bbox": {
+            "min_x": 0.2237480729818344,
+            "min_y": 0.2893420457839966,
+            "max_x": 0.7939587235450745,
+            "max_y": 3.228121042251587
+          }
+        }
+      },
+      {
+        "frame": 5,
+        "timestamp_ms": 1000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 44,
+        "pose_ms": 77,
+        "convert_ms": 43,
+        "knee_angle_deg": 179.1606,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.7806487245993181,
+          "bbox": {
+            "min_x": 0.19846917688846588,
+            "min_y": 0.29001346230506897,
+            "max_x": 0.7937256693840027,
+            "max_y": 3.25632643699646
+          }
+        }
+      },
+      {
+        "frame": 6,
+        "timestamp_ms": 1200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 70,
+        "convert_ms": 41,
+        "knee_angle_deg": 179.15445,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.7483260396755103,
+          "bbox": {
+            "min_x": 0.19220168888568878,
+            "min_y": 0.2833906412124634,
+            "max_x": 0.7905755639076233,
+            "max_y": 3.2705373764038086
+          }
+        }
+      },
+      {
+        "frame": 7,
+        "timestamp_ms": 1400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 38,
+        "pose_ms": 73,
+        "convert_ms": 37,
+        "knee_angle_deg": 179.53003,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.7199408890623035,
+          "bbox": {
+            "min_x": 0.22112908959388733,
+            "min_y": 0.2782459557056427,
+            "max_x": 0.7860329747200012,
+            "max_y": 3.284609794616699
+          }
+        }
+      },
+      {
+        "frame": 8,
+        "timestamp_ms": 1600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 84,
+        "convert_ms": 37,
+        "knee_angle_deg": 177.84662,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.6939629189895861,
+          "bbox": {
+            "min_x": 0.19501043856143951,
+            "min_y": 0.27845802903175354,
+            "max_x": 0.7921890616416931,
+            "max_y": 3.310488700866699
+          }
+        }
+      },
+      {
+        "frame": 9,
+        "timestamp_ms": 1800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 70,
+        "convert_ms": 44,
+        "knee_angle_deg": 177.94562,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.6710283331798784,
+          "bbox": {
+            "min_x": 0.18662749230861664,
+            "min_y": 0.280373215675354,
+            "max_x": 0.7903094291687012,
+            "max_y": 3.3157670497894287
+          }
+        }
+      },
+      {
+        "frame": 10,
+        "timestamp_ms": 2000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 73,
+        "convert_ms": 41,
+        "knee_angle_deg": 177.81058,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.6502506010460131,
+          "bbox": {
+            "min_x": 0.19411349296569824,
+            "min_y": 0.2787416875362396,
+            "max_x": 0.7891944050788879,
+            "max_y": 3.3153066635131836
+          }
+        }
+      },
+      {
+        "frame": 11,
+        "timestamp_ms": 2200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 36,
+        "pose_ms": 78,
+        "convert_ms": 35,
+        "knee_angle_deg": 178.2905,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.6321923470858372,
+          "bbox": {
+            "min_x": 0.20907551050186157,
+            "min_y": 0.2751597762107849,
+            "max_x": 0.7921088337898254,
+            "max_y": 3.320084810256958
+          }
+        }
+      },
+      {
+        "frame": 12,
+        "timestamp_ms": 2400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 36,
+        "pose_ms": 68,
+        "convert_ms": 35,
+        "knee_angle_deg": 178.16049,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 33,
+          "avg_visibility": 0.6151710324215166,
+          "bbox": {
+            "min_x": 0.2096945345401764,
+            "min_y": 0.2772165536880493,
+            "max_x": 0.7941258549690247,
+            "max_y": 3.3290746212005615
+          }
+        }
+      },
+      {
+        "frame": 13,
+        "timestamp_ms": 2600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 75,
+        "convert_ms": 39,
+        "knee_angle_deg": 178.27806,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 31,
+          "avg_visibility": 0.6004464558579705,
+          "bbox": {
+            "min_x": 0.20785953104496002,
+            "min_y": 0.27737560868263245,
+            "max_x": 0.8040829300880432,
+            "max_y": 3.3400888442993164
+          }
+        }
+      },
+      {
+        "frame": 14,
+        "timestamp_ms": 2800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 58,
+        "convert_ms": 40,
+        "knee_angle_deg": 178.23431,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 31,
+          "avg_visibility": 0.5872286508480707,
+          "bbox": {
+            "min_x": 0.20283113420009613,
+            "min_y": 0.2775403559207916,
+            "max_x": 0.8040513396263123,
+            "max_y": 3.342439889907837
+          }
+        }
+      },
+      {
+        "frame": 15,
+        "timestamp_ms": 3000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 52,
+        "pose_ms": 72,
+        "convert_ms": 52,
+        "knee_angle_deg": 178.3162,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 31,
+          "avg_visibility": 0.5755283218441587,
+          "bbox": {
+            "min_x": 0.19430294632911682,
+            "min_y": 0.28534135222435,
+            "max_x": 0.8091296553611755,
+            "max_y": 3.3472602367401123
+          }
+        }
+      }
+    ]
+  },
+  "ai_assistant_realtime": {
+    "success": true,
+    "invoked": false,
+    "situation": "pose_detected_no_realtime_warning",
+    "expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+    "realtime_ok": true,
+    "live_frame_plan": {
+      "decision": "SKIP_DETERMINISTIC",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "NONE",
+      "reason": "live_frame_deterministic_path",
+      "allowed_judgment": true,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "rep_completed_plan": {
+      "decision": "DEFER_TO_SESSION_END",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "EVENT_COMPACT",
+      "reason": "clean_rep_summary_deferred",
+      "allowed_judgment": true,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "max_velocity_deg_s": 19.776993,
+    "last_movement_phase": "top",
+    "last_rep_count": 0
+  }
+}

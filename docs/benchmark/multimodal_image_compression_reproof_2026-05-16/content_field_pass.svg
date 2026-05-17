@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="330" viewBox="0 0 860 330">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="32" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Content Preservation</text>
+<text x="32" y="72" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Constrained output fields recovered from saved Gemma Vision outputs.</text>
+<text x="32" y="142" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Dense raw montage</text>
+<rect x="230" y="122" width="460" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="230" y="122" width="153" height="24" rx="5" fill="#2563eb"/>
+<text x="708" y="141" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">3 / 9 fields</text>
+<text x="32" y="210" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">MotionZip sidecar</text>
+<rect x="230" y="190" width="460" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="230" y="190" width="460" height="24" rx="5" fill="#16a34a"/>
+<text x="708" y="209" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">9 / 9 fields</text>
+<text x="32" y="286" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Sidecar kept event, velocity, confidence, limits, and evidence refs that dense visual montage missed.</text>
+</svg>

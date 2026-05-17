@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1130" height="565" viewBox="0 0 1130 565">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="34" y="46" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Live Safety Contract Preflight</text>
+<text x="34" y="74" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Current proof is unit + Pixel UI smoke. Final proof still needs trigger-level on-device tracing.</text>
+<rect x="42" y="120" width="1050" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="42" y="120" width="14" height="58" rx="6" fill="#16a34a"/>
+<text x="72" y="143" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">LIVE_FRAME vs session/user triggers</text>
+<text x="72" y="165" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#16a34a">unit-pass</text>
+<text x="420" y="143" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#334155">LIVE_FRAME is deterministic-only; no Gemma call and no multimodal panel/backend.</text>
+<text x="420" y="165" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Still needed: On-device event trace with trigger, decision, context budget, multimodal action,</text>
+<rect x="42" y="202" width="1050" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="42" y="202" width="14" height="58" rx="6" fill="#0f766e"/>
+<text x="72" y="225" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Warning/monitor cue vs Evidence Card</text>
+<text x="72" y="247" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f766e">pixel-ui-pass</text>
+<text x="420" y="225" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#334155">Warnings are produced from deterministic evidence refs before any local Gemma explanatio</text>
+<text x="420" y="247" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Still needed: Per-event log tying warning/monitor verdict to evidence_refs and showing no mode</text>
+<rect x="42" y="284" width="1050" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="42" y="284" width="14" height="58" rx="6" fill="#16a34a"/>
+<text x="72" y="307" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Gemma sidecar output vs deterministic verdict</text>
+<text x="72" y="329" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#16a34a">unit-pass</text>
+<text x="420" y="307" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#334155">Gemma may explain or summarize evidence, but cannot change verdict, create warning, cite</text>
+<text x="420" y="329" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Still needed: Device validation log for at least one summary/explanation result passed through</text>
+<rect x="42" y="366" width="1050" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="42" y="366" width="14" height="58" rx="6" fill="#16a34a"/>
+<text x="72" y="389" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Low confidence / abstain vs hard judgment</text>
+<text x="72" y="411" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#16a34a">unit-pass</text>
+<text x="420" y="389" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#334155">Low-confidence evidence maps to abstained/monitor-only UI, not a hard safety judgment.</text>
+<text x="420" y="411" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Still needed: Captured low-confidence/no-person/multi-person clip showing the same behavior on</text>
+<rect x="42" y="448" width="1050" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="42" y="448" width="14" height="58" rx="6" fill="#0f766e"/>
+<text x="72" y="471" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Session ended summary vs live verdicting</text>
+<text x="72" y="493" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f766e">pixel-summary-pass</text>
+<text x="420" y="471" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#334155">Local Gemma summary runs after analysis; it is not part of per-frame safety verdicting.</text>
+<text x="420" y="493" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Still needed: Trigger-level comparison showing summary call belongs to SESSION_ENDED or equiva</text>
+</svg>

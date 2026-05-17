@@ -1,0 +1,50 @@
+﻿[
+    {
+        "stage":  "yuv_to_bitmap",
+        "count":  442,
+        "avg_us":  1065,
+        "p50_us":  758,
+        "p95_us":  2963,
+        "max_us":  7651
+    },
+    {
+        "stage":  "rotate",
+        "count":  442,
+        "avg_us":  9200,
+        "p50_us":  7984,
+        "p95_us":  15281,
+        "max_us":  39295
+    },
+    {
+        "stage":  "bitmap_image_build",
+        "count":  442,
+        "avg_us":  153,
+        "p50_us":  113,
+        "p95_us":  237,
+        "max_us":  7269
+    },
+    {
+        "stage":  "detect_async_enqueue",
+        "count":  442,
+        "avg_us":  2476,
+        "p50_us":  2134,
+        "p95_us":  4325,
+        "max_us":  9407
+    },
+    {
+        "stage":  "appearance_snapshot_copy",
+        "count":  118,
+        "avg_us":  1368,
+        "p50_us":  1193,
+        "p95_us":  2737,
+        "max_us":  4237
+    },
+    {
+        "stage":  "total_accepted_frame",
+        "count":  442,
+        "avg_us":  13309,
+        "p50_us":  12162,
+        "p95_us":  19952,
+        "max_us":  46040
+    }
+]

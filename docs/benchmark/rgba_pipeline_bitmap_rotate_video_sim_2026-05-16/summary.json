@@ -1,0 +1,84 @@
+{
+  "results": [
+    {
+      "video": "D:\\GemmaFit\\test_assets\\outputs\\video_realtime_ai_chair_sit_to_stand_demo_20260513_204533_h264.mp4",
+      "source": {
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0
+      },
+      "simulated_input": {
+        "width": 640,
+        "height": 480,
+        "warmup_frames": 10,
+        "measured_frames": 182
+      },
+      "pipelines": {
+        "current_yuv_bitmap_rotate": {
+          "count": 182,
+          "avg_us": 1162.0461538461539,
+          "median_us": 1097.4,
+          "p95_us": 1449.4,
+          "p99_us": 2114.8,
+          "min_us": 935.1,
+          "max_us": 4021.9
+        },
+        "camerax_rotated_yuv_bitmap": {
+          "count": 182,
+          "avg_us": 647.0373626373627,
+          "median_us": 626.5,
+          "p95_us": 837.7,
+          "p99_us": 969.7,
+          "min_us": 480.2,
+          "max_us": 1153.8
+        }
+      },
+      "delta": {
+        "avg_saved_us": 515.0087912087912,
+        "p95_saved_us": 611.7,
+        "avg_saved_pct": 44.319133926325485
+      },
+      "checksum": 6552
+    },
+    {
+      "video": "D:\\GemmaFit\\test_assets\\outputs\\video_realtime_internet_public_phone_full_demo_20260513_201732_h264.mp4",
+      "source": {
+        "width": 1280,
+        "height": 720,
+        "fps": 15.0
+      },
+      "simulated_input": {
+        "width": 640,
+        "height": 480,
+        "warmup_frames": 10,
+        "measured_frames": 300
+      },
+      "pipelines": {
+        "current_yuv_bitmap_rotate": {
+          "count": 300,
+          "avg_us": 1076.6353333333332,
+          "median_us": 1034.25,
+          "p95_us": 1361.9,
+          "p99_us": 1493.6,
+          "min_us": 849.3,
+          "max_us": 1980.8
+        },
+        "camerax_rotated_yuv_bitmap": {
+          "count": 300,
+          "avg_us": 617.3203333333333,
+          "median_us": 589.3,
+          "p95_us": 781.1,
+          "p99_us": 1184.5,
+          "min_us": 487.1,
+          "max_us": 1459.5
+        }
+      },
+      "delta": {
+        "avg_saved_us": 459.3149999999998,
+        "p95_saved_us": 580.8000000000001,
+        "avg_saved_pct": 42.66207747222364
+      },
+      "checksum": 10800
+    }
+  ]
+}

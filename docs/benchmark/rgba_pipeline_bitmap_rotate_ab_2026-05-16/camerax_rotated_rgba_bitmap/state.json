@@ -1,0 +1,344 @@
+﻿{
+  "updated_at_ms": 1778913840962,
+  "sections": {
+    "litert_prewarm": {
+      "updated_at_ms": 1778913801367,
+      "data": {
+        "success": false,
+        "stage": "skipped_thermal",
+        "trigger": "app_launch",
+        "requested_model": "official",
+        "thermal_status": 3,
+        "thermal_status_name": "severe"
+      }
+    },
+    "model_readiness": {
+      "updated_at_ms": 1778913802479,
+      "data": {
+        "reason": "viewmodel_created",
+        "status": "template_fallback",
+        "label": "Template fallback",
+        "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+        "model_file_name": "gemma-4-E2B-it.litertlm",
+        "model_size_bytes": 2538766336,
+        "backend": "fallback",
+        "fallback_reason": "local model did not produce a valid tool call"
+      }
+    },
+    "rgba_pipeline_audit": {
+      "updated_at_ms": 1778913840962,
+      "data": {
+        "snapshot": {
+          "section": "rgba_pipeline_audit",
+          "generated_at_ms": 1778913840957,
+          "last_reset_at_ms": 1778913808562,
+          "pipeline": "Live camera image pipeline variant selected by files\/debug\/live_camera_image_pipeline.txt; each sample records the active variant.",
+          "sample_count": 325,
+          "total_seen_since_reset": 325,
+          "window_duration_ms": 32404,
+          "estimated_sample_rate_hz": 10.03,
+          "pipeline_variants": {
+            "CAMERAX_ROTATED_RGBA_BITMAP": 325
+          },
+          "camerax_output_rotation_enabled": {
+            "true": 325
+          },
+          "input_formats": {
+            "RGBA_8888": 325
+          },
+          "raw_bitmap_configs": {
+            "ARGB_8888": 325
+          },
+          "frame_bitmap_configs": {
+            "ARGB_8888": 325
+          },
+          "rotations": {
+            "0": 325
+          },
+          "proxy_dimensions": {
+            "480x640": 325
+          },
+          "frame_bitmap_dimensions": {
+            "480x640": 325
+          },
+          "timing_us": {
+            "yuv_to_bitmap": {
+              "count": 325,
+              "avg": 504,
+              "p50": 453,
+              "p95": 751,
+              "max": 2121
+            },
+            "rotate": {
+              "count": 325,
+              "avg": 0,
+              "p50": 0,
+              "p95": 0,
+              "max": 0
+            },
+            "bitmap_image_build": {
+              "count": 325,
+              "avg": 102,
+              "p50": 89,
+              "p95": 148,
+              "max": 1329
+            },
+            "detect_async_enqueue": {
+              "count": 325,
+              "avg": 2189,
+              "p50": 2131,
+              "p95": 2471,
+              "max": 5835
+            },
+            "appearance_snapshot_copy": {
+              "count": 113,
+              "avg": 1226,
+              "p50": 1184,
+              "p95": 1425,
+              "max": 3220
+            },
+            "total_accepted_frame": {
+              "count": 325,
+              "avg": 3265,
+              "p50": 2845,
+              "p95": 4469,
+              "max": 11038
+            }
+          },
+          "latest_sample": {
+            "timestamp_ms": 1778913840954,
+            "source": "live_camera",
+            "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+            "camerax_output_rotation_enabled": true,
+            "image_format": 1,
+            "image_format_name": "RGBA_8888",
+            "plane_count": 1,
+            "proxy_width": 480,
+            "proxy_height": 640,
+            "rotation_degrees": 0,
+            "raw_bitmap_config": "ARGB_8888",
+            "raw_bitmap_width": 480,
+            "raw_bitmap_height": 640,
+            "frame_bitmap_config": "ARGB_8888",
+            "frame_bitmap_width": 480,
+            "frame_bitmap_height": 640,
+            "yuv_to_bitmap_us": 429,
+            "rotate_us": 0,
+            "bitmap_image_build_us": 86,
+            "detect_async_us": 1991,
+            "appearance_snapshot_copy_us": null,
+            "total_accepted_frame_us": 2539,
+            "error": null
+          },
+          "recent_samples": [
+            {
+              "timestamp_ms": 1778913840219,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 484,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 87,
+              "detect_async_us": 2421,
+              "appearance_snapshot_copy_us": 1102,
+              "total_accepted_frame_us": 4142,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840349,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 425,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 84,
+              "detect_async_us": 2030,
+              "appearance_snapshot_copy_us": null,
+              "total_accepted_frame_us": 2571,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840480,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 415,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 89,
+              "detect_async_us": 2099,
+              "appearance_snapshot_copy_us": 1237,
+              "total_accepted_frame_us": 3899,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840550,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 512,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 91,
+              "detect_async_us": 2105,
+              "appearance_snapshot_copy_us": null,
+              "total_accepted_frame_us": 2742,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840679,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 430,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 128,
+              "detect_async_us": 1889,
+              "appearance_snapshot_copy_us": null,
+              "total_accepted_frame_us": 2479,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840750,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 538,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 81,
+              "detect_async_us": 1904,
+              "appearance_snapshot_copy_us": 1058,
+              "total_accepted_frame_us": 3629,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840883,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 444,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 92,
+              "detect_async_us": 2087,
+              "appearance_snapshot_copy_us": null,
+              "total_accepted_frame_us": 2657,
+              "error": null
+            },
+            {
+              "timestamp_ms": 1778913840954,
+              "source": "live_camera",
+              "pipeline_variant": "CAMERAX_ROTATED_RGBA_BITMAP",
+              "camerax_output_rotation_enabled": true,
+              "image_format": 1,
+              "image_format_name": "RGBA_8888",
+              "plane_count": 1,
+              "proxy_width": 480,
+              "proxy_height": 640,
+              "rotation_degrees": 0,
+              "raw_bitmap_config": "ARGB_8888",
+              "raw_bitmap_width": 480,
+              "raw_bitmap_height": 640,
+              "frame_bitmap_config": "ARGB_8888",
+              "frame_bitmap_width": 480,
+              "frame_bitmap_height": 640,
+              "yuv_to_bitmap_us": 429,
+              "rotate_us": 0,
+              "bitmap_image_build_us": 86,
+              "detect_async_us": 1991,
+              "appearance_snapshot_copy_us": null,
+              "total_accepted_frame_us": 2539,
+              "error": null
+            }
+          ],
+          "notes": [
+            "This is an audit counter only; it does not change pose inference behavior.",
+            "ARGB_8888 is the Android Bitmap storage format; MediaPipe receives a BitmapImage, not raw video.",
+            "Use p95 values over a 30s live-camera window before optimizing this path."
+          ]
+        }
+      }
+    }
+  }
+}

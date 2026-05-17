@@ -1,0 +1,1459 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "video_name": "senior_occluded_720p.mp4",
+  "video_path": "\/data\/user\/0\/com.gemmafit\/files\/test_videos\/senior_occluded_720p.mp4",
+  "video_size_bytes": 1703037,
+  "elapsed_ms": 10196,
+  "pose_realtime": {
+    "success": true,
+    "skeleton_correct": true,
+    "realtime_enough": true,
+    "delegate": "GPU",
+    "sample_interval_ms": 200,
+    "sample_cap_frames": 96,
+    "long_side": 256,
+    "max_poses": 1,
+    "analyzed_frames": 62,
+    "pose_hits": 60,
+    "pose_misses": 2,
+    "pose_hit_rate": 0.967741935483871,
+    "landmark_33_rate": 0.967741935483871,
+    "first_pose_frame": 2,
+    "first_pose_timestamp_ms": 400,
+    "avg_visibility": 0.703013265046357,
+    "avg_pose_ms": 59.854838709677416,
+    "p95_pose_ms": 82,
+    "avg_pose_budget_ms": 120,
+    "p95_pose_budget_ms": 180,
+    "avg_extract_ms": 29.741935483870968,
+    "p95_extract_ms": 41,
+    "avg_convert_ms": 29.306451612903224,
+    "p95_convert_ms": 41,
+    "processing_fps": 6.080816006276971,
+    "timestamp_monotonic": true,
+    "source_counts": {
+      "codec": 62
+    },
+    "native_motion_quality": {
+      "analyzed_frames": 60,
+      "gate_blocked_frames": 0,
+      "low_confidence_frames": 18,
+      "view_limited_frames": 39,
+      "monitor_frames": 26,
+      "first_hard_block_frame": 2,
+      "first_hard_block_reason": "lower_body_reference_not_visible_for_body_line",
+      "exercise_counts": {
+        "push_up": 39,
+        "squat": 21
+      },
+      "reason_counts": {
+        "exercise_keypoint_visibility_partial": 1,
+        "push_up:Spinal flexion (rounded back)": 39,
+        "push_up:Bilateral asymmetry": 39,
+        "lower_body_reference_not_visible_for_body_line": 39,
+        "lower_body_keypoint_visibility_below_threshold": 18,
+        "push_up:Joint locked at full extension": 22,
+        "exercise_keypoint_visibility_partial_side_view": 3,
+        "squat:Spinal flexion (rounded back)": 3,
+        "squat:Joint locked at full extension": 3,
+        "squat:Bilateral asymmetry": 3,
+        "squat:Center of mass outside support base": 3
+      }
+    },
+    "first_frames": [
+      {
+        "frame": 0,
+        "timestamp_ms": 0,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 53,
+        "pose_ms": 125,
+        "convert_ms": 52,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 1,
+        "timestamp_ms": 200,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 44,
+        "pose_ms": 58,
+        "convert_ms": 44,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 2,
+        "timestamp_ms": 400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 86,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 23,
+          "avg_visibility": 0.6147369716993787,
+          "bbox": {
+            "min_x": 0.2770671248435974,
+            "min_y": 0.004623293876647949,
+            "max_x": 0.679205060005188,
+            "max_y": 0.7003487348556519
+          }
+        }
+      },
+      {
+        "frame": 3,
+        "timestamp_ms": 600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 54,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 23,
+          "avg_visibility": 0.6178591857015183,
+          "bbox": {
+            "min_x": 0.27337342500686646,
+            "min_y": 0.04316370189189911,
+            "max_x": 0.680419385433197,
+            "max_y": 0.8166290521621704
+          }
+        }
+      },
+      {
+        "frame": 4,
+        "timestamp_ms": 800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 54,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6319036141715266,
+          "bbox": {
+            "min_x": 0.30897265672683716,
+            "min_y": 0.06313536316156387,
+            "max_x": 0.6664395928382874,
+            "max_y": 0.8941758275032043
+          }
+        }
+      },
+      {
+        "frame": 5,
+        "timestamp_ms": 1000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 65,
+        "convert_ms": 37,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6452503060978471,
+          "bbox": {
+            "min_x": 0.26511523127555847,
+            "min_y": 0.10415660589933395,
+            "max_x": 0.6236389875411987,
+            "max_y": 0.9428346157073975
+          }
+        }
+      },
+      {
+        "frame": 6,
+        "timestamp_ms": 1200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 38,
+        "pose_ms": 67,
+        "convert_ms": 38,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6578631869545488,
+          "bbox": {
+            "min_x": 0.30527356266975403,
+            "min_y": 0.07217851281166077,
+            "max_x": 0.617735743522644,
+            "max_y": 0.9346546530723572
+          }
+        }
+      },
+      {
+        "frame": 7,
+        "timestamp_ms": 1400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 73,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6685446501907074,
+          "bbox": {
+            "min_x": 0.3821929097175598,
+            "min_y": 0.07167380303144455,
+            "max_x": 0.603779137134552,
+            "max_y": 0.9443082809448242
+          }
+        }
+      },
+      {
+        "frame": 8,
+        "timestamp_ms": 1600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 65,
+        "convert_ms": 38,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6787279258397493,
+          "bbox": {
+            "min_x": 0.3333413004875183,
+            "min_y": 0.06530485302209854,
+            "max_x": 0.6135990023612976,
+            "max_y": 0.9404255747795105
+          }
+        }
+      },
+      {
+        "frame": 9,
+        "timestamp_ms": 1800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 76,
+        "convert_ms": 45,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 25,
+          "avg_visibility": 0.6875443914058533,
+          "bbox": {
+            "min_x": 0.2997538447380066,
+            "min_y": 0.07369649410247803,
+            "max_x": 0.6230313181877136,
+            "max_y": 0.9496340155601501
+          }
+        }
+      },
+      {
+        "frame": 10,
+        "timestamp_ms": 2000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 71,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 26,
+          "avg_visibility": 0.6967402580899723,
+          "bbox": {
+            "min_x": 0.30126887559890747,
+            "min_y": 0.06050264090299606,
+            "max_x": 0.6317689418792725,
+            "max_y": 1.3599506616592407
+          }
+        }
+      },
+      {
+        "frame": 11,
+        "timestamp_ms": 2200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 58,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.6967984612918261,
+          "bbox": {
+            "min_x": 0.2599780559539795,
+            "min_y": -0.0014971797354519367,
+            "max_x": 0.6318548917770386,
+            "max_y": 1.2842854261398315
+          }
+        }
+      },
+      {
+        "frame": 12,
+        "timestamp_ms": 2400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 48,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.6944361056455157,
+          "bbox": {
+            "min_x": 0.25117138028144836,
+            "min_y": -0.007422709837555885,
+            "max_x": 0.6319732069969177,
+            "max_y": 1.2865666151046753
+          }
+        }
+      },
+      {
+        "frame": 13,
+        "timestamp_ms": 2600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 69,
+        "convert_ms": 38,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.6992684151187087,
+          "bbox": {
+            "min_x": 0.2180483639240265,
+            "min_y": 0.0016191445756703615,
+            "max_x": 0.5542386770248413,
+            "max_y": 1.2086374759674072
+          }
+        }
+      },
+      {
+        "frame": 14,
+        "timestamp_ms": 2800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 15,
+        "pose_ms": 63,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7005324311215769,
+          "bbox": {
+            "min_x": 0.1872069090604782,
+            "min_y": 0.003943855874240398,
+            "max_x": 0.6231622099876404,
+            "max_y": 1.2207897901535034
+          }
+        }
+      },
+      {
+        "frame": 15,
+        "timestamp_ms": 3000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 58,
+        "convert_ms": 19,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.6962000390119625,
+          "bbox": {
+            "min_x": 0.17592288553714752,
+            "min_y": -0.05053482949733734,
+            "max_x": 0.6235353350639343,
+            "max_y": 1.2512465715408325
+          }
+        }
+      },
+      {
+        "frame": 16,
+        "timestamp_ms": 3200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 22,
+        "pose_ms": 59,
+        "convert_ms": 21,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7024051526166273,
+          "bbox": {
+            "min_x": 0.1727369725704193,
+            "min_y": -0.02150730974972248,
+            "max_x": 0.6205581426620483,
+            "max_y": 1.365546703338623
+          }
+        }
+      },
+      {
+        "frame": 17,
+        "timestamp_ms": 3400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 34,
+        "pose_ms": 54,
+        "convert_ms": 34,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7035282738506794,
+          "bbox": {
+            "min_x": 0.16493336856365204,
+            "min_y": -0.04197872430086136,
+            "max_x": 0.6189337372779846,
+            "max_y": 1.353912353515625
+          }
+        }
+      },
+      {
+        "frame": 18,
+        "timestamp_ms": 3600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 35,
+        "pose_ms": 57,
+        "convert_ms": 35,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7055046698360732,
+          "bbox": {
+            "min_x": 0.1717524379491806,
+            "min_y": 0.009505225345492363,
+            "max_x": 0.52835613489151,
+            "max_y": 1.4364075660705566
+          }
+        }
+      },
+      {
+        "frame": 19,
+        "timestamp_ms": 3800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 38,
+        "pose_ms": 55,
+        "convert_ms": 38,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7008016942576929,
+          "bbox": {
+            "min_x": 0.18926630914211273,
+            "min_y": -0.017937101423740387,
+            "max_x": 0.5792374014854431,
+            "max_y": 1.4164226055145264
+          }
+        }
+      },
+      {
+        "frame": 20,
+        "timestamp_ms": 4000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 52,
+        "convert_ms": 37,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7033147871720068,
+          "bbox": {
+            "min_x": 0.13100963830947876,
+            "min_y": -0.005755624733865261,
+            "max_x": 0.5536805987358093,
+            "max_y": 1.4522899389266968
+          }
+        }
+      },
+      {
+        "frame": 21,
+        "timestamp_ms": 4200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 35,
+        "pose_ms": 58,
+        "convert_ms": 34,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7019379360206199,
+          "bbox": {
+            "min_x": 0.10787550359964371,
+            "min_y": -0.03086159937083721,
+            "max_x": 0.5960654020309448,
+            "max_y": 1.3021490573883057
+          }
+        }
+      },
+      {
+        "frame": 22,
+        "timestamp_ms": 4400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 42,
+        "convert_ms": 36,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7017997656807755,
+          "bbox": {
+            "min_x": 0.11125583946704865,
+            "min_y": -0.03150069713592529,
+            "max_x": 0.5648355484008789,
+            "max_y": 1.3339893817901611
+          }
+        }
+      },
+      {
+        "frame": 23,
+        "timestamp_ms": 4600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 17,
+        "pose_ms": 43,
+        "convert_ms": 16,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.6946872490825076,
+          "bbox": {
+            "min_x": 0.09813615679740906,
+            "min_y": -0.025428110733628273,
+            "max_x": 0.5670952200889587,
+            "max_y": 1.3185089826583862
+          }
+        }
+      },
+      {
+        "frame": 24,
+        "timestamp_ms": 4800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 39,
+        "convert_ms": 20,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7006538554348729,
+          "bbox": {
+            "min_x": 0.26724547147750854,
+            "min_y": 0.019192153587937355,
+            "max_x": 0.4881422221660614,
+            "max_y": 1.3617619276046753
+          }
+        }
+      },
+      {
+        "frame": 25,
+        "timestamp_ms": 5000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 30,
+        "pose_ms": 53,
+        "convert_ms": 30,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.702537207553784,
+          "bbox": {
+            "min_x": 0.32337886095046997,
+            "min_y": 0.013089518994092941,
+            "max_x": 0.49647843837738037,
+            "max_y": 1.298802137374878
+          }
+        }
+      },
+      {
+        "frame": 26,
+        "timestamp_ms": 5200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 16,
+        "pose_ms": 67,
+        "convert_ms": 16,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7034924890507351,
+          "bbox": {
+            "min_x": 0.16159170866012573,
+            "min_y": 0.004583582282066345,
+            "max_x": 0.5191200375556946,
+            "max_y": 1.3660740852355957
+          }
+        }
+      },
+      {
+        "frame": 27,
+        "timestamp_ms": 5400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 30,
+        "pose_ms": 82,
+        "convert_ms": 30,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7065799979097915,
+          "bbox": {
+            "min_x": 0.23680101335048676,
+            "min_y": 0.004032265394926071,
+            "max_x": 0.5229064226150513,
+            "max_y": 1.3638986349105835
+          }
+        }
+      },
+      {
+        "frame": 28,
+        "timestamp_ms": 5600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 15,
+        "pose_ms": 68,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7010235790953492,
+          "bbox": {
+            "min_x": 0.2019570767879486,
+            "min_y": 2.0277781004551798E-4,
+            "max_x": 0.5661984086036682,
+            "max_y": 1.3418331146240234
+          }
+        }
+      },
+      {
+        "frame": 29,
+        "timestamp_ms": 5800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 45,
+        "convert_ms": 19,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7044058874475233,
+          "bbox": {
+            "min_x": 0.1972685158252716,
+            "min_y": -3.0494623933918774E-4,
+            "max_x": 0.5807540416717529,
+            "max_y": 1.3683991432189941
+          }
+        }
+      },
+      {
+        "frame": 30,
+        "timestamp_ms": 6000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 43,
+        "convert_ms": 20,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.705629954735438,
+          "bbox": {
+            "min_x": 0.17509722709655762,
+            "min_y": 0.011274370364844799,
+            "max_x": 0.578149676322937,
+            "max_y": 1.2470769882202148
+          }
+        }
+      },
+      {
+        "frame": 31,
+        "timestamp_ms": 6200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 32,
+        "pose_ms": 87,
+        "convert_ms": 32,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7128400568935004,
+          "bbox": {
+            "min_x": 0.21458439528942108,
+            "min_y": 0.041277989745140076,
+            "max_x": 0.5643566250801086,
+            "max_y": 1.3341538906097412
+          }
+        }
+      },
+      {
+        "frame": 32,
+        "timestamp_ms": 6400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 15,
+        "pose_ms": 86,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7139689986678687,
+          "bbox": {
+            "min_x": 0.22348026931285858,
+            "min_y": -0.005399027373641729,
+            "max_x": 0.5903880000114441,
+            "max_y": 1.4386430978775024
+          }
+        }
+      },
+      {
+        "frame": 33,
+        "timestamp_ms": 6600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 16,
+        "pose_ms": 58,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7144820313110496,
+          "bbox": {
+            "min_x": 0.22609753906726837,
+            "min_y": -0.003793023992329836,
+            "max_x": 0.5956073999404907,
+            "max_y": 1.4135260581970215
+          }
+        }
+      },
+      {
+        "frame": 34,
+        "timestamp_ms": 6800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 16,
+        "pose_ms": 41,
+        "convert_ms": 16,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7120833425133517,
+          "bbox": {
+            "min_x": 0.23225422203540802,
+            "min_y": -0.002619786886498332,
+            "max_x": 0.6262688040733337,
+            "max_y": 1.408122181892395
+          }
+        }
+      },
+      {
+        "frame": 35,
+        "timestamp_ms": 7000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 29,
+        "pose_ms": 41,
+        "convert_ms": 29,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7094251107085835,
+          "bbox": {
+            "min_x": 0.24012163281440735,
+            "min_y": -0.022880105301737785,
+            "max_x": 0.627632737159729,
+            "max_y": 1.3924479484558105
+          }
+        }
+      },
+      {
+        "frame": 36,
+        "timestamp_ms": 7200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 17,
+        "pose_ms": 52,
+        "convert_ms": 17,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7034879804334857,
+          "bbox": {
+            "min_x": 0.2380305379629135,
+            "min_y": -0.06141742691397667,
+            "max_x": 0.6424058079719543,
+            "max_y": 1.3922276496887207
+          }
+        }
+      },
+      {
+        "frame": 37,
+        "timestamp_ms": 7400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 18,
+        "pose_ms": 45,
+        "convert_ms": 17,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7060124921527776,
+          "bbox": {
+            "min_x": 0.27885758876800537,
+            "min_y": 0.04112261161208153,
+            "max_x": 0.5895302891731262,
+            "max_y": 1.4519526958465576
+          }
+        }
+      },
+      {
+        "frame": 38,
+        "timestamp_ms": 7600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 63,
+        "convert_ms": 19,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7101617345981526,
+          "bbox": {
+            "min_x": 0.18597723543643951,
+            "min_y": 0.035706691443920135,
+            "max_x": 0.6432359218597412,
+            "max_y": 1.4060964584350586
+          }
+        }
+      },
+      {
+        "frame": 39,
+        "timestamp_ms": 7800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 22,
+        "pose_ms": 48,
+        "convert_ms": 22,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.710736442018639,
+          "bbox": {
+            "min_x": 0.19849762320518494,
+            "min_y": -0.003476957557722926,
+            "max_x": 0.6041028499603271,
+            "max_y": 1.3525075912475586
+          }
+        }
+      },
+      {
+        "frame": 40,
+        "timestamp_ms": 8000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 21,
+        "pose_ms": 49,
+        "convert_ms": 20,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7159932300899968,
+          "bbox": {
+            "min_x": 0.20121215283870697,
+            "min_y": -0.03590758144855499,
+            "max_x": 0.5734966993331909,
+            "max_y": 1.3975114822387695
+          }
+        }
+      },
+      {
+        "frame": 41,
+        "timestamp_ms": 8200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 20,
+        "pose_ms": 63,
+        "convert_ms": 20,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7188148225347201,
+          "bbox": {
+            "min_x": 0.20032967627048492,
+            "min_y": -0.039845798164606094,
+            "max_x": 0.5725370049476624,
+            "max_y": 1.3821569681167603
+          }
+        }
+      },
+      {
+        "frame": 42,
+        "timestamp_ms": 8400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 30,
+        "pose_ms": 71,
+        "convert_ms": 29,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7214115759301366,
+          "bbox": {
+            "min_x": 0.24894759058952332,
+            "min_y": -0.019213061779737473,
+            "max_x": 0.6110005378723145,
+            "max_y": 1.4153249263763428
+          }
+        }
+      },
+      {
+        "frame": 43,
+        "timestamp_ms": 8600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 31,
+        "pose_ms": 56,
+        "convert_ms": 30,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7211004486025283,
+          "bbox": {
+            "min_x": 0.22884979844093323,
+            "min_y": -0.04048837721347809,
+            "max_x": 0.5722431540489197,
+            "max_y": 1.3802030086517334
+          }
+        }
+      },
+      {
+        "frame": 44,
+        "timestamp_ms": 8800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 28,
+        "pose_ms": 59,
+        "convert_ms": 28,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7251909958819548,
+          "bbox": {
+            "min_x": 0.2251749187707901,
+            "min_y": -0.04204122722148895,
+            "max_x": 0.564835250377655,
+            "max_y": 1.3787020444869995
+          }
+        }
+      },
+      {
+        "frame": 45,
+        "timestamp_ms": 9000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 35,
+        "pose_ms": 58,
+        "convert_ms": 33,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7265521168257251,
+          "bbox": {
+            "min_x": 0.222102090716362,
+            "min_y": -0.029948711395263672,
+            "max_x": 0.5857270359992981,
+            "max_y": 1.4289982318878174
+          }
+        }
+      },
+      {
+        "frame": 46,
+        "timestamp_ms": 9200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 15,
+        "pose_ms": 69,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7212969349189238,
+          "bbox": {
+            "min_x": 0.21109165251255035,
+            "min_y": -0.06758090108633041,
+            "max_x": 0.5576905608177185,
+            "max_y": 1.4190952777862549
+          }
+        }
+      },
+      {
+        "frame": 47,
+        "timestamp_ms": 9400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 19,
+        "pose_ms": 66,
+        "convert_ms": 19,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7176067874287114,
+          "bbox": {
+            "min_x": 0.20321430265903473,
+            "min_y": -0.07179398089647293,
+            "max_x": 0.5475386381149292,
+            "max_y": 1.406752586364746
+          }
+        }
+      },
+      {
+        "frame": 48,
+        "timestamp_ms": 9600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 31,
+        "pose_ms": 54,
+        "convert_ms": 30,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7135245862106482,
+          "bbox": {
+            "min_x": 0.1853395402431488,
+            "min_y": -0.052504763007164,
+            "max_x": 0.5476758480072021,
+            "max_y": 1.4244565963745117
+          }
+        }
+      },
+      {
+        "frame": 49,
+        "timestamp_ms": 9800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 15,
+        "pose_ms": 49,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7052360830659216,
+          "bbox": {
+            "min_x": 0.1752810925245285,
+            "min_y": -0.0610746294260025,
+            "max_x": 0.5505662560462952,
+            "max_y": 1.409104824066162
+          }
+        }
+      },
+      {
+        "frame": 50,
+        "timestamp_ms": 10000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 16,
+        "pose_ms": 40,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7100444376242884,
+          "bbox": {
+            "min_x": 0.2930965721607208,
+            "min_y": -0.047625582665205,
+            "max_x": 0.570987343788147,
+            "max_y": 1.4033080339431763
+          }
+        }
+      },
+      {
+        "frame": 51,
+        "timestamp_ms": 10200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 21,
+        "pose_ms": 38,
+        "convert_ms": 21,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7156912835145538,
+          "bbox": {
+            "min_x": 0.15203604102134705,
+            "min_y": -0.04785764962434769,
+            "max_x": 0.5760877132415771,
+            "max_y": 1.3973687887191772
+          }
+        }
+      },
+      {
+        "frame": 52,
+        "timestamp_ms": 10400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 22,
+        "pose_ms": 45,
+        "convert_ms": 22,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7203524313641317,
+          "bbox": {
+            "min_x": 0.1909661889076233,
+            "min_y": -0.04188021272420883,
+            "max_x": 0.5731842517852783,
+            "max_y": 1.435522437095642
+          }
+        }
+      },
+      {
+        "frame": 53,
+        "timestamp_ms": 10600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 32,
+        "pose_ms": 54,
+        "convert_ms": 31,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7209194872076764,
+          "bbox": {
+            "min_x": 0.17868955433368683,
+            "min_y": -0.0692010298371315,
+            "max_x": 0.5723165273666382,
+            "max_y": 1.4354044198989868
+          }
+        }
+      },
+      {
+        "frame": 54,
+        "timestamp_ms": 10800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 57,
+        "convert_ms": 36,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7231971429040035,
+          "bbox": {
+            "min_x": 0.17212913930416107,
+            "min_y": -0.09313734620809555,
+            "max_x": 0.5673044919967651,
+            "max_y": 1.4420709609985352
+          }
+        }
+      },
+      {
+        "frame": 55,
+        "timestamp_ms": 11000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 38,
+        "pose_ms": 63,
+        "convert_ms": 38,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7186269136992368,
+          "bbox": {
+            "min_x": 0.17119652032852173,
+            "min_y": -0.08416947722434998,
+            "max_x": 0.5527954697608948,
+            "max_y": 1.459794521331787
+          }
+        }
+      },
+      {
+        "frame": 56,
+        "timestamp_ms": 11200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 75,
+        "convert_ms": 36,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7250636810380401,
+          "bbox": {
+            "min_x": 0.16986706852912903,
+            "min_y": -0.08093588799238205,
+            "max_x": 0.5408894419670105,
+            "max_y": 1.430635929107666
+          }
+        }
+      },
+      {
+        "frame": 57,
+        "timestamp_ms": 11400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 65,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7245728768634073,
+          "bbox": {
+            "min_x": 0.13454008102416992,
+            "min_y": -0.08399416506290436,
+            "max_x": 0.5406280755996704,
+            "max_y": 1.4371203184127808
+          }
+        }
+      },
+      {
+        "frame": 58,
+        "timestamp_ms": 11600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 69,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7275161467718355,
+          "bbox": {
+            "min_x": 0.16577409207820892,
+            "min_y": -0.08516833931207657,
+            "max_x": 0.5494556427001953,
+            "max_y": 1.4012564420700073
+          }
+        }
+      },
+      {
+        "frame": 59,
+        "timestamp_ms": 11800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 79,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7277523024064122,
+          "bbox": {
+            "min_x": 0.15421731770038605,
+            "min_y": -0.06950166076421738,
+            "max_x": 0.5519822835922241,
+            "max_y": 1.4066855907440186
+          }
+        }
+      },
+      {
+        "frame": 60,
+        "timestamp_ms": 12000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 35,
+        "pose_ms": 58,
+        "convert_ms": 35,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7296578130035689,
+          "bbox": {
+            "min_x": 0.15066303312778473,
+            "min_y": -0.06734057515859604,
+            "max_x": 0.5473765730857849,
+            "max_y": 1.421193242073059
+          }
+        }
+      },
+      {
+        "frame": 61,
+        "timestamp_ms": 12200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 46,
+        "convert_ms": 37,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 27,
+          "avg_visibility": 0.7327671735124155,
+          "bbox": {
+            "min_x": 0.15703660249710083,
+            "min_y": -0.047484517097473145,
+            "max_x": 0.5448170304298401,
+            "max_y": 1.4067388772964478
+          }
+        }
+      }
+    ]
+  },
+  "ai_assistant_realtime": {
+    "success": true,
+    "invoked": false,
+    "situation": "pose_detected_no_realtime_warning",
+    "expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+    "realtime_ok": true,
+    "live_frame_plan": {
+      "decision": "SKIP_DETERMINISTIC",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "NONE",
+      "reason": "live_frame_deterministic_path",
+      "allowed_judgment": true,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "rep_completed_plan": {
+      "decision": "DEFER_TO_SESSION_END",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "EVENT_COMPACT",
+      "reason": "clean_rep_summary_deferred",
+      "allowed_judgment": true,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "max_velocity_deg_s": 0,
+    "last_movement_phase": "unknown",
+    "last_rep_count": 0
+  }
+}

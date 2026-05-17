@@ -1,0 +1,79 @@
+{
+  "schema_version": "live_safety_contract_preflight_v1",
+  "date": "2026-05-16",
+  "targeted_tests": {
+    "scheduler": {
+      "name": "com.gemmafit.video.ModelInvocationSchedulerTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_sec": 0.029,
+      "path": "app/build/test-results/testDebugUnitTest/TEST-com.gemmafit.video.ModelInvocationSchedulerTest.xml"
+    },
+    "validator": {
+      "name": "com.gemmafit.video.MultimodalResultValidatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_sec": 0.048,
+      "path": "app/build/test-results/testDebugUnitTest/TEST-com.gemmafit.video.MultimodalResultValidatorTest.xml"
+    },
+    "trust": {
+      "name": "com.gemmafit.video.TrustUiStateTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_sec": 0.031,
+      "path": "app/build/test-results/testDebugUnitTest/TEST-com.gemmafit.video.TrustUiStateTest.xml"
+    }
+  },
+  "pixel_smoke_hits": {
+    "full_analysis_pass": true,
+    "local_gemma_summary_pass": true,
+    "first_token_under_5s": true,
+    "why_flagged_pass": true,
+    "deterministic_explanations": true,
+    "motionzip_blocks_zero_constraint": true
+  },
+  "contract_rows": [
+    {
+      "comparison": "LIVE_FRAME vs session/user triggers",
+      "expected_contract": "LIVE_FRAME is deterministic-only; no Gemma call and no multimodal panel/backend.",
+      "current_evidence": "ModelInvocationSchedulerTest passed 15/15, including live frame deterministic skip and live multimodal backend skip.",
+      "status": "unit-pass",
+      "still_needed": "On-device event trace with trigger, decision, context budget, multimodal action, and backend_call_count=0."
+    },
+    {
+      "comparison": "Warning/monitor cue vs Evidence Card",
+      "expected_contract": "Warnings are produced from deterministic evidence refs before any local Gemma explanation.",
+      "current_evidence": "Pixel smoke shows full analysis PASS and user-facing Why flagged explanations PASS.",
+      "status": "pixel-ui-pass",
+      "still_needed": "Per-event log tying warning/monitor verdict to evidence_refs and showing no model-created warning."
+    },
+    {
+      "comparison": "Gemma sidecar output vs deterministic verdict",
+      "expected_contract": "Gemma may explain or summarize evidence, but cannot change verdict, create warning, cite missing refs, or make forbidden claims.",
+      "current_evidence": "MultimodalResultValidatorTest passed 5/5: missing refs, verdict mutation, new warning, forbidden claims, and low-confidence overconfidence are rejected.",
+      "status": "unit-pass",
+      "still_needed": "Device validation log for at least one summary/explanation result passed through validator."
+    },
+    {
+      "comparison": "Low confidence / abstain vs hard judgment",
+      "expected_contract": "Low-confidence evidence maps to abstained/monitor-only UI, not a hard safety judgment.",
+      "current_evidence": "TrustUiStateTest passed 8/8, including low confidence -> Abstained and pose preview separate from hard judgment.",
+      "status": "unit-pass",
+      "still_needed": "Captured low-confidence/no-person/multi-person clip showing the same behavior on Pixel."
+    },
+    {
+      "comparison": "Session ended summary vs live verdicting",
+      "expected_contract": "Local Gemma summary runs after analysis; it is not part of per-frame safety verdicting.",
+      "current_evidence": "Pixel smoke shows Local Gemma summary PASS, first token under 5s, backend litert-lm:isolated:gpu.",
+      "status": "pixel-summary-pass",
+      "still_needed": "Trigger-level comparison showing summary call belongs to SESSION_ENDED or equivalent, never LIVE_FRAME."
+    }
+  ],
+  "final_status": "preflight_pass_final_device_trace_required"
+}

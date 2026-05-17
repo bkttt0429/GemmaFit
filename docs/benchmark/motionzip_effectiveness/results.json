@@ -1,0 +1,118 @@
+{
+  "summary": {
+    "fixtures": 2,
+    "blocks": 4,
+    "required_field_presence": 1.0,
+    "abstain_reason_presence": 1.0,
+    "hard_coaching_upgrade_rate": 0.0,
+    "forbidden_payload_rate": 0.0,
+    "total_pose_samples": 670,
+    "total_video_frames": 4074,
+    "total_sparse_blocks": 4,
+    "pose_samples_per_sparse_block": 167.5,
+    "video_frames_per_sparse_block": 1018.5,
+    "e2b_tool_name_accuracy": 1.0,
+    "e2b_args_schema_valid_rate": 1.0,
+    "e2b_evidence_ref_valid_rate": 1.0,
+    "e2b_unsupported_refusal_rate": 1.0,
+    "e2b_forbidden_claim_rate": 0.0,
+    "e2b_refusal_pass_rate": 1.0,
+    "e2b_adversarial_pass_rate": 1.0
+  },
+  "fixtures": [
+    {
+      "path": "prototype\\data\\validation\\results\\lunge_forward_army_motionzip_motionzip_packet.json",
+      "window_id": "video.lunge_forward_army.motionzip",
+      "trigger": "VIDEO_ANALYSIS_SUMMARY",
+      "passed_contract": true,
+      "pose_samples": 335,
+      "video_frames_total": 2037,
+      "block_count": 2,
+      "state_counts": {
+        "abstain": 1,
+        "monitor_only": 1
+      },
+      "confidence_floors": [
+        0.5145,
+        0.5682
+      ],
+      "evidence_ref_count": 8,
+      "packet_bytes": 3925,
+      "raw_video_bytes": 7110746,
+      "compression_ratio_pose_to_blocks": 167.5,
+      "compression_ratio_raw_video_to_packet": 1811.6550318471338,
+      "missing_top_level": [],
+      "missing_safety": [],
+      "missing_block_fields": [],
+      "missing_extrema_fields": [],
+      "forbidden_payload_findings": [],
+      "debug_only_findings": [
+        "compressed_sparse_blocks[0].source_frames",
+        "compressed_sparse_blocks[1].source_frames",
+        "source_video"
+      ]
+    },
+    {
+      "path": "prototype\\data\\validation\\results\\lunge_forward_army_motionzip_packet.json",
+      "window_id": "video.lunge_forward_army.motionzip.test",
+      "trigger": "VIDEO_ANALYSIS_SUMMARY",
+      "passed_contract": true,
+      "pose_samples": 335,
+      "video_frames_total": 2037,
+      "block_count": 2,
+      "state_counts": {
+        "abstain": 1,
+        "monitor_only": 1
+      },
+      "confidence_floors": [
+        0.5145,
+        0.5682
+      ],
+      "evidence_ref_count": 7,
+      "packet_bytes": 3778,
+      "raw_video_bytes": 7110746,
+      "compression_ratio_pose_to_blocks": 167.5,
+      "compression_ratio_raw_video_to_packet": 1882.145579671784,
+      "missing_top_level": [],
+      "missing_safety": [],
+      "missing_block_fields": [],
+      "missing_extrema_fields": [],
+      "forbidden_payload_findings": [],
+      "debug_only_findings": [
+        "compressed_sparse_blocks[0].source_frames",
+        "compressed_sparse_blocks[1].source_frames",
+        "source_video"
+      ]
+    }
+  ],
+  "e2b_metrics": {
+    "tool_call": {
+      "total_rows": 275,
+      "tool_name_accuracy": 1.0,
+      "args_schema_valid_rate": 1.0,
+      "evidence_ref_valid_rate": 1.0,
+      "cannot_judge_violation_rate": 0.0,
+      "unsupported_refusal_rate": 1.0,
+      "persona_schema_valid_rate": 1.0,
+      "subjective_schema_valid_rate": 1.0,
+      "tracking_state_policy_valid_rate": 1.0,
+      "judgment_disallowed_hard_coaching_rate": 0.0,
+      "parent_task_uncertain_hard_warning_rate": 0.0,
+      "schema_fuzz_schema_rate": 1.0,
+      "hard_case_pass_rate": 1.0,
+      "memory_write_policy_valid_rate": 1.0,
+      "zh_tw_wrapper_schema_rate": 1.0,
+      "forbidden_claim_rate": 0.0
+    },
+    "refusal": {
+      "total_rows": 20,
+      "failures": [],
+      "pass_rate": 1.0
+    },
+    "adversarial": {
+      "total_rows": 12,
+      "failures": [],
+      "pass_rate": 1.0
+    }
+  }
+}

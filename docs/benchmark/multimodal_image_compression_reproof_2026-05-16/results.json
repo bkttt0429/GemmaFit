@@ -1,0 +1,342 @@
+{
+  "schema_version": "multimodal_image_compression_reproof_v1",
+  "date": "2026-05-16",
+  "source_video": {
+    "path": "test_assets/videos/internet_public/lunge_forward_army.webm",
+    "bytes": 6677033
+  },
+  "image_assets": {
+    "dense_raw_montage": {
+      "path": "docs/benchmark/motionzip_multimodal_sidecar_ab/dense_raw_montage.jpg",
+      "bytes": 29112,
+      "width": 1440,
+      "height": 540
+    },
+    "sidecar_environment_keyframe": {
+      "path": "docs/benchmark/motionzip_multimodal_sidecar_ab/env_candidate_210.jpg",
+      "bytes": 11947,
+      "width": 768,
+      "height": 432
+    },
+    "sidecar_motionzip_event_montage": {
+      "path": "docs/benchmark/motionzip_multimodal_sidecar_ab/motionzip_event_montage.jpg",
+      "bytes": 21327,
+      "width": 1024,
+      "height": 576
+    },
+    "sidecar_schema": {
+      "path": "docs/benchmark/motionzip_multimodal_sidecar_ab/sidecar_schema.json",
+      "bytes": 638
+    },
+    "compressed_panel_q70": {
+      "path": "docs/benchmark/multimodal_image_compression_reproof_2026-05-16/compressed_sidecar_panel_768_q70.jpg",
+      "bytes": 23195,
+      "width": 768,
+      "height": 576
+    },
+    "compressed_panel_q85": {
+      "path": "docs/benchmark/multimodal_image_compression_reproof_2026-05-16/compressed_sidecar_panel_768_q85.jpg",
+      "bytes": 32040,
+      "width": 768,
+      "height": 576
+    }
+  },
+  "byte_comparison": {
+    "sidecar_two_image_bundle_bytes": 33912,
+    "sidecar_bundle_vs_source_video_reduction_pct": 99.49210974395363,
+    "panel_q70_vs_source_video_reduction_pct": 99.65261516604755,
+    "panel_q85_vs_source_video_reduction_pct": 99.52014614874601,
+    "sidecar_bundle_vs_dense_montage_delta_pct": 16.48804616652926,
+    "panel_q70_vs_dense_montage_reduction_pct": 20.32495190986535,
+    "panel_q85_vs_dense_montage_reduction_pct": -10.057708161582845
+  },
+  "visual_output_comparison": {
+    "expected": {
+      "activity_guess": "lunge_like_unilateral_motion",
+      "equipment": "kettlebells",
+      "scene": "white indoor studio",
+      "visible_body_region": "lower_body",
+      "motion_states": "step_or_descent_or_return",
+      "event": "monitor_only",
+      "velocity_hint": "high_velocity",
+      "confidence_hint": "low_moderate_confidence",
+      "limits": "single_camera_pose; sampled_video_pose_not_every_frame; no_force_or_grf; no_medical_or_fall_risk_claim"
+    },
+    "dense_raw_montage": {
+      "output": {
+        "activity_guess": "workout",
+        "equipment": "kettlebells",
+        "scene": "white indoor studio",
+        "visible_body_region": "legs and torso",
+        "motion_states": "standing",
+        "event": "unknown",
+        "velocity_hint": "moderate",
+        "confidence_hint": "high",
+        "limits": "unknown"
+      },
+      "checks": [
+        {
+          "key": "activity_guess",
+          "expected": "lunge_like_unilateral_motion",
+          "observed": "workout",
+          "pass": false
+        },
+        {
+          "key": "equipment",
+          "expected": "kettlebells",
+          "observed": "kettlebells",
+          "pass": true
+        },
+        {
+          "key": "scene",
+          "expected": "white indoor studio",
+          "observed": "white indoor studio",
+          "pass": true
+        },
+        {
+          "key": "visible_body_region",
+          "expected": "lower_body",
+          "observed": "legs and torso",
+          "pass": true
+        },
+        {
+          "key": "motion_states",
+          "expected": "step_or_descent_or_return",
+          "observed": "standing",
+          "pass": false
+        },
+        {
+          "key": "event",
+          "expected": "monitor_only",
+          "observed": "unknown",
+          "pass": false
+        },
+        {
+          "key": "velocity_hint",
+          "expected": "high_velocity",
+          "observed": "moderate",
+          "pass": false
+        },
+        {
+          "key": "confidence_hint",
+          "expected": "low_moderate_confidence",
+          "observed": "high",
+          "pass": false
+        },
+        {
+          "key": "limits",
+          "expected": "single_camera_pose; sampled_video_pose_not_every_frame; no_force_or_grf; no_medical_or_fall_risk_claim",
+          "observed": "unknown",
+          "pass": false
+        }
+      ],
+      "pass_count": 3,
+      "total": 9,
+      "pass_rate": 0.3333333333333333
+    },
+    "motionzip_sidecar": {
+      "output": {
+        "activity_guess": "lunge_like_unilateral_motion",
+        "equipment": "kettlebells",
+        "scene": "white indoor studio",
+        "visible_body_region": "lower_body",
+        "motion_states": "step_or_descent_or_return",
+        "event": "monitor_only",
+        "velocity_hint": "high_velocity",
+        "confidence_hint": "low_moderate_confidence",
+        "limits": "single_camera_pose; sampled_video_pose_not_every_frame; no_force_or_grf; no_medical_or_fall_risk_claim"
+      },
+      "checks": [
+        {
+          "key": "activity_guess",
+          "expected": "lunge_like_unilateral_motion",
+          "observed": "lunge_like_unilateral_motion",
+          "pass": true
+        },
+        {
+          "key": "equipment",
+          "expected": "kettlebells",
+          "observed": "kettlebells",
+          "pass": true
+        },
+        {
+          "key": "scene",
+          "expected": "white indoor studio",
+          "observed": "white indoor studio",
+          "pass": true
+        },
+        {
+          "key": "visible_body_region",
+          "expected": "lower_body",
+          "observed": "lower_body",
+          "pass": true
+        },
+        {
+          "key": "motion_states",
+          "expected": "step_or_descent_or_return",
+          "observed": "step_or_descent_or_return",
+          "pass": true
+        },
+        {
+          "key": "event",
+          "expected": "monitor_only",
+          "observed": "monitor_only",
+          "pass": true
+        },
+        {
+          "key": "velocity_hint",
+          "expected": "high_velocity",
+          "observed": "high_velocity",
+          "pass": true
+        },
+        {
+          "key": "confidence_hint",
+          "expected": "low_moderate_confidence",
+          "observed": "low_moderate_confidence",
+          "pass": true
+        },
+        {
+          "key": "limits",
+          "expected": "single_camera_pose; sampled_video_pose_not_every_frame; no_force_or_grf; no_medical_or_fall_risk_claim",
+          "observed": "single_camera_pose; sampled_video_pose_not_every_frame; no_force_or_grf; no_medical_or_fall_risk_claim",
+          "pass": true
+        }
+      ],
+      "pass_count": 9,
+      "total": 9,
+      "pass_rate": 1.0
+    }
+  },
+  "official_litert_text_equivalence": {
+    "source": "docs/benchmark/motionzip_equivalence_prompt_endpoint_hardened4_official_2026-05-16/summary.json",
+    "overall_pass": true,
+    "pass_count": 8,
+    "total": 8,
+    "pass_rate": 1,
+    "dense": {
+      "wall_ms": 69258,
+      "elapsed_ms": 66285,
+      "generate_content_ms": 45116,
+      "raw_response_chars": 822
+    },
+    "motionzip_compressed": {
+      "wall_ms": 39783,
+      "elapsed_ms": 37954,
+      "generate_content_ms": 37950,
+      "raw_response_chars": 828
+    },
+    "comparison": {
+      "overall_pass": true,
+      "pass_count": 8,
+      "total": 8,
+      "pass_rate": 1,
+      "checks": [
+        {
+          "key": "activity",
+          "dense_value": "lunge_like_unilateral_motion",
+          "motionzip_value": "lunge_like_unilateral_motion",
+          "pass": true,
+          "extra": null
+        },
+        {
+          "key": "states",
+          "dense_value": [
+            "abstain",
+            "monitor_only"
+          ],
+          "motionzip_value": [
+            "abstain",
+            "monitor_only"
+          ],
+          "pass": true,
+          "extra": null
+        },
+        {
+          "key": "event_count",
+          "dense_value": 2,
+          "motionzip_value": 2,
+          "pass": true,
+          "extra": null
+        },
+        {
+          "key": "event_frames",
+          "dense_value": [
+            258,
+            1440
+          ],
+          "motionzip_value": [
+            258,
+            1434
+          ],
+          "pass": true,
+          "extra": {
+            "diffs": [
+              0,
+              6
+            ],
+            "tolerance": 6
+          }
+        },
+        {
+          "key": "velocity_band",
+          "dense_value": "high",
+          "motionzip_value": "high",
+          "pass": true,
+          "extra": null
+        },
+        {
+          "key": "velocity_peak",
+          "dense_value": 857.147,
+          "motionzip_value": 840.93,
+          "pass": true,
+          "extra": {
+            "relative_error": 0.018919741887914322,
+            "tolerance_ratio": 0.05
+          }
+        },
+        {
+          "key": "confidence_floor",
+          "dense_value": 0.5145,
+          "motionzip_value": 0.5145,
+          "pass": true,
+          "extra": {
+            "absolute_error": 0,
+            "tolerance": 0.02
+          }
+        },
+        {
+          "key": "low_confidence_reason",
+          "dense_value": "low_keypoint_visibility",
+          "motionzip_value": "low_keypoint_visibility",
+          "pass": true,
+          "extra": null
+        }
+      ]
+    },
+    "generate_content_reduction_pct": 15.883500310311193,
+    "wall_time_reduction_pct_confounded_by_cold_start": 42.558260417569095
+  },
+  "sparse_tracking_reference": {
+    "source": "docs/benchmark/motionzip_sparse_understanding/results.json",
+    "dense_pose_samples": 335,
+    "source_frame_span": 2016,
+    "lowest_passing_tracked_samples": 168,
+    "lowest_passing_tracked_frame_ratio": 0.08333333333333333,
+    "best_sparse_understanding_score": 1.0,
+    "stride_2_understanding_score": 0.9971620387168129,
+    "stride_2_peak_velocity_recall": 0.9810802581120857
+  },
+  "interpretation": {
+    "proven": [
+      "Sidecar image evidence is over 99% smaller than the source video while preserving scene and event context.",
+      "Dense visual montage recovers coarse scene/equipment but misses event, velocity, confidence, and limits.",
+      "MotionZip sidecar output matches the task-critical fields in the saved constrained vision run.",
+      "Official LiteRT text endpoint returns equivalent key motion understanding for dense and compressed evidence."
+    ],
+    "not_proven": [
+      "This does not prove the vision model can infer safety from image pixels alone.",
+      "This does not justify putting vision or Gemma calls in the LIVE_FRAME path.",
+      "This is not a clinical, force, EMG, heart-rate, or fall-risk benchmark."
+    ]
+  }
+}

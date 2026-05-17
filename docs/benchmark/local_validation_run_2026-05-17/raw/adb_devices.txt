@@ -1,0 +1,3 @@
+﻿List of devices attached
+3A251FDJG004RX         device product:husky model:Pixel_8_Pro device:husky transport_id:1
+

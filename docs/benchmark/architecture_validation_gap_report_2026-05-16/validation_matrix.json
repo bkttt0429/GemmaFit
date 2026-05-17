@@ -1,0 +1,105 @@
+[
+  {
+    "id": "live_safety_contract",
+    "architecture": "Deterministic live safety path contract",
+    "status": "closed_for_demo",
+    "evidence": [
+      "docs/benchmark/live_safety_contract_report_2026-05-16/report.md",
+      "docs/benchmark/local_validation_run_2026-05-17/raw/model_invocation_smoke.json"
+    ],
+    "remaining_gap": "Longer live-camera trace with model-call counters would strengthen but is not required for the current demo claim."
+  },
+  {
+    "id": "person_recovery",
+    "architecture": "Pose ownership, person recovery, and abstain",
+    "status": "closed_with_gap",
+    "evidence": [
+      "docs/benchmark/person_recovery_yolo_fallback_report_2026-05-16/report.md",
+      "docs/benchmark/local_validation_run_2026-05-17/raw/video_realtime_smoke_no_person_blank_3s.mp4.json",
+      "docs/benchmark/local_validation_run_2026-05-17/raw/video_realtime_smoke_senior_occluded_720p.json"
+    ],
+    "remaining_gap": "Fresh multi-person device replay is still needed for the strongest wrong-person proof."
+  },
+  {
+    "id": "official_litert_e2b",
+    "architecture": "Official Gemma-4-E2B LiteRT runtime",
+    "status": "closed_with_caveat",
+    "evidence": [
+      "docs/benchmark/litert_runtime_stability_report_2026-05-16/report.md",
+      "docs/benchmark/litert_prompt_smoke_constrained_100_official_2026-05-16/summary.json"
+    ],
+    "remaining_gap": "Current single constrained endpoint run reported constrained_decoding=false; app-side validation remains mandatory."
+  },
+  {
+    "id": "memory_export_boundary",
+    "architecture": "Structured local memory and caregiver export boundary",
+    "status": "closed_with_runtime_gap",
+    "evidence": [
+      "docs/benchmark/memory_export_boundary_report_2026-05-16/report.md"
+    ],
+    "remaining_gap": "Capture one real on-device caregiver export payload."
+  },
+  {
+    "id": "senior_layer2_replay",
+    "architecture": "Senior Layer 2 temporal interpreter and activity context",
+    "status": "closed_with_scope_note",
+    "evidence": [
+      "docs/benchmark/senior_layer2_video_replay_report_2026-05-16/report.md",
+      "docs/benchmark/local_validation_run_2026-05-17/raw/layer2_smoke.json"
+    ],
+    "remaining_gap": "Use one clear chair/squat clip and one abstain clip in the video."
+  },
+  {
+    "id": "motionzip_compression",
+    "architecture": "MotionZip compact evidence / compression path",
+    "status": "strong",
+    "evidence": [
+      "docs/benchmark/motionzip_model_equivalence/report.md",
+      "docs/benchmark/motionzip_sparse_understanding/report.md",
+      "docs/benchmark/multimodal_image_compression_reproof_2026-05-16/report.md"
+    ],
+    "remaining_gap": "Keep wording as task-preserving evidence compression, not lossless video compression."
+  },
+  {
+    "id": "camera_pipeline",
+    "architecture": "CameraX RGBA/YUV image pipeline and frame budget",
+    "status": "partial",
+    "evidence": [
+      "docs/benchmark/rgba_pipeline_mobile_default_optimized_2026-05-16/report.md",
+      "docs/benchmark/rgba_pipeline_mobile_camera_rotate_ab_2026-05-16/README.md"
+    ],
+    "remaining_gap": "10-30 minute thermal/memory run."
+  },
+  {
+    "id": "biomechanics_thresholds",
+    "architecture": "Native biomechanics thresholds and Trust Matrix calibration",
+    "status": "partial",
+    "evidence": [
+      "implementation_plan.md",
+      "native/tests/test_motion_quality.cpp"
+    ],
+    "remaining_gap": "Consolidated threshold calibration report."
+  },
+  {
+    "id": "multimodal_evidence_panel",
+    "architecture": "Low-frequency multimodal evidence panel sidecar",
+    "status": "partial_but_gated",
+    "evidence": [
+      "app/src/main/kotlin/com/gemmafit/video/FrameEvidenceSelector.kt",
+      "app/src/main/kotlin/com/gemmafit/video/MultimodalEvidencePacket.kt",
+      "app/src/main/kotlin/com/gemmafit/video/MultimodalResultValidator.kt",
+      "app/src/test/kotlin/com/gemmafit/video/ModelInvocationSchedulerTest.kt"
+    ],
+    "remaining_gap": "Backend image/audio path is not a P0 dependency; do not claim always-on Gemma vision."
+  },
+  {
+    "id": "senior_voice_accessibility",
+    "architecture": "Senior UI, voice cue policy, and TTS cooldown",
+    "status": "partial",
+    "evidence": [
+      "app/src/test/kotlin/com/gemmafit/voice/VoiceCuePolicyTest.kt",
+      "app/src/test/kotlin/com/gemmafit/senior/SeniorVoiceAnswerParserTest.kt"
+    ],
+    "remaining_gap": "Focused accessibility/device UX report."
+  }
+]

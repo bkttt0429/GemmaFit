@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="420" viewBox="0 0 1160 420">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="34" y="46" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">3-Minute Demo Proof Map</text>
+<text x="34" y="74" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Each visible segment must map to a comparison report or conservative wording.</text>
+<rect x="52" y="120" width="116" height="82" rx="8" fill="#0f766e" opacity="0.95"/>
+<text x="62" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">0-20s</text>
+<text x="62" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S1</text>
+<text x="62" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">10% impact</text>
+<rect x="176" y="120" width="104" height="82" rx="8" fill="#dc2626" opacity="0.95"/>
+<text x="186" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">20-38s</text>
+<text x="186" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S2</text>
+<text x="186" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">70% product demo</text>
+<rect x="288" y="120" width="104" height="82" rx="8" fill="#dc2626" opacity="0.95"/>
+<text x="298" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">38-55s</text>
+<text x="298" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S3</text>
+<text x="298" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">70% product demo</text>
+<rect x="400" y="120" width="104" height="82" rx="8" fill="#dc2626" opacity="0.95"/>
+<text x="410" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">55-70s</text>
+<text x="410" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S4</text>
+<text x="410" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">70% product demo</text>
+<rect x="512" y="120" width="132" height="82" rx="8" fill="#16a34a" opacity="0.95"/>
+<text x="522" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">70-90s</text>
+<text x="522" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S5</text>
+<text x="522" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">20% technical hi</text>
+<rect x="652" y="120" width="132" height="82" rx="8" fill="#dc2626" opacity="0.95"/>
+<text x="662" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">90-110s</text>
+<text x="662" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S6</text>
+<text x="662" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">20% technical hi</text>
+<rect x="792" y="120" width="132" height="82" rx="8" fill="#dc2626" opacity="0.95"/>
+<text x="802" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">110-128s</text>
+<text x="802" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S7</text>
+<text x="802" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">20% technical hi</text>
+<rect x="932" y="120" width="92" height="82" rx="8" fill="#f59e0b" opacity="0.95"/>
+<text x="942" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">128-145s</text>
+<text x="942" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S8</text>
+<text x="942" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">10% impact</text>
+<rect x="1032" y="120" width="224" height="82" rx="8" fill="#0f766e" opacity="0.95"/>
+<text x="1042" y="144" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">145-180s</text>
+<text x="1042" y="166" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">S9</text>
+<text x="1042" y="188" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#ffffff">10% impact</text>
+<text x="52" y="250" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#0f172a">Priority interpretation</text>
+<rect x="52" y="278" width="24" height="24" rx="4" fill="#dc2626"/>
+<text x="88" y="297" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">P0 comparison required before using the technical claim in narration.</text>
+<rect x="52" y="318" width="24" height="24" rx="4" fill="#16a34a"/>
+<text x="88" y="337" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Ready proof exists; still phrase boundaries accurately.</text>
+<rect x="52" y="358" width="24" height="24" rx="4" fill="#f59e0b"/>
+<text x="88" y="377" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">P1 UX/accessibility validation; useful but not the first safety proof blocker.</text>
+</svg>

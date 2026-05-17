@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="32" y="46" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Architecture Validation Status</text>
+<text x="32" y="74" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Evidence-bounded status from local benchmark artifacts.</text>
+<text x="40" y="142" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#334155">Evidence ready</text>
+<rect x="240" y="122" width="500" height="28" rx="6" fill="#e2e8f0"/>
+<rect x="240" y="122" width="62" height="28" rx="6" fill="#16a34a"/>
+<text x="764" y="143" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">1 subsystem(s)</text>
+<text x="40" y="216" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#334155">Partial</text>
+<rect x="240" y="196" width="500" height="28" rx="6" fill="#e2e8f0"/>
+<rect x="240" y="196" width="500" height="28" rx="6" fill="#f59e0b"/>
+<text x="764" y="217" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">8 subsystem(s)</text>
+<text x="40" y="290" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#334155">Missing report</text>
+<rect x="240" y="270" width="500" height="28" rx="6" fill="#e2e8f0"/>
+<rect x="240" y="270" width="62" height="28" rx="6" fill="#dc2626"/>
+<text x="764" y="291" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">1 subsystem(s)</text>
+<text x="32" y="344" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#475569">Interpretation: partial means useful evidence exists, but the final competition claim still needs a narrower proof report.</text>
+</svg>

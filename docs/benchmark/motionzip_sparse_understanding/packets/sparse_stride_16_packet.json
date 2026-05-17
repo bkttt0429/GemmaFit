@@ -1,0 +1,53 @@
+{
+  "schema_version": "motion_zip_v4_v1",
+  "window_id": "video.lunge_forward_army.sparse_stride_16",
+  "trigger": "VIDEO_ANALYSIS_SUMMARY",
+  "source_video": "D:\\GemmaFit\\test_assets\\videos\\internet_public_mp4\\lunge_forward_army.mp4",
+  "sampling": {
+    "video_frames_total": 0,
+    "pose_samples": 21,
+    "sample_every_frames": 96,
+    "fps": 29.97,
+    "compression": "21 pose samples -> 0 sparse event blocks"
+  },
+  "sliding_window": {
+    "last_ms": 1600,
+    "frames_kept": 0,
+    "reason": "top_motion_information_windows"
+  },
+  "compressed_sparse_blocks": [],
+  "heavily_compressed_summary": {
+    "activity_hint": "lunge_like_unilateral_motion",
+    "completed_reps": null,
+    "tempo_band": "no_motion_event_blocks",
+    "event": "monitor_only",
+    "pose_samples": 21,
+    "landmark_frames": 21,
+    "inside_bos_rate": null,
+    "max_angular_velocity_dps": 212.625,
+    "low_visibility_abstain_blocks": 0,
+    "output_state": "monitor_only",
+    "model_routing_recommendation": "E2B may summarize this packet; deterministic rules should avoid hard safety verdicts from sparse single-camera evidence alone."
+  },
+  "safety_preserved": [
+    "confidence_floor",
+    "angle_extrema",
+    "velocity_peak",
+    "event_boundary",
+    "phase_or_primitive_tokens",
+    "rule_policy_state",
+    "evidence_refs",
+    "unsupported_claim_boundaries"
+  ],
+  "evidence_refs": [],
+  "limits": [
+    "derived_from_single_camera_pose",
+    "sampled_video_pose_not_every_frame",
+    "no_force_or_grf",
+    "no_joint_force_or_grf",
+    "no_joint_moment_or_ligament_load",
+    "no_emg_or_muscle_activation",
+    "no_medical_or_fall_risk_claim",
+    "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views"
+  ]
+}

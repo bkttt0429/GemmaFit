@@ -1,0 +1,22 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "generation_success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "elapsed_ms": 22594,
+  "attempt_elapsed_ms": 22595,
+  "engine_create_ms": 0,
+  "engine_initialize_ms": 0,
+  "session_create_ms": 1,
+  "generate_content_ms": 22593,
+  "total_elapsed_ms": 22594,
+  "reused_engine": true,
+  "requested_model": "official",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+  "model_size_bytes": 2538766336,
+  "prompt_chars": 1509,
+  "request_file": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/litert_ab_a_no_narrative_v2.json",
+  "raw_response": "\n```json\n{\n  \"function\": \"create_care_activity_log\",\n  \"arguments\": {\n    \"headline\": \"Chair Squat Session Summary\",\n    \"observations\": \"We saw a supported chair squat session today, completing 4 reps. We noticed a couple of moments to watch regarding safety, and there were a few moments where the camera view was limited.\",\n    \"next_session_focus\": \"Let's focus on maintaining good form during the chair squat and being mindful of the camera view.\",\n    \"evidence_refs\": [\n      \"metric.session.duration_seconds\",\n      \"metric.session.total_reps\",\n      \"metric.session.safety_events\",\n      \"metric.session.view_limited_count\"\n    ]\n  }\n}\n```",
+  "attempts": []
+}

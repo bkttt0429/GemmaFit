@@ -1,0 +1,88 @@
+{
+  "status": "pass_with_caveat",
+  "readiness": {
+    "section": "model_readiness",
+    "data": {
+      "status": "local_gemma_ready",
+      "label": "Local Gemma ready",
+      "requested_model": "official",
+      "model_priority": [
+        "gemma-4-E2B-it.litertlm",
+        "gemma4_2b_v09_obfus_fix_all_modalities_thinking.litertlm",
+        "gemmafit-v5-e2b-evidence-router.litertlm",
+        "gemmafit-v3-evidence-router.litertlm",
+        "gemmafit-v2-fc.litertlm"
+      ],
+      "model_path": "/storage/emulated/0/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm",
+      "model_file_name": "gemma-4-E2B-it.litertlm",
+      "model_size_bytes": 2538766336,
+      "backend": "litert-lm:available",
+      "fallback_reason": ""
+    }
+  },
+  "prewarm": {
+    "enabled": true,
+    "success": true,
+    "backend": "litert-lm:isolated:gpu",
+    "stage": "complete",
+    "engine_create_ms": 17,
+    "engine_initialize_ms": 10696,
+    "session_create_ms": 0,
+    "ttl_ms": 180000,
+    "reused_engine": false,
+    "max_num_images": 0,
+    "requested_model": "official",
+    "model_path": "/storage/emulated/0/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm",
+    "model_size_bytes": 2538766336,
+    "elapsed_ms": 10720,
+    "attempts": []
+  },
+  "prompt_infer": {
+    "enabled": true,
+    "success": true,
+    "generation_success": true,
+    "backend": "litert-lm:isolated:gpu",
+    "stage": "complete",
+    "elapsed_ms": 23571,
+    "attempt_elapsed_ms": 23571,
+    "engine_create_ms": 0,
+    "engine_initialize_ms": 0,
+    "session_create_ms": 0,
+    "generate_content_ms": 23570,
+    "constrained_decoding": false,
+    "constrained_decoding_ms": null,
+    "constrained_tool_call_observed": false,
+    "stream_requested": true,
+    "total_elapsed_ms": 23571,
+    "reused_engine": true,
+    "requested_model": "official",
+    "model_path": "/storage/emulated/0/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm",
+    "model_size_bytes": 2538766336,
+    "prompt_chars": 1926,
+    "request_file": "/data/user/0/com.gemmafit/files/debug/litert_session_prompt_request.json",
+    "raw_response": "\n```json\n{\n  \"function\": \"create_care_activity_log\",\n  \"headline\": \"Lunge Session Summary\",\n  \"observations\": \"We saw some moments to watch during this lunge session. There were a few instances where we needed to pay close attention to the form. For example, during the lunge, we noted some knee asymmetry that we can focus on next time. We also observed some safety events that we should keep in mind.\",\n  \"next_session_focus\": \"Focus on ensuring balanced knee alignment during the lunge to enhance stability.\",\n  \"evidence_refs\": [\n    \"metric.session.duration_seconds\",\n    \"metric.session.view_limited_count\",\n    \"metric.session.safety_events\"\n  ]\n}\n```",
+    "attempts": []
+  },
+  "long_prompt_smoke": {
+    "path": "docs/benchmark/litert_prompt_smoke_constrained_100_official_2026-05-16/summary.json",
+    "count_completed": 100,
+    "endpoint_success_count": 100,
+    "generation_success_count": 100,
+    "model_json_parse_success_rate": 1,
+    "pass_99_percent_gate": true,
+    "wall_ms_p95": 45163,
+    "generate_ms_p95": 26508
+  },
+  "tests": [
+    {
+      "class": "LiteRtSessionSummaryPromptTest",
+      "status": "pass",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.243,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.video.LiteRtSessionSummaryPromptTest.xml",
+      "mtime": "2026-05-17T14:21:16"
+    }
+  ]
+}

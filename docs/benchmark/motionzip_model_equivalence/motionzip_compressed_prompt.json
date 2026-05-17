@@ -1,0 +1,198 @@
+{
+  "schema_version": "motionzip_model_equivalence_input_v1",
+  "protocol": "motionzip_compressed_evidence",
+  "task": "extract_key_motion_understanding",
+  "required_output_schema": {
+    "activity": "string",
+    "states": [
+      "abstain|monitor_only|judgeable|unknown"
+    ],
+    "events": [
+      {
+        "state": "string",
+        "frame": "integer",
+        "reason": "string|null"
+      }
+    ],
+    "velocity": {
+      "band": "low|medium|high|unknown",
+      "peak_deg_s": "number|null"
+    },
+    "confidence": {
+      "floor": "number|null",
+      "low_confidence_reason": "string|null"
+    },
+    "limits": [
+      "string"
+    ],
+    "evidence_refs": [
+      "string"
+    ]
+  },
+  "instructions": [
+    "Infer only from the provided MotionZip evidence packet.",
+    "Return activity, states, event frames, velocity peak, confidence floor, and limits.",
+    "Do not use raw video assumptions, medical labels, force, GRF, EMG, or fall-risk claims."
+  ],
+  "input": {
+    "motion_zip_packet": {
+      "schema_version": "motion_zip_v4_v1",
+      "window_id": "video.lunge_forward_army.sparse_stride_2",
+      "trigger": "VIDEO_ANALYSIS_SUMMARY",
+      "sampling": {
+        "video_frames_total": 0,
+        "pose_samples": 168,
+        "sample_every_frames": 12,
+        "fps": 29.97,
+        "compression": "168 pose samples -> 2 sparse event blocks"
+      },
+      "sliding_window": {
+        "last_ms": 1600,
+        "frames_kept": 2,
+        "reason": "top_motion_information_windows"
+      },
+      "compressed_sparse_blocks": [
+        {
+          "block_id": "video.lunge_like_unilateral_motion.block.1.frame_258",
+          "compression_mode": "sparse_event_block_from_video_pose_samples",
+          "time_range_ms": [
+            7007,
+            8609
+          ],
+          "source_frames": [
+            210,
+            258
+          ],
+          "tokens": [
+            "lunge_like_unilateral_motion",
+            "motion_event_window",
+            "abstain",
+            "rapid_motion_proxy_high",
+            "pose_geometry_caution"
+          ],
+          "preserved_extrema": {
+            "knee_angle_min": 26.743,
+            "knee_angle_max": 178.914,
+            "hip_angle_min": 1.768,
+            "hip_angle_max": 152.423,
+            "back_angle_min": 2.169,
+            "back_angle_max": 174.394,
+            "max_fppa": 153.257,
+            "valgus_ratio_min": 0.6195,
+            "peak_velocity_deg_s": 776.422,
+            "velocity_peak": "high",
+            "confidence_floor": 0.5145,
+            "geometry_quality_flags": [
+              "low_keypoint_visibility",
+              "extreme_angle_geometry_caution",
+              "2d_fppa_unreliable_extreme",
+              "rapid_motion_proxy_high"
+            ]
+          },
+          "event_score": 0.514,
+          "rule_policy_state": "abstain",
+          "abstain_reason": "low_keypoint_visibility",
+          "evidence_refs": [
+            "metric.motion.peak_velocity",
+            "metric.motion.angle_extrema",
+            "metric.motion.confidence_floor",
+            "layer2.activity.lunge_like_unilateral_motion",
+            "layer2.event.abstain",
+            "video.frame.258"
+          ]
+        },
+        {
+          "block_id": "video.lunge_like_unilateral_motion.block.2.frame_1434",
+          "compression_mode": "sparse_event_block_from_video_pose_samples",
+          "time_range_ms": [
+            46246,
+            47848
+          ],
+          "source_frames": [
+            1386,
+            1434
+          ],
+          "tokens": [
+            "lunge_like_unilateral_motion",
+            "motion_event_window",
+            "monitor_only",
+            "rapid_motion_proxy_high",
+            "pose_geometry_caution"
+          ],
+          "preserved_extrema": {
+            "knee_angle_min": 5.433,
+            "knee_angle_max": 178.668,
+            "hip_angle_min": 151.249,
+            "hip_angle_max": 169.368,
+            "back_angle_min": 4.052,
+            "back_angle_max": 170.09,
+            "max_fppa": 174.567,
+            "valgus_ratio_min": 0.1742,
+            "peak_velocity_deg_s": 840.93,
+            "velocity_peak": "high",
+            "confidence_floor": 0.5746,
+            "geometry_quality_flags": [
+              "extreme_angle_geometry_caution",
+              "2d_fppa_unreliable_extreme",
+              "rapid_motion_proxy_high"
+            ]
+          },
+          "event_score": 0.575,
+          "rule_policy_state": "monitor_only",
+          "abstain_reason": null,
+          "evidence_refs": [
+            "metric.motion.peak_velocity",
+            "metric.motion.angle_extrema",
+            "metric.motion.confidence_floor",
+            "layer2.activity.lunge_like_unilateral_motion",
+            "layer2.event.monitor_only",
+            "video.frame.1434"
+          ]
+        }
+      ],
+      "heavily_compressed_summary": {
+        "activity_hint": "lunge_like_unilateral_motion",
+        "completed_reps": null,
+        "tempo_band": "mixed_with_high_velocity_events",
+        "event": "monitor_only",
+        "pose_samples": 168,
+        "landmark_frames": 168,
+        "inside_bos_rate": null,
+        "max_angular_velocity_dps": 840.93,
+        "low_visibility_abstain_blocks": 1,
+        "output_state": "monitor_only",
+        "model_routing_recommendation": "E2B may summarize this packet; deterministic rules should avoid hard safety verdicts from sparse single-camera evidence alone."
+      },
+      "safety_preserved": [
+        "confidence_floor",
+        "angle_extrema",
+        "velocity_peak",
+        "event_boundary",
+        "phase_or_primitive_tokens",
+        "rule_policy_state",
+        "evidence_refs",
+        "unsupported_claim_boundaries"
+      ],
+      "evidence_refs": [
+        "layer2.activity.lunge_like_unilateral_motion",
+        "layer2.event.abstain",
+        "layer2.event.monitor_only",
+        "metric.motion.angle_extrema",
+        "metric.motion.confidence_floor",
+        "metric.motion.peak_velocity",
+        "video.frame.1434",
+        "video.frame.258"
+      ],
+      "limits": [
+        "derived_from_single_camera_pose",
+        "sampled_video_pose_not_every_frame",
+        "no_force_or_grf",
+        "no_joint_force_or_grf",
+        "no_joint_moment_or_ligament_load",
+        "no_emg_or_muscle_activation",
+        "no_medical_or_fall_risk_claim",
+        "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views"
+      ]
+    }
+  }
+}

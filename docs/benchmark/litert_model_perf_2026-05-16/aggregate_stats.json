@@ -1,0 +1,20 @@
+﻿{
+    "b_narrative":  {
+                        "count":  5,
+                        "avg_generate_ms":  26654.2,
+                        "avg_wall_ms":  28543.6,
+                        "prompts_per_min":  2.25,
+                        "output_chars_per_sec":  27.5,
+                        "prompt_chars":  2611,
+                        "output_chars":  734
+                    },
+    "a_compact":  {
+                      "count":  5,
+                      "avg_generate_ms":  22611.2,
+                      "avg_wall_ms":  24227,
+                      "prompts_per_min":  2.65,
+                      "output_chars_per_sec":  28.7,
+                      "prompt_chars":  1509,
+                      "output_chars":  648
+                  }
+}

@@ -1,0 +1,322 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "video_name": "no_person_blank_3s.mp4",
+  "video_path": "\/data\/user\/0\/com.gemmafit\/files\/test_videos\/no_person_blank_3s.mp4",
+  "video_size_bytes": 4584,
+  "elapsed_ms": 7537,
+  "pose_realtime": {
+    "success": true,
+    "skeleton_correct": true,
+    "realtime_enough": true,
+    "delegate": "GPU",
+    "sample_interval_ms": 200,
+    "sample_cap_frames": 96,
+    "long_side": 256,
+    "max_poses": 1,
+    "analyzed_frames": 15,
+    "pose_hits": 0,
+    "pose_misses": 15,
+    "pose_hit_rate": 0,
+    "landmark_33_rate": 0,
+    "first_pose_frame": null,
+    "first_pose_timestamp_ms": null,
+    "avg_visibility": 0,
+    "avg_pose_ms": 58.46666666666667,
+    "p95_pose_ms": 58,
+    "avg_pose_budget_ms": 120,
+    "p95_pose_budget_ms": 180,
+    "avg_extract_ms": 43.2,
+    "p95_extract_ms": 45,
+    "avg_convert_ms": 42,
+    "p95_convert_ms": 44,
+    "processing_fps": 1.9901817699349873,
+    "timestamp_monotonic": true,
+    "source_counts": {
+      "codec": 15
+    },
+    "native_motion_quality": {
+      "analyzed_frames": 0,
+      "gate_blocked_frames": 0,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 0,
+      "monitor_frames": 0,
+      "first_hard_block_frame": null,
+      "first_hard_block_reason": null,
+      "exercise_counts": {},
+      "reason_counts": {}
+    },
+    "first_frames": [
+      {
+        "frame": 0,
+        "timestamp_ms": 0,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 145,
+        "pose_ms": 250,
+        "convert_ms": 138,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 1,
+        "timestamp_ms": 200,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 26,
+        "pose_ms": 43,
+        "convert_ms": 26,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 2,
+        "timestamp_ms": 400,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 16,
+        "pose_ms": 33,
+        "convert_ms": 15,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 3,
+        "timestamp_ms": 600,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 33,
+        "pose_ms": 48,
+        "convert_ms": 33,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 4,
+        "timestamp_ms": 800,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 32,
+        "pose_ms": 53,
+        "convert_ms": 32,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 5,
+        "timestamp_ms": 1000,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 34,
+        "pose_ms": 48,
+        "convert_ms": 34,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 6,
+        "timestamp_ms": 1200,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 36,
+        "pose_ms": 58,
+        "convert_ms": 34,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 7,
+        "timestamp_ms": 1400,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 37,
+        "pose_ms": 49,
+        "convert_ms": 36,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 8,
+        "timestamp_ms": 1600,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 38,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 9,
+        "timestamp_ms": 1800,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 45,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 10,
+        "timestamp_ms": 2000,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 43,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 11,
+        "timestamp_ms": 2200,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 45,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 12,
+        "timestamp_ms": 2400,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 33,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 13,
+        "timestamp_ms": 2600,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 43,
+        "pose_ms": 37,
+        "convert_ms": 42,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      },
+      {
+        "frame": 14,
+        "timestamp_ms": 2800,
+        "pose_count": 0,
+        "landmark_count": 0,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 54,
+        "convert_ms": 44,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 0,
+          "visible_count": 0,
+          "avg_visibility": 0
+        }
+      }
+    ]
+  },
+  "ai_assistant_realtime": {
+    "success": true,
+    "invoked": true,
+    "expected_function": "refuse_unsupported_question",
+    "function": "refuse_unsupported_question",
+    "backend": "litert-lm:realtime_fast",
+    "realtime_ok": true,
+    "matches_expected": true,
+    "inference_time_ms": 0,
+    "elapsed_ms": 31,
+    "args": {
+      "reason": "insufficient_evidence",
+      "safe_alternative": "I can summarize visible movement quality and camera-limited evidence only.",
+      "selection_basis": "The request is outside the app evidence boundary for pose-only movement feedback.",
+      "evidence_refs": [
+        "metric.no_person_blank_3s.mp4.pose_hit_rate",
+        "metric.no_person_blank_3s.mp4.landmark_33_rate"
+      ],
+      "refusal_level": 4
+    },
+    "selection_basis": "The request is outside the app evidence boundary for pose-only movement feedback.",
+    "evidence_refs": [
+      "metric.no_person_blank_3s.mp4.pose_hit_rate",
+      "metric.no_person_blank_3s.mp4.landmark_33_rate"
+    ],
+    "error": "",
+    "raw_response": "{\"skipped_litert_generation\":true,\"function\":\"refuse_unsupported_question\",\"args\":{\"reason\":\"insufficient_evidence\",\"safe_alternative\":\"I can summarize visible movement quality and camera-limited evidence only.\",\"selection_basis\":\"The request is outside the app evidence boundary for pose-only movement feedback.\",\"evidence_refs\":[\"metric.no_person_blank_3s.mp4.pose_hit_rate\",\"metric.no_person_blank_3s.mp4.landmark_33_rate\"],\"refusal_level\":4}}",
+    "situation": "no_reliable_pose",
+    "expected_behavior": "boundary_refusal_without_generation"
+  }
+}

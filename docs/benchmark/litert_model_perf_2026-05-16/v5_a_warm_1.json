@@ -1,0 +1,22 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "generation_success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "elapsed_ms": 26148,
+  "attempt_elapsed_ms": 26143,
+  "engine_create_ms": 0,
+  "engine_initialize_ms": 0,
+  "session_create_ms": 3,
+  "generate_content_ms": 26140,
+  "total_elapsed_ms": 26148,
+  "reused_engine": true,
+  "requested_model": "v5",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemmafit-v5-e2b-evidence-router.litertlm",
+  "model_size_bytes": 5071689680,
+  "prompt_chars": 1509,
+  "request_file": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/litert_ab_a_no_narrative_v2.json",
+  "raw_response": "{\"function\":\"create_care_activity_log\",\"args\":{\"headline\":\"Gentle chair squat session\",\"observations\":\"Completed 4 chair squats. There were 2 safety event(s) and 4 view-limited moments to watch.\",\"next_session_focus\":\"Keep the chair area clear and move slowly.\",\"evidence_refs\":[\"metric.session.duration_seconds\",\"metric.session.total_reps\",\"metric.session.safety_events\",\"metric.session.view_limited_count\"]}}",
+  "attempts": []
+}

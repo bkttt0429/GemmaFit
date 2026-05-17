@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="170" viewBox="0 0 1100 170">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="30" y="34" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#0f172a">MotionZip Position In GemmaFit</text>
+<rect x="30" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="89.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Video</text>
+<line x1="152" y1="88" x2="162" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="162,88 154,83 154,93" fill="#64748b"/>
+<rect x="166" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="225.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Pose</text>
+<line x1="288" y1="88" x2="298" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="298,88 290,83 290,93" fill="#64748b"/>
+<rect x="302" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="361.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Derived Features</text>
+<line x1="424" y1="88" x2="434" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="434,88 426,83 426,93" fill="#64748b"/>
+<rect x="438" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="497.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Layer 2</text>
+<line x1="560" y1="88" x2="570" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="570,88 562,83 562,93" fill="#64748b"/>
+<rect x="574" y="62" width="118" height="52" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="633.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">MotionZip</text>
+<line x1="696" y1="88" x2="706" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="706,88 698,83 698,93" fill="#64748b"/>
+<rect x="710" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="769.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Scheduler</text>
+<line x1="832" y1="88" x2="842" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="842,88 834,83 834,93" fill="#64748b"/>
+<rect x="846" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="905.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Gemma E2B</text>
+<line x1="968" y1="88" x2="978" y2="88" stroke="#64748b" stroke-width="2"/>
+<polygon points="978,88 970,83 970,93" fill="#64748b"/>
+<rect x="982" y="62" width="118" height="52" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="1041.0" y="93" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Validator</text>
+<text x="30" y="142" font-family="Arial, sans-serif" font-size="14" fill="#475569">Gemma does not receive raw video. MotionZip sends compact evidence: event blocks, extrema, confidence floors, limits, and evidence refs.</text>
+</svg>

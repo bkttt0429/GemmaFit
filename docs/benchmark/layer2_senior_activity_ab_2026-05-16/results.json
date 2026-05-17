@@ -1,0 +1,107 @@
+{
+  "benchmark": "layer2_senior_activity_ab",
+  "date": "2026-05-16",
+  "scope": "derived-feature unit A/B, no raw video, no E2B prompt expansion",
+  "variants": {
+    "A_legacy": "pre-senior-scoped Layer2 behavior simulated by LegacyLayer2Probe in Layer2SeniorArchitectureABTest",
+    "B_current": "senior-scoped Layer2TemporalInterpreter implementation"
+  },
+  "cases": [
+    "clean_chair_sit_to_stand",
+    "partial_chair_sit_to_stand",
+    "non_senior_lunge",
+    "non_senior_basketball",
+    "supported_squat",
+    "stable_balance_hold",
+    "unstable_balance_hold",
+    "setup_transition"
+  ],
+  "totals": {
+    "frames": {
+      "legacy": 45,
+      "current": 45
+    },
+    "risky_hard_judgment_frames": {
+      "legacy": 13,
+      "current": 0,
+      "reduction_percent": 100.0
+    },
+    "non_senior_demoted_frames": {
+      "legacy": 0,
+      "current": 10
+    },
+    "max_basketball_sub_actions": {
+      "legacy": 4,
+      "current": 0
+    },
+    "balance_stability_events": {
+      "legacy": 8,
+      "current": 4,
+      "reduction_percent": 50.0
+    },
+    "all_non_none_events": {
+      "legacy": 24,
+      "current": 9,
+      "reduction_percent": 62.5
+    },
+    "setup_transition_non_none_events": {
+      "legacy": 5,
+      "current": 0,
+      "reduction_percent": 100.0
+    },
+    "rep_completed_events": {
+      "legacy": 2,
+      "current": 2
+    }
+  },
+  "verification": {
+    "Layer2SeniorArchitectureABTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    "Layer2TemporalInterpreterTest": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0
+    },
+    "MotionZipPacketBuilderTest": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    "SeniorInteractionPolicyTest": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0
+    },
+    "compileDebugKotlin": "passed"
+  },
+  "pixel_smoke": {
+    "device": "Pixel 8 Pro / husky",
+    "adb_serial": "3A251FDJG004RX",
+    "install_debug": "passed",
+    "layer2_smoke": {
+      "success": true,
+      "cases": 6,
+      "notable_assertions": {
+        "chair_sit_to_stand_rep": "rep_completed judgeable",
+        "supported_squat_rep_monitor_only": "rep_completed with allow_hard_judgment=false",
+        "balance_hold_completed": "balance_hold_started then balance_hold_completed with 5000ms hold",
+        "non_senior_lunge_demoted": "event=none and non_senior_label_demoted=true",
+        "non_senior_basketball_demoted": "event=none, non_senior_label_demoted=true, no sub_actions",
+        "predicted_tracking_abstain": "event=abstain and person_not_observed"
+      }
+    },
+    "model_invocation_smoke": {
+      "success": true,
+      "cases": 6,
+      "motionzip_summary_event": "rep_completed"
+    },
+    "saved_artifacts": [
+      "pixel_layer2_smoke.json",
+      "pixel_model_invocation_smoke.json",
+      "pixel_layer2_events.jsonl"
+    ]
+  }
+}

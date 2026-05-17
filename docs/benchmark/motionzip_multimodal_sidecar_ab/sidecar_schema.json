@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "activity_guess": { "type": "string" },
+    "equipment": { "type": "string" },
+    "scene": { "type": "string" },
+    "visible_body_region": { "type": "string" },
+    "motion_states": { "type": "string" },
+    "event": { "type": "string" },
+    "velocity_hint": { "type": "string" },
+    "confidence_hint": { "type": "string" },
+    "limits": { "type": "string" }
+  },
+  "required": [
+    "activity_guess",
+    "equipment",
+    "scene",
+    "visible_body_region",
+    "motion_states",
+    "event",
+    "velocity_hint",
+    "confidence_hint",
+    "limits"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,941 @@
+﻿{
+  "updated_at_ms": 1778998119852,
+  "sections": {
+    "model_invocation_smoke": {
+      "updated_at_ms": 1778998062958,
+      "data": {
+        "success": true,
+        "motion_feature_window": {
+          "schema_version": "motion_feature_window_v1",
+          "window_id": "debug.motion.rep.1",
+          "trigger": "REP_COMPLETED",
+          "window_ms": 2400,
+          "exercise": "chair_sit_to_stand",
+          "source": [
+            "debug_smoke",
+            "pose_sequence"
+          ],
+          "features": {
+            "hip_vertical_displacement": null,
+            "knee_angle_min": 82,
+            "knee_angle_max": 168,
+            "primary_angle_min": 82,
+            "primary_angle_max": 168,
+            "range_of_motion_deg": 86,
+            "rep_duration_ms": 2400,
+            "peak_velocity_deg_s": 220,
+            "velocity_peak": "low",
+            "stabilization_ms": 700,
+            "confidence_floor": 0.86
+          },
+          "derived_labels": {
+            "tempo_band": "controlled",
+            "phase_sequence_estimate": [
+              "top",
+              "descent",
+              "bottom",
+              "ascent",
+              "top"
+            ],
+            "rep_completed": true,
+            "support_pattern": "double_stance"
+          },
+          "evidence_refs": [
+            "metric.motion.rep_duration",
+            "metric.motion.rom",
+            "metric.motion.peak_velocity",
+            "metric.motion.confidence_floor"
+          ],
+          "limits": [
+            "derived_from_single_camera_pose",
+            "no_force_or_grf",
+            "no_emg_or_muscle_activation"
+          ]
+        },
+        "motion_zip_packet": {
+          "schema_version": "motion_zip_v4_v1",
+          "window_id": "debug.motion.rep.1",
+          "trigger": "REP_COMPLETED",
+          "sliding_window": {
+            "last_ms": 1600,
+            "frames_kept": 24,
+            "reason": "recent_motion_context"
+          },
+          "compressed_sparse_blocks": [
+            {
+              "block_id": "debug.motion.rep.1.block.rep_completed",
+              "compression_mode": "csa_like_event_block",
+              "time_range_ms": [
+                800,
+                3200
+              ],
+              "tokens": [
+                "top",
+                "descent",
+                "bottom",
+                "ascent",
+                "standing_stabilized",
+                "rep_completed"
+              ],
+              "preserved_extrema": {
+                "knee_angle_min": 82,
+                "knee_angle_max": 168,
+                "primary_angle_min": 82,
+                "primary_angle_max": 168,
+                "range_of_motion_deg": 86,
+                "peak_velocity_deg_s": 220,
+                "velocity_peak": "low",
+                "confidence_floor": 0.86,
+                "stabilization_ms": 700
+              },
+              "event_score": 0.9,
+              "rule_policy_state": "judgeable",
+              "abstain_reason": null,
+              "evidence_refs": [
+                "metric.motion.rep_duration",
+                "metric.motion.rom",
+                "metric.motion.peak_velocity",
+                "metric.motion.confidence_floor",
+                "layer2.activity.chair_sit_to_stand",
+                "layer2.phase.standing_stabilized",
+                "layer2.event.rep_completed"
+              ]
+            }
+          ],
+          "heavily_compressed_summary": {
+            "completed_reps": 1,
+            "tempo_band": "controlled",
+            "event": "rep_completed",
+            "stability_events": 0,
+            "confidence_floor": 0.86,
+            "output_state": "judgeable"
+          },
+          "activity_context": {
+            "state": "unknown",
+            "task_label": null,
+            "confidence": 0,
+            "ambiguity_note": null,
+            "template_scores": {},
+            "evidence_refs": []
+          },
+          "safety_preserved": [
+            "confidence_floor",
+            "angle_extrema",
+            "velocity_peak",
+            "event_boundary",
+            "phase_or_primitive_tokens",
+            "rule_policy_state",
+            "evidence_refs",
+            "unsupported_claim_boundaries"
+          ],
+          "evidence_refs": [
+            "metric.motion.rep_duration",
+            "metric.motion.rom",
+            "metric.motion.peak_velocity",
+            "metric.motion.confidence_floor",
+            "layer2.activity.chair_sit_to_stand",
+            "layer2.phase.standing_stabilized",
+            "layer2.event.rep_completed"
+          ],
+          "limits": [
+            "derived_from_single_camera_pose",
+            "no_force_or_grf",
+            "no_emg_or_muscle_activation",
+            "single_camera_pose_proxy",
+            "no_joint_force_or_grf",
+            "no_medical_or_fall_risk_claim"
+          ]
+        },
+        "cases": [
+          {
+            "name": "live_frame",
+            "request": {
+              "trigger": "LIVE_FRAME",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": false,
+              "needs_language_explanation": false,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "SKIP_DETERMINISTIC",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "live_frame_deterministic_path",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "live_frame_multimodal_enabled",
+            "request": {
+              "trigger": "LIVE_FRAME",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": true,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": true,
+              "multimodal_backend_available": true,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "SKIP_DETERMINISTIC",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "live_frame_deterministic_path",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "SKIP",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "live_frame_never_uses_multimodal"
+              }
+            }
+          },
+          {
+            "name": "clean_rep",
+            "request": {
+              "trigger": "REP_COMPLETED",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": false,
+              "needs_language_explanation": false,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "DEFER_TO_SESSION_END",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "EVENT_COMPACT",
+              "reason": "clean_rep_summary_deferred",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "warning_rep",
+            "request": {
+              "trigger": "REP_COMPLETED",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": true,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "CALL_E2B_NOW",
+              "backend_preference": "LITERT_E2B",
+              "context_budget": "EVENT_COMPACT",
+              "reason": "rep_completed_with_explainable_warning",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "predicted_tracking",
+            "request": {
+              "trigger": "REP_COMPLETED",
+              "person_tracking_state": "PREDICTED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": true,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "SKIP_DETERMINISTIC",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "tracking_predicted_monitor_only",
+              "allowed_judgment": false,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "left_activity_area",
+            "request": {
+              "trigger": "USER_LEFT_ACTIVITY_AREA",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": true,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "SKIP_DETERMINISTIC",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "user_left_activity_area_uses_deterministic_pause",
+              "allowed_judgment": false,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "no_response_after_cue",
+            "request": {
+              "trigger": "NO_RESPONSE_AFTER_CUE",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 0.86,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": true,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "SKIP_DETERMINISTIC",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "no_response_after_cue_uses_deterministic_pause",
+              "allowed_judgment": false,
+              "fallback_backend": "",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "session_model_disabled",
+            "request": {
+              "trigger": "SESSION_ENDED",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 1,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": false,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": true,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": false,
+              "multimodal_backend_available": false,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "FALLBACK_ONLY",
+              "backend_preference": "DETERMINISTIC_ONLY",
+              "context_budget": "NONE",
+              "reason": "model_backend_unavailable",
+              "allowed_judgment": false,
+              "fallback_backend": "deterministic_only",
+              "reasoning_mode": "off",
+              "multimodal_evidence_plan": {
+                "action": "DISABLED",
+                "build_panel": false,
+                "call_backend": false,
+                "reason": "multimodal_sidecar_feature_disabled"
+              }
+            }
+          },
+          {
+            "name": "session_ended_multimodal_available",
+            "request": {
+              "trigger": "SESSION_ENDED",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 1,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": false,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": true,
+              "multimodal_backend_available": true,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "CALL_E2B_NOW",
+              "backend_preference": "LITERT_E2B",
+              "context_budget": "SESSION_COMPACT",
+              "reason": "session_summary_event",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "summary_optional",
+              "multimodal_evidence_plan": {
+                "action": "CALL_BACKEND",
+                "build_panel": true,
+                "call_backend": true,
+                "reason": "session_ended_multimodal_summary"
+              }
+            }
+          },
+          {
+            "name": "caregiver_export_multimodal_available",
+            "request": {
+              "trigger": "CAREGIVER_EXPORT",
+              "person_tracking_state": "OBSERVED",
+              "confidence_floor": 1,
+              "capability_judgment_allowed": true,
+              "has_critical_or_warning_evidence": false,
+              "needs_language_explanation": true,
+              "model_backend_available": true,
+              "device_low_battery": false,
+              "device_high_thermal_load": false,
+              "model_disabled": false,
+              "user_question_type": "NONE",
+              "multimodal_evidence_panel_enabled": true,
+              "multimodal_backend_available": true,
+              "debug_rep_multimodal_panel": false
+            },
+            "plan": {
+              "decision": "CALL_E2B_NOW",
+              "backend_preference": "LITERT_E2B",
+              "context_budget": "CAREGIVER_EXPORT",
+              "reason": "caregiver_export_event",
+              "allowed_judgment": true,
+              "fallback_backend": "",
+              "reasoning_mode": "summary_optional",
+              "multimodal_evidence_plan": {
+                "action": "CALL_BACKEND",
+                "build_panel": true,
+                "call_backend": true,
+                "reason": "caregiver_export_multimodal_summary"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "layer2_event": {
+      "updated_at_ms": 1778998076038,
+      "data": {
+        "success": true,
+        "cases": [
+          {
+            "name": "chair_sit_to_stand_rep",
+            "success": true,
+            "input_summary": {
+              "frame_count": 9,
+              "activity_hint": "chair_sit_to_stand",
+              "metrics": [
+                "knee_angle"
+              ],
+              "confidence_floor": 0.8600000143051147,
+              "person_tracking_states": [
+                "OBSERVED"
+              ]
+            },
+            "phase_sequence": [
+              "standing_stabilized",
+              "standing_stabilized",
+              "descending",
+              "seated_low",
+              "seated_low",
+              "seated_low",
+              "rising",
+              "standing_stabilized",
+              "standing_stabilized"
+            ],
+            "events": [
+              "rep_started",
+              "rep_completed"
+            ],
+            "final_output": {
+              "timestamp_ms": 3200,
+              "activity_hypothesis": {
+                "label": "chair_sit_to_stand",
+                "confidence": 0.91,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features"
+                ]
+              },
+              "phase": "standing_stabilized",
+              "event": "rep_completed",
+              "confidence": 0.90000004,
+              "abstain_reason": null,
+              "rep_count": 1,
+              "hold_duration_ms": 0,
+              "judgeability": "judgeable",
+              "non_senior_label_demoted": false,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": true,
+                "allow_strength_template_hard_warnings": true,
+                "allow_bilateral_symmetry_hard_warning": true,
+                "allow_landing_stabilization_monitor": true,
+                "output_state": "judgeable",
+                "blocked_rules": [],
+                "notes": []
+              },
+              "evidence_refs": [
+                "layer2.activity.chair_sit_to_stand",
+                "layer2.phase.standing_stabilized",
+                "layer2.event.rep_completed"
+              ]
+            }
+          },
+          {
+            "name": "supported_squat_rep_monitor_only",
+            "success": true,
+            "input_summary": {
+              "frame_count": 9,
+              "activity_hint": "supported_squat",
+              "metrics": [
+                "knee_angle",
+                "support_contact_proxy"
+              ],
+              "confidence_floor": 0.8600000143051147,
+              "person_tracking_states": [
+                "OBSERVED"
+              ]
+            },
+            "phase_sequence": [
+              "standing_stabilized",
+              "standing_stabilized",
+              "descending",
+              "squat_bottom",
+              "squat_bottom",
+              "squat_bottom",
+              "rising",
+              "standing_stabilized",
+              "standing_stabilized"
+            ],
+            "events": [
+              "rep_started",
+              "rep_completed"
+            ],
+            "final_output": {
+              "timestamp_ms": 3200,
+              "activity_hypothesis": {
+                "label": "supported_squat",
+                "confidence": 0.9,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features"
+                ]
+              },
+              "phase": "standing_stabilized",
+              "event": "rep_completed",
+              "confidence": 0.90000004,
+              "abstain_reason": null,
+              "rep_count": 1,
+              "hold_duration_ms": 0,
+              "judgeability": "monitor_only",
+              "non_senior_label_demoted": false,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": false,
+                "allow_strength_template_hard_warnings": false,
+                "allow_bilateral_symmetry_hard_warning": false,
+                "allow_landing_stabilization_monitor": false,
+                "output_state": "monitor_only",
+                "blocked_rules": [
+                  1,
+                  4,
+                  6,
+                  7
+                ],
+                "notes": [
+                  "supported_squat_is_monitor_only_for_demo_p0",
+                  "support_contact_observed_but_not_a_safety_claim"
+                ]
+              },
+              "evidence_refs": [
+                "layer2.activity.supported_squat",
+                "layer2.phase.standing_stabilized",
+                "layer2.event.rep_completed"
+              ]
+            }
+          },
+          {
+            "name": "balance_hold_completed",
+            "success": true,
+            "input_summary": {
+              "frame_count": 6,
+              "activity_hint": "balance_hold",
+              "metrics": [
+                "sway_norm"
+              ],
+              "confidence_floor": 0.8999999761581421,
+              "person_tracking_states": [
+                "OBSERVED"
+              ]
+            },
+            "phase_sequence": [
+              "balance_holding",
+              "balance_holding",
+              "balance_holding",
+              "balance_holding",
+              "balance_holding",
+              "balance_holding"
+            ],
+            "events": [
+              "balance_hold_started",
+              "balance_hold_completed"
+            ],
+            "final_output": {
+              "timestamp_ms": 5000,
+              "activity_hypothesis": {
+                "label": "balance_hold",
+                "confidence": 0.9,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features"
+                ]
+              },
+              "phase": "balance_holding",
+              "event": "balance_hold_completed",
+              "confidence": 0.78,
+              "abstain_reason": null,
+              "rep_count": 0,
+              "hold_duration_ms": 5000,
+              "judgeability": "monitor_only",
+              "non_senior_label_demoted": false,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": false,
+                "allow_strength_template_hard_warnings": false,
+                "allow_bilateral_symmetry_hard_warning": false,
+                "allow_landing_stabilization_monitor": false,
+                "output_state": "monitor_only",
+                "blocked_rules": [
+                  4,
+                  5
+                ],
+                "notes": [
+                  "balance_hold_is_monitor_only_not_fall_risk"
+                ]
+              },
+              "evidence_refs": [
+                "layer2.activity.balance_hold",
+                "layer2.phase.balance_holding",
+                "layer2.event.balance_hold_completed"
+              ]
+            }
+          },
+          {
+            "name": "non_senior_lunge_demoted",
+            "success": true,
+            "input_summary": {
+              "frame_count": 5,
+              "activity_hint": "lunge",
+              "metrics": [
+                "front_knee_angle"
+              ],
+              "confidence_floor": 0.8799999952316284,
+              "person_tracking_states": [
+                "OBSERVED"
+              ]
+            },
+            "phase_sequence": [
+              "monitor_only",
+              "monitor_only",
+              "monitor_only",
+              "monitor_only",
+              "monitor_only"
+            ],
+            "events": [],
+            "final_output": {
+              "timestamp_ms": 640,
+              "activity_hypothesis": {
+                "label": "unknown",
+                "confidence": 0.35,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features",
+                  "non_senior_label_demoted"
+                ]
+              },
+              "phase": "monitor_only",
+              "event": "none",
+              "confidence": 0.4,
+              "abstain_reason": "non_senior_activity_demoted",
+              "rep_count": 0,
+              "hold_duration_ms": 0,
+              "judgeability": "monitor_only",
+              "non_senior_label_demoted": true,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": false,
+                "allow_strength_template_hard_warnings": false,
+                "allow_bilateral_symmetry_hard_warning": false,
+                "allow_landing_stabilization_monitor": false,
+                "output_state": "monitor_only",
+                "blocked_rules": [],
+                "notes": [
+                  "non_senior_activity_demoted"
+                ]
+              },
+              "evidence_refs": [
+                "layer2.activity.unknown",
+                "layer2.phase.monitor_only",
+                "layer2.normalizer.non_senior_label_demoted"
+              ]
+            }
+          },
+          {
+            "name": "non_senior_basketball_demoted",
+            "success": true,
+            "input_summary": {
+              "frame_count": 5,
+              "activity_hint": "basketball_jump_shot",
+              "metrics": [
+                "elbow_angle",
+                "knee_angle",
+                "shoulder_angle"
+              ],
+              "confidence_floor": 0.8999999761581421,
+              "person_tracking_states": [
+                "OBSERVED"
+              ]
+            },
+            "phase_sequence": [
+              "monitor_only",
+              "monitor_only",
+              "monitor_only",
+              "monitor_only",
+              "monitor_only"
+            ],
+            "events": [],
+            "final_output": {
+              "timestamp_ms": 480,
+              "activity_hypothesis": {
+                "label": "unknown",
+                "confidence": 0.35,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features",
+                  "non_senior_label_demoted"
+                ]
+              },
+              "phase": "monitor_only",
+              "event": "none",
+              "confidence": 0.4,
+              "abstain_reason": "non_senior_activity_demoted",
+              "rep_count": 0,
+              "hold_duration_ms": 0,
+              "judgeability": "monitor_only",
+              "non_senior_label_demoted": true,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": false,
+                "allow_strength_template_hard_warnings": false,
+                "allow_bilateral_symmetry_hard_warning": false,
+                "allow_landing_stabilization_monitor": false,
+                "output_state": "monitor_only",
+                "blocked_rules": [],
+                "notes": [
+                  "non_senior_activity_demoted"
+                ]
+              },
+              "evidence_refs": [
+                "layer2.activity.unknown",
+                "layer2.phase.monitor_only",
+                "layer2.normalizer.non_senior_label_demoted"
+              ]
+            }
+          },
+          {
+            "name": "predicted_tracking_abstain",
+            "success": true,
+            "input_summary": {
+              "frame_count": 1,
+              "activity_hint": "chair_sit_to_stand",
+              "metrics": [
+                "knee_angle"
+              ],
+              "confidence_floor": 0.8999999761581421,
+              "person_tracking_states": [
+                "PREDICTED"
+              ]
+            },
+            "phase_sequence": [
+              "abstain"
+            ],
+            "events": [
+              "abstain"
+            ],
+            "final_output": {
+              "timestamp_ms": 0,
+              "activity_hypothesis": {
+                "label": "unknown",
+                "confidence": 0.35,
+                "source": [
+                  "activity_hint",
+                  "derived_motion_features"
+                ]
+              },
+              "phase": "abstain",
+              "event": "abstain",
+              "confidence": 0,
+              "abstain_reason": "person_not_observed",
+              "rep_count": 0,
+              "hold_duration_ms": 0,
+              "judgeability": "abstain",
+              "non_senior_label_demoted": false,
+              "sub_actions": [],
+              "rule_policy": {
+                "allow_hard_judgment": false,
+                "allow_strength_template_hard_warnings": false,
+                "allow_bilateral_symmetry_hard_warning": false,
+                "allow_landing_stabilization_monitor": false,
+                "output_state": "abstain",
+                "blocked_rules": [],
+                "notes": [
+                  "person_not_observed"
+                ]
+              },
+              "evidence_refs": [
+                "layer2.activity.unknown",
+                "layer2.phase.abstain",
+                "layer2.event.abstain"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "model_readiness": {
+      "updated_at_ms": 1778998077415,
+      "data": {
+        "status": "local_gemma_ready",
+        "label": "Local Gemma ready",
+        "requested_model": "official",
+        "model_priority": [
+          "gemma-4-E2B-it.litertlm",
+          "gemma4_2b_v09_obfus_fix_all_modalities_thinking.litertlm",
+          "gemmafit-v5-e2b-evidence-router.litertlm",
+          "gemmafit-v3-evidence-router.litertlm",
+          "gemmafit-v2-fc.litertlm"
+        ],
+        "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+        "model_file_name": "gemma-4-E2B-it.litertlm",
+        "model_size_bytes": 2538766336,
+        "backend": "litert-lm:available",
+        "fallback_reason": ""
+      }
+    },
+    "litert_prewarm": {
+      "updated_at_ms": 1778998089474,
+      "data": {
+        "success": true,
+        "backend": "litert-lm:isolated:gpu",
+        "stage": "complete",
+        "engine_create_ms": 17,
+        "engine_initialize_ms": 10696,
+        "ttl_ms": 180000,
+        "reused_engine": false,
+        "max_num_images": 0,
+        "requested_model": "official",
+        "elapsed_ms": 10720
+      }
+    },
+    "litert_prompt_infer": {
+      "updated_at_ms": 1778998114442,
+      "data": {
+        "success": true,
+        "backend": "litert-lm:isolated:gpu",
+        "stage": "complete",
+        "elapsed_ms": 23571,
+        "engine_create_ms": 0,
+        "engine_initialize_ms": 0,
+        "session_create_ms": 0,
+        "generate_content_ms": 23570,
+        "constrained_decoding": false,
+        "constrained_decoding_ms": 0,
+        "constrained_tool_call_observed": false,
+        "stream_requested": true,
+        "total_elapsed_ms": 23571,
+        "reused_engine": true,
+        "requested_model": "official",
+        "prompt_chars": 1926,
+        "request_file": "\/data\/user\/0\/com.gemmafit\/files\/debug\/litert_session_prompt_request.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "backend": "litert-lm:isolated:gpu",
+  "stage": "complete",
+  "engine_create_ms": 17,
+  "engine_initialize_ms": 10696,
+  "session_create_ms": 0,
+  "ttl_ms": 180000,
+  "reused_engine": false,
+  "max_num_images": 0,
+  "requested_model": "official",
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+  "model_size_bytes": 2538766336,
+  "elapsed_ms": 10720,
+  "attempts": []
+}

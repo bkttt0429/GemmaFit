@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="380" viewBox="0 0 860 380">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="32" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Evidence Footprint</text>
+<text x="32" y="72" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Log-scale byte size. Smaller sidecar inputs keep Gemma off the live path.</text>
+<text x="32" y="132" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Source video</text>
+<rect x="210" y="112" width="520" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="210" y="112" width="520" height="24" rx="5" fill="#64748b"/>
+<text x="748" y="131" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">6.37 MiB</text>
+<text x="32" y="186" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Dense montage</text>
+<rect x="210" y="166" width="520" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="210" y="166" width="340" height="24" rx="5" fill="#2563eb"/>
+<text x="748" y="185" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">28.4 KiB</text>
+<text x="32" y="240" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Sidecar bundle</text>
+<rect x="210" y="220" width="520" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="210" y="220" width="345" height="24" rx="5" fill="#0f766e"/>
+<text x="748" y="239" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">33.1 KiB</text>
+<text x="32" y="294" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#334155">Panel q70</text>
+<rect x="210" y="274" width="520" height="24" rx="5" fill="#e2e8f0"/>
+<rect x="210" y="274" width="332" height="24" rx="5" fill="#16a34a"/>
+<text x="748" y="293" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">22.7 KiB</text>
+<text x="32" y="344" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#166534">Panel q70 vs source video: 99.7% smaller</text>
+</svg>

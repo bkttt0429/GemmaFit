@@ -1,0 +1,16 @@
+{
+  "raw_video_bytes": 7110746,
+  "raw_video_size": "6.8 MB",
+  "bonly_payload_bytes": 6262,
+  "bonly_payload_size": "6.1 KB",
+  "compression_ratio_label": "1136x smaller than raw source video",
+  "tracked_samples": 168,
+  "tracked_frame_ratio": 0.08333333333333333,
+  "effective_frame_interval": 12,
+  "blocks": 2,
+  "understanding_score": 0.9971620387168129,
+  "forbidden_hits": [],
+  "forbidden_hit_count": 0,
+  "gate_result": "PASS",
+  "states": "abstain, monitor_only"
+}

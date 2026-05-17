@@ -1,0 +1,14 @@
+﻿{
+  "enabled": true,
+  "success": false,
+  "backend": "litert-lm:raw",
+  "error_type": "java.lang.OutOfMemoryError",
+  "error": "Failed to allocate a 301989904 byte allocation with 100663296 free bytes and 109MB until OOM, target footprint 254016480, growth limit 268435456",
+  "elapsed_ms": 54922,
+  "requested_model": "official",
+  "requested_backend": "auto",
+  "max_tokens": 512,
+  "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm",
+  "model_size_bytes": 2538766336,
+  "prompt_file": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/model_prompt_pair_compact.jsonl"
+}

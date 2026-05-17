@@ -1,0 +1,109 @@
+{
+  "schema_version": "motion_zip_v4_v1",
+  "window_id": "video.lunge_forward_army.sparse_stride_4",
+  "trigger": "VIDEO_ANALYSIS_SUMMARY",
+  "source_video": "D:\\GemmaFit\\test_assets\\videos\\internet_public_mp4\\lunge_forward_army.mp4",
+  "sampling": {
+    "video_frames_total": 0,
+    "pose_samples": 84,
+    "sample_every_frames": 24,
+    "fps": 29.97,
+    "compression": "84 pose samples -> 1 sparse event blocks"
+  },
+  "sliding_window": {
+    "last_ms": 1600,
+    "frames_kept": 1,
+    "reason": "top_motion_information_windows"
+  },
+  "compressed_sparse_blocks": [
+    {
+      "block_id": "video.lunge_like_unilateral_motion.block.1.frame_270",
+      "compression_mode": "sparse_event_block_from_video_pose_samples",
+      "time_range_ms": [
+        7407,
+        9009
+      ],
+      "source_frames": [
+        222,
+        270
+      ],
+      "tokens": [
+        "lunge_like_unilateral_motion",
+        "motion_event_window",
+        "abstain",
+        "rapid_motion_proxy_high",
+        "pose_geometry_caution"
+      ],
+      "preserved_extrema": {
+        "knee_angle_min": 168.638,
+        "knee_angle_max": 175.247,
+        "hip_angle_min": 6.299,
+        "hip_angle_max": 157.864,
+        "back_angle_min": 5.145,
+        "back_angle_max": 163.392,
+        "max_fppa": 15.22,
+        "valgus_ratio_min": 0.6195,
+        "peak_velocity_deg_s": 771.694,
+        "velocity_peak": "high",
+        "confidence_floor": 0.527,
+        "geometry_quality_flags": [
+          "low_keypoint_visibility",
+          "extreme_angle_geometry_caution",
+          "rapid_motion_proxy_high"
+        ]
+      },
+      "event_score": 0.527,
+      "rule_policy_state": "abstain",
+      "abstain_reason": "low_keypoint_visibility",
+      "evidence_refs": [
+        "metric.motion.peak_velocity",
+        "metric.motion.angle_extrema",
+        "metric.motion.confidence_floor",
+        "layer2.activity.lunge_like_unilateral_motion",
+        "layer2.event.abstain",
+        "video.frame.270"
+      ]
+    }
+  ],
+  "heavily_compressed_summary": {
+    "activity_hint": "lunge_like_unilateral_motion",
+    "completed_reps": null,
+    "tempo_band": "mixed_with_high_velocity_events",
+    "event": "abstain",
+    "pose_samples": 84,
+    "landmark_frames": 84,
+    "inside_bos_rate": null,
+    "max_angular_velocity_dps": 771.694,
+    "low_visibility_abstain_blocks": 1,
+    "output_state": "abstain",
+    "model_routing_recommendation": "E2B may summarize this packet; deterministic rules should avoid hard safety verdicts from sparse single-camera evidence alone."
+  },
+  "safety_preserved": [
+    "confidence_floor",
+    "angle_extrema",
+    "velocity_peak",
+    "event_boundary",
+    "phase_or_primitive_tokens",
+    "rule_policy_state",
+    "evidence_refs",
+    "unsupported_claim_boundaries"
+  ],
+  "evidence_refs": [
+    "layer2.activity.lunge_like_unilateral_motion",
+    "layer2.event.abstain",
+    "metric.motion.angle_extrema",
+    "metric.motion.confidence_floor",
+    "metric.motion.peak_velocity",
+    "video.frame.270"
+  ],
+  "limits": [
+    "derived_from_single_camera_pose",
+    "sampled_video_pose_not_every_frame",
+    "no_force_or_grf",
+    "no_joint_force_or_grf",
+    "no_joint_moment_or_ligament_load",
+    "no_emg_or_muscle_activation",
+    "no_medical_or_fall_risk_claim",
+    "2d_geometry_can_be_unreliable_in_oblique_or_occluded_views"
+  ]
+}

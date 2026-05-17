@@ -1,0 +1,29 @@
+﻿
+05-16 17:43:02.581 26780 26796 W litert  : [npu_registry.cc:34] NPU accelerator could not be loaded and registered: kLi
+teRtStatusErrorInvalidArgument.
+05-16 17:43:02.700 26780 26796 I native  : cache_dir: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu
+05-16 17:43:02.700 26780 26796 I native  : model_assets: model_path: /storage/emulated/0/Android/data/com.gemmafit/file
+s/gemma-4-E2B-it.litertlm
+05-16 17:43:04.414 26821 26821 E FeatureFlagsImplExport: android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE
+_NOT_FOUND: package android.xr cannot be found on the device
+05-16 17:43:04.425 26821 26831 W libbinder.IPCThreadState: call to talkWithDriver in joinThreadPool returned error: -9 
+(Bad file descriptor), FD: -1
+05-16 17:43:04.426 26821 26830 W libbinder.IPCThreadState: call to talkWithDriver in joinThreadPool returned error: -9 
+(Bad file descriptor), FD: -1
+05-16 17:43:04.452 26780 26785 W .gemmafit:debug: userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+05-16 17:43:05.305 26780 26819 W native  : W0000 00:00:1778924585.305767   26819 sampler_factory.cc:374] OpenCL sampler
+ not available, falling back to statically linked C API: UNAVAILABLE: ERROR: [third_party/odml/litert_lm/runtime/compon
+ents/sampler_factory.cc:294]
+05-16 17:43:05.308 26780 26819 W native  : W0000 00:00:1778924585.308074   26819 sampler_factory.cc:450] WebGPU sampler
+ not available, falling back to statically linked C API: UNAVAILABLE: ERROR: [third_party/odml/litert_lm/runtime/compon
+ents/sampler_factory.cc:294]
+05-16 17:43:06.915 26680 26684 I com.gemmafit: Compiler allocated 4544KB to compile void com.gemmafit.ui.screens.video.
+VideoAnalysisLayoutKt.VideoAnalysisLayout(com.gemmafit.video.LiveWorkoutState, boolean, boolean, android.net.Uri, float
+, int, int, java.lang.String, boolean, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.funct
+ions.Function0, kotlin.jvm.functions.Function0, boolean, float, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Fu
+nction1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.fun
+ctions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotli
+n.jvm.functions.Function0, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function0, androidx.compose.ui.Modifier
+, androidx.compose.runtime.Composer, int, int, int, int)
+
+

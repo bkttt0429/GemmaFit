@@ -1,0 +1,42 @@
+﻿[
+    {
+        "index":  1,
+        "wall_ms":  45661,
+        "endpoint_success":  true,
+        "generation_success":  true,
+        "payload_parse_success":  true,
+        "model_json_parse_success":  true,
+        "function_name":  "create_care_activity_log",
+        "backend":  "litert-lm:isolated:gpu",
+        "elapsed_ms":  43991,
+        "generate_content_ms":  24312,
+        "engine_initialize_ms":  19672,
+        "session_create_ms":  1,
+        "reused_engine":  false,
+        "prompt_chars":  1509,
+        "raw_response_chars":  648,
+        "error":  "",
+        "payload_parse_error":  "",
+        "response_file":  "run_001.json"
+    },
+    {
+        "index":  2,
+        "wall_ms":  24066,
+        "endpoint_success":  true,
+        "generation_success":  true,
+        "payload_parse_success":  true,
+        "model_json_parse_success":  true,
+        "function_name":  "create_care_activity_log",
+        "backend":  "litert-lm:isolated:gpu",
+        "elapsed_ms":  22414,
+        "generate_content_ms":  22411,
+        "engine_initialize_ms":  0,
+        "session_create_ms":  0,
+        "reused_engine":  true,
+        "prompt_chars":  1509,
+        "raw_response_chars":  648,
+        "error":  "",
+        "payload_parse_error":  "",
+        "response_file":  "run_002.json"
+    }
+]

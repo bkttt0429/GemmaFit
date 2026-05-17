@@ -1,0 +1,461 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "video_name": "senior_balance_4stage_cdc_phonewin_t060.mp4",
+  "video_path": "\/data\/user\/0\/com.gemmafit\/files\/test_videos\/senior_balance_4stage_cdc_phonewin_t060.mp4",
+  "video_size_bytes": 178927,
+  "elapsed_ms": 7022,
+  "pose_realtime": {
+    "success": true,
+    "skeleton_correct": true,
+    "realtime_enough": true,
+    "delegate": "GPU",
+    "sample_interval_ms": 200,
+    "sample_cap_frames": 96,
+    "long_side": 256,
+    "max_poses": 1,
+    "analyzed_frames": 16,
+    "pose_hits": 16,
+    "pose_misses": 0,
+    "pose_hit_rate": 1,
+    "landmark_33_rate": 1,
+    "first_pose_frame": 0,
+    "first_pose_timestamp_ms": 0,
+    "avg_visibility": 0.45892834697521967,
+    "avg_pose_ms": 71.625,
+    "p95_pose_ms": 97,
+    "avg_pose_budget_ms": 120,
+    "p95_pose_budget_ms": 180,
+    "avg_extract_ms": 42.1875,
+    "p95_extract_ms": 45,
+    "avg_convert_ms": 41.5625,
+    "p95_convert_ms": 45,
+    "processing_fps": 2.2785531187695813,
+    "timestamp_monotonic": true,
+    "source_counts": {
+      "codec": 16
+    },
+    "native_motion_quality": {
+      "analyzed_frames": 16,
+      "gate_blocked_frames": 16,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 0,
+      "monitor_frames": 0,
+      "first_hard_block_frame": 0,
+      "first_hard_block_reason": "Low overall landmark visibility (0.453994 < 0.6). Adjust camera angle, distance, or lighting.",
+      "exercise_counts": {},
+      "reason_counts": {
+        "Low overall landmark visibility (0.453994 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.454104 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.455784 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.456758 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.458278 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.459546 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460387 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460415 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460684 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460801 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460644 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460944 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.459956 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.46018 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.46015 < 0.6). Adjust camera angle, distance, or lighting.": 1,
+        "Low overall landmark visibility (0.460227 < 0.6). Adjust camera angle, distance, or lighting.": 1
+      }
+    },
+    "first_frames": [
+      {
+        "frame": 0,
+        "timestamp_ms": 0,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 121,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4539943648375232,
+          "bbox": {
+            "min_x": 0.2707284092903137,
+            "min_y": 0.2881348133087158,
+            "max_x": 0.7546725869178772,
+            "max_y": 1.2318493127822876
+          }
+        }
+      },
+      {
+        "frame": 1,
+        "timestamp_ms": 200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 48,
+        "pose_ms": 68,
+        "convert_ms": 48,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4541041386722954,
+          "bbox": {
+            "min_x": 0.2646123468875885,
+            "min_y": 0.28746888041496277,
+            "max_x": 0.7550991177558899,
+            "max_y": 1.2366949319839478
+          }
+        }
+      },
+      {
+        "frame": 2,
+        "timestamp_ms": 400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 51,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4557844040858926,
+          "bbox": {
+            "min_x": 0.2609195113182068,
+            "min_y": 0.28534549474716187,
+            "max_x": 0.7481614947319031,
+            "max_y": 1.2661755084991455
+          }
+        }
+      },
+      {
+        "frame": 3,
+        "timestamp_ms": 600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 55,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4567582828740617,
+          "bbox": {
+            "min_x": 0.26079314947128296,
+            "min_y": 0.2920186221599579,
+            "max_x": 0.7509181499481201,
+            "max_y": 1.27446711063385
+          }
+        }
+      },
+      {
+        "frame": 4,
+        "timestamp_ms": 800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 65,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4582775989547372,
+          "bbox": {
+            "min_x": 0.26196691393852234,
+            "min_y": 0.294918417930603,
+            "max_x": 0.7511689066886902,
+            "max_y": 1.289081335067749
+          }
+        }
+      },
+      {
+        "frame": 5,
+        "timestamp_ms": 1000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 65,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.45954570248299703,
+          "bbox": {
+            "min_x": 0.26028573513031006,
+            "min_y": 0.2949737012386322,
+            "max_x": 0.7522965669631958,
+            "max_y": 1.2918009757995605
+          }
+        }
+      },
+      {
+        "frame": 6,
+        "timestamp_ms": 1200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 76,
+        "convert_ms": 43,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.460386545051623,
+          "bbox": {
+            "min_x": 0.2557462751865387,
+            "min_y": 0.2986692786216736,
+            "max_x": 0.7505627870559692,
+            "max_y": 1.27561354637146
+          }
+        }
+      },
+      {
+        "frame": 7,
+        "timestamp_ms": 1400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 97,
+        "convert_ms": 42,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4604153626838304,
+          "bbox": {
+            "min_x": 0.25574013590812683,
+            "min_y": 0.2874770760536194,
+            "max_x": 0.7362502813339233,
+            "max_y": 1.2787872552871704
+          }
+        }
+      },
+      {
+        "frame": 8,
+        "timestamp_ms": 1600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 45,
+        "pose_ms": 73,
+        "convert_ms": 45,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.46068427250297234,
+          "bbox": {
+            "min_x": 0.2550543248653412,
+            "min_y": 0.2923882305622101,
+            "max_x": 0.7337870597839355,
+            "max_y": 1.273256778717041
+          }
+        }
+      },
+      {
+        "frame": 9,
+        "timestamp_ms": 1800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 79,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.46080131816790637,
+          "bbox": {
+            "min_x": 0.242782860994339,
+            "min_y": 0.29259607195854187,
+            "max_x": 0.7311561703681946,
+            "max_y": 1.2582123279571533
+          }
+        }
+      },
+      {
+        "frame": 10,
+        "timestamp_ms": 2000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 41,
+        "pose_ms": 58,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4606438679691178,
+          "bbox": {
+            "min_x": 0.24208824336528778,
+            "min_y": 0.29038968682289124,
+            "max_x": 0.7324565649032593,
+            "max_y": 1.2570768594741821
+          }
+        }
+      },
+      {
+        "frame": 11,
+        "timestamp_ms": 2200,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 63,
+        "convert_ms": 41,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.46094388796976116,
+          "bbox": {
+            "min_x": 0.23664788901805878,
+            "min_y": 0.2882795035839081,
+            "max_x": 0.7316257357597351,
+            "max_y": 1.2562837600708008
+          }
+        }
+      },
+      {
+        "frame": 12,
+        "timestamp_ms": 2400,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 40,
+        "pose_ms": 64,
+        "convert_ms": 40,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.45995631152199523,
+          "bbox": {
+            "min_x": 0.23736169934272766,
+            "min_y": 0.2882206439971924,
+            "max_x": 0.7261680364608765,
+            "max_y": 1.2513632774353027
+          }
+        }
+      },
+      {
+        "frame": 13,
+        "timestamp_ms": 2600,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 39,
+        "pose_ms": 72,
+        "convert_ms": 39,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.46017987321300263,
+          "bbox": {
+            "min_x": 0.2380286306142807,
+            "min_y": 0.28769317269325256,
+            "max_x": 0.7333294153213501,
+            "max_y": 1.251543402671814
+          }
+        }
+      },
+      {
+        "frame": 14,
+        "timestamp_ms": 2800,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 42,
+        "pose_ms": 62,
+        "convert_ms": 42,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.4601501641851483,
+          "bbox": {
+            "min_x": 0.2362869828939438,
+            "min_y": 0.2838987410068512,
+            "max_x": 0.7395069599151611,
+            "max_y": 1.2513254880905151
+          }
+        }
+      },
+      {
+        "frame": 15,
+        "timestamp_ms": 3000,
+        "pose_count": 1,
+        "landmark_count": 33,
+        "source": "codec",
+        "extract_ms": 43,
+        "pose_ms": 77,
+        "convert_ms": 42,
+        "knee_angle_deg": null,
+        "landmark_summary": {
+          "landmark_count": 33,
+          "visible_count": 15,
+          "avg_visibility": 0.46022745643065055,
+          "bbox": {
+            "min_x": 0.2409539669752121,
+            "min_y": 0.2780109643936157,
+            "max_x": 0.7415167093276978,
+            "max_y": 1.2514010667800903
+          }
+        }
+      }
+    ]
+  },
+  "ai_assistant_realtime": {
+    "success": true,
+    "invoked": false,
+    "situation": "pose_detected_no_realtime_warning",
+    "expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+    "realtime_ok": true,
+    "live_frame_plan": {
+      "decision": "SKIP_DETERMINISTIC",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "NONE",
+      "reason": "pose_confidence_below_model_context_threshold",
+      "allowed_judgment": false,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "rep_completed_plan": {
+      "decision": "SKIP_DETERMINISTIC",
+      "backend_preference": "DETERMINISTIC_ONLY",
+      "context_budget": "NONE",
+      "reason": "pose_confidence_below_model_context_threshold",
+      "allowed_judgment": false,
+      "fallback_backend": "",
+      "reasoning_mode": "off",
+      "multimodal_evidence_plan": {
+        "action": "DISABLED",
+        "build_panel": false,
+        "call_backend": false,
+        "reason": "multimodal_sidecar_feature_disabled"
+      }
+    },
+    "max_velocity_deg_s": 0,
+    "last_movement_phase": "unknown",
+    "last_rep_count": 0
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "status": "pass_with_gap",
+  "device_smokes": [
+    {
+      "file": "video_realtime_smoke_no_person_blank_3s.mp4.json",
+      "video_name": "no_person_blank_3s.mp4",
+      "success": true,
+      "pose_hit_rate": 0,
+      "landmark_33_rate": 0,
+      "avg_visibility": 0,
+      "gate_blocked_frames": 0,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 0,
+      "monitor_frames": 0,
+      "first_hard_block_reason": null,
+      "ai_invoked": true,
+      "ai_expected_behavior": "boundary_refusal_without_generation",
+      "ai_function": "refuse_unsupported_question",
+      "ai_backend": "litert-lm:realtime_fast",
+      "live_frame_plan": {},
+      "rep_completed_plan": {}
+    },
+    {
+      "file": "video_realtime_smoke_senior_occluded_720p.json",
+      "video_name": "senior_occluded_720p.mp4",
+      "success": true,
+      "pose_hit_rate": 0.967741935483871,
+      "landmark_33_rate": 0.967741935483871,
+      "avg_visibility": 0.703013265046357,
+      "gate_blocked_frames": 0,
+      "low_confidence_frames": 18,
+      "view_limited_frames": 39,
+      "monitor_frames": 26,
+      "first_hard_block_reason": "lower_body_reference_not_visible_for_body_line",
+      "ai_invoked": false,
+      "ai_expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+      "ai_function": null,
+      "ai_backend": null,
+      "live_frame_plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "live_frame_deterministic_path",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      },
+      "rep_completed_plan": {
+        "decision": "DEFER_TO_SESSION_END",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "EVENT_COMPACT",
+        "reason": "clean_rep_summary_deferred",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "file": "video_realtime_smoke_senior_chair_stand_cdc_phonewin_t004.mp4.json",
+      "video_name": "senior_chair_stand_cdc_phonewin_t004.mp4",
+      "success": true,
+      "pose_hit_rate": 1,
+      "landmark_33_rate": 1,
+      "avg_visibility": 0.45805249485045246,
+      "gate_blocked_frames": 16,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 0,
+      "monitor_frames": 0,
+      "first_hard_block_reason": "Low overall landmark visibility (0.454791 < 0.6). Adjust camera angle, distance, or lighting.",
+      "ai_invoked": false,
+      "ai_expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+      "ai_function": null,
+      "ai_backend": null,
+      "live_frame_plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "pose_confidence_below_model_context_threshold",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      },
+      "rep_completed_plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "pose_confidence_below_model_context_threshold",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "file": "video_realtime_smoke_senior_balance_4stage_cdc_phonewin_t060.mp4.json",
+      "video_name": "senior_balance_4stage_cdc_phonewin_t060.mp4",
+      "success": true,
+      "pose_hit_rate": 1,
+      "landmark_33_rate": 1,
+      "avg_visibility": 0.45892834697521967,
+      "gate_blocked_frames": 16,
+      "low_confidence_frames": 0,
+      "view_limited_frames": 0,
+      "monitor_frames": 0,
+      "first_hard_block_reason": "Low overall landmark visibility (0.453994 < 0.6). Adjust camera angle, distance, or lighting.",
+      "ai_invoked": false,
+      "ai_expected_behavior": "no_immediate_ai_cue_for_clean_or_uncertain_video",
+      "ai_function": null,
+      "ai_backend": null,
+      "live_frame_plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "pose_confidence_below_model_context_threshold",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      },
+      "rep_completed_plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "pose_confidence_below_model_context_threshold",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    }
+  ],
+  "predicted_tracking_scheduler": {
+    "decision": "SKIP_DETERMINISTIC",
+    "backend_preference": "DETERMINISTIC_ONLY",
+    "context_budget": "NONE",
+    "reason": "tracking_predicted_monitor_only",
+    "allowed_judgment": false,
+    "fallback_backend": "",
+    "reasoning_mode": "off",
+    "multimodal_evidence_plan": {
+      "action": "DISABLED",
+      "build_panel": false,
+      "call_backend": false,
+      "reason": "multimodal_sidecar_feature_disabled"
+    }
+  },
+  "tests": [
+    {
+      "class": "SubjectRelocalizationPolicyTest",
+      "status": "pass",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.005,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.video.SubjectRelocalizationPolicyTest.xml",
+      "mtime": "2026-05-14T18:34:06"
+    },
+    {
+      "class": "SubjectIdentityMatcherTest",
+      "status": "pass",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.007,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.video.SubjectIdentityMatcherTest.xml",
+      "mtime": "2026-05-14T18:34:06"
+    },
+    {
+      "class": "PersonTrackingPolicyTest",
+      "status": "pass",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.002,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.video.PersonTrackingPolicyTest.xml",
+      "mtime": "2026-05-14T18:34:06"
+    },
+    {
+      "class": "PersonProposalFusionTest",
+      "status": "pass",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.002,
+      "xml": "app/build/intermediates/unit_test_results/debug/testDebugUnitTest/TEST-com.gemmafit.video.PersonProposalFusionTest.xml",
+      "mtime": "2026-05-14T18:34:06"
+    }
+  ],
+  "gap": "current run did not include a fresh multi-person device clip; existing subject ownership unit XML is available."
+}

@@ -1,0 +1,14 @@
+[1/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=58424ms gen=25182ms function=create_care_activity_log
+[2/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=24690ms gen=22861ms function=create_care_activity_log
+[3/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=24608ms gen=22804ms function=create_care_activity_log
+[4/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=24641ms gen=22808ms function=create_care_activity_log
+[5/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=24199ms gen=22383ms function=create_care_activity_log
+[6/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=24972ms gen=23222ms function=create_care_activity_log
+[7/100] ok=True retries=0 backend=litert-lm:isolated:gpu wall=27018ms gen=25247ms function=create_care_activity_log
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt
+[8/100] thermal_status=3; pausing 90s before next prompt

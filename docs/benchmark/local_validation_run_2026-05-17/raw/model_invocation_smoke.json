@@ -1,0 +1,487 @@
+﻿{
+  "enabled": true,
+  "success": true,
+  "motion_feature_window": {
+    "schema_version": "motion_feature_window_v1",
+    "window_id": "debug.motion.rep.1",
+    "trigger": "REP_COMPLETED",
+    "window_ms": 2400,
+    "exercise": "chair_sit_to_stand",
+    "source": [
+      "debug_smoke",
+      "pose_sequence"
+    ],
+    "features": {
+      "hip_vertical_displacement": null,
+      "knee_angle_min": 82,
+      "knee_angle_max": 168,
+      "primary_angle_min": 82,
+      "primary_angle_max": 168,
+      "range_of_motion_deg": 86,
+      "rep_duration_ms": 2400,
+      "peak_velocity_deg_s": 220,
+      "velocity_peak": "low",
+      "stabilization_ms": 700,
+      "confidence_floor": 0.86
+    },
+    "derived_labels": {
+      "tempo_band": "controlled",
+      "phase_sequence_estimate": [
+        "top",
+        "descent",
+        "bottom",
+        "ascent",
+        "top"
+      ],
+      "rep_completed": true,
+      "support_pattern": "double_stance"
+    },
+    "evidence_refs": [
+      "metric.motion.rep_duration",
+      "metric.motion.rom",
+      "metric.motion.peak_velocity",
+      "metric.motion.confidence_floor"
+    ],
+    "limits": [
+      "derived_from_single_camera_pose",
+      "no_force_or_grf",
+      "no_emg_or_muscle_activation"
+    ]
+  },
+  "motion_zip_packet": {
+    "schema_version": "motion_zip_v4_v1",
+    "window_id": "debug.motion.rep.1",
+    "trigger": "REP_COMPLETED",
+    "sliding_window": {
+      "last_ms": 1600,
+      "frames_kept": 24,
+      "reason": "recent_motion_context"
+    },
+    "compressed_sparse_blocks": [
+      {
+        "block_id": "debug.motion.rep.1.block.rep_completed",
+        "compression_mode": "csa_like_event_block",
+        "time_range_ms": [
+          800,
+          3200
+        ],
+        "tokens": [
+          "top",
+          "descent",
+          "bottom",
+          "ascent",
+          "standing_stabilized",
+          "rep_completed"
+        ],
+        "preserved_extrema": {
+          "knee_angle_min": 82,
+          "knee_angle_max": 168,
+          "primary_angle_min": 82,
+          "primary_angle_max": 168,
+          "range_of_motion_deg": 86,
+          "peak_velocity_deg_s": 220,
+          "velocity_peak": "low",
+          "confidence_floor": 0.86,
+          "stabilization_ms": 700
+        },
+        "event_score": 0.9,
+        "rule_policy_state": "judgeable",
+        "abstain_reason": null,
+        "evidence_refs": [
+          "metric.motion.rep_duration",
+          "metric.motion.rom",
+          "metric.motion.peak_velocity",
+          "metric.motion.confidence_floor",
+          "layer2.activity.chair_sit_to_stand",
+          "layer2.phase.standing_stabilized",
+          "layer2.event.rep_completed"
+        ]
+      }
+    ],
+    "heavily_compressed_summary": {
+      "completed_reps": 1,
+      "tempo_band": "controlled",
+      "event": "rep_completed",
+      "stability_events": 0,
+      "confidence_floor": 0.86,
+      "output_state": "judgeable"
+    },
+    "activity_context": {
+      "state": "unknown",
+      "task_label": null,
+      "confidence": 0,
+      "ambiguity_note": null,
+      "template_scores": {},
+      "evidence_refs": []
+    },
+    "safety_preserved": [
+      "confidence_floor",
+      "angle_extrema",
+      "velocity_peak",
+      "event_boundary",
+      "phase_or_primitive_tokens",
+      "rule_policy_state",
+      "evidence_refs",
+      "unsupported_claim_boundaries"
+    ],
+    "evidence_refs": [
+      "metric.motion.rep_duration",
+      "metric.motion.rom",
+      "metric.motion.peak_velocity",
+      "metric.motion.confidence_floor",
+      "layer2.activity.chair_sit_to_stand",
+      "layer2.phase.standing_stabilized",
+      "layer2.event.rep_completed"
+    ],
+    "limits": [
+      "derived_from_single_camera_pose",
+      "no_force_or_grf",
+      "no_emg_or_muscle_activation",
+      "single_camera_pose_proxy",
+      "no_joint_force_or_grf",
+      "no_medical_or_fall_risk_claim"
+    ]
+  },
+  "cases": [
+    {
+      "name": "live_frame",
+      "request": {
+        "trigger": "LIVE_FRAME",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": false,
+        "needs_language_explanation": false,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "live_frame_deterministic_path",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "live_frame_multimodal_enabled",
+      "request": {
+        "trigger": "LIVE_FRAME",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "live_frame_deterministic_path",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "SKIP",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "live_frame_never_uses_multimodal"
+        }
+      }
+    },
+    {
+      "name": "clean_rep",
+      "request": {
+        "trigger": "REP_COMPLETED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": false,
+        "needs_language_explanation": false,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "DEFER_TO_SESSION_END",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "EVENT_COMPACT",
+        "reason": "clean_rep_summary_deferred",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "warning_rep",
+      "request": {
+        "trigger": "REP_COMPLETED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "CALL_E2B_NOW",
+        "backend_preference": "LITERT_E2B",
+        "context_budget": "EVENT_COMPACT",
+        "reason": "rep_completed_with_explainable_warning",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "predicted_tracking",
+      "request": {
+        "trigger": "REP_COMPLETED",
+        "person_tracking_state": "PREDICTED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "tracking_predicted_monitor_only",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "left_activity_area",
+      "request": {
+        "trigger": "USER_LEFT_ACTIVITY_AREA",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "user_left_activity_area_uses_deterministic_pause",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "no_response_after_cue",
+      "request": {
+        "trigger": "NO_RESPONSE_AFTER_CUE",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 0.86,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "SKIP_DETERMINISTIC",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "no_response_after_cue_uses_deterministic_pause",
+        "allowed_judgment": false,
+        "fallback_backend": "",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "session_model_disabled",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": false,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": true,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": false,
+        "multimodal_backend_available": false,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "FALLBACK_ONLY",
+        "backend_preference": "DETERMINISTIC_ONLY",
+        "context_budget": "NONE",
+        "reason": "model_backend_unavailable",
+        "allowed_judgment": false,
+        "fallback_backend": "deterministic_only",
+        "reasoning_mode": "off",
+        "multimodal_evidence_plan": {
+          "action": "DISABLED",
+          "build_panel": false,
+          "call_backend": false,
+          "reason": "multimodal_sidecar_feature_disabled"
+        }
+      }
+    },
+    {
+      "name": "session_ended_multimodal_available",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": false,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "CALL_E2B_NOW",
+        "backend_preference": "LITERT_E2B",
+        "context_budget": "SESSION_COMPACT",
+        "reason": "session_summary_event",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "summary_optional",
+        "multimodal_evidence_plan": {
+          "action": "CALL_BACKEND",
+          "build_panel": true,
+          "call_backend": true,
+          "reason": "session_ended_multimodal_summary"
+        }
+      }
+    },
+    {
+      "name": "caregiver_export_multimodal_available",
+      "request": {
+        "trigger": "CAREGIVER_EXPORT",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": false,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "CALL_E2B_NOW",
+        "backend_preference": "LITERT_E2B",
+        "context_budget": "CAREGIVER_EXPORT",
+        "reason": "caregiver_export_event",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "summary_optional",
+        "multimodal_evidence_plan": {
+          "action": "CALL_BACKEND",
+          "build_panel": true,
+          "call_backend": true,
+          "reason": "caregiver_export_multimodal_summary"
+        }
+      }
+    }
+  ]
+}

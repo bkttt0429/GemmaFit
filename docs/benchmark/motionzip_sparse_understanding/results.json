@@ -1,0 +1,184 @@
+{
+  "summary": {
+    "video": "test_assets\\videos\\internet_public_mp4\\lunge_forward_army.mp4",
+    "activity_hint": "lunge_like_unilateral_motion",
+    "source_frame_span": 2016,
+    "dense_reference_pose_samples": 335,
+    "dense_reference_blocks": 2,
+    "dense_reference_tags": [
+      "2d_fppa_unreliable_extreme",
+      "abstain",
+      "extreme_angle_geometry_caution",
+      "low_keypoint_visibility",
+      "lunge_like_unilateral_motion",
+      "monitor_only",
+      "motion_event_window",
+      "pose_geometry_caution",
+      "rapid_motion_proxy_high"
+    ],
+    "dense_reference_states": [
+      "abstain",
+      "monitor_only"
+    ],
+    "best_sparse_understanding_score": 1.0,
+    "lowest_budget_passing_tracked_samples": 168,
+    "lowest_budget_passing_tracked_frame_ratio": 0.08333333333333333,
+    "lowest_budget_passing_stride": 2,
+    "lowest_budget_passing_effective_frame_interval": 12
+  },
+  "dense_reference": {
+    "tags": [
+      "2d_fppa_unreliable_extreme",
+      "abstain",
+      "extreme_angle_geometry_caution",
+      "low_keypoint_visibility",
+      "lunge_like_unilateral_motion",
+      "monitor_only",
+      "motion_event_window",
+      "pose_geometry_caution",
+      "rapid_motion_proxy_high"
+    ],
+    "states": [
+      "abstain",
+      "monitor_only"
+    ],
+    "event_end_frames": [
+      258,
+      1440
+    ],
+    "peak_velocity_deg_s": 857.147,
+    "confidence_floor": 0.5145,
+    "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\dense_reference_packet.json"
+  },
+  "variants": [
+    {
+      "relative_stride": 1,
+      "effective_video_frame_interval": 6,
+      "tracked_pose_samples": 335,
+      "sparse_blocks": 2,
+      "tags": [
+        "2d_fppa_unreliable_extreme",
+        "abstain",
+        "extreme_angle_geometry_caution",
+        "low_keypoint_visibility",
+        "lunge_like_unilateral_motion",
+        "monitor_only",
+        "motion_event_window",
+        "pose_geometry_caution",
+        "rapid_motion_proxy_high"
+      ],
+      "states": [
+        "abstain",
+        "monitor_only"
+      ],
+      "event_end_frames": [
+        258,
+        1440
+      ],
+      "tag_recall": 1.0,
+      "state_recall": 1.0,
+      "event_coverage": 1.0,
+      "peak_velocity_recall": 1.0,
+      "confidence_floor_error": 0.0,
+      "confidence_score": 1.0,
+      "understanding_score": 1.0,
+      "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\sparse_stride_1_packet.json"
+    },
+    {
+      "relative_stride": 2,
+      "effective_video_frame_interval": 12,
+      "tracked_pose_samples": 168,
+      "sparse_blocks": 2,
+      "tags": [
+        "2d_fppa_unreliable_extreme",
+        "abstain",
+        "extreme_angle_geometry_caution",
+        "low_keypoint_visibility",
+        "lunge_like_unilateral_motion",
+        "monitor_only",
+        "motion_event_window",
+        "pose_geometry_caution",
+        "rapid_motion_proxy_high"
+      ],
+      "states": [
+        "abstain",
+        "monitor_only"
+      ],
+      "event_end_frames": [
+        258,
+        1434
+      ],
+      "tag_recall": 1.0,
+      "state_recall": 1.0,
+      "event_coverage": 1.0,
+      "peak_velocity_recall": 0.9810802581120857,
+      "confidence_floor_error": 0.0,
+      "confidence_score": 1.0,
+      "understanding_score": 0.9971620387168129,
+      "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\sparse_stride_2_packet.json"
+    },
+    {
+      "relative_stride": 4,
+      "effective_video_frame_interval": 24,
+      "tracked_pose_samples": 84,
+      "sparse_blocks": 1,
+      "tags": [
+        "abstain",
+        "extreme_angle_geometry_caution",
+        "low_keypoint_visibility",
+        "lunge_like_unilateral_motion",
+        "motion_event_window",
+        "pose_geometry_caution",
+        "rapid_motion_proxy_high"
+      ],
+      "states": [
+        "abstain"
+      ],
+      "event_end_frames": [
+        270
+      ],
+      "tag_recall": 0.7777777777777778,
+      "state_recall": 0.5,
+      "event_coverage": 0.5,
+      "peak_velocity_recall": 0.9003053151909765,
+      "confidence_floor_error": 0.012500000000000067,
+      "confidence_score": 0.9499999999999997,
+      "understanding_score": 0.6883791306119798,
+      "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\sparse_stride_4_packet.json"
+    },
+    {
+      "relative_stride": 8,
+      "effective_video_frame_interval": 48,
+      "tracked_pose_samples": 42,
+      "sparse_blocks": 0,
+      "tags": [],
+      "states": [],
+      "event_end_frames": [],
+      "tag_recall": 0.0,
+      "state_recall": 0.0,
+      "event_coverage": 0.0,
+      "peak_velocity_recall": 0.0,
+      "confidence_floor_error": 0.5145,
+      "confidence_score": 0.0,
+      "understanding_score": 0.0,
+      "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\sparse_stride_8_packet.json"
+    },
+    {
+      "relative_stride": 16,
+      "effective_video_frame_interval": 96,
+      "tracked_pose_samples": 21,
+      "sparse_blocks": 0,
+      "tags": [],
+      "states": [],
+      "event_end_frames": [],
+      "tag_recall": 0.0,
+      "state_recall": 0.0,
+      "event_coverage": 0.0,
+      "peak_velocity_recall": 0.0,
+      "confidence_floor_error": 0.5145,
+      "confidence_score": 0.0,
+      "understanding_score": 0.0,
+      "packet_path": "docs\\benchmark\\motionzip_sparse_understanding\\packets\\sparse_stride_16_packet.json"
+    }
+  ]
+}

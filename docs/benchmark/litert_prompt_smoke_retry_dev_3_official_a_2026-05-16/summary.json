@@ -1,0 +1,100 @@
+﻿{
+    "started_at":  "2026-05-16T14:44:05.6982927+08:00",
+    "finished_at":  "2026-05-16T14:46:56.3544867+08:00",
+    "count_requested":  3,
+    "count_completed":  3,
+    "model":  "official",
+    "prompt_file":  "litert_ab_a_no_narrative_v2.json",
+    "uri":  "content://com.gemmafit.debug/litert_prompt_infer?file=litert_ab_a_no_narrative_v2.json\u0026model=official",
+    "endpoint_success_count":  3,
+    "generation_success_count":  3,
+    "model_json_parse_success_count":  3,
+    "model_json_parse_success_rate":  1,
+    "pass_99_percent_gate":  true,
+    "backend_values":  [
+                           "litert-lm:isolated:gpu"
+                       ],
+    "engine_reinitialize_count":  1,
+    "retried_run_count":  0,
+    "max_endpoint_retries":  2,
+    "wall_ms_avg":  56847,
+    "wall_ms_p50":  47823,
+    "wall_ms_p95":  74897,
+    "generate_ms_avg":  45874,
+    "generate_ms_p50":  45907,
+    "generate_ms_p95":  45950,
+    "records":  [
+                    {
+                        "index":  1,
+                        "wall_ms":  74897,
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "payload_parse_success":  true,
+                        "model_json_parse_success":  true,
+                        "function_name":  "create_care_activity_log",
+                        "backend":  "litert-lm:isolated:gpu",
+                        "elapsed_ms":  73175,
+                        "generate_content_ms":  45765,
+                        "engine_initialize_ms":  27400,
+                        "session_create_ms":  2,
+                        "reused_engine":  false,
+                        "prompt_chars":  1509,
+                        "raw_response_chars":  648,
+                        "error":  "",
+                        "payload_parse_error":  "",
+                        "retry_count":  0,
+                        "retry_reasons":  [
+
+                                          ],
+                        "response_file":  "run_001.json"
+                    },
+                    {
+                        "index":  2,
+                        "wall_ms":  47823,
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "payload_parse_success":  true,
+                        "model_json_parse_success":  true,
+                        "function_name":  "create_care_activity_log",
+                        "backend":  "litert-lm:isolated:gpu",
+                        "elapsed_ms":  45954,
+                        "generate_content_ms":  45950,
+                        "engine_initialize_ms":  0,
+                        "session_create_ms":  1,
+                        "reused_engine":  true,
+                        "prompt_chars":  1509,
+                        "raw_response_chars":  648,
+                        "error":  "",
+                        "payload_parse_error":  "",
+                        "retry_count":  0,
+                        "retry_reasons":  [
+
+                                          ],
+                        "response_file":  "run_002.json"
+                    },
+                    {
+                        "index":  3,
+                        "wall_ms":  47821,
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "payload_parse_success":  true,
+                        "model_json_parse_success":  true,
+                        "function_name":  "create_care_activity_log",
+                        "backend":  "litert-lm:isolated:gpu",
+                        "elapsed_ms":  45909,
+                        "generate_content_ms":  45907,
+                        "engine_initialize_ms":  0,
+                        "session_create_ms":  1,
+                        "reused_engine":  true,
+                        "prompt_chars":  1509,
+                        "raw_response_chars":  648,
+                        "error":  "",
+                        "payload_parse_error":  "",
+                        "retry_count":  0,
+                        "retry_reasons":  [
+
+                                          ],
+                        "response_file":  "run_003.json"
+                    }
+                ]
+}

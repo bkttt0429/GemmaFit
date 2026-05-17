@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="760" viewBox="0 0 1260 760">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+    <path d="M0,0 L10,4 L0,8 Z" fill="#64748b"/>
+  </marker>
+</defs>
+<rect width="1260" height="760" fill="#f8fafc"/>
+<text x="40" y="54" font-size="28" font-weight="800" fill="#0f172a">MotionZip proof protocol: keep B-only separate from A+B</text>
+<text x="40" y="84" font-size="15" fill="#475569">A+B is useful for consistency checks, but it cannot prove the compressed packet alone is sufficient.</text>
+
+<rect x="40" y="130" width="360" height="210" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<text x="58" y="160" font-size="18" font-weight="700" fill="#0f172a">A-only baseline</text>
+<text x="58" y="190" font-size="14" fill="#334155">Input: raw video or sampled frames</text>
+<text x="58" y="214" font-size="14" fill="#334155">Model: Gemma video / vision path</text>
+<text x="58" y="238" font-size="14" fill="#334155">Use: direct-video baseline</text>
+<text x="58" y="262" font-size="14" fill="#334155">Compression claim: not eligible</text>
+<rect x="450" y="130" width="360" height="210" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="468" y="160" font-size="18" font-weight="700" fill="#0f172a">B-only proof path</text>
+<text x="468" y="190" font-size="14" fill="#334155">Input: sanitized MotionZip JSON only</text>
+<text x="468" y="214" font-size="14" fill="#334155">Tracked-frame ratio: 8.3%</text>
+<text x="468" y="238" font-size="14" fill="#334155">Understanding score: 99.7%</text>
+<text x="468" y="262" font-size="14" fill="#334155">Compression claim: eligible</text>
+<rect x="860" y="130" width="360" height="210" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="878" y="160" font-size="18" font-weight="700" fill="#0f172a">A+B debug path</text>
+<text x="878" y="190" font-size="14" fill="#334155">Input: raw video/frames + MotionZip</text>
+<text x="878" y="214" font-size="14" fill="#334155">Use: mismatch analysis and demo QA</text>
+<text x="878" y="238" font-size="14" fill="#334155">Risk: model can rely on A</text>
+<text x="878" y="262" font-size="14" fill="#334155">Compression claim: not eligible</text>
+
+<rect x="65" y="410" width="300" height="88" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="83" y="440" font-size="18" font-weight="700" fill="#0f172a">Raw video / frames</text>
+<text x="83" y="470" font-size="14" fill="#334155">6.8 MB</text>
+<rect x="480" y="410" width="300" height="88" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+<text x="498" y="440" font-size="18" font-weight="700" fill="#0f172a">Sanitized evidence packet</text>
+<text x="498" y="470" font-size="14" fill="#334155">6.1 KB</text>
+<text x="498" y="494" font-size="14" fill="#334155">No raw video or raw landmarks</text>
+<rect x="890" y="410" width="300" height="88" rx="8" fill="#ffedd5" stroke="#f97316" stroke-width="2"/>
+<text x="908" y="440" font-size="18" font-weight="700" fill="#0f172a">Mixed evidence</text>
+<text x="908" y="470" font-size="14" fill="#334155">Raw visual evidence is present</text>
+<text x="908" y="494" font-size="14" fill="#334155">Debug only</text>
+
+<line x1="215" y1="500" x2="215" y2="575" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="630" y1="500" x2="630" y2="575" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="1040" y1="500" x2="1040" y2="575" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+<rect x="65" y="575" width="300" height="100" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="83" y="605" font-size="18" font-weight="700" fill="#0f172a">Result interpretation</text>
+<text x="83" y="635" font-size="14" fill="#334155">Answers: what Gemma can infer</text>
+<text x="83" y="659" font-size="14" fill="#334155">when it sees video directly.</text>
+<rect x="480" y="575" width="300" height="100" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+<text x="498" y="605" font-size="18" font-weight="700" fill="#0f172a">Result interpretation</text>
+<text x="498" y="635" font-size="14" fill="#334155">Answers: what MotionZip preserves</text>
+<text x="498" y="659" font-size="14" fill="#334155">without raw visual access.</text>
+<rect x="890" y="575" width="300" height="100" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+<text x="908" y="605" font-size="18" font-weight="700" fill="#0f172a">Result interpretation</text>
+<text x="908" y="635" font-size="14" fill="#334155">Answers: whether A and B agree,</text>
+<text x="908" y="659" font-size="14" fill="#334155">not whether B alone is sufficient.</text>
+</svg>

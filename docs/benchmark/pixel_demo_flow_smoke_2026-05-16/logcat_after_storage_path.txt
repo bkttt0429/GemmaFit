@@ -1,0 +1,148 @@
+﻿
+05-16 17:43:49.091 26932 26984 I native  : cache_dir: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu
+05-16 17:43:49.091 26932 26984 I native  : model_assets: model_path: /storage/emulated/0/Android/data/com.gemmafit/file
+s/gemma-4-E2B-it.litertlm
+05-16 17:43:49.091 26932 26984 D GemmaFit.DebugApi: coach_summary: litert_prewarm_complete
+05-16 17:43:52.734 26932 27005 D GemmaFit.DebugApi: pose: video_landmarker_ready
+05-16 17:43:52.813 26932 26932 D GemmaFit.DebugApi: video: analysis_pass_start
+05-16 17:43:52.824 26932 27005 E FileSource: Failed to open file '/storage/emulated/0/Android/data/com.gemmafit/files/t
+est_videos/gemmafit_real_senior_supported_chair_squat_720p.mp4'. (Permission denied)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: Cannot open URI: Failed to instantiate extractor.
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: java.io.IOException: Failed to instantiate extractor.
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at android.media.MediaExtractor.nativeSetDataSource(Native Method
+)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at android.media.MediaExtractor.setDataSource(MediaExtractor.java
+:202)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at android.media.MediaExtractor.setDataSource(MediaExtractor.java
+:110)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.extractWithCodec(VideoProces
+sor.kt:154)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.extractWithCodecSafely(Video
+Processor.kt:118)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.access$extractWithCodecSafel
+y(VideoProcessor.kt:66)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invokeSuspend
+(VideoProcessor.kt:97)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invoke(Unknow
+n Source:8)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invoke(Unknow
+n Source:4)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.SafeFlow.collectSafely(Builders.kt:57)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.AbstractFlow.collect(Flow.kt:226)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperatorImpl.flowC
+ollect(ChannelFlow.kt:191)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperator.collectTo
+$suspendImpl(ChannelFlow.kt:153)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperator.collectTo
+(Unknown Source:0)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlow$collectToFun$1.in
+vokeSuspend(ChannelFlow.kt:56)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith
+(ContinuationImpl.kt:34)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(Cor
+outineScheduler.kt:589)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.execut
+eTask(CoroutineScheduler.kt:832)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWor
+ker(CoroutineScheduler.kt:720)
+05-16 17:43:52.824 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(Co
+routineScheduler.kt:707)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: Retriever error: /storage/emulated/0/Android/data/com.gemmafit/fil
+es/test_videos/gemmafit_real_senior_supported_chair_squat_720p.mp4 does not exist
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: java.lang.IllegalArgumentException: /storage/emulated/0/Android/da
+ta/com.gemmafit/files/test_videos/gemmafit_real_senior_supported_chair_squat_720p.mp4 does not exist
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at android.media.MediaMetadataRetriever.setDataSource(MediaMetada
+taRetriever.java:255)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at android.media.MediaMetadataRetriever.setDataSource(MediaMetada
+taRetriever.java:355)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.extractWithRetriever(VideoPr
+ocessor.kt:522)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.extractWithRetrieverSafely(V
+ideoProcessor.kt:135)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor.access$extractWithRetrieverS
+afely(VideoProcessor.kt:66)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invokeSuspend
+(VideoProcessor.kt:101)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invoke(Unknow
+n Source:8)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at com.gemmafit.video.VideoProcessor$processVideo$1.invoke(Unknow
+n Source:4)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.SafeFlow.collectSafely(Builders.kt:57)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.AbstractFlow.collect(Flow.kt:226)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperatorImpl.flowC
+ollect(ChannelFlow.kt:191)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperator.collectTo
+$suspendImpl(ChannelFlow.kt:153)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlowOperator.collectTo
+(Unknown Source:0)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.flow.internal.ChannelFlow$collectToFun$1.in
+vokeSuspend(ChannelFlow.kt:56)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith
+(ContinuationImpl.kt:34)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(Cor
+outineScheduler.kt:589)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.execut
+eTask(CoroutineScheduler.kt:832)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWor
+ker(CoroutineScheduler.kt:720)
+05-16 17:43:52.826 26932 27005 E GemmaFit.VideoProc: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(Co
+routineScheduler.kt:707)
+05-16 17:43:52.826 26932 27005 W GemmaFit.VideoProc: No frames emitted for uri=file:///storage/emulated/0/Android/data/
+com.gemmafit/files/test_videos/gemmafit_real_senior_supported_chair_squat_720p.mp4
+05-16 17:43:52.859 26932 26932 D GemmaFit.VM: FULL pass complete in 46ms, hitRate=0.0
+05-16 17:43:52.860 26932 26932 D GemmaFit.DebugApi: video: analysis_pass_complete
+05-16 17:43:52.872 26932 26932 D GemmaFit.DebugApi: motion_zip_packet: updated
+05-16 17:43:52.872 26932 26932 D GemmaFit.VM: Video processing complete. Frames: 0, Landmarks present: false
+05-16 17:43:52.873 26932 26932 D GemmaFit.DebugApi: video: process_video_complete
+05-16 17:43:52.880 26932 26932 D GemmaFit.DebugApi: model_invocation: session_summary_plan
+05-16 17:43:52.913 26932 27005 D GemmaFit.DebugApi: coach_summary: summary_inference_start
+05-16 17:43:52.936 29562 31234 D ActivityManager: sync unfroze 26947 com.gemmafit:debug for 7
+05-16 17:43:53.012 26947 26953 W .gemmafit:debug: userfaultfd: MOVE ioctl seems unsupported: Try again
+05-16 17:43:53.053 26947 27054 E .gemmafit:debug: No implementation found for void com.google.ai.edge.litertlm.NativeLi
+braryLoader.nativeCheckLoaded() (tried Java_com_google_ai_edge_litertlm_NativeLibraryLoader_nativeCheckLoaded and Java_
+com_google_ai_edge_litertlm_NativeLibraryLoader_nativeCheckLoaded__) - is the library loaded, e.g. System.loadLibrary?
+05-16 17:43:53.098 26947 27054 D nativeloader: Load /data/app/~~TgzXyypZnajmG2slZBHtYA==/com.gemmafit-MQ4cv6Ow3JieOgnPS
+goFTQ==/base.apk!/lib/arm64-v8a/liblitertlm_jni.so using class loader ns clns-9 (caller=/data/app/~~TgzXyypZnajmG2slZBH
+tYA==/com.gemmafit-MQ4cv6Ow3JieOgnPSgoFTQ==/base.apk!classes16.dex): ok
+05-16 17:43:53.100 26947 27054 I native  : cache_dir: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu
+05-16 17:43:53.100 26947 27054 I native  : model_assets: model_path: /storage/emulated/0/Android/data/com.gemmafit/file
+s/gemma-4-E2B-it.litertlm
+05-16 17:43:53.290 26947 27054 W litert  : [npu_registry.cc:34] NPU accelerator could not be loaded and registered: kLi
+teRtStatusErrorInvalidArgument.
+05-16 17:43:53.295 26947 27054 I native  : I0000 00:00:1778924633.295755   27054 executor_settings_base.cc:394] File do
+es not exist: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu/gemma-4-E2B-it.litertlm_1778848415_2538766
+336_mldrift_program_cache.bin Cleaning stale caches.
+05-16 17:43:53.295 26947 27054 I native  : I0000 00:00:1778924633.295895   27054 llm_executor_settings_utils.cc:178] Se
+tting serialization dir: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu
+05-16 17:43:57.691 27068 27068 E FeatureFlagsImplExport: android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE
+_NOT_FOUND: package android.xr cannot be found on the device
+05-16 17:43:57.693 29562 31225 W ProcessStats: Tracking association SourceState{402c6ef com.gemmafit/10359 BTop #153811
+9} whose proc state 2 is better than process ProcessState{36935fb com.gemmafit:debug/10359 pkg=com.gemmafit} proc state
+ 14 (6 skipped)
+05-16 17:43:57.698 27068 27078 W libbinder.IPCThreadState: call to talkWithDriver in joinThreadPool returned error: -9 
+(Bad file descriptor), FD: -1
+05-16 17:43:57.698 27068 27077 W libbinder.IPCThreadState: call to talkWithDriver in joinThreadPool returned error: -9 
+(Bad file descriptor), FD: -1
+05-16 17:44:01.615 26947 27054 W litert  : [npu_registry.cc:34] NPU accelerator could not be loaded and registered: kLi
+teRtStatusErrorInvalidArgument.
+05-16 17:44:01.734 26947 27054 I native  : cache_dir: /data/user/0/com.gemmafit/cache/litert-lm-isolated-session-gpu
+05-16 17:44:01.734 26947 27054 I native  : model_assets: model_path: /storage/emulated/0/Android/data/com.gemmafit/file
+s/gemma-4-E2B-it.litertlm
+05-16 17:44:02.449 26947 27082 W native  : W0000 00:00:1778924642.449558   27082 sampler_factory.cc:374] OpenCL sampler
+ not available, falling back to statically linked C API: UNAVAILABLE: ERROR: [third_party/odml/litert_lm/runtime/compon
+ents/sampler_factory.cc:294]
+05-16 17:44:02.450 26947 27082 W native  : W0000 00:00:1778924642.450723   27082 sampler_factory.cc:450] WebGPU sampler
+ not available, falling back to statically linked C API: UNAVAILABLE: ERROR: [third_party/odml/litert_lm/runtime/compon
+ents/sampler_factory.cc:294]
+05-16 17:44:04.106 26932 26937 I com.gemmafit: Compiler allocated 4544KB to compile void com.gemmafit.ui.screens.video.
+VideoAnalysisLayoutKt.VideoAnalysisLayout(com.gemmafit.video.LiveWorkoutState, boolean, boolean, android.net.Uri, float
+, int, int, java.lang.String, boolean, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.funct
+ions.Function0, kotlin.jvm.functions.Function0, boolean, float, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Fu
+nction1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.fun
+ctions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotli
+n.jvm.functions.Function0, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function0, androidx.compose.ui.Modifier
+, androidx.compose.runtime.Composer, int, int, int, int)
+
+

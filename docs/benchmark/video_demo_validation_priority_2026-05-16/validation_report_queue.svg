@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="585" viewBox="0 0 1180 585">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="34" y="46" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Validation Reports To Produce First</text>
+<text x="34" y="74" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Ordered for a product-first submission video: demo proof first, architecture proof second.</text>
+<rect x="44" y="116" width="54" height="44" rx="8" fill="#dc2626"/>
+<text x="62" y="145" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">1</text>
+<text x="120" y="135" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">live_safety_contract_report_2026-05-16</text>
+<text x="120" y="159" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This supports the 70% real demo section: skeleton/trace, warning/monitor, Evidence Card, and the claim that Gemma does n</text>
+<rect x="44" y="188" width="54" height="44" rx="8" fill="#dc2626"/>
+<text x="62" y="217" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">2</text>
+<text x="120" y="207" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">person_recovery_yolo_fallback_report_2026-05-16</text>
+<text x="120" y="231" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This gives the demo an abstention moment: the app looks safer because it refuses judgment when tracking is unreliable.</text>
+<rect x="44" y="260" width="54" height="44" rx="8" fill="#dc2626"/>
+<text x="62" y="289" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">3</text>
+<text x="120" y="279" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">litert_runtime_stability_report_2026-05-16</text>
+<text x="120" y="303" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This backs the local Gemma/LiteRT part of the video without overclaiming from one successful summary screen.</text>
+<rect x="44" y="332" width="54" height="44" rx="8" fill="#dc2626"/>
+<text x="62" y="361" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">4</text>
+<text x="120" y="351" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">memory_export_boundary_report_2026-05-16</text>
+<text x="120" y="375" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This supports privacy and caregiver-safe impact claims, which are easy to overstate in a 3-minute pitch.</text>
+<rect x="44" y="404" width="54" height="44" rx="8" fill="#f59e0b"/>
+<text x="62" y="433" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">5</text>
+<text x="120" y="423" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">senior_layer2_video_replay_report_2026-05-16</text>
+<text x="120" y="447" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This strengthens the senior-specific demo if the final video uses chair sit-to-stand, supported squat, or balance hold.</text>
+<rect x="44" y="476" width="54" height="44" rx="8" fill="#f59e0b"/>
+<text x="62" y="505" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">6</text>
+<text x="120" y="495" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">camera_pipeline_long_run_report_2026-05-16</text>
+<text x="120" y="519" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#475569">This is less visible than the safety contract but prevents the demo from resting on a short happy-path camera run.</text>
+</svg>

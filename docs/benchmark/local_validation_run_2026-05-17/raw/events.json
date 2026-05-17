@@ -1,0 +1,6475 @@
+﻿[
+  {
+    "ts_ms": 1778996667632,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 64,
+      "timestamp_ms": 12812,
+      "layer2_output": {
+        "timestamp_ms": 12812,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667679,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 65,
+      "timestamp_ms": 13013,
+      "layer2_output": {
+        "timestamp_ms": 13013,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667722,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 66,
+      "timestamp_ms": 13213,
+      "layer2_output": {
+        "timestamp_ms": 13213,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667772,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 67,
+      "timestamp_ms": 13413,
+      "layer2_output": {
+        "timestamp_ms": 13413,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667819,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 68,
+      "timestamp_ms": 13613,
+      "layer2_output": {
+        "timestamp_ms": 13613,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667859,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 69,
+      "timestamp_ms": 13813,
+      "layer2_output": {
+        "timestamp_ms": 13813,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667900,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 70,
+      "timestamp_ms": 14014,
+      "layer2_output": {
+        "timestamp_ms": 14014,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667935,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 71,
+      "timestamp_ms": 14214,
+      "layer2_output": {
+        "timestamp_ms": 14214,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996667969,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 72,
+      "timestamp_ms": 14414,
+      "layer2_output": {
+        "timestamp_ms": 14414,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668017,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 73,
+      "timestamp_ms": 14614,
+      "layer2_output": {
+        "timestamp_ms": 14614,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668049,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 74,
+      "timestamp_ms": 14814,
+      "layer2_output": {
+        "timestamp_ms": 14814,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668128,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 48,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996668130,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996668141,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "layer2_output": {
+        "timestamp_ms": 15015,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668163,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 77,
+      "timestamp_ms": 15415,
+      "layer2_output": {
+        "timestamp_ms": 15415,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668202,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 78,
+      "timestamp_ms": 15615,
+      "layer2_output": {
+        "timestamp_ms": 15615,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668233,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 79,
+      "timestamp_ms": 15815,
+      "layer2_output": {
+        "timestamp_ms": 15815,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668279,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 80,
+      "timestamp_ms": 16016,
+      "layer2_output": {
+        "timestamp_ms": 16016,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996668287,
+    "category": "video",
+    "message": "analysis_pass_complete",
+    "thread": "main",
+    "data": {
+      "pass": "FULL",
+      "elapsed_ms": 3567,
+      "pose_hits": 81,
+      "pose_misses": 0,
+      "first_pose_frame": 0,
+      "first_pose_timestamp_ms": 0,
+      "first_60_pose_hits": 60,
+      "first_60_pose_misses": 0,
+      "hit_rate": 1
+    }
+  },
+  {
+    "ts_ms": 1778996668294,
+    "category": "motion_zip_packet",
+    "message": "updated",
+    "thread": "main",
+    "data": {
+      "enabled": false,
+      "block_count": 0,
+      "judgeable_blocks": 0,
+      "monitor_only_blocks": 0,
+      "abstain_blocks": 0,
+      "latest_output_state": "",
+      "latest_abstain_reason": "",
+      "source": "full_analysis_complete"
+    }
+  },
+  {
+    "ts_ms": 1778996668294,
+    "category": "video",
+    "message": "process_video_complete",
+    "thread": "main",
+    "data": {
+      "frames": 81,
+      "pose_present": true,
+      "total_reps": 0,
+      "no_pose_retry": {
+        "enabled": true,
+        "attempted": false,
+        "island_count": 0,
+        "target_frame_count": 0,
+        "recovered_count": 0,
+        "unresolved_count": 0,
+        "elapsed_ms": 0,
+        "reason": "no_no_pose_islands",
+        "islands": []
+      },
+      "motion_zip_blocks": 0,
+      "motion_zip_output_state": "none"
+    }
+  },
+  {
+    "ts_ms": 1778996668297,
+    "category": "video",
+    "message": "completion_review_frame_selected",
+    "thread": "main",
+    "data": {
+      "selected_index": 0,
+      "previous_index": 80,
+      "reason": "first_frame_after_analysis"
+    }
+  },
+  {
+    "ts_ms": 1778996668308,
+    "category": "model_invocation",
+    "message": "session_summary_plan",
+    "thread": "main",
+    "data": {
+      "event": "session_summary",
+      "event_key": "session_summary|81|0",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "CALL_E2B_NOW",
+        "backend_preference": "LITERT_E2B",
+        "context_budget": "SESSION_COMPACT",
+        "reason": "session_summary_event",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "summary_optional",
+        "multimodal_evidence_plan": {
+          "action": "CALL_BACKEND",
+          "build_panel": true,
+          "call_backend": true,
+          "reason": "session_ended_multimodal_summary"
+        }
+      },
+      "total_reps": 0,
+      "total_frames": 75,
+      "evidence_refs": [
+        "visibility.lunge.keypoints",
+        "metric.lunge.front_knee_angle",
+        "metric.lunge.step_length_proxy",
+        "metric.lunge.trunk_uprightness",
+        "metric.lunge.stability",
+        "metric.lunge.knee_asymmetry_expected",
+        "metric.lunge.tempo_deg_s",
+        "gate.critical.visibility.0",
+        "gate.critical.spine_deviation_deg.1",
+        "gate.critical.neck_deviation_deg.2",
+        "gate.not_applicable.knee_valgus_fppa.0",
+        "gate.not_applicable.bilateral_asymmetry.1",
+        "capability.can.front_knee_angle",
+        "capability.can.step_length_proxy",
+        "capability.can.trunk_uprightness",
+        "capability.can.stability",
+        "capability.can.tempo",
+        "capability.cannot.bilateral_asymmetry",
+        "capability.cannot.frontal_knee_valgus",
+        "capability.cannot.joint_force",
+        "capability.cannot.clinical_injury_risk",
+        "capability.cannot.medical_diagnosis",
+        "capability.cannot.muscle_activation_percentage",
+        "gate.critical.lunge_stability.3",
+        "visibility.unknown.keypoints",
+        "metric.unknown.tempo_deg_s",
+        "gate.view_limited.exercise_template.0",
+        "gate.not_applicable.template_metrics.0",
+        "capability.cannot.template_metrics",
+        "capability.cannot.hard_form_judgment",
+        "visibility.deadlift.keypoints",
+        "metric.deadlift.hip_hinge",
+        "metric.deadlift.trunk_angle",
+        "metric.deadlift.bar_or_body_path_proxy",
+        "metric.deadlift.knee_angle",
+        "metric.deadlift.tempo_deg_s",
+        "gate.critical.left_right_angle_delta_deg.2",
+        "capability.can.hip_hinge",
+        "capability.can.trunk_angle",
+        "capability.can.bar_or_body_path_proxy",
+        "capability.can.knee_angle",
+        "gate.critical.joint_angle_deg.2",
+        "gate.critical.left_right_angle_delta_deg.3"
+      ]
+    }
+  },
+  {
+    "ts_ms": 1778996668316,
+    "category": "coach_summary",
+    "message": "summary_inference_start",
+    "thread": "DefaultDispatcher-worker-1",
+    "data": {
+      "event_key": "session_summary|81|0",
+      "trigger": "SUMMARY_ONLY",
+      "exercise": "lunge",
+      "total_reps": 0,
+      "total_frames": 75,
+      "view_limited_count": 6,
+      "low_confidence_count": 0,
+      "reasoning_mode": "summary_optional"
+    }
+  },
+  {
+    "ts_ms": 1778996669999,
+    "category": "review_frame",
+    "message": "bitmap_restored",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 0,
+      "latency_ms": 1123,
+      "width": 288,
+      "height": 512
+    }
+  },
+  {
+    "ts_ms": 1778996674374,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 3,
+      "timestamp_ms": 600,
+      "layer2_output": {
+        "timestamp_ms": 600,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996676969,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 16,
+      "timestamp_ms": 3203,
+      "layer2_output": {
+        "timestamp_ms": 3203,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996678168,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 22,
+      "timestamp_ms": 4404,
+      "layer2_output": {
+        "timestamp_ms": 4404,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996678371,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 23,
+      "timestamp_ms": 4604,
+      "layer2_output": {
+        "timestamp_ms": 4604,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996678506,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 24,
+      "timestamp_ms": 4804,
+      "layer2_output": {
+        "timestamp_ms": 4804,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996679988,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 31,
+      "timestamp_ms": 6206,
+      "layer2_output": {
+        "timestamp_ms": 6206,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996681389,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 38,
+      "timestamp_ms": 7607,
+      "layer2_output": {
+        "timestamp_ms": 7607,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996681546,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 39,
+      "timestamp_ms": 7807,
+      "layer2_output": {
+        "timestamp_ms": 7807,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996681790,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 40,
+      "timestamp_ms": 8008,
+      "layer2_output": {
+        "timestamp_ms": 8008,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996683001,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 46,
+      "timestamp_ms": 9209,
+      "layer2_output": {
+        "timestamp_ms": 9209,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996685891,
+    "category": "coach_summary",
+    "message": "litert_prewarm_complete",
+    "thread": "GemmaFitDebugPipe",
+    "data": {
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 17537,
+      "reused_engine": false,
+      "max_num_images": 1
+    }
+  },
+  {
+    "ts_ms": 1778996685897,
+    "category": "coach_summary",
+    "message": "litert_prewarm_ready",
+    "thread": "DefaultDispatcher-worker-3",
+    "data": {
+      "analysis_run_id": 1,
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 17537,
+      "reused_engine": false,
+      "max_num_images": 1,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996685988,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-3",
+    "data": {
+      "frame": 61,
+      "timestamp_ms": 12212,
+      "layer2_output": {
+        "timestamp_ms": 12212,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996694927,
+    "category": "session_visual_context",
+    "message": "vision_sidecar_result",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "event_key": "session_visual|75|0",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "action": "CALL_BACKEND",
+        "build_panel": true,
+        "call_backend": true,
+        "reason": "session_ended_multimodal_summary"
+      },
+      "motion_zip_available": false,
+      "visual_frame_candidates_available": true,
+      "status": "complete",
+      "success": true,
+      "backend": "litert-lm:isolated:gpu",
+      "elapsed_ms": 25292,
+      "generate_content_ms": 8851,
+      "panel_confidence": "high",
+      "mode": "scene_only",
+      "budget_reason": "scene_only_fallback:motion_zip_unavailable",
+      "visual_context": "{\"env\":\"outdoor\",\"support\":\"chair\",\"person\":\"visible\",\"overlay_readable\":true,\"limited\":false,\"source\":\"litert_vision_sidecar\",\"evidence_refs\":[\"visual_context.env\",\"visual_context.support\",\"visual_context.person\",\"visual_context.overlay_readable\",\"visual_context.limited\"]}",
+      "raw_response": "env=outdoor;support=chair;person=visible;overlay_readable=true;limited=false",
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996710032,
+    "category": "review_frame",
+    "message": "bitmap_restored",
+    "thread": "DefaultDispatcher-worker-3",
+    "data": {
+      "frame": 8,
+      "timestamp_ms": 1601,
+      "latency_ms": 881,
+      "width": 288,
+      "height": 512
+    }
+  },
+  {
+    "ts_ms": 1778996711955,
+    "category": "review_frame",
+    "message": "bitmap_restored",
+    "thread": "DefaultDispatcher-worker-1",
+    "data": {
+      "frame": 1,
+      "timestamp_ms": 200,
+      "latency_ms": 1406,
+      "width": 288,
+      "height": 512
+    }
+  },
+  {
+    "ts_ms": 1778996715767,
+    "category": "coach_summary",
+    "message": "summary_inference_result",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "event_key": "session_summary|81|0",
+      "backend": "litert-lm:isolated:gpu",
+      "function": "create_care_activity_log",
+      "fallback": false,
+      "error": "",
+      "inference_time_ms": 20741,
+      "reasoning_mode": "summary_optional",
+      "selection_basis": "Summarized from safety event using metric.session.duration_seconds.",
+      "evidence_refs": [
+        "metric.session.duration_seconds",
+        "metric.session.view_limited_count",
+        "metric.lunge.knee_asymmetry_expected"
+      ],
+      "headline": "Lunge Session Review",
+      "next_focus": "Let's focus on ensuring balanced movement in the lunge and improving visual engagement during the activity."
+    }
+  },
+  {
+    "ts_ms": 1778996723722,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 22,
+      "timestamp_ms": 4404,
+      "layer2_output": {
+        "timestamp_ms": 4404,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996723902,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 23,
+      "timestamp_ms": 4604,
+      "layer2_output": {
+        "timestamp_ms": 4604,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996724032,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 24,
+      "timestamp_ms": 4804,
+      "layer2_output": {
+        "timestamp_ms": 4804,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996726830,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 38,
+      "timestamp_ms": 7607,
+      "layer2_output": {
+        "timestamp_ms": 7607,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996727084,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 39,
+      "timestamp_ms": 7807,
+      "layer2_output": {
+        "timestamp_ms": 7807,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996727301,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 40,
+      "timestamp_ms": 8008,
+      "layer2_output": {
+        "timestamp_ms": 8008,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996734794,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 76,
+      "timestamp_ms": 15215,
+      "layer2_output": {
+        "timestamp_ms": 15215,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996802084,
+    "category": "app",
+    "message": "main_activity_created",
+    "thread": "main",
+    "data": {
+      "debug_build": true
+    }
+  },
+  {
+    "ts_ms": 1778996802094,
+    "category": "coach_summary",
+    "message": "litert_app_launch_prewarm_started",
+    "thread": "GemmaFitLiteRtPrewarm",
+    "data": {
+      "requested_model": "official",
+      "max_num_images": 1,
+      "thermal_status": 1,
+      "thermal_status_name": "light"
+    }
+  },
+  {
+    "ts_ms": 1778996814226,
+    "category": "coach_summary",
+    "message": "litert_prewarm_complete",
+    "thread": "GemmaFitLiteRtPrewarm",
+    "data": {
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 12117,
+      "reused_engine": false,
+      "max_num_images": 1
+    }
+  },
+  {
+    "ts_ms": 1778996884766,
+    "category": "video_vm",
+    "message": "viewmodel_created",
+    "thread": "main",
+    "data": {
+      "target_interval_ms": 200
+    }
+  },
+  {
+    "ts_ms": 1778996887434,
+    "category": "session",
+    "message": "session_reset",
+    "thread": "main",
+    "data": {
+      "previous_frames": 0
+    }
+  },
+  {
+    "ts_ms": 1778996887435,
+    "category": "video",
+    "message": "source_selected",
+    "thread": "main",
+    "data": {
+      "display_name": "content:\/\/media\/picker_get_content\/0\/com.android.providers.media.photopicker\/media\/1000005261"
+    }
+  },
+  {
+    "ts_ms": 1778996887451,
+    "category": "session",
+    "message": "session_reset",
+    "thread": "main",
+    "data": {
+      "previous_frames": 0
+    }
+  },
+  {
+    "ts_ms": 1778996887452,
+    "category": "video",
+    "message": "process_video_start",
+    "thread": "main",
+    "data": {
+      "source": "content:\/\/media\/picker_get_content\/0\/com.android.providers.media.photopicker\/media\/1000005261",
+      "manual_target_seed": false
+    }
+  },
+  {
+    "ts_ms": 1778996891910,
+    "category": "pose",
+    "message": "video_landmarker_ready",
+    "thread": "DefaultDispatcher-worker-1",
+    "data": {
+      "delegate": "GPU",
+      "max_poses": 1
+    }
+  },
+  {
+    "ts_ms": 1778996891954,
+    "category": "video",
+    "message": "preview_probe_start",
+    "thread": "main",
+    "data": {
+      "duration_ms": 16150,
+      "probe_frames": 12,
+      "long_side": 256,
+      "max_poses": 1
+    }
+  },
+  {
+    "ts_ms": 1778996892544,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 500,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 89,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996892791,
+    "category": "video",
+    "message": "preview_probe_complete",
+    "thread": "main",
+    "data": {
+      "sampled_frames": 2,
+      "pose_hits": 2,
+      "consecutive_pose_hits": 2,
+      "elapsed_ms": 879
+    }
+  },
+  {
+    "ts_ms": 1778996892792,
+    "category": "session",
+    "message": "full_analysis_reset",
+    "thread": "main",
+    "data": {
+      "preview_frames": 0,
+      "preview_processed_frames": 2
+    }
+  },
+  {
+    "ts_ms": 1778996897201,
+    "category": "pose",
+    "message": "video_landmarker_ready",
+    "thread": "DefaultDispatcher-worker-1",
+    "data": {
+      "delegate": "GPU",
+      "max_poses": 4
+    }
+  },
+  {
+    "ts_ms": 1778996897267,
+    "category": "video",
+    "message": "analysis_pass_start",
+    "thread": "main",
+    "data": {
+      "pass": "FULL",
+      "estimated_frames": 81,
+      "interval_ms": 200,
+      "long_side": 512,
+      "max_poses": 4,
+      "native_metrics": true
+    }
+  },
+  {
+    "ts_ms": 1778996897727,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 0,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 50,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996897733,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 0,
+      "track_id": 1,
+      "has_prev_landmarks": false,
+      "dt_ms": null,
+      "temporal_allowed": true,
+      "reason": "no_contiguous_previous_frame"
+    }
+  },
+  {
+    "ts_ms": 1778996897763,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 0,
+      "layer2_output": {
+        "timestamp_ms": 0,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996897819,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 1,
+      "timestamp_ms": 200,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 200,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996897826,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 1,
+      "timestamp_ms": 200,
+      "layer2_output": {
+        "timestamp_ms": 200,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996897908,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 3,
+      "timestamp_ms": 600,
+      "layer2_output": {
+        "timestamp_ms": 600,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996897963,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 5,
+      "timestamp_ms": 1001,
+      "layer2_output": {
+        "timestamp_ms": 1001,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898027,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 6,
+      "timestamp_ms": 1201,
+      "layer2_output": {
+        "timestamp_ms": 1201,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898091,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 8,
+      "timestamp_ms": 1601,
+      "layer2_output": {
+        "timestamp_ms": 1601,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898140,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 9,
+      "timestamp_ms": 1801,
+      "layer2_output": {
+        "timestamp_ms": 1801,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898203,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 11,
+      "timestamp_ms": 2202,
+      "layer2_output": {
+        "timestamp_ms": 2202,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898228,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 12,
+      "timestamp_ms": 2402,
+      "layer2_output": {
+        "timestamp_ms": 2402,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898289,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 13,
+      "timestamp_ms": 2602,
+      "layer2_output": {
+        "timestamp_ms": 2602,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898335,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 14,
+      "timestamp_ms": 2802,
+      "layer2_output": {
+        "timestamp_ms": 2802,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898408,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 15,
+      "timestamp_ms": 3003,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 38,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996898411,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 15,
+      "timestamp_ms": 3003,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996898424,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 15,
+      "timestamp_ms": 3003,
+      "layer2_output": {
+        "timestamp_ms": 3003,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898463,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 17,
+      "timestamp_ms": 3403,
+      "layer2_output": {
+        "timestamp_ms": 3403,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898509,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 18,
+      "timestamp_ms": 3603,
+      "layer2_output": {
+        "timestamp_ms": 3603,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898556,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 19,
+      "timestamp_ms": 3803,
+      "layer2_output": {
+        "timestamp_ms": 3803,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898600,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 20,
+      "timestamp_ms": 4004,
+      "layer2_output": {
+        "timestamp_ms": 4004,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898640,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 21,
+      "timestamp_ms": 4204,
+      "layer2_output": {
+        "timestamp_ms": 4204,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898677,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 22,
+      "timestamp_ms": 4404,
+      "layer2_output": {
+        "timestamp_ms": 4404,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898733,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 23,
+      "timestamp_ms": 4604,
+      "layer2_output": {
+        "timestamp_ms": 4604,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898760,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 24,
+      "timestamp_ms": 4804,
+      "layer2_output": {
+        "timestamp_ms": 4804,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898790,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 25,
+      "timestamp_ms": 5005,
+      "layer2_output": {
+        "timestamp_ms": 5005,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898864,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 26,
+      "timestamp_ms": 5205,
+      "layer2_output": {
+        "timestamp_ms": 5205,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898902,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 27,
+      "timestamp_ms": 5405,
+      "layer2_output": {
+        "timestamp_ms": 5405,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898947,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 28,
+      "timestamp_ms": 5605,
+      "layer2_output": {
+        "timestamp_ms": 5605,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996898989,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 29,
+      "timestamp_ms": 5805,
+      "layer2_output": {
+        "timestamp_ms": 5805,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899072,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 30,
+      "timestamp_ms": 6006,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 50,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996899075,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 30,
+      "timestamp_ms": 6006,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996899082,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 30,
+      "timestamp_ms": 6006,
+      "layer2_output": {
+        "timestamp_ms": 6006,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899124,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 32,
+      "timestamp_ms": 6406,
+      "layer2_output": {
+        "timestamp_ms": 6406,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899167,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 33,
+      "timestamp_ms": 6606,
+      "layer2_output": {
+        "timestamp_ms": 6606,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899207,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 34,
+      "timestamp_ms": 6806,
+      "layer2_output": {
+        "timestamp_ms": 6806,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899244,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 35,
+      "timestamp_ms": 7007,
+      "layer2_output": {
+        "timestamp_ms": 7007,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899282,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 36,
+      "timestamp_ms": 7207,
+      "layer2_output": {
+        "timestamp_ms": 7207,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899325,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 37,
+      "timestamp_ms": 7407,
+      "layer2_output": {
+        "timestamp_ms": 7407,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899357,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 38,
+      "timestamp_ms": 7607,
+      "layer2_output": {
+        "timestamp_ms": 7607,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899406,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 39,
+      "timestamp_ms": 7807,
+      "layer2_output": {
+        "timestamp_ms": 7807,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899432,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 40,
+      "timestamp_ms": 8008,
+      "layer2_output": {
+        "timestamp_ms": 8008,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899471,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 41,
+      "timestamp_ms": 8208,
+      "layer2_output": {
+        "timestamp_ms": 8208,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899545,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 42,
+      "timestamp_ms": 8408,
+      "layer2_output": {
+        "timestamp_ms": 8408,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899583,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 43,
+      "timestamp_ms": 8608,
+      "layer2_output": {
+        "timestamp_ms": 8608,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899619,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 44,
+      "timestamp_ms": 8808,
+      "layer2_output": {
+        "timestamp_ms": 8808,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899702,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 45,
+      "timestamp_ms": 9009,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 46,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996899705,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 45,
+      "timestamp_ms": 9009,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996899712,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 45,
+      "timestamp_ms": 9009,
+      "layer2_output": {
+        "timestamp_ms": 9009,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899753,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 47,
+      "timestamp_ms": 9409,
+      "layer2_output": {
+        "timestamp_ms": 9409,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899803,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 48,
+      "timestamp_ms": 9609,
+      "layer2_output": {
+        "timestamp_ms": 9609,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899844,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 49,
+      "timestamp_ms": 9809,
+      "layer2_output": {
+        "timestamp_ms": 9809,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899880,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 50,
+      "timestamp_ms": 10010,
+      "layer2_output": {
+        "timestamp_ms": 10010,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899935,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 51,
+      "timestamp_ms": 10210,
+      "layer2_output": {
+        "timestamp_ms": 10210,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996899968,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 52,
+      "timestamp_ms": 10410,
+      "layer2_output": {
+        "timestamp_ms": 10410,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900013,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 53,
+      "timestamp_ms": 10610,
+      "layer2_output": {
+        "timestamp_ms": 10610,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900059,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 54,
+      "timestamp_ms": 10810,
+      "layer2_output": {
+        "timestamp_ms": 10810,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900105,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 55,
+      "timestamp_ms": 11011,
+      "layer2_output": {
+        "timestamp_ms": 11011,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900133,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 56,
+      "timestamp_ms": 11211,
+      "layer2_output": {
+        "timestamp_ms": 11211,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900169,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 57,
+      "timestamp_ms": 11411,
+      "layer2_output": {
+        "timestamp_ms": 11411,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900208,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 58,
+      "timestamp_ms": 11611,
+      "layer2_output": {
+        "timestamp_ms": 11611,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900251,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 59,
+      "timestamp_ms": 11811,
+      "layer2_output": {
+        "timestamp_ms": 11811,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900328,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 60,
+      "timestamp_ms": 12012,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 43,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996900332,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 60,
+      "timestamp_ms": 12012,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996900337,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 60,
+      "timestamp_ms": 12012,
+      "layer2_output": {
+        "timestamp_ms": 12012,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900347,
+    "category": "coach_summary",
+    "message": "litert_prewarm_requested",
+    "thread": "main",
+    "data": {
+      "analysis_run_id": 1,
+      "progress": 0.7654321,
+      "model_path": "\/storage\/emulated\/0\/Android\/data\/com.gemmafit\/files\/gemma-4-E2B-it.litertlm"
+    }
+  },
+  {
+    "ts_ms": 1778996900372,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 61,
+      "timestamp_ms": 12212,
+      "layer2_output": {
+        "timestamp_ms": 12212,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900423,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 63,
+      "timestamp_ms": 12612,
+      "layer2_output": {
+        "timestamp_ms": 12612,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900474,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 64,
+      "timestamp_ms": 12812,
+      "layer2_output": {
+        "timestamp_ms": 12812,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900527,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 65,
+      "timestamp_ms": 13013,
+      "layer2_output": {
+        "timestamp_ms": 13013,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900571,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 66,
+      "timestamp_ms": 13213,
+      "layer2_output": {
+        "timestamp_ms": 13213,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900628,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 67,
+      "timestamp_ms": 13413,
+      "layer2_output": {
+        "timestamp_ms": 13413,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900670,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 68,
+      "timestamp_ms": 13613,
+      "layer2_output": {
+        "timestamp_ms": 13613,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900729,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 69,
+      "timestamp_ms": 13813,
+      "layer2_output": {
+        "timestamp_ms": 13813,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900765,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 70,
+      "timestamp_ms": 14014,
+      "layer2_output": {
+        "timestamp_ms": 14014,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900808,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 71,
+      "timestamp_ms": 14214,
+      "layer2_output": {
+        "timestamp_ms": 14214,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900859,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 72,
+      "timestamp_ms": 14414,
+      "layer2_output": {
+        "timestamp_ms": 14414,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900913,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 73,
+      "timestamp_ms": 14614,
+      "layer2_output": {
+        "timestamp_ms": 14614,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996900959,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 74,
+      "timestamp_ms": 14814,
+      "layer2_output": {
+        "timestamp_ms": 14814,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901065,
+    "category": "person_detector",
+    "message": "multi_person_guard",
+    "thread": "main",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "available": true,
+      "source": "yolo_person_onnx",
+      "proposal_count": 1,
+      "raw_proposal_count": 1,
+      "latency_ms": 63,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996901067,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "track_id": 1,
+      "has_prev_landmarks": true,
+      "dt_ms": 201,
+      "temporal_allowed": true,
+      "reason": "same_track_contiguous"
+    }
+  },
+  {
+    "ts_ms": 1778996901076,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 75,
+      "timestamp_ms": 15015,
+      "layer2_output": {
+        "timestamp_ms": 15015,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901106,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 77,
+      "timestamp_ms": 15415,
+      "layer2_output": {
+        "timestamp_ms": 15415,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901147,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 78,
+      "timestamp_ms": 15615,
+      "layer2_output": {
+        "timestamp_ms": 15615,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901203,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "frame": 79,
+      "timestamp_ms": 15815,
+      "layer2_output": {
+        "timestamp_ms": 15815,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901237,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-3",
+    "data": {
+      "frame": 80,
+      "timestamp_ms": 16016,
+      "layer2_output": {
+        "timestamp_ms": 16016,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996901256,
+    "category": "video",
+    "message": "analysis_pass_complete",
+    "thread": "main",
+    "data": {
+      "pass": "FULL",
+      "elapsed_ms": 3989,
+      "pose_hits": 81,
+      "pose_misses": 0,
+      "first_pose_frame": 0,
+      "first_pose_timestamp_ms": 0,
+      "first_60_pose_hits": 60,
+      "first_60_pose_misses": 0,
+      "hit_rate": 1
+    }
+  },
+  {
+    "ts_ms": 1778996901265,
+    "category": "motion_zip_packet",
+    "message": "updated",
+    "thread": "main",
+    "data": {
+      "enabled": false,
+      "block_count": 0,
+      "judgeable_blocks": 0,
+      "monitor_only_blocks": 0,
+      "abstain_blocks": 0,
+      "latest_output_state": "",
+      "latest_abstain_reason": "",
+      "source": "full_analysis_complete"
+    }
+  },
+  {
+    "ts_ms": 1778996901265,
+    "category": "video",
+    "message": "process_video_complete",
+    "thread": "main",
+    "data": {
+      "frames": 81,
+      "pose_present": true,
+      "total_reps": 0,
+      "no_pose_retry": {
+        "enabled": true,
+        "attempted": false,
+        "island_count": 0,
+        "target_frame_count": 0,
+        "recovered_count": 0,
+        "unresolved_count": 0,
+        "elapsed_ms": 0,
+        "reason": "no_no_pose_islands",
+        "islands": []
+      },
+      "motion_zip_blocks": 0,
+      "motion_zip_output_state": "none"
+    }
+  },
+  {
+    "ts_ms": 1778996901268,
+    "category": "video",
+    "message": "completion_review_frame_selected",
+    "thread": "main",
+    "data": {
+      "selected_index": 0,
+      "previous_index": 80,
+      "reason": "first_frame_after_analysis"
+    }
+  },
+  {
+    "ts_ms": 1778996901277,
+    "category": "model_invocation",
+    "message": "session_summary_plan",
+    "thread": "main",
+    "data": {
+      "event": "session_summary",
+      "event_key": "session_summary|81|0",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "decision": "CALL_E2B_NOW",
+        "backend_preference": "LITERT_E2B",
+        "context_budget": "SESSION_COMPACT",
+        "reason": "session_summary_event",
+        "allowed_judgment": true,
+        "fallback_backend": "",
+        "reasoning_mode": "summary_optional",
+        "multimodal_evidence_plan": {
+          "action": "CALL_BACKEND",
+          "build_panel": true,
+          "call_backend": true,
+          "reason": "session_ended_multimodal_summary"
+        }
+      },
+      "total_reps": 0,
+      "total_frames": 72,
+      "evidence_refs": [
+        "visibility.lunge.keypoints",
+        "metric.lunge.front_knee_angle",
+        "metric.lunge.step_length_proxy",
+        "metric.lunge.trunk_uprightness",
+        "metric.lunge.stability",
+        "metric.lunge.knee_asymmetry_expected",
+        "metric.lunge.tempo_deg_s",
+        "gate.critical.visibility.0",
+        "gate.critical.spine_deviation_deg.1",
+        "gate.critical.neck_deviation_deg.2",
+        "gate.not_applicable.knee_valgus_fppa.0",
+        "gate.not_applicable.bilateral_asymmetry.1",
+        "capability.can.front_knee_angle",
+        "capability.can.step_length_proxy",
+        "capability.can.trunk_uprightness",
+        "capability.can.stability",
+        "capability.can.tempo",
+        "capability.cannot.bilateral_asymmetry",
+        "capability.cannot.frontal_knee_valgus",
+        "capability.cannot.joint_force",
+        "capability.cannot.clinical_injury_risk",
+        "capability.cannot.medical_diagnosis",
+        "capability.cannot.muscle_activation_percentage",
+        "visibility.unknown.keypoints",
+        "metric.unknown.tempo_deg_s",
+        "gate.view_limited.exercise_template.0",
+        "gate.not_applicable.template_metrics.0",
+        "capability.cannot.template_metrics",
+        "capability.cannot.hard_form_judgment",
+        "visibility.deadlift.keypoints",
+        "metric.deadlift.hip_hinge",
+        "metric.deadlift.trunk_angle",
+        "metric.deadlift.bar_or_body_path_proxy",
+        "metric.deadlift.knee_angle",
+        "metric.deadlift.tempo_deg_s",
+        "gate.critical.left_right_angle_delta_deg.2",
+        "capability.can.hip_hinge",
+        "capability.can.trunk_angle",
+        "capability.can.bar_or_body_path_proxy",
+        "capability.can.knee_angle",
+        "gate.critical.joint_angle_deg.2",
+        "gate.critical.left_right_angle_delta_deg.3"
+      ]
+    }
+  },
+  {
+    "ts_ms": 1778996901285,
+    "category": "coach_summary",
+    "message": "summary_inference_start",
+    "thread": "DefaultDispatcher-worker-1",
+    "data": {
+      "event_key": "session_summary|81|0",
+      "trigger": "SUMMARY_ONLY",
+      "exercise": "lunge",
+      "total_reps": 0,
+      "total_frames": 72,
+      "view_limited_count": 6,
+      "low_confidence_count": 0,
+      "reasoning_mode": "summary_optional"
+    }
+  },
+  {
+    "ts_ms": 1778996902975,
+    "category": "review_frame",
+    "message": "bitmap_restored",
+    "thread": "DefaultDispatcher-worker-6",
+    "data": {
+      "frame": 0,
+      "timestamp_ms": 0,
+      "latency_ms": 1082,
+      "width": 288,
+      "height": 512
+    }
+  },
+  {
+    "ts_ms": 1778996924245,
+    "category": "coach_summary",
+    "message": "litert_prewarm_complete",
+    "thread": "GemmaFitDebugPipe",
+    "data": {
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 22874,
+      "reused_engine": false,
+      "max_num_images": 1
+    }
+  },
+  {
+    "ts_ms": 1778996924260,
+    "category": "coach_summary",
+    "message": "litert_prewarm_ready",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "analysis_run_id": 1,
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 22874,
+      "reused_engine": false,
+      "max_num_images": 1,
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996929103,
+    "category": "native",
+    "message": "temporal_input",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 2,
+      "timestamp_ms": 400,
+      "track_id": null,
+      "has_prev_landmarks": false,
+      "dt_ms": null,
+      "temporal_allowed": false,
+      "reason": "missing_subject_track"
+    }
+  },
+  {
+    "ts_ms": 1778996929153,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 2,
+      "timestamp_ms": 400,
+      "layer2_output": {
+        "timestamp_ms": 400,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996929503,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 4,
+      "timestamp_ms": 800,
+      "layer2_output": {
+        "timestamp_ms": 800,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996930034,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 7,
+      "timestamp_ms": 1401,
+      "layer2_output": {
+        "timestamp_ms": 1401,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996930648,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 10,
+      "timestamp_ms": 2002,
+      "layer2_output": {
+        "timestamp_ms": 2002,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996931922,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 16,
+      "timestamp_ms": 3203,
+      "layer2_output": {
+        "timestamp_ms": 3203,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996932802,
+    "category": "session_visual_context",
+    "message": "vision_sidecar_result",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "event_key": "session_visual|72|0",
+      "request": {
+        "trigger": "SESSION_ENDED",
+        "person_tracking_state": "OBSERVED",
+        "confidence_floor": 1,
+        "capability_judgment_allowed": true,
+        "has_critical_or_warning_evidence": true,
+        "needs_language_explanation": true,
+        "model_backend_available": true,
+        "device_low_battery": false,
+        "device_high_thermal_load": false,
+        "model_disabled": false,
+        "user_question_type": "NONE",
+        "multimodal_evidence_panel_enabled": true,
+        "multimodal_backend_available": true,
+        "debug_rep_multimodal_panel": false
+      },
+      "plan": {
+        "action": "CALL_BACKEND",
+        "build_panel": true,
+        "call_backend": true,
+        "reason": "session_ended_multimodal_summary"
+      },
+      "motion_zip_available": false,
+      "visual_frame_candidates_available": true,
+      "status": "complete",
+      "success": true,
+      "backend": "litert-lm:isolated:gpu",
+      "elapsed_ms": 30193,
+      "generate_content_ms": 8368,
+      "panel_confidence": "high",
+      "mode": "scene_only",
+      "budget_reason": "scene_only_fallback:motion_zip_unavailable",
+      "visual_context": "{\"env\":\"outdoor\",\"support\":\"chair\",\"person\":\"visible\",\"overlay_readable\":true,\"limited\":false,\"source\":\"litert_vision_sidecar\",\"evidence_refs\":[\"visual_context.env\",\"visual_context.support\",\"visual_context.person\",\"visual_context.overlay_readable\",\"visual_context.limited\"]}",
+      "raw_response": "env=outdoor;support=chair;person=visible;overlay_readable=true;limited=false",
+      "error": ""
+    }
+  },
+  {
+    "ts_ms": 1778996933113,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 22,
+      "timestamp_ms": 4404,
+      "layer2_output": {
+        "timestamp_ms": 4404,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996933226,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 23,
+      "timestamp_ms": 4604,
+      "layer2_output": {
+        "timestamp_ms": 4604,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996933490,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 24,
+      "timestamp_ms": 4804,
+      "layer2_output": {
+        "timestamp_ms": 4804,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996934806,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 31,
+      "timestamp_ms": 6206,
+      "layer2_output": {
+        "timestamp_ms": 6206,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996936322,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 38,
+      "timestamp_ms": 7607,
+      "layer2_output": {
+        "timestamp_ms": 7607,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996936515,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 39,
+      "timestamp_ms": 7807,
+      "layer2_output": {
+        "timestamp_ms": 7807,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996936645,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 40,
+      "timestamp_ms": 8008,
+      "layer2_output": {
+        "timestamp_ms": 8008,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "abstain",
+        "event": "abstain",
+        "confidence": 0,
+        "abstain_reason": "judgment_not_allowed",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "abstain",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "abstain",
+          "blocked_rules": [],
+          "notes": [
+            "judgment_not_allowed"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.abstain",
+          "layer2.event.abstain"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996937925,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 46,
+      "timestamp_ms": 9209,
+      "layer2_output": {
+        "timestamp_ms": 9209,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996941122,
+    "category": "layer2_event",
+    "message": "frame_interpreted",
+    "thread": "DefaultDispatcher-worker-2",
+    "data": {
+      "frame": 62,
+      "timestamp_ms": 12412,
+      "layer2_output": {
+        "timestamp_ms": 12412,
+        "activity_hypothesis": {
+          "label": "unknown",
+          "confidence": 0.35,
+          "source": [
+            "activity_hint",
+            "derived_motion_features"
+          ]
+        },
+        "phase": "monitor_only",
+        "event": "none",
+        "confidence": 0.4,
+        "abstain_reason": "unsupported_or_uncertain_activity",
+        "rep_count": 0,
+        "hold_duration_ms": 0,
+        "judgeability": "monitor_only",
+        "non_senior_label_demoted": false,
+        "sub_actions": [],
+        "rule_policy": {
+          "allow_hard_judgment": false,
+          "allow_strength_template_hard_warnings": false,
+          "allow_bilateral_symmetry_hard_warning": false,
+          "allow_landing_stabilization_monitor": false,
+          "output_state": "monitor_only",
+          "blocked_rules": [],
+          "notes": [
+            "unsupported_or_uncertain_activity"
+          ]
+        },
+        "evidence_refs": [
+          "layer2.activity.unknown",
+          "layer2.phase.monitor_only"
+        ]
+      }
+    }
+  },
+  {
+    "ts_ms": 1778996942571,
+    "category": "review_frame",
+    "message": "bitmap_restored",
+    "thread": "DefaultDispatcher-worker-3",
+    "data": {
+      "frame": 3,
+      "timestamp_ms": 600,
+      "latency_ms": 1028,
+      "width": 288,
+      "height": 512
+    }
+  },
+  {
+    "ts_ms": 1778996955309,
+    "category": "coach_summary",
+    "message": "summary_inference_result",
+    "thread": "DefaultDispatcher-worker-4",
+    "data": {
+      "event_key": "session_summary|81|0",
+      "backend": "litert-lm:isolated:gpu",
+      "function": "create_care_activity_log",
+      "fallback": false,
+      "error": "",
+      "inference_time_ms": 22402,
+      "reasoning_mode": "summary_optional",
+      "selection_basis": "Summarized from safety event using metric.session.total_frames.",
+      "evidence_refs": [
+        "metric.session.total_frames",
+        "metric.session.total_reps",
+        "metric.session.avg_form_score",
+        "metric.session.duration_seconds",
+        "metric.session.view_limited_count",
+        "metric.session.safety_events"
+      ],
+      "headline": "Lunge summary",
+      "next_focus": "Keep the next set slow, supported, and easy to see in the camera view."
+    }
+  },
+  {
+    "ts_ms": 1778998062959,
+    "category": "model_invocation",
+    "message": "smoke_completed",
+    "thread": "GemmaFitDebugPipe",
+    "data": {
+      "case_count": 10
+    }
+  },
+  {
+    "ts_ms": 1778998076040,
+    "category": "layer2_event",
+    "message": "smoke_completed",
+    "thread": "GemmaFitDebugPipe",
+    "data": {
+      "case_count": 6,
+      "success": true
+    }
+  },
+  {
+    "ts_ms": 1778998089474,
+    "category": "coach_summary",
+    "message": "litert_prewarm_complete",
+    "thread": "GemmaFitDebugPipe",
+    "data": {
+      "backend": "litert-lm:isolated:gpu",
+      "engine_initialize_ms": 10696,
+      "reused_engine": false,
+      "max_num_images": 0
+    }
+  }
+]

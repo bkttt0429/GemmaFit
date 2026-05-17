@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="640" viewBox="0 0 1180 640">
+<rect width="1180" height="640" fill="#ffffff"/>
+<text x="40" y="54" font-size="28" font-weight="800" fill="#0f172a">B-only no-peek gate</text>
+<text x="40" y="84" font-size="15" fill="#475569">The proof packet removes raw video paths and landmark streams before it is treated as Gemma input.</text>
+
+<text x="60" y="145" font-size="16" font-weight="700" fill="#0f172a">Raw video file</text>
+<rect x="300" y="125" width="760" height="32" rx="4" fill="#bfdbfe"/>
+<text x="300" y="182" font-size="14" fill="#334155">6.8 MB</text>
+
+<text x="60" y="235" font-size="16" font-weight="700" fill="#0f172a">B-only Gemma payload</text>
+<rect x="300" y="215" width="8" height="32" rx="4" fill="#86efac"/>
+<text x="300" y="272" font-size="14" fill="#334155">6.1 KB (1136x smaller than raw source video)</text>
+
+<text x="60" y="335" font-size="16" font-weight="700" fill="#0f172a">Tracked-frame ratio</text>
+<rect x="300" y="315" width="63" height="32" rx="4" fill="#fde68a"/>
+<text x="300" y="372" font-size="14" fill="#334155">8.3%; every 12 video frames</text>
+
+<text x="60" y="425" font-size="16" font-weight="700" fill="#0f172a">Understanding score</text>
+<rect x="300" y="405" width="757" height="32" rx="4" fill="#c4b5fd"/>
+<text x="300" y="462" font-size="14" fill="#334155">99.7%; tags, states, events, velocity, confidence floor</text>
+
+<rect x="60" y="505" width="1060" height="82" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="82" y="537" font-size="17" font-weight="700" fill="#0f172a">Gate result: PASS</text>
+<text x="82" y="567" font-size="14" fill="#475569">Forbidden payload hits: 0; event blocks: 2; states: abstain, monitor_only</text>
+</svg>

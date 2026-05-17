@@ -1,0 +1,5 @@
+﻿  bash arg: -p
+  bash arg: com.gemmafit
+  bash arg: 1
+Events injected: 1
+## Network stats: elapsed time=53ms (0ms mobile, 0ms wifi, 53ms not connected)

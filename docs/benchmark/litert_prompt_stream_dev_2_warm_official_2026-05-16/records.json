@@ -1,0 +1,60 @@
+﻿[
+    {
+        "index":  1,
+        "wall_ms":  26685,
+        "endpoint_success":  true,
+        "generation_success":  true,
+        "payload_parse_success":  true,
+        "model_json_parse_success":  true,
+        "function_name":  "create_care_activity_log",
+        "backend":  "litert-lm:isolated:gpu",
+        "elapsed_ms":  25176,
+        "generate_content_ms":  25159,
+        "engine_initialize_ms":  0,
+        "session_create_ms":  5,
+        "constrained_decoding":  false,
+        "constrained_decoding_ms":  null,
+        "constrained_tool_call_observed":  false,
+        "first_token_ms":  3143,
+        "stream_token_count":  147,
+        "reused_engine":  true,
+        "prompt_chars":  1509,
+        "raw_response_chars":  581,
+        "error":  "",
+        "payload_parse_error":  "",
+        "retry_count":  0,
+        "retry_reasons":  [
+
+                          ],
+        "response_file":  "run_001.json"
+    },
+    {
+        "index":  2,
+        "wall_ms":  24178,
+        "endpoint_success":  true,
+        "generation_success":  true,
+        "payload_parse_success":  true,
+        "model_json_parse_success":  true,
+        "function_name":  "create_care_activity_log",
+        "backend":  "litert-lm:isolated:gpu",
+        "elapsed_ms":  22543,
+        "generate_content_ms":  22541,
+        "engine_initialize_ms":  0,
+        "session_create_ms":  1,
+        "constrained_decoding":  false,
+        "constrained_decoding_ms":  null,
+        "constrained_tool_call_observed":  false,
+        "first_token_ms":  956,
+        "stream_token_count":  147,
+        "reused_engine":  true,
+        "prompt_chars":  1509,
+        "raw_response_chars":  581,
+        "error":  "",
+        "payload_parse_error":  "",
+        "retry_count":  0,
+        "retry_reasons":  [
+
+                          ],
+        "response_file":  "run_002.json"
+    }
+]

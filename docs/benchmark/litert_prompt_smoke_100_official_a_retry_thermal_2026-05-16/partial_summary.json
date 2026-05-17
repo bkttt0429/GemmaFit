@@ -1,0 +1,112 @@
+﻿{
+    "status":  "partial_stopped_thermal_severe",
+    "reason":  "device reached Thermal Status 3 before run 8 and did not cool below severe during repeated 90s pauses",
+    "count_requested":  100,
+    "count_completed":  7,
+    "model":  "official",
+    "prompt_file":  "litert_ab_a_no_narrative_v2.json",
+    "endpoint_success_count":  7,
+    "generation_success_count":  7,
+    "model_json_parse_success_count":  7,
+    "model_json_parse_success_rate":  1,
+    "pass_99_percent_gate":  false,
+    "partial_parse_rate_is_clean":  true,
+    "backend_values":  [
+                           "litert-lm:isolated:gpu"
+                       ],
+    "generate_ms_avg":  23501,
+    "elapsed_ms_avg":  27980.1,
+    "records":  [
+                    {
+                        "response_file":  "run_001.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  56527,
+                        "generate_content_ms":  25182,
+                        "engine_initialize_ms":  31336,
+                        "reused_engine":  false,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_002.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  22865,
+                        "generate_content_ms":  22861,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_003.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  22804,
+                        "generate_content_ms":  22804,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_004.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  22809,
+                        "generate_content_ms":  22808,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_005.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  22384,
+                        "generate_content_ms":  22383,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_006.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  23223,
+                        "generate_content_ms":  23222,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    },
+                    {
+                        "response_file":  "run_007.json",
+                        "endpoint_success":  true,
+                        "generation_success":  true,
+                        "model_json_parse_success":  true,
+                        "backend":  "litert-lm:isolated:gpu",
+                        "wall_ms":  null,
+                        "elapsed_ms":  25249,
+                        "generate_content_ms":  25247,
+                        "engine_initialize_ms":  0,
+                        "reused_engine":  true,
+                        "raw_response_chars":  648
+                    }
+                ]
+}

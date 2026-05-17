@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="535" viewBox="0 0 1140 535">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="32" y="46" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Next Validation Reports</text>
+<text x="32" y="74" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#475569">Generate P0 reports before broadening writeup claims.</text>
+<rect x="32" y="110" width="520" height="390" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<rect x="588" y="110" width="520" height="390" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+<text x="56" y="146" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#9a3412">P0: proof blockers</text>
+<text x="612" y="146" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#3730a3">P1: polish / breadth</text>
+<text x="56" y="184" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">1. live_safety_contract_report_2026-05-16</text>
+<text x="76" y="204" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Deterministic live safety path contract</text>
+<text x="56" y="232" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">2. camera_pipeline_long_run_report_2026-05-16</text>
+<text x="76" y="252" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">CameraX RGBA/YUV image pipeline and frame budget</text>
+<text x="56" y="280" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">3. senior_layer2_video_replay_report_2026-05-16</text>
+<text x="76" y="300" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Senior Layer 2 temporal interpreter and activity context</text>
+<text x="56" y="328" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">4. memory_export_boundary_report_2026-05-16</text>
+<text x="76" y="348" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Structured local memory and caregiver export boundary</text>
+<text x="56" y="376" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">5. litert_runtime_stability_report_2026-05-16</text>
+<text x="76" y="396" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Official Gemma-4-E2B LiteRT constrained runtime</text>
+<text x="56" y="424" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">6. person_recovery_yolo_fallback_report_2026-05-16</text>
+<text x="76" y="444" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Pose ownership, subject identity, and YOLO/person fallback</text>
+<text x="612" y="184" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">1. biomechanics_threshold_calibration_report_2026-05-16</text>
+<text x="632" y="204" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Native biomechanics thresholds and Trust Matrix calibratio</text>
+<text x="612" y="232" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">2. multimodal_trigger_fallback_report_2026-05-16</text>
+<text x="632" y="252" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Low-frequency multimodal evidence panel sidecar</text>
+<text x="612" y="280" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">3. senior_voice_accessibility_report_2026-05-16</text>
+<text x="632" y="300" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#64748b">Senior UI, voice cue policy, and TTS cooldown</text>
+</svg>
