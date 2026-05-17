@@ -62,6 +62,13 @@ test_assets/videos/internet_public/
 /build_log.txt
 /build_output*.txt
 /_patch_fix_cells.py
+/debug_*.json
+/debug_*.jsonl
+/debug_*.txt
+/debug_*.png
+/litert_ab_*.json
+/picker_window.xml
+/window*.xml
 /tmp_*
 /yolov8*.pt
 /app/src/main/assets/yolo*.tflite
