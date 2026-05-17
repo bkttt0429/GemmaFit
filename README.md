@@ -88,18 +88,6 @@ bounded local Gemma wording second, with explicit safety and evidence limits.
 | --- |
 | <img src="docs/assets/demo/evidence-reasoning-summary.png" alt="Workout summary explaining why events were flagged" width="320"> |
 
-## Media Gallery Assets
-
-The repository includes submission-ready product images for the Kaggle media
-gallery and public demo video thumbnail. They intentionally use movement-quality
-and safety-boundary language only.
-
-| Asset | Use | File |
-| --- | --- | --- |
-| <img src="docs/assets/media_gallery/gemmafit_cover_1120x560.png" alt="GemmaFit 2:1 Kaggle cover image" width="280"> | Kaggle report cover / media gallery | `docs/assets/media_gallery/gemmafit_cover_1120x560.png` |
-| <img src="docs/assets/media_gallery/gemmafit_thumbnail_new_1280x720.png" alt="GemmaFit YouTube thumbnail image" width="280"> | YouTube demo thumbnail | `docs/assets/media_gallery/gemmafit_thumbnail_new_1280x720.png` |
-| <img src="docs/assets/media_gallery/gemmafit_cover_560x280.png" alt="GemmaFit minimum-size Kaggle cover image" width="280"> | Minimum 560 x 280 fallback cover | `docs/assets/media_gallery/gemmafit_cover_560x280.png` |
-
 ## Architecture
 
 ```text
