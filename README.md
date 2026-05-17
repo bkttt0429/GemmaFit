@@ -29,6 +29,61 @@ As of 2026-05-17, `main` is the demo-ready Android mainline:
   deterministic fill, and fallback.
 - Review UI with frame-level cues and summary-linked moments.
 
+## Demo APK And Model Requirement
+
+A debug-signed demo APK has been exported for local Pixel testing:
+
+| Item | Value |
+| --- | --- |
+| APK | `releases/GemmaFit-demo-debug-v1.0.0-20260517-182618.apk` |
+| Package | `com.gemmafit` |
+| Variant | Debug-signed demo build |
+| Size | `173,820,675` bytes |
+| SHA-256 | `6BB2098CD3BB77E883ECB259532567F7A47DDD2874765A7706CB0BBDC61B6298` |
+
+APK binaries are intentionally ignored by Git. The path above is the latest
+local artifact from this workspace; rebuild it with `.\gradlew.bat :app:assembleDebug`
+when cloning fresh.
+
+Install it with:
+
+```powershell
+adb install -r releases\GemmaFit-demo-debug-v1.0.0-20260517-182618.apk
+```
+
+Local Gemma inference still requires the phone to already have the LiteRT-LM
+model file. The APK does not bundle the multi-GB model artifact.
+
+Expected device-side model path for the P0 official E2B backend:
+
+```text
+/sdcard/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm
+```
+
+Example push command:
+
+```powershell
+adb push path\to\gemma-4-E2B-it.litertlm /sdcard/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm
+```
+
+Without the `.litertlm` file, deterministic pose analysis, MotionZip evidence,
+review cues, and fallback summaries can still run. The Local Gemma session
+summary and evidence wording require the model to be present on device.
+
+## Demo Screenshots
+
+These are real Pixel captures from the current demo path and benchmarked review
+flow. They show the product-facing claim: on-device movement evidence first,
+bounded local Gemma wording second, with explicit safety and evidence limits.
+
+| Offline entry | Video analysis with abstention | Local Gemma summary |
+| --- | --- | --- |
+| <img src="docs/assets/demo/app-offline-entry.png" alt="GemmaFit offline Android entry screen" width="240"> | <img src="docs/assets/demo/video-analysis-abstain.png" alt="Video analysis screen showing camera-limited abstention" width="240"> | <img src="docs/assets/demo/local-gemma-summary-evidence-receipt.png" alt="Local Gemma summary and evidence receipt" width="240"> |
+
+| Evidence explanation |
+| --- |
+| <img src="docs/assets/demo/evidence-reasoning-summary.png" alt="Workout summary explaining why events were flagged" width="320"> |
+
 ## Architecture
 
 ```text
@@ -143,7 +198,12 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 ## Local Model Notes
 
 Model binaries are intentionally not committed. Place local model artifacts
-under `models/` or the app-specific Android external files directory.
+under `models/` for desktop experiments or the app-specific Android external
+files directory for phone inference. For the demo APK, Local Gemma requires:
+
+```text
+/sdcard/Android/data/com.gemmafit/files/gemma-4-E2B-it.litertlm
+```
 
 The current P0 path uses the official Google AI Edge / LiteRT-LM
 `Gemma-4-E2B-it` artifact for local session summaries. GemmaFit v5 fine-tuning
