@@ -84,4 +84,19 @@ test_assets/outputs/
 test_assets/datasets/
 *.zip
 *.mp4
+*.mov
+*.MOV
+*.webm
 !test_assets/videos/no_person_blank_3s.mp4
+
+# Third-party sources / build artifacts under tools/ — never commit
+# (clone from upstream or run helper scripts to rebuild locally)
+tools/SPIRV-Headers/
+tools/Vulkan-Headers/
+tools/llama.cpp-android-src/
+tools/llama.cpp-android-build/
+tools/llama.cpp-b9159-vulkan/
+tools/llama-*.zip
+
+# Regenerable prototype intermediates (large CSVs; rebuild on demand)
+prototype/data/processed/
