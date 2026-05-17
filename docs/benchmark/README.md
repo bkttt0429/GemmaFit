@@ -1,91 +1,75 @@
-# GemmaFit Benchmark - base vs fine-tuned v1
+# Benchmark Evidence Registry
 
-**Date:** 2026-05-04  
-**Base model:** `unsloth/gemma-4-E4B-it` via `models/gemma4-e4b-Q4_K_M.gguf`  
-**Fine-tuned model:** `models/gemmafit-q4_k_m.gguf`  
-**Model status:** this GGUF is v1 and must not be treated as v2.  
-**Validation set:** `finetune/data/fc_training_data.json::validation` with 90 synthetic examples across 9 functions.
+This folder stores reproducible benchmark outputs and Pixel/device evidence.
+The newest canonical artifacts should be cited from this registry instead of
+older exploratory runs.
 
-## Headline Numbers
+## Claim Scope
 
-| Setup | Base JSON parse | Base fn-match | FT JSON parse | FT fn-match | FT args Jaccard |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Production prompt | 95.6% | 0.0% | 93.3% | 2.2% | 0.081 |
-| Training prompt | 0.0% | 0.0% | 0.0% | 0.0% | 0.000 |
+These artifacts can support:
 
-Production prompt means system prompt plus fenced JSON plus reply instruction,
-matching the Android app. Training prompt means bare
-`Motion report:\n{compact json}`, matching the v1 notebook `fmt_domain` wrapper.
+- local model readiness and latency,
+- JSON/schema reliability,
+- evidence-ref validation behavior,
+- MotionZip key-fact preservation,
+- Layer 2 event/judgeability behavior,
+- camera/image-pipeline timing,
+- debug/demo readiness.
 
-## Artifacts
+They do **not** validate clinical biomechanics thresholds, injury prediction,
+rehabilitation efficacy, muscle activation, joint forces, GRF, fall-risk
+scoring, sarcopenia detection, dementia screening, or clinical improvement.
 
-| Path | Purpose |
+## Canonical Current Evidence
+
+| Topic | Current artifact | What it supports |
+| --- | --- | --- |
+| Official E2B baseline | `edge_gallery_official_e2b_litert_smoke_2026-05-15.md` | Official Edge Gallery `Gemma-4-E2B-it` LiteRT artifact presence, model size, initial GPU smoke, warm prompt feasibility. |
+| Official E2B JSON gate | `litert_prompt_smoke_constrained_100_official_2026-05-16/summary.json` | `100 / 100` endpoint success, generation success, and parseable model JSON under the official constrained smoke harness. |
+| Official E2B streaming | `litert_prompt_stream_dev_2_warm_official_2026-05-16/summary.json` | Warm first-token timing on reused official E2B engine. |
+| MotionZip model equivalence | `motionzip_equivalence_prompt_endpoint_hardened4_official_2026-05-16/summary.json` | Dense-vs-compressed prompt equivalence for activity/state/event/velocity/confidence key checks. |
+| MotionZip sparse understanding demo | `motionzip_sparse_understanding/report.md` | Visual/packet demonstration of sampled tracking and compact evidence delivery. |
+| Layer 2 senior activity | `layer2_senior_activity_ab_2026-05-16/README.md` | Senior Layer 2 A/B outputs and Pixel debug smoke. |
+| RGBA/YUV camera path | `rgba_pipeline_mobile_default_optimized_2026-05-16/summary.json` | Current live-camera image-pipeline timing and format audit. |
+| LiteRT model performance | `litert_model_perf_2026-05-16/report.md` | Official vs v5 runtime observations and foreground prompt performance notes. |
+| Pixel demo flow | `pixel_demo_flow_smoke_2026-05-16/` | UI screenshots, debug state, and demo-flow smoke artifacts. |
+| Vision sidecar cost | `gemma4_vision_mmproj_q8_vs_f16/README.md` | F16/Q8 projector comparison and why vision sidecar remains P3. |
+
+## Historical / Exploratory Runs
+
+Keep these for traceability, but do not cite them as the current headline unless
+the current canonical artifact is unavailable:
+
+| Family | Notes |
 | --- | --- |
-| `ab_compare/results.json` | production-prompt A/B results |
-| `ab_compare/report.html` | production-prompt side-by-side HTML |
-| `ab_compare_training_fmt/results.json` | training-prompt A/B results |
-| `ab_compare_training_fmt/report.html` | training-prompt side-by-side HTML |
-| `baseline_e4b/results.json` | original base-model baseline |
-| `baseline_smoke/` | early 5-example smoke test |
+| `ab_compare/`, `ab_compare_training_fmt/`, `baseline_e4b/`, `baseline_smoke/` | Early base-vs-fine-tuned GGUF function-calling tests. Useful as history, not current P0 evidence. |
+| `litert_prompt_smoke_dev_*`, `litert_prompt_smoke_retry_*`, `litert_prompt_smoke_100_official_a_*` | Development runs before the current 100-run constrained gate. |
+| `motionzip_equivalence_prompt_endpoint_dev_official/`, `hardened*` before `hardened4` | Iterations of the equivalence prompt endpoint; use `hardened4` as current. |
+| `rgba_pipeline_*` older variants | Camera-pipeline A/B history; use `rgba_pipeline_mobile_default_optimized_2026-05-16` as current. |
 
-## Diagnosis
+## Benchmark Folder Convention
 
-v1 is not usable as the local function-calling model yet.
+Preferred layout:
 
-- The FT model usually emits valid JSON under production prompt, but mostly
-  chooses generic or wrong function names.
-- Under the v1 training prompt, both base and FT fail function match. The FT
-  often echoes the input instead of emitting `{"function": "...", "args": ...}`.
-- The likely root causes are training distribution, not just quantization:
-  domain examples were only 30% of the mixture, production prompt format was not
-  represented, and checkpoint selection used `eval_loss` rather than a
-  function-calling metric.
-
-## v2 Remediation Status
-
-P0 is implemented:
-
-- `finetune/data/format_expand.py`
-- `finetune/data/fc_training_data_chat.json`
-- train rows: 510 raw examples expanded to 2040 chat-format examples
-- validation rows: 90 examples per format for `production`, `bare`, `terse`, and
-  `chinese`
-
-The notebook has been switched to the P0/P1 v2 recipe:
-
-- load `fc_training_data_chat.json`
-- use rows directly as `messages`
-- remove `fmt_domain` for domain rows
-- rebalance domain/Glaive/HH mixture to `60/30/10`
-- write `TRAINING_DONE_<model>_gemmafit_v2_format_expand.json`
-- export `gemmafit-v2-q4_k_m.gguf` and optionally `gemmafit-v2-q5_k_m.gguf`
-
-## Q5 Note
-
-`models/gemmafit-q5_k_m.gguf.crdownload` is incomplete and is not benchmark
-evidence. If a complete Q5 v1 file becomes available, run it only as a diagnostic
-to test whether quantization suppressed the v1 signal. Do not block v2 retraining
-on that diagnostic.
-
-## Next Benchmark After v2 Training
-
-Run post-hoc A/B with:
-
-```bash
-python prototype/eval_compare.py \
-  --base models/gemma4-e4b-Q4_K_M.gguf \
-  --ft models/gemmafit-v2-q4_k_m.gguf \
-  --n 90 \
-  --prompt-format production \
-  --out docs/benchmark/ab_compare_v2
+```text
+topic_YYYY-MM-DD/
+  summary.json      machine-readable headline numbers
+  report.md         human-readable interpretation
+  records.json      optional per-run records
+  model_readiness.json / state.json / events.jsonl as needed
 ```
 
-Then repeat with `--prompt-format training` to verify the model no longer echoes
-the input. If Q5 exists, repeat with `models/gemmafit-v2-q5_k_m.gguf`.
+For small one-off benchmarks, a single dated `.md` file is acceptable.
 
-## Success Criteria
+## Current P0 Interpretation
 
-- Minimum improvement: production function match clearly above v1's 2.2%.
-- Demo-ready target: production function match at least 50%.
-- If v2 remains below 50%, move to P2: expand synthetic domain data to roughly
-  1800 examples with stratified train/validation splits.
+- Official `Gemma-4-E2B-it` is sufficient for P0 summaries when the app owns
+  schema prompting, parsing, evidence-ref validation, forbidden-claim rejection,
+  deterministic fill, and fallback.
+- Native LiteRT tool-call objects were not observed in the 100-run constrained
+  official smoke, so constrained decoding should be described as smoke-safe but
+  not native-tool proven.
+- Streaming improves perceived latency only after prewarm. Full generation for
+  the tested prompt still takes tens of seconds.
+- MotionZip equivalence supports key-fact preservation for the tested task; it
+  does not prove lossless video understanding.
