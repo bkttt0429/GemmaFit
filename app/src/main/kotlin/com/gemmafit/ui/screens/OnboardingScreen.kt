@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -49,44 +50,50 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.BackgroundGradientEnd
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
 
 @Composable
 fun OnboardingScreen(
     onComplete: () -> Unit,
+    onOpenVideoMode: () -> Unit = onComplete,
     onOpenSettings: () -> Unit = {},
+    onOpenSeniorDemo: (() -> Unit)? = null,
 ) {
+    val copy = LocalAppStrings.current
     var currentPage by remember { mutableIntStateOf(0) }
+    val pageCopy = copy.onboardingPages
 
     val pages = listOf(
         OnboardingPage(
             icon = Icons.Filled.FitnessCenter,
-            title = "Your Pocket Trainer",
-            subtitle = "Real-time form coaching\nwithout leaving your phone",
-            description = "AI-powered form coaching that works offline, on your phone.",
+            title = pageCopy[0].title,
+            subtitle = pageCopy[0].subtitle,
+            description = pageCopy[0].description,
         ),
         OnboardingPage(
             icon = Icons.Filled.PhoneAndroid,
-            title = "How It Works",
-            subtitle = "Your phone sees, AI coaches",
-            description = "Camera tracks your movement. AI analyzes joint angles and gives instant voice feedback when form needs correction.",
+            title = pageCopy[1].title,
+            subtitle = pageCopy[1].subtitle,
+            description = pageCopy[1].description,
         ),
         OnboardingPage(
             icon = Icons.Filled.Security,
-            title = "100% Private",
-            subtitle = "Everything stays on your phone",
-            description = "No internet needed. No account required. No video is uploaded for coaching.",
+            title = pageCopy[2].title,
+            subtitle = pageCopy[2].subtitle,
+            description = pageCopy[2].description,
         ),
         OnboardingPage(
             icon = Icons.Filled.Camera,
-            title = "Almost Ready",
-            subtitle = "We need camera access",
-            description = "Camera permission is required to analyze posture in real time.",
+            title = pageCopy[3].title,
+            subtitle = pageCopy[3].subtitle,
+            description = pageCopy[3].description,
             isPermissionPage = true,
         ),
     )
@@ -108,7 +115,7 @@ fun OnboardingScreen(
         ) {
             Icon(
                 imageVector = Icons.Filled.Settings,
-                contentDescription = "Settings",
+                contentDescription = copy.settings,
                 tint = TextPrimary,
             )
         }
@@ -166,17 +173,47 @@ fun OnboardingScreen(
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Text(
-                    text = if (currentPage < pages.size - 1) "Continue" else "Start Workout",
+                    text = if (currentPage < pages.size - 1) copy.continueAction else copy.startWorkout,
                     color = Background,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                 )
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = onOpenVideoMode,
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Videocam,
+                    contentDescription = null,
+                    tint = Green,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "Video Mode",
+                    color = Green,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                )
+            }
+
             if (currentPage < pages.size - 1) {
                 Spacer(modifier = Modifier.height(12.dp))
                 TextButton(onClick = onComplete) {
-                    Text("Skip", color = TextSecondary)
+                    Text(copy.skip, color = TextSecondary)
+                }
+            }
+
+            onOpenSeniorDemo?.let { openSenior ->
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(onClick = openSenior) {
+                    Text("Senior Hero Demo", color = Green, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -193,6 +230,7 @@ data class OnboardingPage(
 
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage) {
+    val copy = LocalAppStrings.current
     val context = LocalContext.current
     var permissionGranted by remember {
         mutableStateOf(
@@ -249,11 +287,11 @@ private fun OnboardingPageContent(page: OnboardingPage) {
                     colors = ButtonDefaults.buttonColors(containerColor = Blue),
                     shape = RoundedCornerShape(12.dp),
                 ) {
-                    Text("Grant Camera Access", color = TextPrimary)
+                    Text(copy.grantCameraAccess, color = TextPrimary)
                 }
             } else {
                 Text(
-                    text = "Camera access granted",
+                    text = copy.cameraAccessGranted,
                     color = Green,
                     style = MaterialTheme.typography.bodyLarge,
                 )

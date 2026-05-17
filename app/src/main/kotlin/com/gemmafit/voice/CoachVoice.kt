@@ -1,6 +1,9 @@
-package com.gemmafit.voice
+﻿package com.gemmafit.voice
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -45,17 +48,37 @@ internal class UtteranceSequenceGate {
  *   - Minimum 3-second interval between utterances (cooldown)
  *   - Critical warnings bypass queue and interrupt current speech
  *   - Duplicate messages within 10 seconds are suppressed
- *   - Queue size limited to 5 messages to prevent backlog
+ *   - Queue size limited to 3 messages to prevent backlog
  */
 class CoachVoice(context: Context) {
 
     private val appContext = context.applicationContext
+    private val audioManager = appContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val audioFocusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        if (
+            focusChange == AudioManager.AUDIOFOCUS_LOSS ||
+            focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
+        ) {
+            stop()
+        }
+    }
+    private val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+        .setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                .build()
+        )
+        .setOnAudioFocusChangeListener(audioFocusChangeListener)
+        .build()
     private val tts = AtomicReference<TextToSpeech?>()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val messageQueue = ConcurrentLinkedQueue<CoachMessage>()
     private val isSpeaking = AtomicBoolean(false)
+    private val queueWorkerActive = AtomicBoolean(false)
     private val isInitialized = AtomicBoolean(false)
     private val utteranceGate = UtteranceSequenceGate()
+    private val cuePolicy = VoiceCuePolicy()
 
     private var lastSpokenTime = 0L
     private var lastSpokenText = ""
@@ -89,11 +112,13 @@ class CoachVoice(context: Context) {
                         override fun onDone(utteranceId: String?) {
                             if (!utteranceGate.complete(utteranceId)) return
                             isSpeaking.set(false)
+                            abandonSpeechAudioFocus()
                             processNextMessage()
                         }
                         override fun onError(utteranceId: String?) {
                             if (!utteranceGate.complete(utteranceId)) return
                             isSpeaking.set(false)
+                            abandonSpeechAudioFocus()
                             processNextMessage()
                         }
                     })
@@ -156,8 +181,18 @@ class CoachVoice(context: Context) {
             return
         }
 
-        // Deduplication: suppress identical messages within 10 seconds
         val now = System.currentTimeMillis()
+        val policyDecision = cuePolicy.shouldSpeak(
+            functionName = functionName,
+            text = text,
+            priority = priority,
+            profile = config.interactionProfile,
+        )
+        if (!policyDecision.shouldSpeak) {
+            return
+        }
+
+        // Deduplication: suppress identical messages within 10 seconds
         if (priority != MessagePriority.CRITICAL && text == lastSpokenText && now - lastSpokenTimestamp < 10_000) {
             return
         }
@@ -166,6 +201,7 @@ class CoachVoice(context: Context) {
 
         // Critical messages bypass queue and interrupt
         if (priority == MessagePriority.CRITICAL) {
+            messageQueue.clear()
             utteranceGate.interrupt()
             tts.get()?.stop()
             isSpeaking.set(false)
@@ -174,7 +210,7 @@ class CoachVoice(context: Context) {
         }
 
         // Add to queue, respecting size limit
-        if (messageQueue.size >= 5) {
+        if (messageQueue.size >= MAX_QUEUE_SIZE) {
             // Remove lowest priority message if queue is full
             val lowest = messageQueue.maxByOrNull { it.priority.ordinal }
             if (lowest != null && priority.ordinal < lowest.priority.ordinal) {
@@ -198,6 +234,9 @@ class CoachVoice(context: Context) {
     }
 
     private fun processNextMessage() {
+        if (!queueWorkerActive.compareAndSet(false, true)) {
+            return
+        }
         val now = System.currentTimeMillis()
         val timeSinceLast = now - lastSpokenTime
 
@@ -206,11 +245,18 @@ class CoachVoice(context: Context) {
         val waitTime = (cooldownMs - timeSinceLast).coerceAtLeast(0)
 
         scope.launch {
-            if (waitTime > 0) {
-                delay(waitTime)
+            try {
+                if (waitTime > 0) {
+                    delay(waitTime)
+                }
+                val message = messageQueue.poll() ?: return@launch
+                speakInternal(message)
+            } finally {
+                queueWorkerActive.set(false)
+                if (!isSpeaking.get() && messageQueue.isNotEmpty()) {
+                    processNextMessage()
+                }
             }
-            val message = messageQueue.poll() ?: return@launch
-            speakInternal(message)
         }
     }
 
@@ -218,6 +264,10 @@ class CoachVoice(context: Context) {
         if (!config.enabled || !isInitialized.get()) return
 
         val engine = tts.get() ?: return
+        if (!requestSpeechAudioFocus()) {
+            Log.w(TAG, "TTS audio focus not granted for ${message.functionName.ifBlank { "raw_text" }}")
+            return
+        }
         isSpeaking.set(true)
         lastSpokenTime = System.currentTimeMillis()
         lastSpokenText = message.text
@@ -231,8 +281,18 @@ class CoachVoice(context: Context) {
         if (result == TextToSpeech.ERROR) {
             utteranceGate.complete(utteranceId)
             isSpeaking.set(false)
+            abandonSpeechAudioFocus()
             Log.w(TAG, "TTS speak failed for ${message.functionName.ifBlank { "raw_text" }}")
         }
+    }
+
+    private fun requestSpeechAudioFocus(): Boolean {
+        val result = audioManager.requestAudioFocus(audioFocusRequest)
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+    }
+
+    private fun abandonSpeechAudioFocus() {
+        audioManager.abandonAudioFocusRequest(audioFocusRequest)
     }
 
     private fun applyConfigToEngine() {
@@ -266,9 +326,11 @@ class CoachVoice(context: Context) {
      */
     fun stop() {
         messageQueue.clear()
+        cuePolicy.reset()
         utteranceGate.interrupt()
         tts.get()?.stop()
         isSpeaking.set(false)
+        abandonSpeechAudioFocus()
     }
 
     /**
@@ -284,6 +346,7 @@ class CoachVoice(context: Context) {
 
     private companion object {
         const val TAG = "CoachVoice"
+        const val MAX_QUEUE_SIZE = 3
     }
 }
 
@@ -292,14 +355,29 @@ data class CoachVoiceConfig(
     val language: AppLanguage = AppLanguage.SYSTEM,
     val speed: Float = 1.0f,
     val cueStyle: AppCueStyle = AppCueStyle.ENCOURAGING,
+    val interactionProfile: VoiceInteractionProfile = VoiceInteractionProfile.STANDARD,
 ) {
     fun normalized(): CoachVoiceConfig {
-        return copy(speed = speed.coerceIn(MIN_SPEED, MAX_SPEED))
+        val normalizedSpeed = speed.coerceIn(MIN_SPEED, MAX_SPEED)
+        return if (interactionProfile == VoiceInteractionProfile.DEMENTIA_FRIENDLY_SELF_GUIDED) {
+            copy(speed = normalizedSpeed.coerceAtMost(DEMENTIA_FRIENDLY_MAX_SPEED))
+        } else {
+            copy(speed = normalizedSpeed)
+        }
+    }
+
+    fun dementiaFriendlySelfGuided(): CoachVoiceConfig {
+        return copy(
+            speed = speed.coerceAtMost(DEMENTIA_FRIENDLY_MAX_SPEED),
+            cueStyle = AppCueStyle.TERSE,
+            interactionProfile = VoiceInteractionProfile.DEMENTIA_FRIENDLY_SELF_GUIDED,
+        ).normalized()
     }
 
     companion object {
         const val MIN_SPEED = 0.7f
         const val MAX_SPEED = 1.3f
+        const val DEMENTIA_FRIENDLY_MAX_SPEED = 0.85f
     }
 }
 
@@ -309,12 +387,17 @@ fun AppSettings.toCoachVoiceConfig(): CoachVoiceConfig {
     } else {
         voiceLanguage
     }
-    return CoachVoiceConfig(
+    val baseConfig = CoachVoiceConfig(
         enabled = voiceEnabled,
         language = resolvedLanguage,
         speed = voiceSpeed.coerceIn(CoachVoiceConfig.MIN_SPEED, CoachVoiceConfig.MAX_SPEED),
         cueStyle = cueStyle,
     )
+    return if (assistedMode && voiceFirst) {
+        baseConfig.dementiaFriendlySelfGuided()
+    } else {
+        baseConfig
+    }
 }
 
 object CoachCueCatalog {
@@ -383,8 +466,8 @@ object CoachCueCatalog {
             enEncouraging = "Keep your knees tracking over your toes.",
             enDetailed = "Before the next rep, line your knees up with your toes and move with control.",
             zhTerse = "膝蓋對齊腳尖。",
-            zhEncouraging = "膝蓋跟著腳尖方向，穩穩做。",
-            zhDetailed = "下一下前，先讓膝蓋跟腳尖方向對齊，再慢慢控制動作。",
+            zhEncouraging = "膝蓋跟著腳尖方向走，保持穩定。",
+            zhDetailed = "下一次動作前，讓膝蓋對齊腳尖，再用可控制的速度完成。",
         ),
         "correct_spinal_alignment" to cue(
             enTerse = "Neutral spine.",
@@ -392,87 +475,143 @@ object CoachCueCatalog {
             enDetailed = "Reset your trunk position and keep a neutral spine before continuing.",
             zhTerse = "脊椎保持中立。",
             zhEncouraging = "背部拉長，保持穩定。",
-            zhDetailed = "先重整軀幹位置，讓脊椎保持中立，再繼續動作。",
+            zhDetailed = "繼續前先調整軀幹位置，讓脊椎維持自然中立。",
         ),
         "correct_joint_angle" to cue(
             enTerse = "Soft joints.",
             enEncouraging = "Keep a small bend instead of locking out.",
             enDetailed = "Avoid locking the joint; keep a small comfortable bend through the movement.",
             zhTerse = "關節不要鎖死。",
-            zhEncouraging = "保留一點彎曲，不要鎖住關節。",
-            zhDetailed = "動作過程中避免把關節鎖死，保留一點舒服的彎曲角度。",
+            zhEncouraging = "保留一點彎曲，不要把關節打直鎖住。",
+            zhDetailed = "避免把關節鎖死，整個動作都保持舒服、可控制的小彎曲。",
         ),
         "correct_asymmetry" to cue(
             enTerse = "Even both sides.",
             enEncouraging = "Try to keep both sides balanced.",
             enDetailed = "Slow the next rep and keep the left and right side moving evenly.",
-            zhTerse = "兩邊平均。",
-            zhEncouraging = "左右兩邊盡量保持平均。",
-            zhDetailed = "下一下放慢一點，讓左右兩邊一起穩定移動。",
+            zhTerse = "左右兩邊平均。",
+            zhEncouraging = "試著讓左右兩邊保持平衡。",
+            zhDetailed = "下一次動作放慢一點，讓左右兩側用接近的速度移動。",
         ),
         "warn_com_offset" to cue(
             enTerse = "Re-center.",
             enEncouraging = "Center your weight and stay balanced.",
             enDetailed = "Shift your weight back toward center before the next rep.",
-            zhTerse = "重心回中間。",
-            zhEncouraging = "重心回到中間，保持平衡。",
-            zhDetailed = "下一下前，把重心慢慢移回中間，先站穩再動。",
+            zhTerse = "重心回到中間。",
+            zhEncouraging = "把重心帶回中間，保持平衡。",
+            zhDetailed = "下一次動作前，先把重心移回中間，再穩穩開始。",
         ),
         "warn_rapid_movement" to cue(
             enTerse = "Slow down.",
             enEncouraging = "Slow down and control the movement.",
             enDetailed = "Use a slower tempo so each rep stays controlled from start to finish.",
             zhTerse = "慢一點。",
-            zhEncouraging = "慢一點，動作穩穩控制。",
-            zhDetailed = "節奏放慢，讓每一下從開始到結束都能穩定控制。",
+            zhEncouraging = "放慢速度，讓動作更可控制。",
+            zhDetailed = "用較慢的節奏完成，讓每一下從開始到結束都能穩定控制。",
         ),
         "increase_range_of_motion" to cue(
             enTerse = "Comfortable range.",
             enEncouraging = "Move through your comfortable range.",
             enDetailed = "Use the fullest comfortable range you can control without forcing it.",
-            zhTerse = "做到舒服範圍。",
-            zhEncouraging = "做到你能舒服控制的範圍。",
-            zhDetailed = "在不勉強的情況下，做到你能穩定控制的最大舒服範圍。",
+            zhTerse = "用舒服的活動範圍。",
+            zhEncouraging = "在舒服、可控制的範圍內移動。",
+            zhDetailed = "使用你能控制的最大舒服範圍，不要硬撐或勉強。",
         ),
         "positive_reinforcement" to cue(
             enTerse = "Good control.",
             enEncouraging = "Good control. Keep it steady.",
             enDetailed = "Your movement looks controlled; keep the same steady tempo.",
-            zhTerse = "控制不錯。",
-            zhEncouraging = "控制得不錯，繼續保持穩定。",
-            zhDetailed = "目前動作控制得不錯，接下來維持一樣穩定的節奏。",
+            zhTerse = "控制得很好。",
+            zhEncouraging = "控制得很好，保持穩定。",
+            zhDetailed = "目前動作看起來可控制，繼續維持同樣穩定的節奏。",
         ),
         "warn_poor_visibility" to cue(
             enTerse = "Improve camera view.",
             enEncouraging = "Step into a clearer view so I can coach you.",
             enDetailed = "Adjust your position or camera view so your body landmarks are visible.",
-            zhTerse = "調整鏡頭視角。",
-            zhEncouraging = "請站到更清楚的位置，讓我看得到你的動作。",
-            zhDetailed = "請調整站位或鏡頭角度，讓身體關鍵點更清楚出現在畫面中。",
+            zhTerse = "讓鏡頭更清楚。",
+            zhEncouraging = "請站到更清楚的位置，讓我可以協助你。",
+            zhDetailed = "請調整站位或鏡頭角度，讓身體關鍵點能清楚出現在畫面中。",
         ),
         "no_person_detected" to cue(
             enTerse = "Step into frame.",
             enEncouraging = "Step back into frame so I can see you.",
             enDetailed = "I do not have a usable body view right now; step into frame before continuing.",
             zhTerse = "請回到畫面中。",
-            zhEncouraging = "請站回畫面中，讓我看得到你。",
-            zhDetailed = "目前沒有可用的人體畫面，請先站回鏡頭內再繼續。",
+            zhEncouraging = "請回到畫面中，讓我看得到你。",
+            zhDetailed = "目前沒有可用的身體畫面，請先回到鏡頭範圍內再繼續。",
         ),
         "multi_person_selection" to cue(
             enTerse = "Tap yourself.",
             enEncouraging = "Tap yourself to start tracking.",
             enDetailed = "I can see more than one person; tap your body on screen to start tracking.",
-            zhTerse = "請點選自己。",
-            zhEncouraging = "請點選自己，開始追蹤。",
-            zhDetailed = "畫面中有多個人，請在螢幕上點選自己，讓我開始追蹤。",
+            zhTerse = "請點一下自己。",
+            zhEncouraging = "請在畫面上點一下自己，開始追蹤。",
+            zhDetailed = "我看到不只一個人，請點選畫面中的自己，讓系統開始追蹤正確目標。",
         ),
         PREVIEW_CUE_ID to cue(
             enTerse = "Voice preview.",
             enEncouraging = "Keep steady and move with control.",
             enDetailed = "This is your coaching voice. Keep steady and move with control.",
             zhTerse = "語音預覽。",
-            zhEncouraging = "保持穩定，動作慢慢控制。",
-            zhDetailed = "這是你的教練語音。保持穩定，動作慢慢控制。",
+            zhEncouraging = "保持穩定，用可控制的速度移動。",
+            zhDetailed = "這是你的教練語音。請保持穩定，並用可控制的速度移動。",
+        ),
+        "senior_continue" to cue(
+            enTerse = "Keep going slowly.",
+            enEncouraging = "Keep going slowly.",
+            enDetailed = "Keep going slowly. I will use one step at a time.",
+            zhTerse = "慢慢繼續。",
+            zhEncouraging = "慢慢繼續，保持穩定。",
+            zhDetailed = "慢慢繼續，我會一次只給一個步驟。",
+        ),
+        "senior_repeat_simple_cue" to cue(
+            enTerse = "One slow rep.",
+            enEncouraging = "One slow rep.",
+            enDetailed = "Do one slow rep when you are ready.",
+            zhTerse = "做一次慢動作。",
+            zhEncouraging = "準備好後，慢慢做一次。",
+            zhDetailed = "準備好後，請慢慢完成一次動作。",
+        ),
+        "senior_setup_check" to cue(
+            enTerse = "Pause and adjust.",
+            enEncouraging = "Pause and adjust your view.",
+            enDetailed = "Pause for a moment and adjust the camera view before continuing.",
+            zhTerse = "先暫停調整。",
+            zhEncouraging = "先暫停一下，調整畫面。",
+            zhDetailed = "先暫停一下，繼續前請調整鏡頭畫面。",
+        ),
+        "senior_step_back_into_view" to cue(
+            enTerse = "Step back into view.",
+            enEncouraging = "Step back into view.",
+            enDetailed = "Step back into view, then press continue when you are ready.",
+            zhTerse = "回到畫面中。",
+            zhEncouraging = "請回到畫面中。",
+            zhDetailed = "請回到畫面中，準備好後再按繼續。",
+        ),
+        "senior_one_person_only" to cue(
+            enTerse = "Pause with one person in view.",
+            enEncouraging = "Pause with one person in view.",
+            enDetailed = "Pause until only the exercising person is clearly in view.",
+            zhTerse = "畫面保留一位。",
+            zhEncouraging = "請先讓畫面中只保留一位運動者。",
+            zhDetailed = "請先暫停，直到畫面中只有正在運動的人清楚可見。",
+        ),
+        "senior_pause_for_support" to cue(
+            enTerse = "Let's pause.",
+            enEncouraging = "Let's pause for now.",
+            enDetailed = "Let's pause for now. You can continue when you are ready.",
+            zhTerse = "先暫停。",
+            zhEncouraging = "我們先暫停一下。",
+            zhDetailed = "我們先暫停一下。準備好後再繼續。",
+        ),
+        "senior_session_summary" to cue(
+            enTerse = "Session ended.",
+            enEncouraging = "Session ended.",
+            enDetailed = "Session ended. I will summarize what was observed.",
+            zhTerse = "活動結束。",
+            zhEncouraging = "活動結束了。",
+            zhDetailed = "活動結束了。我會整理剛才觀察到的內容。",
         ),
         "unknown" to cue(
             enTerse = "Adjust form.",
@@ -480,7 +619,7 @@ object CoachCueCatalog {
             enDetailed = "Adjust your form and continue only when the movement feels controlled.",
             zhTerse = "調整姿勢。",
             zhEncouraging = "調整姿勢，讓動作更穩。",
-            zhDetailed = "請調整姿勢，確認動作能穩定控制後再繼續。",
+            zhDetailed = "請調整姿勢，只有在動作感覺可控制時再繼續。",
         ),
     )
 

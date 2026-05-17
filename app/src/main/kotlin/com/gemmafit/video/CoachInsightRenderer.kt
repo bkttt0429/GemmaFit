@@ -218,9 +218,15 @@ object CoachInsightRenderer {
     }
 
     private fun evidenceRefsFor(context: CoachContext): List<String> {
+        if (context.evidenceCard.evidenceRefs.isNotEmpty()) {
+            return context.evidenceCard.evidenceRefs.take(8)
+        }
         return buildList {
-            addAll(context.qualityFlags.map { it.id })
-            addAll(context.metrics.keys.take(4))
+            addAll(context.qualityFlags.map { flag -> flag.evidenceId.ifBlank { flag.id } })
+            addAll(context.notApplicableFlags.map { flag -> flag.evidenceId.ifBlank { flag.id } })
+            addAll(context.metrics.keys.take(4).map { key ->
+                "metric.${context.exercise.ifBlank { context.pattern }.ifBlank { "movement" }}.$key"
+            })
         }.distinct().take(6)
     }
 

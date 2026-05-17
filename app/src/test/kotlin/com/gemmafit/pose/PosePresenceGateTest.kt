@@ -58,6 +58,23 @@ class PosePresenceGateTest {
     }
 
     @Test
+    fun smallDistantBodyCanStillRenderForVideoReview() {
+        val landmarks = MutableList(33) { Lm(0.50f, 0.50f, 0f) }
+        listOf(
+            11 to Lm(0.46f, 0.46f, 0.9f),
+            12 to Lm(0.54f, 0.46f, 0.9f),
+            13 to Lm(0.45f, 0.50f, 0.9f),
+            14 to Lm(0.55f, 0.50f, 0.9f),
+            15 to Lm(0.44f, 0.54f, 0.9f),
+            16 to Lm(0.56f, 0.54f, 0.9f),
+            23 to Lm(0.47f, 0.55f, 0.9f),
+            24 to Lm(0.53f, 0.55f, 0.9f),
+        ).forEach { (index, landmark) -> landmarks[index] = landmark }
+
+        assertTrue(canRender(landmarks))
+    }
+
+    @Test
     fun bboxAreaAloneDoesNotPass() {
         val twoVisibleCorners = distributedPose(0f).withVisible(listOf(11, 24))
 

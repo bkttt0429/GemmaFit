@@ -1,0 +1,47 @@
+{
+  "artifact_prefix": "gemmafit-v5-e2b-evidence-router",
+  "litertlm_final": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/gemmafit-v5-e2b-evidence-router.litertlm",
+  "merged_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/google_gemma_4_E2B_it_gemmafit_v5_2_e2b_completion_only_repair3_contract_smoke",
+  "results": [
+    {
+      "artifact": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/gemmafit-v5-e2b-evidence-router-wi8_ctx2048_prefill1024_no_jinja.litertlm",
+      "bytes": 5071689680,
+      "cache_length": 2048,
+      "export_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/wi8_ctx2048_prefill1024_no_jinja",
+      "log_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/gemmafit-v5-e2b-evidence-router-wi8_ctx2048_prefill1024_no_jinja-export.log",
+      "name": "wi8_ctx2048_prefill1024_no_jinja",
+      "note": "next Pixel smoke target after jinja-template failure; lets app send raw prompt without bundled template",
+      "prefill_lengths": [
+        1024
+      ],
+      "quantization_recipe": "dynamic_wi8_afp32",
+      "sha256": "9af1eeb9fe246cd29cc630b711643e146fbad8d347f501bdd96518d65bd67ee4",
+      "status": "skipped_existing",
+      "success": true,
+      "use_jinja_template": false,
+      "variant": "wi8_ctx2048_prefill1024_no_jinja"
+    },
+    {
+      "artifact": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/gemmafit-v5-e2b-evidence-router-wi8_ctx2048_prefill512_no_jinja.litertlm",
+      "bytes": 5071689680,
+      "cache_length": 2048,
+      "elapsed_sec": 338.974,
+      "export_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/wi8_ctx2048_prefill512_no_jinja",
+      "log_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/gemmafit-v5-e2b-evidence-router-wi8_ctx2048_prefill512_no_jinja-export.log",
+      "name": "wi8_ctx2048_prefill512_no_jinja",
+      "note": "same context, lighter prefill graph, no bundled Jinja; first no-jinja fallback",
+      "prefill_lengths": [
+        512
+      ],
+      "quantization_recipe": "dynamic_wi8_afp32",
+      "return_code": 0,
+      "sha256": "d2f511513f2effd7ab763fc80f7dd1438fbd74b6fd8d6764b4857656430e021a",
+      "status": "converted",
+      "success": true,
+      "use_jinja_template": false,
+      "variant": "wi8_ctx2048_prefill512_no_jinja"
+    }
+  ],
+  "run_name": "google_gemma_4_E2B_it_gemmafit_v5_2_e2b_completion_only_repair3_contract_smoke",
+  "summary_ts": "2026-05-13T07:43:26.867144+00:00"
+}

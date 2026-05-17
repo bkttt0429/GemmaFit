@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.Orange
 import com.gemmafit.ui.theme.Red
@@ -52,6 +53,7 @@ fun CoachPanel(
     source: String,
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
     val visible = message.isNotBlank()
 
     AnimatedVisibility(
@@ -88,7 +90,7 @@ fun CoachPanel(
                     }
                     Spacer(Modifier.width(10.dp))
                     Text(
-                        text = "GemmaFit Coach",
+                        text = copy.coachTitle,
                         color = accent,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleSmall,
@@ -115,7 +117,7 @@ fun CoachPanel(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "Pose-based feedback - not medical diagnosis",
+                    text = copy.feedbackBoundary,
                     color = TextSecondary,
                     style = MaterialTheme.typography.labelSmall,
                 )

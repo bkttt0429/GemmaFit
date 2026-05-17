@@ -1,0 +1,513 @@
+
+=== LiteRT export attempt 1 preset {'prefill': [256], 'cache': 1024, 'lightweight': False} ===
+/usr/bin/python3 -m litert_torch.generative.export_hf /content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router_merged_fp16 /content/drive/MyDrive/GemmaFit_train/litert_export_v3 --prefill_lengths=[256] --cache_length=1024 --quantization_recipe=dynamic_wi4_afp32 --externalize_embedder --use_jinja_template
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1778054335.307373    2079 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so
+Failed to load /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so: Could not load this library: /usr/local/lib/python3.12/dist-packages/torchao/_C_cutlass_90a.abi3.so
+W0506 07:58:57.785000 2079 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0506 07:59:01.478000 2079 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+============== Export Configuration ==============
+auto_model_override    : None
+batch_size             : 1
+bundle_litert_lm       : True
+cache_implementation   : 'LiteRTLMCache'
+cache_length           : 1024
+cache_length_dim       : None
+enable_dynamic_shape   : False
+experimental_lightweight_conversion : False
+experimental_use_mixed_precision : False
+export_vision_encoder  : False
+externalize_embedder   : True
+externalize_rope       : False
+extra_kwargs           : {}
+jinja_chat_template_override : None
+k_ts_idx               : 2
+keep_temporary_files   : False
+litert_lm_llm_metadata_override : None
+litert_lm_model_type_override : None
+model                  : '/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router_merged_fp16'
+output_dir             : '/content/drive/MyDrive/GemmaFit_train/litert_export_v3'
+prefill_length_dim     : None
+prefill_lengths        : [256]
+quantization_recipe    : 'dynamic_wi4_afp32'
+single_token_embedder  : False
+split_cache            : False
+task                   : <ExportTask.TEXT_GENERATION: 'text_generation'>
+trust_remote_code      : False
+use_jinja_template     : True
+v_ts_idx               : 3
+vision_encoder_quantization_recipe : 'weight_only_wi8_afp32'
+work_dir               : '/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7'
+==================================================
+(00:00) [START] LiteRT GenAI Export
+(00:00) [START] LiteRT GenAI Export > Load source model
+Gemma4 patch applied.
+
+Loading weights:   0%|          | 0/2076 [00:00<?, ?it/s]
+Loading weights:   7%|▋         | 153/2076 [00:00<00:01, 1394.20it/s]
+Loading weights:  14%|█▍        | 293/2076 [00:01<00:12, 139.69it/s]
+Loading weights:  20%|██        | 424/2076 [00:01<00:07, 225.52it/s]
+Loading weights:  25%|██▍       | 513/2076 [00:03<00:10, 143.73it/s]
+Loading weights:  27%|██▋       | 570/2076 [00:09<00:44, 33.54it/s]
+Loading weights:  27%|██▋       | 570/2076 [00:25<00:44, 33.54it/s]
+Loading weights:  36%|███▋      | 754/2076 [00:36<01:55, 11.47it/s]
+Loading weights:  36%|███▋      | 755/2076 [00:44<02:34,  8.55it/s]
+Loading weights:  41%|████▏     | 861/2076 [00:45<01:33, 13.02it/s]
+Loading weights:  43%|████▎     | 890/2076 [00:46<01:27, 13.48it/s]
+Loading weights:  44%|████▎     | 905/2076 [00:48<01:34, 12.42it/s]
+Loading weights:  45%|████▍     | 928/2076 [00:49<01:19, 14.42it/s]
+Loading weights:  45%|████▌     | 939/2076 [00:50<01:21, 14.01it/s]
+Loading weights:  46%|████▌     | 947/2076 [00:50<01:19, 14.25it/s]
+Loading weights:  46%|████▌     | 956/2076 [00:52<01:33, 11.92it/s]
+Loading weights:  46%|████▋     | 963/2076 [00:52<01:23, 13.26it/s]
+Loading weights:  47%|████▋     | 976/2076 [00:53<01:30, 12.16it/s]
+Loading weights:  47%|████▋     | 980/2076 [00:53<01:26, 12.62it/s]
+Loading weights:  48%|████▊     | 991/2076 [00:54<01:21, 13.24it/s]
+Loading weights:  48%|████▊     | 997/2076 [00:55<01:51,  9.70it/s]
+Loading weights:  48%|████▊     | 999/2076 [00:56<01:54,  9.37it/s]
+Loading weights:  49%|████▉     | 1027/2076 [00:57<01:18, 13.41it/s]
+Loading weights:  50%|████▉     | 1031/2076 [00:59<01:51,  9.40it/s]
+Loading weights:  51%|█████     | 1049/2076 [00:59<01:19, 13.00it/s]
+Loading weights:  51%|█████     | 1061/2076 [01:01<01:23, 12.17it/s]
+Loading weights:  51%|█████▏    | 1064/2076 [01:02<02:02,  8.27it/s]
+Loading weights:  52%|█████▏    | 1078/2076 [01:03<01:34, 10.51it/s]
+Loading weights:  53%|█████▎    | 1094/2076 [01:04<01:26, 11.40it/s]
+Loading weights:  53%|█████▎    | 1100/2076 [01:04<01:14, 13.14it/s]
+Loading weights:  53%|█████▎    | 1110/2076 [01:05<01:20, 11.96it/s]
+Loading weights:  54%|█████▎    | 1115/2076 [01:06<01:34, 10.17it/s]
+Loading weights:  54%|█████▍    | 1117/2076 [01:06<01:32, 10.35it/s]
+Loading weights:  54%|█████▍    | 1126/2076 [01:07<01:43,  9.20it/s]
+Loading weights:  55%|█████▍    | 1134/2076 [01:07<01:16, 12.31it/s]
+Loading weights:  55%|█████▌    | 1146/2076 [01:09<01:31, 10.13it/s]
+Loading weights:  55%|█████▌    | 1151/2076 [01:11<02:19,  6.61it/s]
+Loading weights:  56%|█████▌    | 1167/2076 [01:12<01:38,  9.19it/s]
+Loading weights:  56%|█████▋    | 1169/2076 [01:12<01:44,  8.67it/s]
+Loading weights:  57%|█████▋    | 1181/2076 [01:13<01:39,  9.01it/s]
+Loading weights:  58%|█████▊    | 1196/2076 [01:14<01:01, 14.34it/s]
+Loading weights:  58%|█████▊    | 1205/2076 [01:15<01:22, 10.61it/s]
+Loading weights:  58%|█████▊    | 1209/2076 [01:15<01:13, 11.76it/s]
+Loading weights:  59%|█████▊    | 1219/2076 [01:17<01:32,  9.25it/s]
+Loading weights:  59%|█████▉    | 1223/2076 [01:17<01:28,  9.62it/s]
+Loading weights:  59%|█████▉    | 1234/2076 [01:18<01:24,  9.98it/s]
+Loading weights:  60%|█████▉    | 1236/2076 [01:19<01:54,  7.35it/s]
+Loading weights:  60%|█████▉    | 1238/2076 [01:20<02:32,  5.50it/s]
+Loading weights:  60%|██████    | 1252/2076 [01:21<01:32,  8.94it/s]
+Loading weights:  61%|██████    | 1265/2076 [01:23<01:36,  8.39it/s]
+Loading weights:  62%|██████▏   | 1279/2076 [01:24<01:37,  8.13it/s]
+Loading weights:  62%|██████▏   | 1293/2076 [01:24<01:04, 12.05it/s]
+Loading weights:  63%|██████▎   | 1302/2076 [01:26<01:11, 10.77it/s]
+Loading weights:  63%|██████▎   | 1305/2076 [01:26<01:16, 10.09it/s]
+Loading weights:  63%|██████▎   | 1308/2076 [01:26<01:10, 10.96it/s]
+Loading weights:  63%|██████▎   | 1315/2076 [01:28<01:48,  7.01it/s]
+Loading weights:  64%|██████▎   | 1320/2076 [01:28<01:26,  8.69it/s]
+Loading weights:  64%|██████▎   | 1323/2076 [01:29<02:07,  5.90it/s]
+Loading weights:  64%|██████▍   | 1335/2076 [01:30<01:24,  8.79it/s]
+Loading weights:  65%|██████▍   | 1343/2076 [01:32<01:49,  6.72it/s]
+Loading weights:  65%|██████▍   | 1349/2076 [01:33<02:05,  5.81it/s]
+Loading weights:  66%|██████▌   | 1364/2076 [01:34<01:08, 10.36it/s]
+Loading weights:  66%|██████▌   | 1371/2076 [01:35<01:16,  9.22it/s]
+Loading weights:  67%|██████▋   | 1385/2076 [01:35<00:46, 14.89it/s]
+Loading weights:  67%|██████▋   | 1392/2076 [01:36<01:07, 10.11it/s]
+Loading weights:  68%|██████▊   | 1405/2076 [01:36<00:43, 15.36it/s]
+Loading weights:  68%|██████▊   | 1415/2076 [01:37<00:48, 13.66it/s]
+Loading weights:  76%|███████▌  | 1571/2076 [01:37<00:05, 96.84it/s]
+Loading weights:  79%|███████▊  | 1632/2076 [01:37<00:03, 132.21it/s]
+Loading weights:  81%|████████  | 1684/2076 [01:37<00:02, 166.72it/s]
+Loading weights:  84%|████████▍ | 1751/2076 [01:38<00:01, 218.54it/s]
+Loading weights:  87%|████████▋ | 1806/2076 [01:38<00:01, 262.74it/s]
+Loading weights:  96%|█████████▌| 1996/2076 [01:38<00:00, 524.16it/s]
+Loading weights: 100%|██████████| 2076/2076 [01:38<00:00, 21.11it/s]
+[transformers] The tokenizer you are loading from '/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router_merged_fp16' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+(01:47) [ DONE] LiteRT GenAI Export > Load source model (+01:47)
+(01:47) [START] LiteRT GenAI Export > Export text prefill-decode model
+Using Gemma4 exportables.
+(01:47) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert
+(01:47) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: prefill_256
+(02:07) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: prefill_256 > ExportedProgram Run
+Decompositions
+(02:37) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: prefill_256 > ExportedProgram Run
+Decompositions (+00:29)
+(02:37) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: prefill_256 (+00:49)
+(02:37) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: decode
+(02:57) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: decode > ExportedProgram Run Decompositions
+(03:23) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: decode > ExportedProgram Run Decompositions
+(+00:26)
+(03:23) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Torch Export: decode (+00:46)
+(03:23) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes
+(03:24) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(03:24) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(+00:00)
+(03:27) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(03:27) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(+00:00)
+(03:28) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run FX Passes (+00:05)
+(03:28) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256
+(03:28) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > ExportedProgram Run
+Decompositions
+(03:50) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > ExportedProgram Run
+Decompositions (+00:21)
+(03:50) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > ExportedProgram Run
+Decompositions
+(03:50) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > ExportedProgram Run
+Decompositions (+00:00)
+(03:50) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > Create MLIR Module
+(04:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 > Create MLIR Module (+00:45)
+(04:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_256 (+01:07)
+(04:36) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode
+(04:36) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > ExportedProgram Run
+Decompositions
+(05:06) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > ExportedProgram Run
+Decompositions (+00:29)
+(05:06) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > ExportedProgram Run
+Decompositions
+(05:06) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > ExportedProgram Run
+Decompositions (+00:00)
+(05:06) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > Create MLIR Module
+(05:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode > Create MLIR Module (+00:29)
+(05:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Lower to MLIR: decode (+00:59)
+(05:36) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Merge MLIR Modules
+(05:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Merge MLIR Modules (+00:00)
+(05:36) [START] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run LiteRT Converter Passes
+(20:53) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert > Run LiteRT Converter Passes (+15:17)
+(20:53) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+LiteRT-Torch Convert (+19:05)
+(21:00) [START] LiteRT GenAI Export > Export text prefill-decode model > Write
+Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/model.tflite
+Module size is greater than 2GB
+I0000 00:00:1778055604.669470    2079 flatbuffer_export.cc:4346] Estimated count of arithmetic ops: 1145.734 G  ops, equivalently 572.867 G  MACs
+(21:53) [ DONE] LiteRT GenAI Export > Export text prefill-decode model > Write
+Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/model.tflite
+(+00:53)
+(21:56) [START] LiteRT GenAI Export > Export text prefill-decode model >
+Quantize model
+
+Generating Quantization Parameters::   0%|          | 0/7561 [00:00<?, ?it/s]
+Generating Quantization Parameters::   0%|          | 10/7561 [00:00<04:52, 25.83it/s]
+Generating Quantization Parameters::   1%|          | 72/7561 [00:00<00:42, 174.53it/s]
+Generating Quantization Parameters::   1%|▏         | 103/7561 [00:01<02:39, 46.82it/s]
+Generating Quantization Parameters::   2%|▏         | 133/7561 [00:02<02:23, 51.90it/s]
+Generating Quantization Parameters::   2%|▏         | 147/7561 [00:03<03:40, 33.55it/s]
+Generating Quantization Parameters::   2%|▏         | 186/7561 [00:03<02:16, 54.18it/s]
+Generating Quantization Parameters::   3%|▎         | 202/7561 [00:05<04:00, 30.54it/s]
+Generating Quantization Parameters::   3%|▎         | 243/7561 [00:05<02:27, 49.48it/s]
+Generating Quantization Parameters::   3%|▎         | 261/7561 [00:06<03:55, 30.95it/s]
+Generating Quantization Parameters::   4%|▍         | 300/7561 [00:06<02:31, 47.83it/s]
+Generating Quantization Parameters::   4%|▍         | 318/7561 [00:08<03:54, 30.84it/s]
+Generating Quantization Parameters::   4%|▍         | 331/7561 [00:08<03:27, 34.80it/s]
+Generating Quantization Parameters::   5%|▍         | 360/7561 [00:08<02:32, 47.31it/s]
+Generating Quantization Parameters::   5%|▍         | 373/7561 [00:09<04:22, 27.41it/s]
+Generating Quantization Parameters::   6%|▌         | 417/7561 [00:09<02:27, 48.29it/s]
+Generating Quantization Parameters::   6%|▌         | 433/7561 [00:11<03:58, 29.93it/s]
+Generating Quantization Parameters::   6%|▋         | 474/7561 [00:11<02:26, 48.48it/s]
+Generating Quantization Parameters::   7%|▋         | 492/7561 [00:12<03:44, 31.48it/s]
+Generating Quantization Parameters::   7%|▋         | 531/7561 [00:12<02:23, 48.82it/s]
+Generating Quantization Parameters::   7%|▋         | 551/7561 [00:14<03:34, 32.64it/s]
+Generating Quantization Parameters::   8%|▊         | 588/7561 [00:14<02:22, 48.78it/s]
+Generating Quantization Parameters::   8%|▊         | 607/7561 [00:15<03:40, 31.51it/s]
+Generating Quantization Parameters::   9%|▊         | 645/7561 [00:15<02:24, 47.81it/s]
+Generating Quantization Parameters::   9%|▉         | 664/7561 [00:17<03:35, 32.00it/s]
+Generating Quantization Parameters::   9%|▉         | 678/7561 [00:17<03:10, 36.12it/s]
+Generating Quantization Parameters::   9%|▉         | 702/7561 [00:17<02:26, 46.94it/s]
+Generating Quantization Parameters::   9%|▉         | 715/7561 [00:18<04:11, 27.26it/s]
+Generating Quantization Parameters::  10%|█         | 759/7561 [00:18<02:18, 49.04it/s]
+Generating Quantization Parameters::  10%|█         | 776/7561 [00:20<03:45, 30.12it/s]
+Generating Quantization Parameters::  11%|█         | 816/7561 [00:20<02:20, 48.08it/s]
+Generating Quantization Parameters::  11%|█         | 834/7561 [00:21<03:44, 29.99it/s]
+Generating Quantization Parameters::  12%|█▏        | 873/7561 [00:21<02:24, 46.40it/s]
+Generating Quantization Parameters::  12%|█▏        | 891/7561 [00:23<03:44, 29.73it/s]
+Generating Quantization Parameters::  12%|█▏        | 930/7561 [00:23<02:24, 46.00it/s]
+Generating Quantization Parameters::  13%|█▎        | 949/7561 [00:24<03:30, 31.39it/s]
+Generating Quantization Parameters::  13%|█▎        | 987/7561 [00:24<02:17, 47.67it/s]
+Generating Quantization Parameters::  13%|█▎        | 1006/7561 [00:26<03:26, 31.70it/s]
+Generating Quantization Parameters::  13%|█▎        | 1020/7561 [00:26<03:03, 35.69it/s]
+Generating Quantization Parameters::  14%|█▍        | 1044/7561 [00:26<02:19, 46.60it/s]
+Generating Quantization Parameters::  14%|█▍        | 1057/7561 [00:27<03:58, 27.29it/s]
+Generating Quantization Parameters::  15%|█▍        | 1101/7561 [00:28<02:11, 49.08it/s]
+Generating Quantization Parameters::  15%|█▍        | 1118/7561 [00:29<03:31, 30.40it/s]
+Generating Quantization Parameters::  15%|█▌        | 1158/7561 [00:29<02:11, 48.68it/s]
+Generating Quantization Parameters::  16%|█▌        | 1177/7561 [00:30<03:18, 32.11it/s]
+Generating Quantization Parameters::  16%|█▌        | 1215/7561 [00:30<02:09, 49.18it/s]
+Generating Quantization Parameters::  16%|█▋        | 1234/7561 [00:32<03:20, 31.48it/s]
+Generating Quantization Parameters::  17%|█▋        | 1272/7561 [00:32<02:12, 47.63it/s]
+Generating Quantization Parameters::  17%|█▋        | 1291/7561 [00:33<03:24, 30.66it/s]
+Generating Quantization Parameters::  18%|█▊        | 1329/7561 [00:34<02:14, 46.34it/s]
+Generating Quantization Parameters::  18%|█▊        | 1347/7561 [00:35<03:25, 30.22it/s]
+Generating Quantization Parameters::  25%|██▌       | 1916/7561 [00:35<00:19, 294.68it/s]
+Generating Quantization Parameters::  35%|███▍      | 2641/7561 [00:35<00:07, 683.97it/s]
+Generating Quantization Parameters::  38%|███▊      | 2872/7561 [00:44<00:45, 103.59it/s]
+Generating Quantization Parameters::  40%|████      | 3035/7561 [00:50<01:07, 67.51it/s]
+Generating Quantization Parameters::  42%|████▏     | 3150/7561 [00:55<01:22, 53.48it/s]
+Generating Quantization Parameters::  43%|████▎     | 3231/7561 [00:58<01:32, 46.97it/s]
+Generating Quantization Parameters::  43%|████▎     | 3289/7561 [01:01<01:46, 40.10it/s]
+Generating Quantization Parameters::  44%|████▍     | 3330/7561 [01:03<01:51, 38.05it/s]
+Generating Quantization Parameters::  44%|████▍     | 3360/7561 [01:04<02:00, 34.84it/s]
+Generating Quantization Parameters::  45%|████▍     | 3382/7561 [01:13<04:39, 14.94it/s]
+Generating Quantization Parameters::  70%|███████   | 5325/7561 [01:13<00:11, 195.61it/s]
+Generating Quantization Parameters::  97%|█████████▋| 7318/7561 [01:14<00:00, 454.51it/s]
+Generating Quantization Parameters:: 100%|██████████| 7561/7561 [01:14<00:00, 102.04it/s]
+
+Applying Transformations to tensors::   0%|          | 0/10050 [00:00<?, ?it/s]
+Applying Transformations to tensors::  76%|███████▋  | 7668/10050 [00:00<00:00, 70806.62it/s]
+Applying Transformations to tensors:: 100%|██████████| 10050/10050 [00:10<00:00, 991.18it/s]
+Original model size: 18147104.97 KB
+Quantized model size: 2301855.14 KB
+Quantization Ratio: 0.13
+Total time: 88.04 seconds
+(23:36) [ DONE] LiteRT GenAI Export > Export text prefill-decode model >
+Quantize model (+01:40)
+(23:37) [ DONE] LiteRT GenAI Export > Export text prefill-decode model (+21:49)
+(23:37) [START] LiteRT GenAI Export > Export embedder model
+(23:37) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert
+(23:37) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: decode_embedder
+(23:37) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: decode_embedder > ExportedProgram Run Decompositions
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: decode_embedder > ExportedProgram Run Decompositions
+(+00:00)
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: decode_embedder (+00:00)
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: prefill_embedder_256
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: prefill_embedder_256 > ExportedProgram Run
+Decompositions
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: prefill_embedder_256 > ExportedProgram Run
+Decompositions (+00:00)
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Torch Export: prefill_embedder_256 (+00:00)
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes > ExportedProgram Run Decompositions
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes > ExportedProgram Run Decompositions (+00:00)
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes > ExportedProgram Run Decompositions
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes > ExportedProgram Run Decompositions (+00:00)
+(23:38) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run FX Passes (+00:00)
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder
+(23:38) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > ExportedProgram Run Decompositions
+(23:39) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > ExportedProgram Run Decompositions
+(+00:00)
+(23:39) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > ExportedProgram Run Decompositions
+(23:39) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > ExportedProgram Run Decompositions
+(+00:00)
+(23:39) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > Create MLIR Module
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder > Create MLIR Module (+00:01)
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: decode_embedder (+00:01)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > ExportedProgram Run
+Decompositions
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > ExportedProgram Run
+Decompositions (+00:00)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > ExportedProgram Run
+Decompositions
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > ExportedProgram Run
+Decompositions (+00:00)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > Create MLIR Module
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 > Create MLIR Module (+00:00)
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Lower to MLIR: prefill_embedder_256 (+00:00)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Merge MLIR Modules
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Merge MLIR Modules (+00:00)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run LiteRT Converter Passes
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert > Run LiteRT Converter Passes (+00:00)
+(23:40) [ DONE] LiteRT GenAI Export > Export embedder model > LiteRT-Torch
+Convert (+00:02)
+(23:40) [START] LiteRT GenAI Export > Export embedder model > Write Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/embedder.tfli
+te
+Module size is greater than 2GB
+I0000 00:00:1778055765.501240    2079 flatbuffer_export.cc:4346] Estimated count of arithmetic ops: 0.658 M  ops, equivalently 0.329 M  MACs
+(23:44) [ DONE] LiteRT GenAI Export > Export embedder model > Write Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/embedder.tfli
+te (+00:03)
+(23:44) [START] LiteRT GenAI Export > Export embedder model > Quantize model
+Original model size: 2621445.50 KB
+Quantized model size: 333829.38 KB
+Quantization Ratio: 0.13
+Total time: 12.31 seconds
+(23:57) [ DONE] LiteRT GenAI Export > Export embedder model > Quantize model
+(+00:13)
+(23:58) [ DONE] LiteRT GenAI Export > Export embedder model (+00:20)
+(23:59) [START] LiteRT GenAI Export > Export per_layer_embedder model
+(23:59) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert
+(23:59) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: decode_per_layer_embedder
+(24:01) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: decode_per_layer_embedder > ExportedProgram
+Run Decompositions
+(24:09) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: decode_per_layer_embedder > ExportedProgram
+Run Decompositions (+00:07)
+(24:09) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: decode_per_layer_embedder (+00:10)
+(24:09) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: prefill_per_layer_embedder_256
+(24:11) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions
+(24:19) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions (+00:08)
+(24:19) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Torch Export: prefill_per_layer_embedder_256 (+00:10)
+(24:19) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes
+(24:20) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(24:20) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(+00:00)
+(24:20) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(24:20) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes > ExportedProgram Run Decompositions
+(+00:00)
+(24:20) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run FX Passes (+00:00)
+(24:20) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder
+(24:20) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder >
+ExportedProgram Run Decompositions
+(24:29) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder >
+ExportedProgram Run Decompositions (+00:09)
+(24:29) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder >
+ExportedProgram Run Decompositions
+(24:29) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder >
+ExportedProgram Run Decompositions (+00:00)
+(24:29) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder > Create MLIR
+Module
+(24:55) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder > Create MLIR
+Module (+00:25)
+(24:55) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: decode_per_layer_embedder (+00:35)
+(24:55) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256
+(24:55) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions (+00:07)
+(25:03) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 >
+ExportedProgram Run Decompositions (+00:00)
+(25:03) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 > Create
+MLIR Module
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 > Create
+MLIR Module (+00:00)
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Lower to MLIR: prefill_per_layer_embedder_256 (+00:07)
+(25:03) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Merge MLIR Modules
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Merge MLIR Modules (+00:00)
+(25:03) [START] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run LiteRT Converter Passes
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert > Run LiteRT Converter Passes (+00:00)
+(25:03) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model >
+LiteRT-Torch Convert (+01:04)
+(25:03) [START] LiteRT GenAI Export > Export per_layer_embedder model > Write
+Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/per_layer_emb
+edder.tflite
+Module size is greater than 2GB
+I0000 00:00:1778055847.927345    2079 flatbuffer_export.cc:4346] Estimated count of arithmetic ops: 2.763 M  ops, equivalently 1.382 M  MACs
+(25:34) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model > Write
+Model to
+/content/drive/MyDrive/GemmaFit_train/litert_export_v3/tmpvvi51wr7/per_layer_emb
+edder.tflite (+00:30)
+(25:34) [START] LiteRT GenAI Export > Export per_layer_embedder model > Quantize
+model
+Original model size: 11010054.09 KB
+Quantized model size: 1382405.95 KB
+Quantization Ratio: 0.13
+Total time: 87.27 seconds
+(27:05) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model > Quantize
+model (+01:31)
+(27:07) [ DONE] LiteRT GenAI Export > Export per_layer_embedder model (+03:08)
+(27:08) [START] LiteRT GenAI Export > Export tokenizer
+(27:08) [ DONE] LiteRT GenAI Export > Export tokenizer (+00:00)
+(27:09) [START] LiteRT GenAI Export > Package model
+(27:23) [ DONE] LiteRT GenAI Export > Package model (+00:13)
+(27:23) [ DONE] LiteRT GenAI Export (+27:23)
+Cleaning up temporary files.
+Export complete. Model saved to: /content/drive/MyDrive/GemmaFit_train/litert_export_v3/model.litertlm
+
+returncode=0

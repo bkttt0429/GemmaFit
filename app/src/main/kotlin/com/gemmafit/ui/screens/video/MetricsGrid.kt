@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.Orange
 import com.gemmafit.ui.theme.SurfaceColor
@@ -70,6 +71,7 @@ fun MetricsGrid(
 ) {
     if (metrics.isEmpty()) return
 
+    val copy = LocalAppStrings.current
     var expanded by rememberSaveable { mutableStateOf(false) }
     var showPicker by rememberSaveable { mutableStateOf(false) }
 
@@ -112,7 +114,7 @@ fun MetricsGrid(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Live Metrics",
+                text = copy.liveMetrics,
                 color = TextSecondary,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
@@ -120,12 +122,12 @@ fun MetricsGrid(
             Row {
                 if (extraKeys.isNotEmpty()) {
                     TextButtonCompact(
-                        text = if (expanded) "Less" else "More",
+                        text = if (expanded) copy.less else copy.more,
                         onClick = { expanded = !expanded },
                     )
                 }
                 TextButtonCompact(
-                    text = "Edit",
+                    text = copy.edit,
                     onClick = { showPicker = !showPicker },
                 )
             }
@@ -141,7 +143,7 @@ fun MetricsGrid(
             displayKeys.take(2).forEach { key ->
                 val (unit, _) = parseUnit(key)
                 MetricCell(
-                    label = displayKey(key),
+                    label = copy.displayMetricKey(key),
                     rawValue = metrics.getValue(key),
                     unit = unit,
                     flagged = flaggedKeys.any { key.contains(shortKey(it)) },
@@ -158,7 +160,7 @@ fun MetricsGrid(
                 displayKeys.drop(2).take(2).forEach { key ->
                     val (unit, _) = parseUnit(key)
                     MetricCell(
-                        label = displayKey(key),
+                        label = copy.displayMetricKey(key),
                         rawValue = metrics.getValue(key),
                         unit = unit,
                         flagged = flaggedKeys.any { key.contains(shortKey(it)) },
@@ -184,7 +186,7 @@ fun MetricsGrid(
                     extraKeys.forEach { key ->
                         val (unit, _) = parseUnit(key)
                         MetricCellCompact(
-                            label = displayKey(key),
+                            label = copy.displayMetricKey(key),
                             rawValue = metrics.getValue(key),
                             unit = unit,
                             flagged = flaggedKeys.any { key.contains(shortKey(it)) },
@@ -209,7 +211,7 @@ fun MetricsGrid(
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
-                            "Select metrics to display",
+                            copy.selectMetrics,
                             color = TextSecondary,
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
@@ -251,7 +253,7 @@ fun MetricsGrid(
                                         Spacer(Modifier.width(4.dp))
                                     }
                                     Text(
-                                        displayKey(key),
+                                        copy.displayMetricKey(key),
                                         color = if (isSelected) Green else TextPrimary,
                                         fontSize = 12.sp,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,

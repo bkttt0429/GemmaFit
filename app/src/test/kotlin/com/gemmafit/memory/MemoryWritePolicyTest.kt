@@ -19,6 +19,20 @@ class MemoryWritePolicyTest {
     }
 
     @Test
+    fun rejects_cognitive_or_dementia_claim() {
+        val decision = MemoryWritePolicy().evaluate(
+            trendRequest(
+                proposedValue = mapOf(
+                    "trend_note" to TrendNote.TEMPO_STABLE.name,
+                    "note" to "possible cognitive decline pattern",
+                ),
+            ),
+        )
+
+        assertRejected(decision, "refusal:")
+    }
+
+    @Test
     fun rejects_trend_note_without_evidence_ids() {
         val decision = MemoryWritePolicy().evaluate(
             trendRequest(evidenceIds = emptyList()),
@@ -49,6 +63,49 @@ class MemoryWritePolicyTest {
         )
 
         assertTrue(decision is MemoryWritePolicy.Decision.Accepted)
+    }
+
+    @Test
+    fun accepts_care_activity_log_with_evidence_and_boundary_language() {
+        val decision = MemoryWritePolicy().evaluate(
+            MemoryUpdateRequest(
+                requestId = "care-log-1",
+                type = MemoryUpdateType.CARE_ACTIVITY_LOG,
+                proposedValue = mapOf(
+                    "session_id" to "session-1",
+                    "activity" to "chair_sit_to_stand",
+                    "headline" to "Completed chair session",
+                    "what_was_completed" to "Completed 12 reps.",
+                    "observations" to "Tempo was steady.",
+                    "not_judged" to "This does not assess fall risk or sarcopenia.",
+                    "next_session_focus" to "Use the same controlled pace.",
+                ),
+                evidenceIds = listOf("metric.senior.reps"),
+                confidence = 0.82,
+            ),
+        )
+
+        assertTrue(decision is MemoryWritePolicy.Decision.Accepted)
+    }
+
+    @Test
+    fun rejects_dual_task_result_without_evidence() {
+        val decision = MemoryWritePolicy().evaluate(
+            MemoryUpdateRequest(
+                requestId = "dual-task-1",
+                type = MemoryUpdateType.DUAL_TASK_RESULT,
+                proposedValue = mapOf(
+                    "prompt_id" to "prompt-1",
+                    "response_mode" to "gesture",
+                    "answer_matched" to true,
+                    "movement_completed" to true,
+                ),
+                evidenceIds = emptyList(),
+                confidence = 0.9,
+            ),
+        )
+
+        assertRejected(decision, "provenance:dual_task_result_requires_evidence")
     }
 
     @Test

@@ -29,6 +29,9 @@ constexpr double kFrameCenterY = 0.55;
 constexpr double kAutoCenterRadius = 0.75;
 constexpr double kMatchCenterRadius = 0.45;
 constexpr double kKeypointMatchRadius = 0.35;
+constexpr double kIdentityAmbiguityMargin = 0.08;
+constexpr double kIdentityOverlapIoU = 0.20;
+constexpr double kIdentityCenterClose = 0.08;
 
 double clamp01(double v) {
     if (v < 0.0) return 0.0;
@@ -40,6 +43,17 @@ double euclid(double ax, double ay, double bx, double by) {
     const double dx = ax - bx;
     const double dy = ay - by;
     return std::sqrt(dx * dx + dy * dy);
+}
+
+double bbox_iou(const PoseBBox& a, const PoseBBox& b) {
+    const double left = std::max(a.left, b.left);
+    const double top = std::max(a.top, b.top);
+    const double right = std::min(a.right, b.right);
+    const double bottom = std::min(a.bottom, b.bottom);
+    const double intersection = std::max(0.0, right - left) * std::max(0.0, bottom - top);
+    const double union_area = a.area() + b.area() - intersection;
+    if (union_area <= 0.0) return 0.0;
+    return clamp01(intersection / union_area);
 }
 
 std::string json_escape(const std::string& value) {
@@ -496,18 +510,46 @@ SubjectSelection SubjectSelector::update(const std::vector<PoseCandidate>& candi
 
     if (locked_subject_) {
         int best_ref = -1;
+        int second_ref = -1;
         double best_score = -1.0;
+        double second_score = -1.0;
         for (int i = 0; i < static_cast<int>(refs.size()); ++i) {
             const double score = score_subject_match(
                 *locked_subject_,
                 refs[static_cast<std::size_t>(i)].candidate);
             if (score > best_score) {
+                second_score = best_score;
+                second_ref = best_ref;
                 best_score = score;
                 best_ref = i;
+            } else if (score > second_score) {
+                second_score = score;
+                second_ref = i;
             }
         }
 
         if (best_ref >= 0 && best_score >= cfg_.subject_match_threshold) {
+            if (second_ref >= 0) {
+                const auto& best_candidate = refs[static_cast<std::size_t>(best_ref)].candidate;
+                const auto& second_candidate = refs[static_cast<std::size_t>(second_ref)].candidate;
+                const bool score_tie = (best_score - second_score) < kIdentityAmbiguityMargin;
+                const bool center_close = euclid(
+                    best_candidate.center_x, best_candidate.center_y,
+                    second_candidate.center_x, second_candidate.center_y) <= kIdentityCenterClose;
+                const bool boxes_overlap = bbox_iou(best_candidate.bbox, second_candidate.bbox) >= kIdentityOverlapIoU;
+                if (score_tie && (center_close || boxes_overlap)) {
+                    reset_pending_auto();
+                    selection.status = manual_lock_
+                        ? SubjectLockStatus::kLocked
+                        : SubjectLockStatus::kAutoLocked;
+                    selection.track_id = locked_track_id_;
+                    selection.reason = "subject_temporarily_occluded";
+                    selection.trust_flags = trust_flags_for(candidates.size(), selection.status);
+                    selection.trust_flags.emplace_back("subject_hold");
+                    selection.trust_flags.emplace_back("subject_temporarily_occluded");
+                    return finish(selection);
+                }
+            }
             const int track_id = locked_track_id_ >= 0 ? locked_track_id_ : next_track_id_++;
             locked_track_id_ = track_id;
             PoseCandidate locked = refs[static_cast<std::size_t>(best_ref)].candidate;

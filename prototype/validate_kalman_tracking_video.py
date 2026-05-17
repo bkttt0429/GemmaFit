@@ -120,40 +120,106 @@ def _appearance_signature_from_candidate(
 ) -> Optional[SubjectAppearanceSignature]:
     h, w = frame.shape[:2]
     arr = candidate.landmarks
-    visible = [
-        idx for idx in (11, 12, 13, 14, 15, 16, 23, 24)
-        if idx < arr.shape[0] and arr[idx, 2] >= 0.25
-    ]
-    if visible:
-        xs = arr[visible, 0]
-        ys = arr[visible, 1]
-        pad_x = max(0.02, candidate.bbox.width * 0.16)
-        pad_y = max(0.02, candidate.bbox.height * 0.12)
-        left = int(np.floor(max(0.0, float(xs.min()) - pad_x) * w))
-        right = int(np.ceil(min(1.0, float(xs.max()) + pad_x) * w))
-        top = int(np.floor(max(0.0, float(ys.min()) - pad_y) * h))
-        bottom = int(np.ceil(min(1.0, float(ys.max()) + pad_y) * h))
-    else:
-        left = int(candidate.bbox.left * w)
-        right = int(candidate.bbox.right * w)
-        top = int(candidate.bbox.top * h)
-        bottom = int((candidate.bbox.top + candidate.bbox.height * 0.65) * h)
 
-    left = max(0, min(w - 1, left))
-    right = max(left + 1, min(w, right))
-    top = max(0, min(h - 1, top))
-    bottom = max(top + 1, min(h, bottom))
-    crop = frame[top:bottom, left:right]
-    if crop.size == 0 or crop.shape[0] < 4 or crop.shape[1] < 4:
-        return None
+    def rect_for_keypoints(
+        indices: Tuple[int, ...],
+        pad_x_scale: float,
+        pad_y_scale: float,
+        fallback_top_scale: float,
+        fallback_bottom_scale: float,
+    ) -> Tuple[int, int, int, int]:
+        visible = [
+            idx for idx in indices
+            if idx < arr.shape[0] and arr[idx, 2] >= 0.25
+        ]
+        if visible:
+            xs = arr[visible, 0]
+            ys = arr[visible, 1]
+            pad_x = max(0.02, candidate.bbox.width * pad_x_scale)
+            pad_y = max(0.02, candidate.bbox.height * pad_y_scale)
+            left_n = max(0.0, float(xs.min()) - pad_x)
+            right_n = min(1.0, float(xs.max()) + pad_x)
+            top_n = max(0.0, float(ys.min()) - pad_y)
+            bottom_n = min(1.0, float(ys.max()) + pad_y)
+        else:
+            left_n = candidate.bbox.left
+            right_n = candidate.bbox.right
+            top_n = candidate.bbox.top + candidate.bbox.height * fallback_top_scale
+            bottom_n = candidate.bbox.top + candidate.bbox.height * fallback_bottom_scale
+        left = int(np.floor(left_n * w))
+        right = int(np.ceil(right_n * w))
+        top = int(np.floor(top_n * h))
+        bottom = int(np.ceil(bottom_n * h))
+        left = max(0, min(w - 1, left))
+        right = max(left + 1, min(w, right))
+        top = max(0, min(h - 1, top))
+        bottom = max(top + 1, min(h, bottom))
+        return left, top, right, bottom
 
-    hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-    hist = cv2.calcHist([hsv], [0, 1, 2], None, [12, 6, 4], [0, 180, 0, 256, 0, 256])
-    hist = hist.astype(np.float32).reshape(-1)
-    total = float(hist.sum())
-    if total <= 0.0:
+    def hist_for_rect(rect: Tuple[int, int, int, int]) -> np.ndarray:
+        left, top, right, bottom = rect
+        crop = frame[top:bottom, left:right]
+        if crop.size == 0 or crop.shape[0] < 4 or crop.shape[1] < 4:
+            return np.zeros(12 * 6 * 4, dtype=np.float32)
+        hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+        hist = cv2.calcHist([hsv], [0, 1, 2], None, [12, 6, 4], [0, 180, 0, 256, 0, 256])
+        hist = hist.astype(np.float32).reshape(-1)
+        total = float(hist.sum())
+        if total <= 0.0:
+            return np.zeros(12 * 6 * 4, dtype=np.float32)
+        return hist / total
+
+    def hist_for_keypoint_patches(indices: Tuple[int, ...]) -> np.ndarray:
+        radius = max(3, int(round(min(w, h) * 0.012)))
+        hist = np.zeros(12 * 6 * 4, dtype=np.float32)
+        used = 0
+        for idx in indices:
+            if idx >= arr.shape[0] or arr[idx, 2] < 0.25:
+                continue
+            cx = int(round(float(arr[idx, 0]) * w))
+            cy = int(round(float(arr[idx, 1]) * h))
+            left = max(0, cx - radius)
+            right = min(w, cx + radius + 1)
+            top = max(0, cy - radius)
+            bottom = min(h, cy + radius + 1)
+            patch = frame[top:bottom, left:right]
+            if patch.size == 0 or patch.shape[0] < 2 or patch.shape[1] < 2:
+                continue
+            hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
+            patch_hist = cv2.calcHist([hsv], [0, 1, 2], None, [12, 6, 4], [0, 180, 0, 256, 0, 256])
+            hist += patch_hist.astype(np.float32).reshape(-1)
+            used += 1
+        if used <= 0:
+            return hist
+        total = float(hist.sum())
+        if total <= 0.0:
+            return np.zeros_like(hist, dtype=np.float32)
+        return hist / total
+
+    upper = rect_for_keypoints((11, 12, 13, 14, 15, 16, 23, 24), 0.16, 0.12, 0.00, 0.65)
+    lower = rect_for_keypoints((23, 24, 25, 26, 27, 28), 0.14, 0.10, 0.40, 1.00)
+    full = (
+        int(np.floor(max(0.0, candidate.bbox.left) * w)),
+        int(np.floor(max(0.0, candidate.bbox.top) * h)),
+        int(np.ceil(min(1.0, candidate.bbox.right) * w)),
+        int(np.ceil(min(1.0, candidate.bbox.bottom) * h)),
+    )
+    full_left = max(0, min(w - 1, full[0]))
+    full_top = max(0, min(h - 1, full[1]))
+    full_right = max(full_left + 1, min(w, full[2]))
+    full_bottom = max(full_top + 1, min(h, full[3]))
+    full = (full_left, full_top, full_right, full_bottom)
+
+    hist = np.concatenate([
+        hist_for_keypoint_patches((11, 12, 13, 14, 15, 16, 23, 24)) * 0.25,
+        hist_for_keypoint_patches((23, 24, 25, 26, 27, 28)) * 0.10,
+        hist_for_rect(upper) * 0.40,
+        hist_for_rect(lower) * 0.20,
+        hist_for_rect(full) * 0.05,
+    ]).astype(np.float32)
+    if float(hist.sum()) <= 0.0:
         return None
-    return SubjectAppearanceSignature(hist / total)
+    return SubjectAppearanceSignature(hist)
 
 
 def _longest_positive_track_run(trace: List[dict]) -> int:
@@ -226,6 +292,10 @@ def _run_validation(
     every_ms: int,
     num_poses: int,
     auto_tap_first_candidate: bool,
+    start_ms: int,
+    tap_x: Optional[float],
+    tap_y: Optional[float],
+    min_selected_ratio: float,
 ) -> dict:
     if not video_path.exists():
         raise FileNotFoundError(video_path)
@@ -278,6 +348,8 @@ def _run_validation(
                     break
                 ts_ms = int(round(frame_idx / fps * 1000))
                 frame_idx += 1
+                if ts_ms < start_ms:
+                    continue
                 if (ts_ms - last_emit_ms) < every_ms:
                     continue
                 if max_frames > 0 and len(trace) >= max_frames:
@@ -294,7 +366,12 @@ def _run_validation(
                         built.appearance = _appearance_signature_from_candidate(frame, built)
                         candidates.append(built)
 
-                if auto_tap_first_candidate and not tap_applied and candidates:
+                if tap_x is not None and tap_y is not None and not tap_applied and candidates:
+                    tap_point = (float(tap_x), float(tap_y))
+                    selector.clear_lock()
+                    selector.request_tap(tap_point[0], tap_point[1])
+                    tap_applied = True
+                elif auto_tap_first_candidate and not tap_applied and candidates:
                     # Simulate a user choosing the primary visible subject. This
                     # validates the locked-subject Kalman re-match path instead
                     # of the cold-start auto-lock path.
@@ -413,7 +490,7 @@ def _run_validation(
                     f"raw={row['raw_candidates']} gated={row['candidates_after_gate']} score={row['kalman_track_score']} reason={row['reason'] or '-'}",
                     f"appearance={row['appearance_similarity_to_lock']} margin={row['top2_match_margin']} held={row['held_frame']}",
                 ]
-                if auto_tap_first_candidate and tap_point is not None:
+                if tap_point is not None:
                     header.append(f"manual-lock simulation tap=({tap_point[0]:.3f}, {tap_point[1]:.3f})")
                 _put_header(frame, header)
                 writer.write(frame)
@@ -432,6 +509,8 @@ def _run_validation(
         for row in trace
         if row["status"] in {SubjectLockStatus.SINGLE_AUTO.value, SubjectLockStatus.AUTO_LOCKED.value, SubjectLockStatus.LOCKED.value}
     )
+    selected_frames = sum(1 for row in trace if row.get("selected_center") is not None)
+    selected_ratio = selected_frames / max(1, len(trace))
     track_switches = _count_track_switches(trace)
     identity_switches = _count_identity_switches(trace)
     wrong_person_frames = sum(1 for row in trace if row.get("identity_consistent") is False)
@@ -490,6 +569,11 @@ def _run_validation(
             "detail": f"locked_frames={locked_frames}, candidate_frames={frames_with_candidate}",
         },
         {
+            "name": "selected target coverage meets requested ratio",
+            "passed": min_selected_ratio <= 0.0 or selected_ratio >= min_selected_ratio,
+            "detail": f"selected_frames={selected_frames}/{len(trace)} ratio={selected_ratio:.3f} required={min_selected_ratio:.3f}",
+        },
+        {
             "name": "kalman scores are bounded",
             "passed": all(
                 row["kalman_track_score"] is None or 0.0 <= float(row["kalman_track_score"]) <= 1.0
@@ -513,8 +597,10 @@ def _run_validation(
             "kalman_default_dt_s": cfg.kalman_default_dt_s,
             "subject_lost_frames": cfg.subject_lost_frames,
             "sample_every_ms": every_ms,
+            "start_ms": start_ms,
             "num_poses": num_poses,
             "auto_tap_first_candidate": auto_tap_first_candidate,
+            "min_selected_ratio": min_selected_ratio,
             "identity_score_weights": {
                 "kalman_motion": 0.45,
                 "keypoint": 0.25,
@@ -548,6 +634,8 @@ def _run_validation(
             "track_switches": track_switches,
             "longest_positive_track_run": _longest_positive_track_run(trace),
             "locked_frames": locked_frames,
+            "selected_frames": selected_frames,
+            "selected_ratio": round(selected_ratio, 5),
             "multi_person_frames": sum(1 for row in trace if int(row["candidates_after_gate"]) >= 2),
             "identity_switches": identity_switches,
             "wrong_person_frames": wrong_person_frames,
@@ -581,6 +669,15 @@ def main() -> None:
     parser.add_argument("--max-frames", type=int, default=80, help="0 means all sampled frames")
     parser.add_argument("--every-ms", type=int, default=125, help="125 ms = 8 fps")
     parser.add_argument("--num-poses", type=int, default=4)
+    parser.add_argument("--start-ms", type=int, default=0, help="Ignore frames before this timestamp.")
+    parser.add_argument("--tap-x", type=float, default=None, help="Manual-lock normalized x coordinate.")
+    parser.add_argument("--tap-y", type=float, default=None, help="Manual-lock normalized y coordinate.")
+    parser.add_argument(
+        "--min-selected-ratio",
+        type=float,
+        default=0.0,
+        help="Optional active selected-subject coverage requirement; 0 disables the check.",
+    )
     parser.add_argument(
         "--auto-tap-first-candidate",
         action="store_true",
@@ -596,6 +693,10 @@ def main() -> None:
         every_ms=args.every_ms,
         num_poses=args.num_poses,
         auto_tap_first_candidate=args.auto_tap_first_candidate,
+        start_ms=args.start_ms,
+        tap_x=args.tap_x,
+        tap_y=args.tap_y,
+        min_selected_ratio=args.min_selected_ratio,
     )
 
     n_pass = sum(1 for item in summary["assertions"] if item["passed"])

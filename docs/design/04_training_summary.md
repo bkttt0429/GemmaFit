@@ -89,6 +89,12 @@ metrics that were actually judgeable. For example, a side-view squat can still
 show depth, tempo, and trunk evidence while listing frontal knee valgus as
 `NOT_APPLICABLE`.
 
+Claim language follows `docs/papers/literature_review.md`: summary copy may say
+that depth, tempo, trunk lean, and consistency were readable from the current
+camera evidence, but must not turn those proxies into injury diagnosis,
+clinical biomechanics, joint-force estimates, or muscle activation percentages.
+Use `pose-estimated load focus` for muscle wording.
+
 The panel should expose backend status (`litert-lm`, `llama.cpp`, or
 deterministic fallback), selected function, and compact `evidence_refs`. If the
 model cites a missing evidence id or selects a tool outside the Capability

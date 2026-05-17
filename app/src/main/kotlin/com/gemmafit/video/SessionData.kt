@@ -21,11 +21,15 @@ data class SessionSummary(
     val notApplicableCounts: Map<String, Int> = emptyMap(),
     val muscleFocusDistribution: Map<String, Int> = emptyMap(),
     val repHistory: List<RepRecord> = emptyList(),
+    val personalTraceEnvelope: PersonalTraceEnvelope? = null,
     val coachTips: List<String> = emptyList(),
     val aiInsights: List<CoachInsight> = emptyList(),
     val sessionCoachInsight: SessionCoachInsight = SessionCoachInsight(),
     val capabilityContract: CapabilityContract = CapabilityContract(),
     val evidenceRefs: List<String> = emptyList(),
+    val activityContext: ActivityContext = ActivityContext.unknown(),
+    val visualContext: SessionVisualContext = SessionVisualContext.unknown(),
+    val reviewCues: List<ReviewCue> = emptyList(),
 )
 
 /**
@@ -48,6 +52,20 @@ data class SafetyEvent(
     val joint: String = "",
     val frameIndex: Int = 0,
     val timestampSeconds: Int = 0,
+)
+
+/**
+ * Deterministic review-time cue anchored to a processed frame.
+ * The model may explain these cues later, but it must not invent their time or frame.
+ */
+data class ReviewCue(
+    val frameIndex: Int = 0,
+    val timestampMs: Long = 0L,
+    val severity: String = "watch",
+    val kind: String = "movement",
+    val title: String = "",
+    val suggestion: String = "",
+    val evidenceRef: String = "",
 )
 
 /**
@@ -109,6 +127,7 @@ data class RepRecord(
     val rangeOfMotionDeg: Float,
     val hadViolations: Boolean,
     val traceSummary: RepTraceSummary? = null,
+    val warningNames: List<String> = emptyList(),
 )
 
 /**
@@ -134,6 +153,8 @@ data class LiveWorkoutState(
     val qualityFlags: List<QualityFlag> = emptyList(),
     val trustMatrix: List<TrustMatrixItem> = defaultTrustMatrix(),
     val evidenceCard: EvidenceCard = EvidenceCard(),
+    val capabilityContract: CapabilityContract = CapabilityContract(),
+    val motionZipStatus: MotionZipUiState = MotionZipUiState(),
     // Latest detected landmarks for skeleton overlay
     val poseLandmarks: List<PoseLandmarkData> = emptyList(),
     val poseTrajectory: List<List<PoseLandmarkData>> = emptyList(),
@@ -151,10 +172,29 @@ data class LiveWorkoutState(
     val imageWidth: Int = 1080,
     val imageHeight: Int = 1920,
     val repHistory: List<RepRecord> = emptyList(),
+    val activityContext: ActivityContext = ActivityContext.unknown(),
+    val visualContext: SessionVisualContext = SessionVisualContext.unknown(),
+    val sessionStatus: SessionStatusSnapshot = SessionStatusSnapshot(),
+    val reviewCues: List<ReviewCue> = emptyList(),
     // Frame navigation
     val currentFrameIndex: Int = 0,
     val currentFrameTimestampMs: Long = 0L,
+    val latestProcessedTimestampMs: Long = 0L,
     val totalFramesAnalyzed: Int = 0,
+    val reviewFrameStatus: ReviewFrameStatus = ReviewFrameStatus(),
+    val reviewTargetChangedAfterAnalysis: Boolean = false,
+    val targetReanalysisAvailable: Boolean = false,
+    val targetReanalysisActive: Boolean = false,
+)
+
+data class SessionStatusSnapshot(
+    val ready: Boolean = false,
+    val exercise: String = "unknown",
+    val formScore: Int = 0,
+    val repCount: Int = 0,
+    val phase: String = "complete",
+    val activityContext: ActivityContext = ActivityContext.unknown(),
+    val visualContext: SessionVisualContext = SessionVisualContext.unknown(),
 )
 
 enum class SubjectLockStatus {
@@ -164,6 +204,24 @@ enum class SubjectLockStatus {
     SUBJECT_LOST,
     SINGLE_AUTO,
 }
+
+data class ReviewFrameStatus(
+    val frameIndex: Int = 0,
+    val timestampMs: Long = 0L,
+    val bitmapCached: Boolean = false,
+    val bitmapRestoring: Boolean = false,
+    val bitmapRestored: Boolean = false,
+    val bitmapRestoreFailed: Boolean = false,
+    val restoreLatencyMs: Long? = null,
+    val landmarkCount: Int = 0,
+    val selectedLandmarkCount: Int = 0,
+    val candidateCount: Int = 0,
+    val poseAvailable: Boolean = false,
+    val poseHiddenByQuality: Boolean = false,
+    val noPoseReason: String = "",
+    val previewWidth: Int = 0,
+    val previewHeight: Int = 0,
+)
 
 data class PoseLandmarkData(
     val x: Float,
@@ -195,6 +253,10 @@ data class PoseCandidate(
     val avgVisibility: Float,
     val trackScore: Float = 0f,
     val trackId: Int = 0,
+    val appearance: SubjectAppearanceSignature? = null,
+    val appearanceScore: Float = 0.5f,
+    val matchMargin: Float = 0f,
+    val identityScore: Float = 0f,
 )
 
 data class SafetyWarning(
@@ -223,6 +285,7 @@ data class CoachInsight(
     val evidenceRefs: List<String> = emptyList(),
     val summaryNarrative: String = "",
     val modelInfo: String = "{}",
+    val modelStatus: SessionCoachModelStatus = SessionCoachModelStatus.FALLBACK,
     val fallback: Boolean = true,
 )
 
@@ -241,9 +304,50 @@ data class SessionCoachContext(
     val notApplicableCounts: Map<String, Int>,
     val muscleFocusDistribution: Map<String, Int>,
     val repHistory: List<RepRecord>,
+    val personalTraceEnvelope: PersonalTraceEnvelope? = null,
     val capabilityContract: CapabilityContract = CapabilityContract(),
     val evidenceRefs: List<String> = emptyList(),
+    val seniorHeroMode: Boolean = false,
+    val activityContext: ActivityContext = ActivityContext.unknown(),
+    val visualContext: SessionVisualContext = SessionVisualContext.unknown(),
+    /**
+     * User's resolved locale at session-summary time. Threaded into the E2B
+     * prompt's `locale` field so the model emits care log wording in the
+     * matching language, and surfaced in the deterministic fallback renderer
+     * so template strings match too. Defaults to en-US to keep behavior
+     * stable for any caller not yet updated to inject the user's choice.
+     */
+    val locale: com.gemmafit.settings.ResolvedLocale = com.gemmafit.settings.ResolvedLocale.EN_US,
 )
+
+enum class SessionCoachModelStatus {
+    PENDING,
+    MODEL,
+    FALLBACK,
+}
+
+enum class SessionCoachStreamPhase {
+    IDLE,
+    QUEUED,
+    PREFILL,
+    STREAMING,
+    VALIDATING,
+    COMPLETE,
+}
+
+data class CoachInferenceStreamUpdate(
+    val phase: SessionCoachStreamPhase,
+    val backend: String = "",
+    val partialText: String = "",
+    val tokenCount: Int = 0,
+    val firstTokenTimeMs: Long? = null,
+    val constrainedDecoding: Boolean = false,
+    val error: String = "",
+)
+
+fun interface CoachInferenceStreamObserver {
+    fun onUpdate(update: CoachInferenceStreamUpdate)
+}
 
 data class SessionCoachInsight(
     val headline: String = "",
@@ -256,6 +360,19 @@ data class SessionCoachInsight(
     val evidenceRefs: List<String> = emptyList(),
     val selectionBasis: String = "",
     val inferenceTimeMs: Double = 0.0,
+    val modelInfo: String = "{}",
+    val modelFileName: String = "",
+    val modelPath: String = "",
+    val initTimeMs: Long? = null,
+    val attemptCount: Int = 0,
+    val firstError: String = "",
+    val retryError: String = "",
+    val streamingPhase: SessionCoachStreamPhase = SessionCoachStreamPhase.IDLE,
+    val streamingText: String = "",
+    val streamTokenCount: Int = 0,
+    val firstTokenTimeMs: Long? = null,
+    val constrainedDecoding: Boolean = false,
+    val modelStatus: SessionCoachModelStatus = SessionCoachModelStatus.FALLBACK,
     val fallback: Boolean = true,
 )
 
@@ -275,6 +392,7 @@ object CoachTriggerPolicy {
 
 data class QualityFlag(
     val id: String,
+    val evidenceId: String = "",
     val status: String,  // OK, MONITOR, WARNING, CRITICAL, NOT_APPLICABLE, LOW_CONFIDENCE, VIEW_LIMITED
     val value: Float,
     val threshold: Float,
@@ -296,6 +414,8 @@ data class EvidenceDagNode(
     val sourceModule: String,
     val sourceFunction: String,
     val frameRange: String,
+    val evidenceLevel: String = "",
+    val reason: String = "",
     val landmarkRefs: List<String> = emptyList(),
 )
 
@@ -351,9 +471,11 @@ data class EvidenceCard(
     val capabilityCanJudge: List<String> = emptyList(),
     val capabilityCannotJudge: List<String> = emptyList(),
     val unsupportedJudgments: List<String> = listOf(
+        "fall_risk_prediction",
         "joint_force",
         "clinical_injury_risk",
         "medical_diagnosis",
+        "muscle_activation_percentage",
     ),
     val modelBoundary: String = "Movement quality feedback only, not medical diagnosis.",
 )

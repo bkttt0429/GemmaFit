@@ -22,10 +22,10 @@ data class PosePresenceStats(
 }
 
 object PosePresenceGate {
-    const val MIN_AVG_VISIBILITY = 0.18f
-    const val HIGH_VISIBILITY_THRESHOLD = 0.25f
+    const val MIN_AVG_VISIBILITY = 0.20f
+    const val HIGH_VISIBILITY_THRESHOLD = 0.30f
     const val MIN_HIGH_VISIBILITY_KEYPOINTS = 8
-    const val MIN_BBOX_AREA = 0.01f
+    const val MIN_BBOX_AREA = 0.006f
 
     private val torsoIndices = setOf(11, 12, 23, 24)
     private val upperBodyIndices = setOf(11, 12, 13, 14, 15, 16, 23, 24)

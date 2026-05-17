@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.Orange
@@ -52,6 +53,7 @@ fun FormScoreTrendChart(
     totalFrames: Int,
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
     val animatedProgress = remember { Animatable(0f) }
     LaunchedEffect(scores) {
         animatedProgress.snapTo(0f)
@@ -274,11 +276,11 @@ fun FormScoreTrendChart(
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            LegendItem(color = Green, text = "Form Score")
+            LegendItem(color = Green, text = copy.formScore)
             Spacer(Modifier.weight(1f))
-            LegendItem(color = Orange, text = "Warning")
+            LegendItem(color = Orange, text = copy.warning)
             Spacer(Modifier.weight(1f))
-            LegendItem(color = Red, text = "Critical")
+            LegendItem(color = Red, text = copy.critical)
         }
     }
 }

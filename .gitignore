@@ -17,6 +17,10 @@ native/llama.cpp/build/
 # 模型（體積過大）
 models/*.gguf
 models/*.bin
+models/*.litertlm
+models/*.pt
+models/*.tflite
+models/.cache/
 
 # Python
 __pycache__/
@@ -34,6 +38,7 @@ Thumbs.db
 
 # Other outputs & IDE settings
 finetune/output/
+finetune/data/gemmafit_v5_2_e2b_evidence_router.json
 .gradle/
 .kotlin/errors/
 .vscode/
@@ -42,11 +47,30 @@ app/.cxx/
 
 # Local debug/test artifacts
 debug_phone_report*.json
+debug_litert_smoke*.json
+debug_litert_smoke*.txt
+debug_litert_functiongemma_*.json
+debug_litert_functiongemma_*.txt
+debug_litert_*.json
+debug_litert_*.txt
 phone_*.png
 perf_artifacts/
 prototype/outputs/
 test_assets/videos/internet_public/
 
+# Repo-root build / scratch noise (don't commit, don't surface in git status)
+/build_log.txt
+/build_output*.txt
+/_patch_fix_cells.py
+/tmp_*
+/yolov8*.pt
+/app/src/main/assets/yolo*.tflite
+/app/src/main/assets/yolo*.onnx
+/.gemini/
+test_assets/outputs/
+
 # Large media & datasets
+test_assets/datasets/
 *.zip
 *.mp4
+!test_assets/videos/no_person_blank_3s.mp4

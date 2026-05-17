@@ -48,6 +48,7 @@ import com.gemmafit.settings.AppCueStyle
 import com.gemmafit.settings.AppLanguage
 import com.gemmafit.settings.AppSettings
 import com.gemmafit.settings.AppTrainingMode
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
@@ -56,6 +57,7 @@ import com.gemmafit.ui.theme.Red
 import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
+import java.util.Locale
 
 @Composable
 fun SettingsScreen(
@@ -270,12 +272,13 @@ private fun SettingsHeader(
     onBack: () -> Unit,
     scale: Float,
 ) {
+    val appCopy = LocalAppStrings.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = TextPrimary)
+            Icon(Icons.Filled.ArrowBack, contentDescription = appCopy.back, tint = TextPrimary)
         }
         Spacer(Modifier.width(8.dp))
         Column {
@@ -476,7 +479,14 @@ private data class SettingsCopy(
 
     companion object {
         fun forLanguage(language: AppLanguage): SettingsCopy {
-            return if (language == AppLanguage.TRADITIONAL_CHINESE) zhTw else en
+            return if (
+                language == AppLanguage.TRADITIONAL_CHINESE ||
+                language == AppLanguage.SYSTEM && Locale.getDefault().language.startsWith("zh")
+            ) {
+                zhTw
+            } else {
+                en
+            }
         }
 
         private val en = SettingsCopy(

@@ -36,7 +36,7 @@ enum class TrendNote {
 }
 
 @Keep
-enum class MemoryUpdateType { PROFILE, CALIBRATION, TREND_NOTE }
+enum class MemoryUpdateType { PROFILE, CALIBRATION, TREND_NOTE, CARE_ACTIVITY_LOG, DUAL_TASK_RESULT }
 
 @Keep
 enum class ValidationStatus { PENDING, ACCEPTED, REJECTED, NEEDS_REVIEW }
@@ -146,6 +146,31 @@ data class CaregiverSummary(
     val sessionsCompleted: Int,
     val commonCameraLimitations: List<String>,    // e.g. ["frontal_view_only"]
     val commonCues: List<String>,                  // top training cues
+    val supportEventCounts: Map<String, Int> = emptyMap(),
     val unsupportedJudgmentsAcknowledged: List<String>,  // mandatory
     val noMedicalDiagnosis: Boolean = true,        // sentinel — never set false
+)
+
+@Keep
+data class CareActivityLogMemory(
+    val sessionId: String,
+    val activity: String,
+    val headline: String,
+    val whatWasCompleted: String,
+    val observations: String,
+    val notJudged: String,
+    val nextSessionFocus: String,
+    val evidenceIds: List<String>,
+    val createdAt: Long,
+)
+
+@Keep
+data class DualTaskResultMemory(
+    val promptId: String,
+    val responseMode: String,
+    val answerMatched: Boolean,
+    val movementCompleted: Boolean,
+    val fallbackReason: String,
+    val evidenceIds: List<String>,
+    val createdAt: Long,
 )

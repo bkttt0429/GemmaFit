@@ -35,8 +35,8 @@ class MemoryWritePolicy(
         }
 
         // Step 2: provenance
-        if (req.type == MemoryUpdateType.TREND_NOTE && req.evidenceIds.isEmpty()) {
-            return Decision.Rejected("provenance:trend_note_requires_evidence")
+        if (req.type.requiresEvidenceIds() && req.evidenceIds.isEmpty()) {
+            return Decision.Rejected("provenance:${req.type.name.lowercase()}_requires_evidence")
         }
 
         // Step 3: refusal regex over the stringified payload
@@ -83,6 +83,8 @@ class MemoryWritePolicy(
             MemoryUpdateType.PROFILE -> validateProfilePayload(req.proposedValue)
             MemoryUpdateType.CALIBRATION -> validateCalibrationPayload(req.proposedValue)
             MemoryUpdateType.TREND_NOTE -> validateTrendPayload(req.proposedValue)
+            MemoryUpdateType.CARE_ACTIVITY_LOG -> validateCareLogPayload(req.proposedValue)
+            MemoryUpdateType.DUAL_TASK_RESULT -> validateDualTaskPayload(req.proposedValue)
         }
     }
 
@@ -124,6 +126,30 @@ class MemoryWritePolicy(
         }
     }
 
+    private fun validateCareLogPayload(p: Map<String, Any?>): String? {
+        val required = setOf(
+            "session_id",
+            "activity",
+            "headline",
+            "what_was_completed",
+            "observations",
+            "not_judged",
+            "next_session_focus",
+        )
+        val missing = required - p.keys
+        if (missing.isNotEmpty()) return "missing_keys:${missing.joinToString(",")}"
+        return null
+    }
+
+    private fun validateDualTaskPayload(p: Map<String, Any?>): String? {
+        val required = setOf("prompt_id", "response_mode", "answer_matched", "movement_completed")
+        val missing = required - p.keys
+        if (missing.isNotEmpty()) return "missing_keys:${missing.joinToString(",")}"
+        val mode = p["response_mode"] as? String ?: return "response_mode_not_string"
+        if (mode !in setOf("gesture", "voice")) return "unsupported_response_mode:$mode"
+        return null
+    }
+
     // ── Decision sum type ────────────────────────────────────────────
 
     sealed class Decision {
@@ -131,4 +157,10 @@ class MemoryWritePolicy(
         data object Idempotent : Decision()           // already seen requestId — no-op, no audit
         data class Rejected(val reason: String) : Decision()
     }
+}
+
+private fun MemoryUpdateType.requiresEvidenceIds(): Boolean {
+    return this == MemoryUpdateType.TREND_NOTE ||
+        this == MemoryUpdateType.CARE_ACTIVITY_LOG ||
+        this == MemoryUpdateType.DUAL_TASK_RESULT
 }

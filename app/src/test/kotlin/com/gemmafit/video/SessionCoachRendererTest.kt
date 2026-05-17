@@ -1,6 +1,7 @@
 package com.gemmafit.video
 
 import com.gemmafit.jni.LLMBridge
+import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -148,6 +149,76 @@ class SessionCoachRendererTest {
     }
 
     @Test
+    fun visualContextIsPreservedInSafetyPacketEvidenceRefs() {
+        val context = SessionCoachRenderer.contextFrom(
+            SessionSummary(
+                totalFrames = 96,
+                totalReps = 4,
+                avgFormScore = 82f,
+                detection = ExerciseDetection(mainExercise = "supported_chair_squat", confidence = 0.9f),
+                visualContext = SessionVisualContext(
+                    env = SessionVisualContext.ENV_OUTDOOR,
+                    support = SessionVisualContext.SUPPORT_CHAIR,
+                    person = SessionVisualContext.PERSON_VISIBLE,
+                    overlayReadable = true,
+                    limited = false,
+                    evidenceRefs = listOf(
+                        SessionVisualContext.REF_ENV,
+                        SessionVisualContext.REF_SUPPORT,
+                        SessionVisualContext.REF_PERSON,
+                        SessionVisualContext.REF_OVERLAY,
+                        SessionVisualContext.REF_LIMITED,
+                    ),
+                ),
+            ),
+        )
+
+        val packet = JSONObject(SessionCoachRenderer.buildSafetyJson(context))
+        val visual = packet.getJSONObject("visual_context")
+        val evidenceRefs = packet.getJSONArray("evidence_refs").toString()
+
+        assertEquals("outdoor", visual.getString("env"))
+        assertEquals("chair", visual.getString("support"))
+        assertEquals("visible", visual.getString("person"))
+        assertEquals(true, visual.getBoolean("overlay_readable"))
+        assertEquals(false, visual.getBoolean("limited"))
+        assertTrue(evidenceRefs.contains(SessionVisualContext.REF_SUPPORT))
+        assertTrue(evidenceRefs.contains(SessionVisualContext.REF_OVERLAY))
+    }
+
+    @Test
+    fun seniorHeroSummaryUsesCaregiverFriendlyCopy() {
+        val context = SessionCoachRenderer.contextFrom(
+            summary = SessionSummary(
+                totalFrames = 81,
+                totalReps = 0,
+                avgFormScore = 83f,
+                detection = ExerciseDetection(mainExercise = "lunge", confidence = 0.88f),
+                viewLimitedCount = 19,
+                lowConfidenceCount = 4,
+            ),
+            seniorHeroMode = true,
+        )
+
+        val insight = SessionCoachRenderer.render(context)
+        val combined = listOf(
+            insight.headline,
+            insight.whatISaw,
+            insight.whyItMatters,
+            insight.notJudged,
+            insight.nextFocus,
+        ).joinToString(" ").lowercase()
+
+        assertTrue(insight.headline.contains("Senior Hero review"))
+        assertTrue(insight.whatISaw.contains("81 frames from a supported home strength practice"))
+        assertFalse(insight.whatISaw.contains("reviewed frames of"))
+        assertTrue(insight.notJudged.contains("fall risk"))
+        assertTrue(insight.notJudged.contains("joint force"))
+        assertFalse(combined.contains("fall risk score"))
+        assertFalse(combined.contains("rehabilitation progress. improved"))
+    }
+
+    @Test
     fun modelResultCanProvideNextFocusAndEvidenceRefs() {
         val context = SessionCoachRenderer.contextFrom(
             SessionSummary(
@@ -164,7 +235,7 @@ class SessionCoachRendererTest {
             backend = "litert-lm:gpu",
             selectionBasis = "Clean summary evidence with stable score.",
             evidenceRefs = listOf("avg_form_score", "total_reps", "tempo"),
-            modelInfoJson = "{}",
+            modelInfoJson = """{"model_path":"/data/user/0/com.gemmafit/files/models/gemma-4-e2b-it-official.litertlm","init_time_ms":9700,"attempt_count":2,"first_token_ms":3200,"constrained_decoding":true}""",
             rawResponse = "raw",
             inferenceTimeMs = 128.0,
         )
@@ -179,6 +250,135 @@ class SessionCoachRendererTest {
             insight.nextFocus,
         )
         assertEquals(listOf("avg_form_score", "total_reps", "tempo"), insight.evidenceRefs)
+        assertEquals("gemma-4-e2b-it-official.litertlm", insight.modelFileName)
+        assertEquals("/data/user/0/com.gemmafit/files/models/gemma-4-e2b-it-official.litertlm", insight.modelPath)
+        assertEquals(9700L, insight.initTimeMs)
+        assertEquals(2, insight.attemptCount)
+        assertEquals(3200L, insight.firstTokenTimeMs)
+        assertTrue(insight.constrainedDecoding)
+    }
+
+    @Test
+    fun modelCareActivityLogFieldsRenderAsLocalGemmaNarrative() {
+        val context = SessionCoachRenderer.contextFrom(
+            summary = SessionSummary(
+                totalFrames = 81,
+                totalReps = 3,
+                avgFormScore = 89f,
+                detection = ExerciseDetection(mainExercise = "chair_sit_to_stand", confidence = 0.93f),
+                viewLimitedCount = 2,
+            ),
+            seniorHeroMode = true,
+        ).copy(evidenceRefs = listOf("metric.senior.reps", "metric.senior.tempo"))
+        val result = LLMBridge.FunctionCallResult(
+            success = true,
+            functionName = "create_care_activity_log",
+            argsJson = """
+                {
+                  "headline":"Local Gemma care log",
+                  "what_was_completed":"Three supported sit-to-stand reps were completed during the reviewed window.",
+                  "observations":"The tempo evidence stayed controlled, and the chair stayed available as support. Two frames were camera-limited, so the summary stays focused on visible movement.",
+                  "not_judged":"This is an activity log, not a medical assessment.",
+                  "next_session_focus":"Use the same chair setup and pause briefly at the top of each stand.",
+                  "caregiver_note":"Local Gemma summarized only app-provided movement evidence.",
+                  "evidence_refs":["metric.senior.reps","metric.senior.tempo"],
+                  "selection_basis":"Completion and tempo evidence were available."
+                }
+            """.trimIndent(),
+            backend = "litert-lm:raw:gpu",
+            selectionBasis = "Completion and tempo evidence were available.",
+            evidenceRefs = listOf("metric.senior.reps", "metric.senior.tempo"),
+            modelInfoJson = "{}",
+            rawResponse = "{}",
+            inferenceTimeMs = 2400.0,
+        )
+
+        val insight = SessionCoachRenderer.render(context, result)
+
+        assertEquals("Local Gemma care log", insight.headline)
+        assertTrue(insight.whatISaw.contains("Three supported sit-to-stand reps"))
+        assertTrue(insight.whatISaw.contains("tempo evidence stayed controlled"))
+        assertEquals("Local Gemma summarized only app-provided movement evidence.", insight.whyItMatters)
+        assertEquals("This is an activity log, not a medical assessment.", insight.notJudged)
+        assertEquals("Use the same chair setup and pause briefly at the top of each stand.", insight.nextFocus)
+        assertEquals("litert-lm:raw:gpu", insight.backend)
+        assertFalse(insight.fallback)
+    }
+
+    @Test
+    fun sessionSummaryPromptUsesSlimSingleToolContract() {
+        val context = SessionCoachRenderer.contextFrom(
+            summary = SessionSummary(
+                totalFrames = 81,
+                totalReps = 3,
+                avgFormScore = 89f,
+                durationSeconds = 18,
+                detection = ExerciseDetection(mainExercise = "chair_sit_to_stand", confidence = 0.93f),
+                viewLimitedCount = 2,
+                safetyEvents = listOf(
+                    SafetyEvent(
+                        rule = 2,
+                        functionName = "correct_spinal_alignment",
+                        description = "Trunk control monitor event.",
+                        severity = "low",
+                        joint = "spine",
+                        frameIndex = 48,
+                    )
+                ),
+            ),
+            seniorHeroMode = true,
+        ).copy(
+            evidenceRefs = listOf(
+                "metric.senior.reps",
+                "metric.senior.tempo",
+                "metric.senior.stability_events",
+            )
+        )
+        val safety = JSONObject(SessionCoachRenderer.buildSafetyJson(context))
+        val packet = LiteRtEvidencePromptRenderer.buildEvidencePacket(
+            SessionCoachRenderer.toCoachContext(context),
+            safety,
+            ModelReasoningMode.SUMMARY_OPTIONAL,
+        )
+        val fullPrompt = LiteRtEvidencePromptRenderer.buildPrompt(packet)
+        val slimPrompt = LiteRtEvidencePromptRenderer.buildSessionSummaryPrompt(packet)
+
+        assertTrue(slimPrompt.length < fullPrompt.length)
+        assertTrue("slim prompt length=${slimPrompt.length}", slimPrompt.length < 5_000)
+        assertTrue(slimPrompt.contains("compressed_session_memory"))
+        assertTrue(slimPrompt.contains("create_care_activity_log"))
+        assertFalse(slimPrompt.contains("care_log_context"))
+        assertFalse(slimPrompt.contains("correct_spinal_alignment"))
+        assertFalse(slimPrompt.contains("ask_subjective_checkin"))
+    }
+
+    @Test
+    fun localLiteRtErrorsMapToCleanFallbackBackendLabel() {
+        val context = SessionCoachRenderer.contextFrom(
+            SessionSummary(
+                totalFrames = 81,
+                totalReps = 3,
+                avgFormScore = 89f,
+                detection = ExerciseDetection(mainExercise = "chair_sit_to_stand", confidence = 0.93f),
+            )
+        )
+        val result = LLMBridge.FunctionCallResult(
+            success = false,
+            functionName = "create_care_activity_log",
+            argsJson = "{}",
+            backend = "litert-lm:isolated:cpu",
+            errorMessage = "Input token ids are too long. Exceeding the maximum number of tokens allowed: 3073 >= 2048",
+            selectionBasis = "local model failed",
+            evidenceRefs = emptyList(),
+            modelInfoJson = "{}",
+            rawResponse = "{}",
+            inferenceTimeMs = 10.0,
+        )
+
+        val insight = SessionCoachRenderer.render(context, result)
+
+        assertTrue(insight.fallback)
+        assertEquals("fallback:local_model_unavailable", insight.backend)
     }
 
     @Test
@@ -218,11 +418,47 @@ class SessionCoachRendererTest {
         )
 
         val json = SessionCoachRenderer.buildSafetyJson(context)
+        val parsed = JSONObject(json)
 
         assertTrue(json.contains("capability_contract"))
         assertTrue(json.contains("metric.squat.depth"))
+        assertEquals("SESSION_SUMMARY", parsed.getString("trigger"))
+        assertEquals(
+            "create_care_activity_log",
+            parsed.getJSONObject("output_contract").getString("required_function"),
+        )
         assertFalse(json.contains("landmarks"))
         assertFalse(json.contains("raw_video"))
+    }
+
+    @Test
+    fun summarySafetyJsonIncludesCompactActivityContext() {
+        val context = SessionCoachRenderer.contextFrom(
+            summary = SessionSummary(
+                totalFrames = 40,
+                totalReps = 2,
+                avgFormScore = 91f,
+                durationSeconds = 12,
+                detection = ExerciseDetection(mainExercise = "unknown", confidence = 0.4f),
+                activityContext = ActivityContext(
+                    state = ActivityContextState.LOCKED,
+                    taskLabel = "chair_sit_to_stand",
+                    confidence = 0.94f,
+                    templateScores = mapOf("chair_sit_to_stand" to 0.94f, "supported_squat" to 0.21f),
+                    evidenceRefs = listOf("activity_context.locked"),
+                ),
+            ),
+            seniorHeroMode = true,
+        )
+
+        val json = SessionCoachRenderer.buildSafetyJson(context)
+        val parsed = JSONObject(json)
+        val activityContext = parsed.getJSONObject("activity_context")
+
+        assertEquals("locked", activityContext.getString("state"))
+        assertEquals("chair_sit_to_stand", activityContext.getString("task_label"))
+        assertTrue(activityContext.getJSONArray("evidence_refs").toString().contains("activity_context.locked"))
+        assertFalse(json.contains("template_scores"))
     }
 
     @Test
@@ -260,6 +496,80 @@ class SessionCoachRendererTest {
 
         assertFalse(validated.success)
         assertEquals("invalid_evidence_refs", validated.errorMessage)
+    }
+
+    @Test
+    fun thoughtLeakForcesDeterministicFallback() {
+        val context = SessionCoachContext(
+            totalFrames = 40,
+            totalReps = 2,
+            avgFormScore = 91f,
+            durationSeconds = 12,
+            mainExercise = "squat",
+            exerciseConfidence = 0.9f,
+            detectedExercises = mapOf("squat" to 40),
+            safetyEvents = emptyList(),
+            formScores = emptyList(),
+            viewLimitedCount = 0,
+            lowConfidenceCount = 0,
+            notApplicableCounts = emptyMap(),
+            muscleFocusDistribution = emptyMap(),
+            repHistory = emptyList(),
+            evidenceRefs = listOf("metric.squat.depth"),
+        )
+        val result = LLMBridge.FunctionCallResult(
+            success = true,
+            functionName = "positive_reinforcement",
+            argsJson = "{}",
+            backend = "litert-lm:gpu",
+            selectionBasis = "Clean evidence.",
+            evidenceRefs = listOf("metric.squat.depth"),
+            modelInfoJson = "{}",
+            rawResponse = "<think>I should infer risk.</think>{}",
+            inferenceTimeMs = 10.0,
+        )
+
+        val validated = SessionCoachRenderer.validateModelResult(context, result)
+
+        assertFalse(validated.success)
+        assertEquals("thought_leak_detected", validated.errorMessage)
+    }
+
+    @Test
+    fun forbiddenClaimInCareLogForcesDeterministicFallback() {
+        val context = SessionCoachContext(
+            totalFrames = 40,
+            totalReps = 2,
+            avgFormScore = 91f,
+            durationSeconds = 12,
+            mainExercise = "chair_sit_to_stand",
+            exerciseConfidence = 0.9f,
+            detectedExercises = mapOf("chair_sit_to_stand" to 40),
+            safetyEvents = emptyList(),
+            formScores = emptyList(),
+            viewLimitedCount = 0,
+            lowConfidenceCount = 0,
+            notApplicableCounts = emptyMap(),
+            muscleFocusDistribution = emptyMap(),
+            repHistory = emptyList(),
+            evidenceRefs = listOf("metric.senior.reps"),
+        )
+        val result = LLMBridge.FunctionCallResult(
+            success = true,
+            functionName = "create_care_activity_log",
+            argsJson = """{"headline":"Care log","what_was_completed":"Two reps completed.","observations":"Fall risk improved.","evidence_refs":["metric.senior.reps"]}""",
+            backend = "litert-lm:gpu",
+            selectionBasis = "bad claim",
+            evidenceRefs = listOf("metric.senior.reps"),
+            modelInfoJson = "{}",
+            rawResponse = "{}",
+            inferenceTimeMs = 10.0,
+        )
+
+        val validated = SessionCoachRenderer.validateModelResult(context, result)
+
+        assertFalse(validated.success)
+        assertEquals("forbidden_claim_detected", validated.errorMessage)
     }
 
     @Test
@@ -301,5 +611,77 @@ class SessionCoachRendererTest {
         assertFalse(validated.success)
         assertEquals("refuse_unsupported_question", validated.functionName)
         assertEquals("capability_contract_blocked", validated.errorMessage)
+    }
+
+    @Test
+    fun missingCitedRefsBlockHardCoachingResult() {
+        val context = SessionCoachContext(
+            totalFrames = 40,
+            totalReps = 2,
+            avgFormScore = 91f,
+            durationSeconds = 12,
+            mainExercise = "squat",
+            exerciseConfidence = 0.9f,
+            detectedExercises = mapOf("squat" to 40),
+            safetyEvents = emptyList(),
+            formScores = emptyList(),
+            viewLimitedCount = 0,
+            lowConfidenceCount = 0,
+            notApplicableCounts = emptyMap(),
+            muscleFocusDistribution = emptyMap(),
+            repHistory = emptyList(),
+        )
+        val result = LLMBridge.FunctionCallResult(
+            success = true,
+            functionName = "positive_reinforcement",
+            argsJson = "{}",
+            backend = "litert-lm:gpu",
+            selectionBasis = "no bounded refs",
+            evidenceRefs = emptyList(),
+            modelInfoJson = "{}",
+            rawResponse = "{}",
+            inferenceTimeMs = 10.0,
+        )
+
+        val validated = SessionCoachRenderer.validateModelResult(context, result)
+
+        assertFalse(validated.success)
+        assertEquals("missing_evidence_refs", validated.errorMessage)
+    }
+
+    @Test
+    fun refusalCanReturnWithoutHardEvidenceRefs() {
+        val context = SessionCoachContext(
+            totalFrames = 40,
+            totalReps = 2,
+            avgFormScore = 91f,
+            durationSeconds = 12,
+            mainExercise = "squat",
+            exerciseConfidence = 0.9f,
+            detectedExercises = mapOf("squat" to 40),
+            safetyEvents = emptyList(),
+            formScores = emptyList(),
+            viewLimitedCount = 0,
+            lowConfidenceCount = 0,
+            notApplicableCounts = emptyMap(),
+            muscleFocusDistribution = emptyMap(),
+            repHistory = emptyList(),
+        )
+        val result = LLMBridge.FunctionCallResult(
+            success = true,
+            functionName = "refuse_unsupported_question",
+            argsJson = """{"reason":"insufficient_evidence"}""",
+            backend = "litert-lm:gpu",
+            selectionBasis = "safe refusal",
+            evidenceRefs = emptyList(),
+            modelInfoJson = "{}",
+            rawResponse = "{}",
+            inferenceTimeMs = 10.0,
+        )
+
+        val validated = SessionCoachRenderer.validateModelResult(context, result)
+
+        assertTrue(validated.success)
+        assertEquals("refuse_unsupported_question", validated.functionName)
     }
 }

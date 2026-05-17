@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,13 +36,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.PurpleSecondary
 import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
+import com.gemmafit.video.CoachBoundaryState
 import com.gemmafit.video.EvidenceCard
 import com.gemmafit.video.QualityFlag
+import com.gemmafit.video.TrustUiMapper
 
 /**
  * Collapsible Evidence and Cannot-Judge panels.
@@ -50,8 +55,10 @@ import com.gemmafit.video.QualityFlag
 fun EvidencePanel(
     card: EvidenceCard,
     qualityFlags: List<QualityFlag>,
+    boundary: CoachBoundaryState = CoachBoundaryState(),
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
     var evidenceExpanded by rememberSaveable { mutableStateOf(false) }
     var cannotJudgeExpanded by rememberSaveable { mutableStateOf(false) }
 
@@ -74,7 +81,7 @@ fun EvidencePanel(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Evidence",
+                            text = copy.evidence,
                             color = TextPrimary,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleSmall,
@@ -82,7 +89,7 @@ fun EvidencePanel(
                         Spacer(Modifier.weight(1f))
                         Icon(
                             if (evidenceExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                            contentDescription = if (evidenceExpanded) "Collapse" else "Expand",
+                            contentDescription = if (evidenceExpanded) copy.collapse else copy.expand,
                             tint = TextSecondary,
                         )
                     }
@@ -130,7 +137,7 @@ fun EvidencePanel(
                             if (card.trustFlags.isNotEmpty()) {
                                 Spacer(Modifier.height(8.dp))
                                 Text(
-                                    text = "Trust flags",
+                                    text = copy.trustFlags,
                                     color = TextSecondary,
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -183,7 +190,7 @@ fun EvidencePanel(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Cannot judge from this view",
+                            text = copy.cannotJudgeFromView,
                             color = PurpleSecondary,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleSmall,
@@ -191,8 +198,21 @@ fun EvidencePanel(
                         Spacer(Modifier.weight(1f))
                         Icon(
                             if (cannotJudgeExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                            contentDescription = if (cannotJudgeExpanded) "Collapse" else "Expand",
+                            contentDescription = if (cannotJudgeExpanded) copy.collapse else copy.expand,
                             tint = TextSecondary,
+                        )
+                    }
+
+                    val cannotJudgeSummary = boundary.summary
+                        .takeIf { boundary.isActive && it.isNotBlank() }
+                        ?: TrustUiMapper.whyNotJudgedSummary(card, notApplicable)
+                    if (cannotJudgeSummary.isNotBlank()) {
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = cannotJudgeSummary,
+                            color = TextSecondary,
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
                         )
                     }
 
@@ -203,21 +223,35 @@ fun EvidencePanel(
                     ) {
                         Column {
                             Spacer(Modifier.height(10.dp))
+                            if (boundary.isActive && boundary.detail.isNotBlank()) {
+                                CannotRow(
+                                    title = boundary.title,
+                                    reason = boundary.detail,
+                                )
+                                if (boundary.evidenceRefs.isNotEmpty()) {
+                                    Text(
+                                        text = "refs: ${boundary.evidenceRefs.take(3).joinToString(", ")}",
+                                        color = TextSecondary,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(start = 24.dp, bottom = 6.dp),
+                                    )
+                                }
+                            }
                             notApplicable.take(3).forEach { f ->
                                 CannotRow(
                                     title = f.id.replace("rule_", "rule ").replace("_", " "),
                                     reason = when (f.status) {
-                                        "NOT_APPLICABLE" -> "Not applicable to this exercise / view"
-                                        "VIEW_LIMITED"   -> "Camera angle limits this judgment"
-                                        "LOW_CONFIDENCE" -> "Pose tracking unstable"
-                                        else             -> f.reason.ifBlank { "Skipped" }
+                                        "NOT_APPLICABLE" -> copy.notApplicableReason
+                                        "VIEW_LIMITED" -> copy.viewLimitedReason
+                                        "LOW_CONFIDENCE" -> copy.lowConfidenceReason
+                                        else -> f.reason.ifBlank { copy.skipped }
                                     },
                                 )
                             }
                             unsupported.take(4).forEach { judg ->
                                 CannotRow(
-                                    title = displayJudgment(judg),
-                                    reason = whyUnsupported(judg),
+                                    title = copy.unsupportedJudgmentLabel(judg),
+                                    reason = copy.unsupportedReason(judg),
                                 )
                             }
                             Spacer(Modifier.height(6.dp))
@@ -242,7 +276,14 @@ private fun CannotRow(title: String, reason: String) {
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.Top,
     ) {
-        Text("•", color = TextSecondary, modifier = Modifier.padding(end = 8.dp))
+        Icon(
+            imageVector = Icons.Filled.Info,
+            contentDescription = null,
+            tint = TextSecondary,
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(16.dp),
+        )
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 title,

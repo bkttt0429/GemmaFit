@@ -1,8 +1,14 @@
-# Realtime Person Detection and E2B Fine-tune Plan
+# Realtime Person Detection and Official E2B Runtime Plan
 
 This document is the design note for GemmaFit's realtime evidence pipeline and
-the next E2B fine-tune direction. It complements
+the official E2B runtime direction. It complements
 `docs/design/gemmafit_realtime_evidence_architecture.drawio`.
+
+Senior Layer 2 activity, phase, event, and judgeability are specified in
+`docs/design/layer2_senior_activity_model.md`.
+
+The official E2B + MotionZip runtime redesign is specified in
+`docs/design/official_e2b_motionzip_runtime_architecture.md`.
 
 The core rule is:
 
@@ -24,10 +30,13 @@ CameraX
 -> MediaPipe Pose primary tracking
 -> Kalman ROI / landmark smoothing
 -> optional YOLO burst fallback
+-> Senior Layer 2 activity / phase / event
 -> Motion Feature Window
 -> Evidence Ledger
 -> Capability Contract
--> Event Trigger Policy
+-> SeniorInteractionPolicy
+-> ModelInvocationScheduler
+-> compact E2B event packet
 -> E2B function-call router
 -> validator / deterministic fallback
 -> UI, TTS, care log, debug report
@@ -36,6 +45,48 @@ CameraX
 The phone should not run a heavy vision or language model on every frame.
 High-frequency work stays in deterministic pose and feature tools. E2B is
 called only for selected events, summaries, reports, or bounded user questions.
+`ModelInvocationScheduler` decides whether a call should happen; E2B still
+chooses the final function name, args, and evidence refs.
+
+Detailed scheduler contract:
+`docs/design/model_invocation_scheduler.md`.
+
+Detailed Senior Layer 2 contract:
+`docs/design/layer2_senior_activity_model.md`.
+
+For dementia-friendly self-guided Senior Mode, the realtime path inserts a
+`SeniorInteractionPolicy` after Layer 2 and before scheduler/UI/TTS. This layer
+does not classify cognition or diagnose dementia. It only converts observable
+states such as `NO_PERSON`, `LOST`, `MULTI_PERSON_AMBIGUOUS`, low confidence,
+or no user response after a cue into deterministic actions: continue, repeat a
+short cue, pause for setup, pause for support, or end with a non-clinical
+summary.
+
+### 1.1 ModelInvocationScheduler vs E2B FC Router
+
+The scheduler and E2B router are intentionally different layers.
+
+```text
+Deterministic evidence event
+-> ModelInvocationScheduler decides call / skip / defer
+-> Context compiler builds the existing compact E2B packet
+-> E2B chooses one legal function + args + evidence_refs
+-> Android validator accepts or uses deterministic fallback
+```
+
+The scheduler owns:
+
+- whether to call E2B now, skip the call, defer it to session end, or render a
+  deterministic fallback;
+- backend eligibility and context budget;
+- latency, privacy, confidence, and missing-evidence blocks.
+
+The scheduler must not choose final function names, function args, evidence
+refs, refusal wording, memory writes, or safety verdicts. Those remain owned by
+official E2B and the Android validator. This preserves the current output
+contract without requiring GemmaFit v5 fine-tuning: scheduler-only changes do
+not require retraining when tool names, arg schemas, evidence-ref format, and
+`can_judge` / `cannot_judge` semantics stay stable.
 
 ## 2. Person Detection, Subject Lock, and Judgment Eligibility
 
@@ -294,9 +345,23 @@ YOLO output may help reacquire a person bbox, but it does not bypass
 `PosePresenceGate`, `SubjectIdentityGate`, `JudgmentEligibilityGate`, or the
 v2 ReID margin requirements above.
 
-### 2.8 Fine-tune dataset requirements
+Android implementation status:
 
-Every E2B training example that depends on realtime vision must include
+- `PersonDetector` is an optional runtime interface. If no mobile detector
+  asset is packaged, the app records `person_detector_unavailable` and
+  continues with the MediaPipe-only hold behavior.
+- The current loader accepts YOLO26 ONNX and YOLO-style TFLite assets in
+  `app/src/main/assets/`, preferring names such as
+  `yolo26n_person_384.onnx`, `yolo26n_person_384_float32.tflite`,
+  `yolo26n_person_384_fp16.tflite`, or `yolo26n.tflite`.
+- Detector output is treated as `PersonProposal` bbox evidence only. It can
+  help select a predicted ROI for `SubjectIdentityMatcher`, but it does not
+  draw skeletons, write memory, trigger coaching, or bypass confidence gates.
+
+### 2.8 Optional fine-tune dataset requirements
+
+P0 does not depend on a fine-tuned model. If GemmaFit v5 or a smaller router is
+trained later, every example that depends on realtime vision must include
 `person_tracking_state`. The model is trained to route or explain from this
 state, not to infer person visibility from raw video.
 
@@ -376,6 +441,11 @@ Layer 2 is the temporal interpretation layer between raw motion features and
 E2B. It should not be a language model and should not replace deterministic
 rule gates. Its job is to convert pose and feature sequences into bounded
 activity, phase, and event estimates:
+
+The senior-only implementation contract, taxonomy, FSM baseline, tiny-model
+roadmap, and dataset strategy are defined in
+`docs/design/layer2_senior_activity_model.md`. This section keeps the realtime
+E2B packet relationship only.
 
 ```text
 landmark sequence + feature sequence
@@ -581,11 +651,13 @@ GemmaFit should avoid template-only tools such as
 `say_good_job_template_03`. Instead, output tools may include bounded natural
 language fields that the Android validator checks before rendering.
 
-Two tool layers are intentionally separate:
+Three decision layers are intentionally separate:
 
 | Layer | Owner | Purpose |
 | --- | --- | --- |
 | Motion / rule tools | C++ / Kotlin | Compute angles, ROM, tempo, stability proxies, phase estimates, confidence, and capability gates. |
+| Senior interaction policy | Kotlin runtime | In dementia-friendly self-guided mode, choose continue/repeat/pause/end from observable support states only. |
+| Model invocation scheduler | Kotlin runtime | Decide whether a model call should happen and which compact context budget is allowed. It does not choose a function. |
 | LLM function tools | E2B | Choose a legal next action: report, care log, subjective check-in, memory request, dual-task prompt, or refusal. |
 
 Good E2B tool output:
@@ -623,21 +695,26 @@ Natural language args let the model decide how to say it.
 The app validator decides whether the result is safe to render.
 ```
 
-## 6. E2B Fine-tune Target
+## 6. Official E2B Baseline and Optional Fine-tune Target
 
-The E2B fine-tune target is evidence-to-function and evidence-to-report
-behavior:
+The P0 model path is official `Gemma-4-E2B-it` LiteRT with app-side schema
+control. The model receives evidence-to-function and evidence-to-report
+prompts:
 
 ```text
 activity_context
 + motion_feature_window
-+ visual_summary
++ MotionZip packet
 + capability_contract
 + evidence_ledger
 -> one legal function call
 ```
 
-The model should learn:
+The official model is not treated as a trusted raw coach. Android owns JSON
+cleanup, schema validation, evidence-ref validation, deterministic fill,
+forbidden-claim rejection, and deterministic fallback.
+
+The model should perform:
 
 - tool selection
 - evidence citation
@@ -655,7 +732,9 @@ The model should not learn:
 - force, torque, GRF, joint moment, ligament load, EMG, heart-rate, fall-risk,
   sarcopenia, diagnosis, or rehabilitation conclusions
 
-Planned E2B row families:
+Optional fine-tune row families remain useful only if official E2B fails a
+concrete quality gate or if GemmaFit v5 demonstrably improves schema fidelity,
+evidence-ref precision, refusal stability, or zh-TW senior wording:
 
 | Row family | Purpose |
 | --- | --- |
@@ -686,7 +765,7 @@ Evaluation gates:
 
 FunctionGemma 270M is not required by default.
 
-Use E2B only if:
+Use official E2B as the P0 path if:
 
 - E2B passes the function-call and refusal gates above.
 - On-device latency is acceptable for event-level calls.
@@ -709,6 +788,8 @@ Offline video tests:
 - stability proxy event -> monitor wording, no fall-risk claim
 - no person -> subject lost, no judgment
 - multi-person -> stable subject selection or abstain
+- dementia-friendly no-response timeout -> deterministic pause, no E2B call
+- dementia-friendly left activity area -> deterministic pause, no E2B call
 - low confidence -> no hard coaching judgment
 - activity uncertain -> monitor or abstain, not warning
 
@@ -717,7 +798,12 @@ Pixel realtime tests:
 - MediaPipe primary path works without YOLO during normal tracking.
 - YOLO burst refreshes ROI only after subject lost or multi-person ambiguity.
 - Kalman predicted points are excluded from hard evidence refs.
-- E2B is called only on event/session triggers.
+- `ModelInvocationScheduler` skips E2B for normal live frames and blocked
+  tracking states.
+- E2B is called only on approved event/session/export triggers.
+- Official `Gemma-4-E2B-it` LiteRT prewarm succeeds before summary/export.
+- Product runtime uses compressed MotionZip prompts only; dense-vs-MotionZip
+  comparison remains a debug benchmark.
 - Debug report exposes backend, function, evidence refs, fallback, and
   `PersonTrackingState`.
 

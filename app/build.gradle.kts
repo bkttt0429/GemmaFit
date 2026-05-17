@@ -128,6 +128,11 @@ dependencies {
     // MediaPipe
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
 
+    // Optional low-frequency mobile person detector fallback. The runtimes are
+    // only used when a YOLO asset is packaged; otherwise the app no-ops.
+    implementation("org.tensorflow:tensorflow-lite:2.17.0")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.25.1")
+
     // LiteRT-LM local Gemma inference. Pinned from Google Maven metadata for reproducible builds.
     implementation("com.google.ai.edge.litertlm:litertlm-android:0.11.0-rc1")
 

@@ -1,12 +1,17 @@
 package com.gemmafit.ui.screens.video
 
 import android.net.Uri
-import android.view.TextureView
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,19 +20,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -40,19 +44,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.exoplayer.video.VideoFrameMetadataListener
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
+import com.gemmafit.R
+import com.gemmafit.ui.localization.LocalAppStrings
+import com.gemmafit.ui.overlay.PoseCueMapper
 import com.gemmafit.ui.overlay.PoseLandmark
 import com.gemmafit.ui.overlay.PoseOverlay
 import com.gemmafit.ui.overlay.PoseOverlayState
-import com.gemmafit.ui.theme.BackgroundGradientEnd
 import com.gemmafit.ui.theme.Green
+import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
 import com.gemmafit.video.LiveWorkoutState
+import com.gemmafit.video.ReviewFrameStatus
 import com.gemmafit.video.SubjectLockStatus
 import kotlinx.coroutines.delay
+
+private const val PLAYBACK_SYNC_INTERVAL_MS = 250L
+private const val RENDERED_FRAME_SYNC_INTERVAL_MS = 180L
+private const val MIN_HERO_DISPLAY_ASPECT = 1.18f
+private const val MAX_HERO_DISPLAY_ASPECT = 1.78f
 
 /**
  * Hero video card with embedded PoseOverlay and frame counter.
@@ -66,27 +86,72 @@ fun VideoHero(
     isAnalyzing: Boolean = false,
     analysisProgress: Float = 0f,
     analysisFrameText: String = "",
+    analysisStatusText: String = "",
+    useLoopingAnalysisProgress: Boolean = false,
+    maxPlaybackPositionMs: Long = Long.MAX_VALUE,
+    videoAudioEnabled: Boolean = false,
+    videoAudioVolume: Float = 0f,
     showTrajectory: Boolean = false,
     onPlaybackPosition: (Long) -> Unit,
+    onPlaybackLimitReached: () -> Unit = {},
     onSubjectTap: (Float, Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
+    val loopingAnalysisProgress = remember { androidx.compose.runtime.mutableFloatStateOf(0.08f) }
+    LaunchedEffect(isAnalyzing, useLoopingAnalysisProgress) {
+        while (isAnalyzing && useLoopingAnalysisProgress) {
+            loopingAnalysisProgress.floatValue = if (loopingAnalysisProgress.floatValue >= 0.9f) {
+                0.08f
+            } else {
+                loopingAnalysisProgress.floatValue + 0.06f
+            }
+            delay(140L)
+        }
+        if (!isAnalyzing) {
+            loopingAnalysisProgress.floatValue = 0.08f
+        }
+    }
     val frameAspect = if (live.videoPreviewWidth > 0 && live.videoPreviewHeight > 0) {
         live.videoPreviewWidth.toFloat() / live.videoPreviewHeight.toFloat()
     } else {
         16f / 9f
     }
+    val displayedAnalysisProgress = if (isAnalyzing && useLoopingAnalysisProgress) {
+        loopingAnalysisProgress.floatValue
+    } else if (isAnalyzing) {
+        analysisProgress.coerceIn(0f, 0.99f)
+    } else if (live.totalFramesAnalyzed > 1) {
+        live.currentFrameIndex.toFloat() / (live.totalFramesAnalyzed - 1).coerceAtLeast(1)
+    } else {
+        0f
+    }
+    val displayedAnalysisText = analysisStatusText
+        .ifBlank { displayAnalysisStage(live.analysisStage) }
+        .ifBlank { if (isAnalyzing) copy.analyzingVideo else "" }
+    val hasPreviewBitmap = live.videoPreview != null && !live.videoPreview.isRecycled
+    val shouldShowPlaybackPlayer = videoUri != null &&
+            live.totalFramesAnalyzed > 0 &&
+            isPlaying
+    val shouldShowLoadingPlayer = videoUri != null && isAnalyzing && !hasPreviewBitmap
+    val playbackFrameReady = remember(videoUri, shouldShowPlaybackPlayer, shouldShowLoadingPlayer) {
+        mutableStateOf(false)
+    }
+    val heroShape = RoundedCornerShape(16.dp)
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(frameAspect.coerceIn(0.56f, 1.78f)),
-        color = BackgroundGradientEnd,
-        shape = RoundedCornerShape(16.dp),
+            .aspectRatio(frameAspect.coerceIn(MIN_HERO_DISPLAY_ASPECT, MAX_HERO_DISPLAY_ASPECT))
+            .clipToBounds(),
+        color = SurfaceColor,
+        shape = heroShape,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .clip(heroShape)
+                .clipToBounds()
                 .pointerInput(live.videoPreviewWidth, live.videoPreviewHeight) {
                     detectTapGestures { tap ->
                         normalizedTapToContent(
@@ -101,14 +166,7 @@ fun VideoHero(
             contentAlignment = Alignment.Center,
         ) {
             // Video or bitmap content
-            if (videoUri != null && isPlaying) {
-                SmoothVideoPlayer(
-                    uri = videoUri,
-                    targetPositionMs = live.currentFrameTimestampMs,
-                    onPlaybackPosition = onPlaybackPosition,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else if (live.videoPreview != null) {
+            if (hasPreviewBitmap) {
                 Image(
                     bitmap = live.videoPreview!!.asImageBitmap(),
                     contentDescription = "Video frame",
@@ -117,15 +175,78 @@ fun VideoHero(
                 )
             }
 
-            // Pose overlay
-            if (live.poseLandmarks.isNotEmpty() || live.poseCandidates.isNotEmpty()) {
-                val secondarySubjects = live.poseCandidates.mapIndexedNotNull { index, candidate ->
-                    if (index == live.activeSubjectIndex) {
-                        null
-                    } else {
-                        candidate.landmarks.map { PoseLandmark(it.x, it.y, it.visibility) }
+            if (shouldShowPlaybackPlayer || shouldShowLoadingPlayer) {
+                SmoothVideoPlayer(
+                    uri = videoUri!!,
+                    isPlaying = isPlaying && live.totalFramesAnalyzed > 0,
+                    targetPositionMs = if (shouldShowLoadingPlayer) 0L else live.currentFrameTimestampMs,
+                    maxPlaybackPositionMs = maxPlaybackPositionMs,
+                    videoVolume = if (videoAudioEnabled) videoAudioVolume.coerceIn(0f, 1f) else 0f,
+                    onPlaybackPosition = onPlaybackPosition,
+                    onPlaybackLimitReached = onPlaybackLimitReached,
+                    onPlaybackFrameRendered = { playbackFrameReady.value = true },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clipToBounds(),
+                )
+            }
+
+            if ((shouldShowPlaybackPlayer || shouldShowLoadingPlayer) &&
+                hasPreviewBitmap &&
+                !playbackFrameReady.value
+            ) {
+                Image(
+                    bitmap = live.videoPreview!!.asImageBitmap(),
+                    contentDescription = "Video frame",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
+            } else if (!hasPreviewBitmap && !shouldShowPlaybackPlayer && !shouldShowLoadingPlayer && isAnalyzing) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Canvas(modifier = Modifier.size(42.dp)) {
+                        val sw = 4.dp.toPx()
+                        drawArc(
+                            color = Green,
+                            startAngle = -90f,
+                            sweepAngle = 360f * displayedAnalysisProgress.coerceIn(0f, 1f),
+                            useCenter = false,
+                            style = Stroke(width = sw, cap = StrokeCap.Round),
+                            topLeft = androidx.compose.ui.geometry.Offset(sw / 2, sw / 2),
+                            size = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw),
+                        )
                     }
+                    Spacer(Modifier.size(10.dp))
+                    Text(
+                        text = displayedAnalysisText,
+                        color = TextPrimary,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
+            }
+
+            // Pose overlay
+            val renderSecondarySkeletons = shouldRenderSecondarySkeletons(
+                subjectLockStatus = live.subjectLockStatus,
+                hasActiveSubject = live.poseLandmarks.isNotEmpty(),
+            )
+            if (live.poseLandmarks.isNotEmpty() || (renderSecondarySkeletons && live.poseCandidates.isNotEmpty())) {
+                val secondarySubjects = if (renderSecondarySkeletons) {
+                    live.poseCandidates.mapIndexedNotNull { index, candidate ->
+                        if (index == live.activeSubjectIndex) {
+                            null
+                        } else {
+                            candidate.landmarks.map { PoseLandmark(it.x, it.y, it.visibility) }
+                        }
+                    }
+                } else {
+                    emptyList()
+                }
+                val cueOverlay = PoseCueMapper.fromWarnings(live.activeWarnings)
                 val overlayState = PoseOverlayState(
                     landmarks = live.poseLandmarks.map {
                         PoseLandmark(it.x, it.y, it.visibility)
@@ -138,18 +259,10 @@ fun VideoHero(
                     } else {
                         emptyList()
                     },
-                    violationJoints = live.activeWarnings
-                        .filter { it.joint.isNotEmpty() }
-                        .mapNotNull { w ->
-                            when {
-                                w.joint.contains("knee") -> if (w.joint.contains("left")) 25 else 26
-                                w.joint.contains("hip") -> if (w.joint.contains("left")) 23 else 24
-                                w.joint.contains("elbow") -> if (w.joint.contains("left")) 13 else 14
-                                w.joint.contains("shoulder") -> if (w.joint.contains("left")) 11 else 12
-                                w.joint.contains("ankle") -> if (w.joint.contains("left")) 27 else 28
-                                else -> null
-                            }
-                        }.toSet(),
+                    violationJoints = cueOverlay.safetyJoints,
+                    violationSegments = cueOverlay.safetySegments,
+                    watchJoints = cueOverlay.watchJoints,
+                    watchSegments = cueOverlay.watchSegments,
                 )
                 PoseOverlay(
                     state = overlayState,
@@ -162,38 +275,81 @@ fun VideoHero(
             val subjectText = when (live.subjectLockStatus) {
                 SubjectLockStatus.NEEDS_SELECTION -> {
                     when {
-                        "AUTO_SELECTION_PENDING" in live.subjectTrustFlags -> "Auto-selecting subject..."
-                        live.poseCandidates.size > 1 -> "Tap yourself to start"
+                        "AUTO_SELECTION_PENDING" in live.subjectTrustFlags -> copy.subjectAutoSelecting
+                        live.poseCandidates.size > 1 ||
+                            "MULTI_PERSON" in live.subjectTrustFlags ||
+                            "NEEDS_SELECTION" in live.subjectTrustFlags -> copy.tapYourself
                         else -> ""
                     }
                 }
                 SubjectLockStatus.LOCKED -> {
-                    if ("subject_hold" in live.subjectTrustFlags) "Subject hold" else "Subject locked"
+                    if ("subject_hold" in live.subjectTrustFlags) copy.subjectHold else copy.subjectLocked
                 }
-                SubjectLockStatus.AUTO_LOCKED -> "Auto-selected subject - tap to change"
-                SubjectLockStatus.SUBJECT_LOST -> "Subject lost"
+                SubjectLockStatus.AUTO_LOCKED -> copy.autoSelectedSubject
+                SubjectLockStatus.SUBJECT_LOST -> copy.subjectLost
                 SubjectLockStatus.SINGLE_AUTO -> {
-                    if (live.poseCandidates.size == 1) "Single subject" else ""
+                    if (live.poseCandidates.size == 1) copy.singleSubject else ""
                 }
             }
-            if (subjectText.isNotBlank()) {
-                Box(
+            val showCapabilityOverlay = shouldShowCapabilityOverlay(live)
+            if (subjectText.isNotBlank() || showCapabilityOverlay) {
+                Column(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    if (subjectText.isNotBlank()) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xCC000000), RoundedCornerShape(20.dp))
+                                .padding(horizontal = 12.dp, vertical = 6.dp),
+                        ) {
+                            Text(
+                                text = subjectText,
+                                color = TextPrimary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                    }
+                    CapabilityContractOverlay(
+                        live = live,
+                        compact = true,
+                    )
+                }
+            }
+
+            val reviewNotice = reviewFrameNotice(live.reviewFrameStatus)
+            if (reviewNotice.isNotBlank()) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(
+                            start = 10.dp,
+                            end = 10.dp,
+                            bottom = if (displayedAnalysisText.isNotBlank() &&
+                                live.analysisStage != "Full analysis complete"
+                            ) {
+                                44.dp
+                            } else {
+                                10.dp
+                            },
+                        )
                         .background(Color(0xCC000000), RoundedCornerShape(20.dp))
                         .padding(horizontal = 12.dp, vertical = 6.dp),
                 ) {
                     Text(
-                        text = subjectText,
-                        color = TextPrimary,
+                        text = reviewNotice,
+                        color = TextSecondary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                     )
                 }
             }
 
-            if (live.analysisStage.isNotBlank() && live.analysisStage != "Full analysis complete") {
+            if (displayedAnalysisText.isNotBlank() && live.analysisStage != "Full analysis complete") {
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -202,7 +358,7 @@ fun VideoHero(
                         .padding(horizontal = 12.dp, vertical = 6.dp),
                 ) {
                     Text(
-                        text = live.analysisStage,
+                        text = displayedAnalysisText,
                         color = TextSecondary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
@@ -210,14 +366,15 @@ fun VideoHero(
                 }
             }
 
+            RefusalMomentOverlay(
+                live = live,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 18.dp),
+            )
+
             // Frame counter / progress overlay
             if (isAnalyzing || live.totalFramesAnalyzed > 1) {
-                val progress = if (isAnalyzing) {
-                    analysisProgress.coerceIn(0f, 0.99f)
-                } else if (live.totalFramesAnalyzed > 1) {
-                    live.currentFrameIndex.toFloat() / (live.totalFramesAnalyzed - 1).coerceAtLeast(1)
-                } else 0f
-
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -232,26 +389,23 @@ fun VideoHero(
                                 drawArc(
                                     color = Green,
                                     startAngle = -90f,
-                                    sweepAngle = 360f * progress.coerceIn(0f, 1f),
+                                    sweepAngle = 360f * displayedAnalysisProgress.coerceIn(0f, 1f),
                                     useCenter = false,
                                     style = Stroke(width = sw, cap = StrokeCap.Round),
                                     topLeft = androidx.compose.ui.geometry.Offset(sw / 2, sw / 2),
                                     size = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw),
                                 )
                             }
-                        } else {
-                            Icon(
-                                Icons.Filled.PlayArrow,
-                                null,
-                                tint = Green,
-                                modifier = Modifier.size(14.dp),
-                            )
+                            Spacer(Modifier.size(6.dp))
                         }
-                        Spacer(Modifier.size(6.dp))
                         Text(
                             text = if (isAnalyzing) {
-                                val percent = (progress * 100).toInt()
-                                if (analysisFrameText.isNotBlank()) "$percent%  $analysisFrameText" else "$percent%"
+                                if (useLoopingAnalysisProgress) {
+                                    analysisFrameText.ifBlank { displayedAnalysisText }
+                                } else {
+                                    val percent = (displayedAnalysisProgress * 100).toInt()
+                                    if (analysisFrameText.isNotBlank()) "$percent%  $analysisFrameText" else "$percent%"
+                                }
                             } else {
                                 "${live.currentFrameIndex + 1}/${live.totalFramesAnalyzed}"
                             },
@@ -264,6 +418,15 @@ fun VideoHero(
             }
         }
     }
+}
+
+fun shouldRenderSecondarySkeletons(
+    subjectLockStatus: SubjectLockStatus,
+    hasActiveSubject: Boolean,
+): Boolean {
+    return hasActiveSubject &&
+        subjectLockStatus != SubjectLockStatus.NEEDS_SELECTION &&
+        subjectLockStatus != SubjectLockStatus.SUBJECT_LOST
 }
 
 private fun normalizedTapToContent(
@@ -293,58 +456,190 @@ private fun normalizedTapToContent(
 }
 
 @Composable
+private fun displayAnalysisStage(stage: String): String {
+    val copy = LocalAppStrings.current
+    return when (stage) {
+        "Preview analysis running" -> copy.previewAnalysis
+        "Full analysis running" -> copy.fullAnalysis
+        "Preview complete" -> copy.preparingPreview
+        else -> stage
+    }
+}
+
+private fun reviewFrameNotice(status: ReviewFrameStatus): String {
+    return when {
+        status.bitmapRestoring -> "Frame image restoring..."
+        status.bitmapRestoreFailed -> "Frame image restore failed"
+        status.noPoseReason == "multi_person_selection_required" ||
+            status.noPoseReason == "multi_person_detector_guard" -> {
+            "Multiple people detected. Tap yourself to start."
+        }
+        status.poseHiddenByQuality -> "Pose preview only: ${status.noPoseReason.ifBlank { "low confidence" }}"
+        !status.poseAvailable && status.noPoseReason == "no_person_detected" -> {
+            "No pose detected in this frame"
+        }
+        else -> ""
+    }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
 private fun SmoothVideoPlayer(
     uri: Uri,
+    isPlaying: Boolean,
     targetPositionMs: Long,
+    maxPlaybackPositionMs: Long,
+    videoVolume: Float,
     onPlaybackPosition: (Long) -> Unit,
+    onPlaybackLimitReached: () -> Unit,
+    onPlaybackFrameRendered: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val textureViewRef = remember(uri) { arrayOfNulls<TextureView>(1) }
+    val playbackPositionCallback = androidx.compose.runtime.rememberUpdatedState(onPlaybackPosition)
+    val playbackLimitCallback = androidx.compose.runtime.rememberUpdatedState(onPlaybackLimitReached)
+    val playbackFrameRenderedCallback = androidx.compose.runtime.rememberUpdatedState(onPlaybackFrameRendered)
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
+    val playerViewRef = remember(uri) { arrayOfNulls<PlayerView>(1) }
+    val renderedFrameSyncRef = remember(uri) { longArrayOf(Long.MIN_VALUE, 0L) }
+    val firstFrameRenderedRef = remember(uri) { booleanArrayOf(false) }
+    val frameMetadataListener = remember(uri) {
+        VideoFrameMetadataListener { presentationTimeUs, _, _, _ ->
+            val renderedPositionMs = presentationTimeUs / 1_000L
+            val nowMs = android.os.SystemClock.elapsedRealtime()
+            if (!firstFrameRenderedRef[0]) {
+                firstFrameRenderedRef[0] = true
+                mainHandler.post {
+                    playbackFrameRenderedCallback.value()
+                }
+            }
+            val lastPositionMs = renderedFrameSyncRef[0]
+            val lastCallbackMs = renderedFrameSyncRef[1]
+            val movedEnough = kotlin.math.abs(renderedPositionMs - lastPositionMs) >= 16L
+            val elapsedEnough = nowMs - lastCallbackMs >= RENDERED_FRAME_SYNC_INTERVAL_MS
+            if (movedEnough && elapsedEnough) {
+                renderedFrameSyncRef[0] = renderedPositionMs
+                renderedFrameSyncRef[1] = nowMs
+                mainHandler.post {
+                    playbackPositionCallback.value(renderedPositionMs)
+                }
+            }
+        }
+    }
     val player = remember(uri) {
         ExoPlayer.Builder(context).build().apply {
+            setSeekParameters(SeekParameters.EXACT)
             setMediaItem(MediaItem.fromUri(uri))
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                    .setUsage(C.USAGE_MEDIA)
+                    .build(),
+                true,
+            )
             repeatMode = Player.REPEAT_MODE_OFF
-            playWhenReady = true
+            playWhenReady = false
+            volume = videoVolume.coerceIn(0f, 1f)
             prepare()
-            if (targetPositionMs > 0L) seekTo(targetPositionMs)
+            val initialPositionMs = if (maxPlaybackPositionMs in 1 until Long.MAX_VALUE) {
+                targetPositionMs.coerceAtMost(maxPlaybackPositionMs)
+            } else {
+                targetPositionMs
+            }
+            if (initialPositionMs > 0L) seekTo(initialPositionMs)
+        }
+    }
+
+    DisposableEffect(player) {
+        player.setVideoFrameMetadataListener(frameMetadataListener)
+        onDispose {
+            player.clearVideoFrameMetadataListener(frameMetadataListener)
+        }
+    }
+
+    LaunchedEffect(player, isPlaying, maxPlaybackPositionMs) {
+        if (isPlaying) {
+            player.play()
+        } else {
+            player.pause()
+        }
+    }
+
+    LaunchedEffect(player, videoVolume) {
+        player.volume = videoVolume.coerceIn(0f, 1f)
+    }
+
+    LaunchedEffect(player, targetPositionMs, maxPlaybackPositionMs, isPlaying) {
+        val target = if (maxPlaybackPositionMs in 1 until Long.MAX_VALUE) {
+            targetPositionMs.coerceAtMost(maxPlaybackPositionMs)
+        } else {
+            targetPositionMs
+        }.coerceAtLeast(0L)
+        val driftMs = kotlin.math.abs(player.currentPosition - target)
+        if (!isPlaying || driftMs > 1_000L) {
+            player.seekTo(target)
         }
     }
 
     DisposableEffect(player) {
         onDispose {
-            textureViewRef[0]?.let { player.clearVideoTextureView(it) }
+            playerViewRef[0]?.player = null
             player.release()
         }
     }
 
-    LaunchedEffect(player, targetPositionMs) {
-        val driftMs = kotlin.math.abs(player.currentPosition - targetPositionMs)
-        if (driftMs > 50L) {
-            player.seekTo(targetPositionMs)
-        }
-    }
-
-    LaunchedEffect(player) {
+    LaunchedEffect(player, maxPlaybackPositionMs) {
+        var limitNotified = false
         while (true) {
-            onPlaybackPosition(player.currentPosition)
-            delay(33L)
+            val current = player.currentPosition
+            val hasPlaybackLimit = maxPlaybackPositionMs in 1 until Long.MAX_VALUE
+            if (hasPlaybackLimit && current >= maxPlaybackPositionMs) {
+                if (!limitNotified) {
+                    player.seekTo(maxPlaybackPositionMs)
+                    player.pause()
+                    playbackPositionCallback.value(maxPlaybackPositionMs)
+                    limitNotified = true
+                    playbackLimitCallback.value()
+                } else {
+                    playbackPositionCallback.value(maxPlaybackPositionMs)
+                }
+            } else {
+                limitNotified = false
+                playbackPositionCallback.value(current)
+            }
+            delay(PLAYBACK_SYNC_INTERVAL_MS)
         }
     }
 
     AndroidView(
         factory = { ctx ->
-            TextureView(ctx).apply {
-                textureViewRef[0] = this
-                player.setVideoTextureView(this)
+            (LayoutInflater.from(ctx).inflate(
+                R.layout.gemmafit_review_player_view,
+                null,
+                false,
+            ) as PlayerView).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+                useController = false
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                setUseArtwork(false)
+                setKeepContentOnPlayerReset(true)
+                setShutterBackgroundColor(android.graphics.Color.TRANSPARENT)
+                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                this.player = player
+                playerViewRef[0] = this
             }
         },
-        update = { textureView ->
-            if (textureViewRef[0] !== textureView) {
-                textureViewRef[0] = textureView
-                player.setVideoTextureView(textureView)
+        update = { playerView ->
+            if (playerViewRef[0] !== playerView) {
+                playerViewRef[0] = playerView
+            }
+            if (playerView.player !== player) {
+                playerView.player = player
             }
         },
-        modifier = modifier,
+        modifier = modifier.clipToBounds(),
     )
 }

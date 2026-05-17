@@ -16,6 +16,12 @@ class FunctionRegistryTest {
         assertTrue("request_memory_update" in names)
         assertTrue("summarize_trend" in names)
         assertTrue("refuse_unsupported_question" in names)
+        assertTrue("create_care_activity_log" in names)
+        assertTrue("ask_subjective_checkin" in names)
+        assertTrue("record_subjective_checkin" in names)
+        assertTrue("create_persona_activity_report" in names)
+        assertTrue("select_dual_task_prompt" in names)
+        assertTrue("record_dual_task_result" in names)
     }
 
     @Test
@@ -31,5 +37,17 @@ class FunctionRegistryTest {
 
         assertTrue("correct_spinal_alignment" in names)
         assertTrue("refuse_unsupported_question" in names)
+        assertTrue("create_care_activity_log" in names)
+        assertTrue("create_persona_activity_report" in names)
+    }
+
+    @Test
+    fun recordDualTaskResult_schemaIncludesBoundedVoiceFields() {
+        val tool = FunctionRegistry.recordDualTaskResult["function"] as Map<*, *>
+        val parameters = tool["parameters"] as Map<*, *>
+        val properties = parameters["properties"] as Map<*, *>
+
+        assertTrue("recognized_speech" in properties)
+        assertTrue("asr_confidence" in properties)
     }
 }

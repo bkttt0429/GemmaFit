@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
@@ -60,6 +60,7 @@ fun VideoEmptyState(
     onPickVideo: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -86,7 +87,7 @@ fun VideoEmptyState(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Upload a video to analyze",
+            text = copy.uploadVideoTitle,
             style = MaterialTheme.typography.titleLarge,
             color = TextPrimary,
             textAlign = TextAlign.Center,
@@ -95,7 +96,7 @@ fun VideoEmptyState(
         Spacer(Modifier.height(8.dp))
 
         Text(
-            text = "Select a workout video and get real-time\nform analysis and coaching feedback.",
+            text = copy.uploadVideoDescription,
             style = MaterialTheme.typography.bodyLarge,
             color = TextSecondary,
             textAlign = TextAlign.Center,
@@ -115,7 +116,7 @@ fun VideoEmptyState(
             Icon(Icons.Filled.Videocam, null, tint = Background)
             Spacer(Modifier.width(8.dp))
             Text(
-                "Choose Video",
+                copy.chooseVideo,
                 color = Background,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -136,25 +137,29 @@ fun VideoLoadingState(
     subPhaseProgress: Float,
     modifier: Modifier = Modifier,
 ) {
-    val progress = when {
-        subPhaseProgress > 0f -> subPhaseProgress
-        totalFrames > 0 -> currentFrame.toFloat() / totalFrames
-        else -> 0f
-    }
-    val waitingForFirstFrame = currentFrame <= 0 && progress <= 0f
+    val copy = LocalAppStrings.current
+    val useLoopingLoadingProgress = shouldUseLoopingLoadingProgress(subPhase)
+    val determinateProgress = videoLoadingProgressOrNull(
+        currentFrame = currentFrame,
+        totalFrames = totalFrames,
+        subPhaseProgress = subPhaseProgress,
+        subPhase = subPhase,
+    )
+    val showFrameStats = shouldShowLoadingFrameStats(subPhase, totalFrames)
+    val loopingProgress = useLoopingLoadingProgress || currentFrame <= 0 && determinateProgress == null
     val animatedProgress by animateFloatAsState(
-        targetValue = progress.coerceIn(0f, 1f),
+        targetValue = determinateProgress ?: 0f,
         label = "loading_progress",
     )
     var waitingProgress by remember { mutableFloatStateOf(0.08f) }
-    LaunchedEffect(waitingForFirstFrame) {
-        while (waitingForFirstFrame) {
+    LaunchedEffect(loopingProgress) {
+        while (loopingProgress) {
             waitingProgress = if (waitingProgress >= 0.9f) 0.08f else waitingProgress + 0.06f
             delay(140L)
         }
         waitingProgress = 0.08f
     }
-    val displayedProgress = if (waitingForFirstFrame) waitingProgress else animatedProgress
+    val displayedProgress = if (loopingProgress) waitingProgress else animatedProgress
 
     Column(
         modifier = modifier
@@ -165,18 +170,24 @@ fun VideoLoadingState(
         verticalArrangement = Arrangement.Center,
     ) {
         Box(
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier
+                .size(80.dp)
+                .clip(RoundedCornerShape(40.dp))
+                .background(SurfaceColor),
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(
-                progress = displayedProgress,
-                modifier = Modifier.fillMaxSize(),
-                color = Green,
-                strokeWidth = 4.dp,
-                trackColor = SurfaceColor,
+            Box(
+                modifier = Modifier
+                    .size(if (loopingProgress) 44.dp else (36 + (displayedProgress * 28)).dp)
+                    .clip(RoundedCornerShape(40.dp))
+                    .background(Green.copy(alpha = if (loopingProgress) 0.45f else 0.25f)),
             )
             Text(
-                text = if (waitingForFirstFrame) "..." else "${(animatedProgress * 100).toInt()}",
+                text = if (loopingProgress) {
+                    "..."
+                } else {
+                    "${(animatedProgress * 100).toInt()}"
+                },
                 color = TextPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -186,31 +197,41 @@ fun VideoLoadingState(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = loadingLabelFor(subPhase),
+            text = copy.loadingLabel(subPhase),
             style = MaterialTheme.typography.titleLarge,
             color = TextPrimary,
         )
 
         Spacer(Modifier.height(8.dp))
 
-        Text(
-            text = "Frame $currentFrame / $totalFrames",
-            style = MaterialTheme.typography.bodyMedium,
-            color = TextSecondary,
-        )
+        if (showFrameStats) {
+            Text(
+                text = "${copy.frames.replaceFirstChar { it.uppercase() }} $currentFrame / $totalFrames",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSecondary,
+            )
+        } else if (!useLoopingLoadingProgress) {
+            Text(
+                text = copy.preparingFrames,
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSecondary,
+            )
+        }
 
-        Spacer(Modifier.height(16.dp))
+        if (showFrameStats) {
+            Spacer(Modifier.height(16.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            LoadingMetricChip(label = "FPS", value = "${processingFps.toInt()}")
-            LoadingMetricChip(label = "Pose Hit", value = "${(poseHitRate * 100).toInt()}%")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                LoadingMetricChip(label = copy.fps, value = "${processingFps.toInt()}")
+                LoadingMetricChip(label = copy.poseHit, value = "${(poseHitRate * 100).toInt()}%")
+            }
         }
 
         // Sub-phase progress bar
         AnimatedVisibility(
-            visible = subPhaseProgress > 0f && subPhaseProgress < 1f,
+            visible = !useLoopingLoadingProgress && displayedProgress > 0f && displayedProgress < 1f,
             enter = expandVertically() + fadeIn(),
             exit = shrinkVertically() + fadeOut(),
         ) {
@@ -225,7 +246,7 @@ fun VideoLoadingState(
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(subPhaseProgress.coerceIn(0f, 1f))
+                            .fillMaxWidth(displayedProgress.coerceIn(0f, 1f))
                             .height(4.dp)
                             .clip(RoundedCornerShape(2.dp))
                             .background(Blue),
@@ -234,6 +255,33 @@ fun VideoLoadingState(
             }
         }
     }
+}
+
+internal fun videoLoadingProgressOrNull(
+    currentFrame: Int,
+    totalFrames: Int,
+    subPhaseProgress: Float,
+    subPhase: String,
+): Float? {
+    if (shouldUseLoopingLoadingProgress(subPhase)) return null
+    return when {
+        subPhaseProgress > 0f -> subPhaseProgress
+        totalFrames > 0 -> currentFrame.toFloat() / totalFrames.toFloat()
+        else -> null
+    }?.coerceIn(0f, 1f)
+}
+
+internal fun shouldShowLoadingFrameStats(subPhase: String, totalFrames: Int): Boolean {
+    return !shouldUseLoopingLoadingProgress(subPhase) && totalFrames > 0
+}
+
+internal fun shouldUseLoopingLoadingProgress(subPhase: String): Boolean {
+    return subPhase in setOf(
+        "video_loading",
+        "loading_model",
+        "preview_loading",
+        "preview_analysis",
+    )
 }
 
 @Composable
@@ -259,6 +307,7 @@ fun VideoErrorState(
     onResetCamera: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val copy = LocalAppStrings.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -285,7 +334,7 @@ fun VideoErrorState(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Analysis Failed",
+            text = copy.analysisFailed,
             style = MaterialTheme.typography.titleLarge,
             color = TextPrimary,
         )
@@ -314,7 +363,7 @@ fun VideoErrorState(
                 colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor),
                 shape = RoundedCornerShape(12.dp),
             ) {
-                Text("Back to Camera", color = TextPrimary, fontWeight = FontWeight.Bold)
+                Text(copy.backToCamera, color = TextPrimary, fontWeight = FontWeight.Bold)
             }
             Button(
                 onClick = onRetry,
@@ -324,18 +373,8 @@ fun VideoErrorState(
                 colors = ButtonDefaults.buttonColors(containerColor = Green),
                 shape = RoundedCornerShape(12.dp),
             ) {
-                Text("Retry", color = Background, fontWeight = FontWeight.Bold)
+                Text(copy.retry, color = Background, fontWeight = FontWeight.Bold)
             }
         }
-    }
-}
-
-private fun loadingLabelFor(subPhase: String): String {
-    return when (subPhase) {
-        "preview_loading" -> "Preparing preview"
-        "preview_analysis" -> "Preview analysis"
-        "full_analysis" -> "Full analysis"
-        "complete" -> "Analysis complete"
-        else -> subPhase.replace("_", " ").ifBlank { "Analyzing video" }
     }
 }

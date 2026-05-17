@@ -1,6 +1,6 @@
 {
   "summary": {
-    "total_rows": 56000,
+    "total_rows": 275,
     "tool_name_accuracy": 1.0,
     "args_schema_valid_rate": 1.0,
     "evidence_ref_valid_rate": 1.0,
@@ -18,6 +18,6 @@
     "forbidden_claim_rate": 0.0
   },
   "failures": [],
-  "dataset": "/content/GemmaFit/finetune/data/gemmafit_v5_1_e2b_evidence_router.json",
+  "dataset": "finetune\\data\\_tmp_v5_check.json",
   "gate_failures": []
 }

@@ -40,6 +40,22 @@ class CaregiverExportBuilderTest {
     }
 
     @Test
+    fun support_event_counts_are_exported_without_clinical_claims() = runBlocking {
+        val bundle = CaregiverExportBuilder(storeWithSession()).build(
+            periodStart = "2026-05-01",
+            periodEnd = "2026-05-07",
+            exercises = listOf("chair_sit_to_stand"),
+        )
+        val counts = JSONObject(bundle.json).getJSONObject("support_event_counts")
+
+        assertTrue(counts.getInt("low_confidence_pause") == 1)
+        assertTrue(counts.getInt("setup_needed_pause") == 1)
+        assertTrue(bundle.text.contains("Support events observed"))
+        assertFalse(bundle.text.contains("cognitive decline"))
+        assertFalse(bundle.text.contains("dementia score"))
+    }
+
+    @Test
     fun html_output_escapes_user_strings() = runBlocking {
         val bundle = CaregiverExportBuilder(storeWithSession()).build(
             periodStart = "<script>",

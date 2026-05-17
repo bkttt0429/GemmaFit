@@ -1,5 +1,10 @@
 package com.gemmafit.ui.screens.senior
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +28,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
@@ -34,18 +40,30 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.gemmafit.export.CaregiverExportBuilder
+import com.gemmafit.senior.AndroidSpeechRecognitionGateway
+import com.gemmafit.senior.DualTaskAttempt
+import com.gemmafit.senior.SeniorDualTaskVoiceController
+import com.gemmafit.senior.SeniorDualTaskVoiceState
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Blue
 import com.gemmafit.ui.theme.Green
@@ -54,6 +72,7 @@ import com.gemmafit.ui.theme.Red
 import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
+import com.gemmafit.video.TrustUiMapper
 
 @Immutable
 data class SeniorExerciseOption(
@@ -89,6 +108,63 @@ data class SeniorTrendUiState(
     val commonCues: List<String> = emptyList(),
     val lowConfidenceInterruptions: Int = 0,
     val sourceLabel: String = "local_memory",
+)
+
+@Immutable
+data class SeniorDualTaskUiState(
+    val promptId: String = "dual_task.default",
+    val prompt: String = "Raise your left hand for A, right hand for B.",
+    val answerOptions: List<String> = listOf("A", "B"),
+    val allowedResponseModes: List<String> = listOf("gesture", "voice"),
+    val expectedMovement: String = "left_arm_raise_or_right_arm_raise",
+    val responseMode: String = "gesture",
+    val detectedGesture: String = "none",
+    val voiceStatus: String = "gesture fallback ready",
+    val isListening: Boolean = false,
+    val recognizedSpeech: String = "",
+    val asrConfidence: Double = 0.0,
+    val answerMatched: Boolean = false,
+    val fallbackReason: String = "",
+    val voiceLanguageTag: String = "system",
+    val safetyBoundary: String = "low-impact, seated or supported",
+    val sourceLabel: String = "deterministic_dual_task",
+)
+
+@Immutable
+data class SeniorCareLogUiState(
+    val headline: String = "Completed seated strength session",
+    val whatWasCompleted: String = "",
+    val observations: String = "",
+    val notJudged: String = CaregiverExportBuilder.DISCLAIMER_TEXT,
+    val nextSessionFocus: String = "",
+    val backend: String = "fallback",
+    val functionName: String = "create_care_activity_log",
+    val evidenceRefs: List<String> = emptyList(),
+    val fallback: Boolean = true,
+)
+
+@Immutable
+data class SeniorSubjectiveCheckinUiState(
+    val prompt: String = "How did that activity feel?",
+    val rpeLabel: String = "RPE 0-10",
+    val breathlessness: String = "none",
+    val legSoreness: String = "none",
+    val neededRest: Boolean = false,
+    val discomfortReported: Boolean = false,
+    val inputMode: String = "buttons",
+    val evidenceRefs: List<String> = emptyList(),
+    val sourceLabel: String = "self_report_checkin",
+)
+
+@Immutable
+data class SeniorPersonaReportUiState(
+    val persona: String = "caregiver",
+    val reportText: String = "",
+    val boundaryNote: String = "Structured activity report only; not a medical assessment.",
+    val objectiveEvidenceRefs: List<String> = emptyList(),
+    val subjectiveEvidenceRefs: List<String> = emptyList(),
+    val backend: String = "fallback",
+    val fallback: Boolean = true,
 )
 
 @Composable
@@ -239,6 +315,322 @@ fun SeniorEvidenceCardScreen(
 }
 
 @Composable
+fun SeniorDualTaskScreen(
+    state: SeniorDualTaskUiState,
+    onStopReset: () -> Unit,
+    onRepeatPrompt: () -> Unit,
+    onUseGestureFallback: () -> Unit,
+    onVoiceAttempt: (DualTaskAttempt) -> Unit = {},
+    onVoiceStateChange: (SeniorDualTaskVoiceState) -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val voiceAllowed = state.allowedResponseModes.any { it.equals("voice", ignoreCase = true) }
+    val voiceController = remember(state.promptId, state.answerOptions, state.expectedMovement) {
+        SeniorDualTaskVoiceController(
+            gateway = AndroidSpeechRecognitionGateway(context),
+            promptId = state.promptId,
+            allowedAnswers = state.answerOptions,
+            expectedMovement = state.expectedMovement,
+        )
+    }
+    var localVoiceState by remember(state.promptId) {
+        mutableStateOf(
+            SeniorDualTaskVoiceState(
+                isListening = state.isListening,
+                recognizedSpeech = state.recognizedSpeech,
+                asrConfidence = state.asrConfidence,
+                answerMatched = state.answerMatched,
+                fallbackReason = state.fallbackReason,
+                voiceStatus = state.voiceStatus,
+            ),
+        )
+    }
+    fun publishVoiceState(next: SeniorDualTaskVoiceState) {
+        localVoiceState = next
+        onVoiceStateChange(next)
+        next.attempt?.let(onVoiceAttempt)
+    }
+    fun startVoiceAnswer() {
+        if (!voiceAllowed) {
+            publishVoiceState(
+                SeniorDualTaskVoiceState(
+                    fallbackReason = "voice_mode_not_allowed",
+                    voiceStatus = "Voice unavailable, use gesture",
+                ),
+            )
+            return
+        }
+        voiceController.start(languageTag = state.voiceLanguageTag) { next ->
+            publishVoiceState(next)
+        }
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) {
+            startVoiceAnswer()
+        } else {
+            publishVoiceState(voiceController.permissionDenied())
+        }
+    }
+    DisposableEffect(voiceController) {
+        onDispose { voiceController.destroy() }
+    }
+    val effectiveVoiceStatus = localVoiceState.voiceStatus.ifBlank { state.voiceStatus }
+    val effectiveResponseMode = if (localVoiceState.answerMatched || localVoiceState.fallbackReason.isNotBlank()) {
+        "voice"
+    } else {
+        state.responseMode
+    }
+    val effectiveConfidence = if (localVoiceState.asrConfidence > 0.0) {
+        "${(localVoiceState.asrConfidence * 100).toInt()}%"
+    } else {
+        "--"
+    }
+
+    SeniorScaffold(
+        title = "Dual-task",
+        subtitle = "Bounded gesture or voice answer",
+        sourceLabel = state.sourceLabel,
+        onStopReset = onStopReset,
+        modifier = modifier,
+    ) {
+        SeniorSection(title = "Prompt") {
+            SeniorBodyText(state.prompt)
+        }
+        SeniorSection(title = "Answer options") {
+            SeniorBodyText(state.answerOptions.joinToString(" / "))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            SeniorMetricTile("Mode", effectiveResponseMode, Modifier.weight(1f))
+            SeniorMetricTile("Gesture", state.detectedGesture, Modifier.weight(1f))
+        }
+        SeniorSection(title = "Voice status") {
+            SeniorBodyText(effectiveVoiceStatus)
+            if (localVoiceState.recognizedSpeech.isNotBlank()) {
+                SeniorBodyText("Heard: ${localVoiceState.recognizedSpeech}")
+            }
+            if (localVoiceState.fallbackReason.isNotBlank()) {
+                SeniorBodyText("Fallback: ${localVoiceState.fallbackReason}")
+            }
+            SeniorBodyText("ASR confidence: $effectiveConfidence")
+        }
+        SeniorSection(title = "Safety boundary") {
+            SeniorBodyText(state.safetyBoundary)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = onRepeatPrompt,
+                enabled = !localVoiceState.isListening,
+                modifier = Modifier.weight(1f).height(64.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Icon(Icons.Filled.VolumeUp, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("Repeat", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+            if (voiceAllowed) {
+                Button(
+                    onClick = {
+                        val granted = ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.RECORD_AUDIO,
+                        ) == PackageManager.PERMISSION_GRANTED
+                        if (granted) {
+                            startVoiceAnswer()
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        }
+                    },
+                    enabled = !localVoiceState.isListening,
+                    modifier = Modifier.weight(1f).height(64.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Icon(Icons.Filled.Mic, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        if (localVoiceState.isListening) "Listening" else "Voice answer",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = {
+                    voiceController.stop()
+                    publishVoiceState(
+                        SeniorDualTaskVoiceState(
+                            fallbackReason = "gesture_fallback_selected",
+                            voiceStatus = "gesture fallback ready",
+                        ),
+                    )
+                    onUseGestureFallback()
+                },
+                modifier = Modifier.fillMaxWidth().height(64.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor),
+                border = BorderStroke(1.dp, TextSecondary),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text("Gesture fallback", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+fun SeniorCareLogScreen(
+    state: SeniorCareLogUiState,
+    onStopReset: () -> Unit,
+    onExport: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SeniorScaffold(
+        title = "Care Log",
+        subtitle = "${state.backend} / ${state.functionName}",
+        sourceLabel = if (state.fallback) "deterministic_fallback" else state.backend,
+        onStopReset = onStopReset,
+        modifier = modifier,
+    ) {
+        SeniorSection(title = state.headline) {
+            SeniorBodyText(state.whatWasCompleted.ifBlank { "No completed activity recorded yet." })
+        }
+        SeniorSection(title = "Observed movement quality") {
+            SeniorBodyText(state.observations.ifBlank { "No supported observation yet." })
+        }
+        SeniorSection(title = "What was not judged") {
+            SeniorBodyText(state.notJudged)
+        }
+        SeniorSection(title = "Next session focus") {
+            SeniorBodyText(state.nextSessionFocus.ifBlank { "Use a supported, low-impact setup." })
+        }
+        SeniorSection(title = "Evidence refs") {
+            if (state.evidenceRefs.isEmpty()) {
+                SeniorBodyText("No evidence refs yet.")
+            } else {
+                state.evidenceRefs.take(8).forEach { SeniorBodyText("- $it") }
+            }
+        }
+        Button(
+            onClick = onExport,
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Blue),
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Icon(Icons.Filled.Share, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text("Export log", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+fun SeniorSubjectiveCheckinScreen(
+    state: SeniorSubjectiveCheckinUiState,
+    onStopReset: () -> Unit,
+    onRepeatPrompt: () -> Unit,
+    onUseButtons: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SeniorScaffold(
+        title = "Check-in",
+        subtitle = "Self-reported exertion",
+        sourceLabel = state.sourceLabel,
+        onStopReset = onStopReset,
+        modifier = modifier,
+    ) {
+        SeniorSection(title = "Question") {
+            SeniorBodyText(state.prompt)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            SeniorMetricTile("Breathing", state.breathlessness, Modifier.weight(1f))
+            SeniorMetricTile("Legs", state.legSoreness, Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            SeniorMetricTile("Rest", if (state.neededRest) "yes" else "no", Modifier.weight(1f))
+            SeniorMetricTile("Discomfort", if (state.discomfortReported) "yes" else "no", Modifier.weight(1f))
+        }
+        SeniorSection(title = "Input mode") {
+            SeniorBodyText("${state.inputMode}; bounded answers only.")
+        }
+        SeniorSection(title = "Evidence refs") {
+            if (state.evidenceRefs.isEmpty()) {
+                SeniorBodyText("Self-report evidence has not been recorded yet.")
+            } else {
+                state.evidenceRefs.take(8).forEach { SeniorBodyText("- $it") }
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = onRepeatPrompt,
+                modifier = Modifier.weight(1f).height(64.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Icon(Icons.Filled.VolumeUp, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("Repeat", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+            Button(
+                onClick = onUseButtons,
+                modifier = Modifier.weight(1f).height(64.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = SurfaceColor),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text("Use buttons", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+fun SeniorPersonaReportScreen(
+    state: SeniorPersonaReportUiState,
+    onStopReset: () -> Unit,
+    onExport: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SeniorScaffold(
+        title = "Activity Report",
+        subtitle = "${state.persona} / ${state.backend}",
+        sourceLabel = if (state.fallback) "deterministic_fallback" else state.backend,
+        onStopReset = onStopReset,
+        modifier = modifier,
+    ) {
+        SeniorSection(title = state.persona.replace("_", " ")) {
+            SeniorBodyText(state.reportText.ifBlank { "No persona report generated yet." })
+        }
+        SeniorSection(title = "Boundary") {
+            SeniorBodyText(state.boundaryNote)
+        }
+        SeniorSection(title = "Evidence refs") {
+            val refs = state.objectiveEvidenceRefs + state.subjectiveEvidenceRefs
+            if (refs.isEmpty()) {
+                SeniorBodyText("No evidence refs yet.")
+            } else {
+                refs.take(10).forEach { SeniorBodyText("- $it") }
+            }
+        }
+        Button(
+            onClick = onExport,
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Blue),
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Icon(Icons.Filled.Share, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text("Export report", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
 fun SeniorMemoryTrendsScreen(
     state: SeniorTrendUiState,
     onStopReset: () -> Unit,
@@ -303,6 +695,7 @@ private fun SeniorScaffold(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val sourceBadge = TrustUiMapper.sourceBadge(sourceLabel)
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -314,7 +707,7 @@ private fun SeniorScaffold(
             Column(Modifier.weight(1f)) {
                 Text(title, color = TextPrimary, fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 Text(subtitle, color = TextSecondary, fontSize = 18.sp)
-                Text(sourceLabel, color = Green, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text(sourceBadge.label, color = Green, fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
             Button(
                 onClick = onStopReset,

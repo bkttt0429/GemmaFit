@@ -21,6 +21,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessibilityNew
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DirectionsRun
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,31 +46,63 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemmafit.ui.localization.LocalAppStrings
 import com.gemmafit.ui.theme.Background
 import com.gemmafit.ui.theme.Green
 import com.gemmafit.ui.theme.Orange
+import com.gemmafit.ui.theme.PurpleSecondary
 import com.gemmafit.ui.theme.Red
 import com.gemmafit.ui.theme.SurfaceColor
 import com.gemmafit.ui.theme.TextPrimary
 import com.gemmafit.ui.theme.TextSecondary
-import com.gemmafit.video.EvidenceCard
+import com.gemmafit.video.ActivityContextState
 import com.gemmafit.video.LiveWorkoutState
-import com.gemmafit.video.QualityFlag
+import com.gemmafit.video.SessionVisualContext
 
-/**
- * Hero status bar sitting directly below the video.
- * Combines exercise info, rep count, form score, and current verdict into one glanceable row.
- */
 @Composable
 fun StatusHero(
     live: LiveWorkoutState,
     modifier: Modifier = Modifier,
 ) {
-    val active = live.qualityFlags.firstOrNull { it.status != "OK" }
-    val status = active?.status ?: live.evidenceCard.verdict.ifBlank { "OK" }
+    val copy = LocalAppStrings.current
+    val sessionStatus = live.sessionStatus.takeIf { it.ready }
+    val displayLive = if (sessionStatus != null) {
+        live.copy(
+            detectedExercise = sessionStatus.exercise,
+            formScore = sessionStatus.formScore,
+            repCount = sessionStatus.repCount,
+            movementPhase = sessionStatus.phase,
+            activityContext = if (live.activityContext.state != ActivityContextState.UNKNOWN) {
+                live.activityContext
+            } else {
+                sessionStatus.activityContext
+            },
+            visualContext = if (live.visualContext.available) {
+                live.visualContext
+            } else {
+                sessionStatus.visualContext
+            },
+        )
+    } else {
+        live
+    }
+    var stableExercise by remember { mutableStateOf("unknown") }
+    LaunchedEffect(displayLive.totalFramesAnalyzed, displayLive.detectedExercise, sessionStatus?.ready) {
+        val currentExercise = displayLive.detectedExercise
+        if (sessionStatus == null && displayLive.totalFramesAnalyzed <= 1 && currentExercise == "unknown") {
+            stableExercise = "unknown"
+        } else if (sessionStatus != null && currentExercise == "unknown") {
+            stableExercise = "unknown"
+        } else if (currentExercise.isNotBlank() && currentExercise != "unknown") {
+            stableExercise = currentExercise
+        }
+    }
+    val active = displayLive.qualityFlags.firstOrNull { it.status != "OK" }
+    val status = active?.status ?: displayLive.evidenceCard.verdict.ifBlank { "OK" }
     val color = statusColor(status)
 
     Surface(
@@ -71,59 +115,76 @@ fun StatusHero(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
-            // Top row: exercise + rep + form score
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Left: exercise + rep
+                val display = visualAwareExerciseDisplay(displayLive, stableExercise)
                 ExerciseInfo(
-                    exercise = live.detectedExercise,
-                    repCount = live.repCount,
-                    phase = derivePhaseLabel(live),
+                    display = display,
+                    repCount = displayLive.repCount,
+                    phase = derivePhaseLabel(displayLive),
+                    context = visualContextSubtitle(displayLive),
                 )
-
-                // Right: form score
-                FormScoreBadge(score = live.formScore)
+                FormScoreBadge(score = displayLive.formScore)
             }
 
-            Spacer(Modifier.height(10.dp))
-
-            // Bottom: verdict pill
-            VerdictStrip(
-                status = status,
-                color = color,
-                subtitle = active?.let {
-                    "${it.id.replace("rule_", "rule ").replace("_", " ")} — ${it.joint.ifBlank { "—" }}"
-                } ?: live.evidenceCard.reason.ifBlank { "Evidence-gated feedback" },
-            )
+            if (status == "CRITICAL" || status == "WARNING") {
+                Spacer(Modifier.height(10.dp))
+                val subtitle = active?.let {
+                    it.id.replace("rule_", "rule ").replace("_", " ") +
+                        it.joint.takeIf { joint -> joint.isNotBlank() }?.let { joint -> " - $joint" }.orEmpty()
+                } ?: displayLive.evidenceCard.reason.ifBlank { copy.feedbackBoundary }
+                VerdictStrip(
+                    status = status,
+                    color = color,
+                    subtitle = subtitle,
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ExerciseInfo(
-    exercise: String,
+    display: ActivityDisplay,
     repCount: Int,
     phase: String,
+    context: String,
 ) {
-    val (icon, label) = exerciseDisplay(exercise)
+    val copy = LocalAppStrings.current
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(icon, fontSize = 28.sp)
+        Icon(
+            imageVector = display.icon,
+            contentDescription = display.label,
+            tint = Green,
+            modifier = Modifier.size(24.dp),
+        )
         Spacer(Modifier.width(10.dp))
         Column {
             Text(
-                text = label,
+                text = display.label,
                 color = TextPrimary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 24.sp,
             )
             Text(
-                text = "Rep $repCount · $phase",
+                text = buildString {
+                    append(copy.reps)
+                    append(' ')
+                    append(repCount)
+                    append(" - ")
+                    append(phase)
+                    if (context.isNotBlank()) {
+                        append(" / ")
+                        append(context)
+                    }
+                },
                 color = TextSecondary,
                 style = MaterialTheme.typography.labelMedium,
+                maxLines = 2,
             )
         }
     }
@@ -131,8 +192,7 @@ private fun ExerciseInfo(
 
 @Composable
 private fun FormScoreBadge(score: Int) {
-    // Smooth animated value — even if underlying score changes every frame,
-    // UI shows a smooth glide over 250ms
+    val copy = LocalAppStrings.current
     val animatedScore by animateIntAsState(
         targetValue = score.coerceIn(0, 100),
         animationSpec = tween(250),
@@ -150,7 +210,7 @@ private fun FormScoreBadge(score: Int) {
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "FORM",
+            text = copy.form,
             color = TextSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
@@ -163,7 +223,6 @@ private fun FormScoreBadge(score: Int) {
             fontWeight = FontWeight.Bold,
             fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
         )
-        // Mini score bar (animated width)
         val animatedBar by animateFloatAsState(
             targetValue = animatedScore / 100f,
             animationSpec = tween(300),
@@ -193,8 +252,7 @@ private fun VerdictStrip(
     color: Color,
     subtitle: String,
 ) {
-    // Debounced status: a new status must persist for 300ms before UI reflects it.
-    // This prevents flickering when the verdict rapidly toggles between OK and WARNING.
+    val copy = LocalAppStrings.current
     var debouncedStatus by remember { mutableStateOf(status) }
     var debouncedColor by remember { mutableStateOf(color) }
     var debouncedSubtitle by remember { mutableStateOf(subtitle) }
@@ -207,8 +265,6 @@ private fun VerdictStrip(
     }
 
     val isCritical = debouncedStatus == "CRITICAL" || debouncedStatus == "WARNING"
-
-    // Pulse animation for critical states
     val infiniteTransition = rememberInfiniteTransition(label = "verdict_pulse")
     val pulseAlpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
@@ -219,7 +275,6 @@ private fun VerdictStrip(
         ),
         label = "pulse",
     )
-
     val borderAlpha = if (isCritical) pulseAlpha else 1f
 
     Row(
@@ -230,7 +285,6 @@ private fun VerdictStrip(
             .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Status dot
         Box(
             modifier = Modifier
                 .size(10.dp)
@@ -240,7 +294,7 @@ private fun VerdictStrip(
         Spacer(Modifier.width(10.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = statusTitle(debouncedStatus),
+                text = copy.statusTitle(debouncedStatus),
                 color = debouncedColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
@@ -252,63 +306,143 @@ private fun VerdictStrip(
                 maxLines = 1,
             )
         }
-        Text(
-            text = statusIcon(debouncedStatus),
-            fontSize = 18.sp,
+        Icon(
+            imageVector = statusIcon(debouncedStatus),
+            contentDescription = copy.statusTitle(debouncedStatus),
+            tint = debouncedColor,
+            modifier = Modifier.size(20.dp),
         )
     }
 }
 
-// ── Helpers ─────────────────────────────────────────────────────────
+@Composable
+private fun exerciseDisplay(exercise: String): Pair<ImageVector, String> {
+    val copy = LocalAppStrings.current
+    return when (exercise) {
+        "squat" -> Icons.Filled.FitnessCenter to copy.exerciseLabel(exercise)
+        "bodyweight_or_goblet_squat" -> Icons.Filled.FitnessCenter to copy.exerciseLabel("squat")
+        "push_up" -> Icons.Filled.AccessibilityNew to copy.exerciseLabel(exercise)
+        "lunge" -> Icons.Filled.DirectionsRun to copy.exerciseLabel(exercise)
+        "deadlift" -> Icons.Filled.FitnessCenter to copy.exerciseLabel(exercise)
+        else -> Icons.Filled.HelpOutline to copy.exerciseLabel("unknown")
+    }
+}
 
-private fun exerciseDisplay(exercise: String): Pair<String, String> = when (exercise) {
-    "squat"    -> "🏋️" to "Squat"
-    "push_up"  -> "💪" to "Push-up"
-    "lunge"    -> "🦵" to "Lunge"
-    "deadlift" -> "🔩" to "Deadlift"
-    else       -> "❓" to "Detecting…"
+private data class ActivityDisplay(
+    val icon: ImageVector,
+    val label: String,
+)
+
+@Composable
+private fun visualAwareExerciseDisplay(
+    live: LiveWorkoutState,
+    stableExercise: String,
+): ActivityDisplay {
+    val copy = LocalAppStrings.current
+    val visual = live.visualContext
+    val activity = live.activityContext
+    val activityLabel = when (activity.taskLabel) {
+        "chair_sit_to_stand" -> "Chair sit-to-stand"
+        "supported_squat" -> copy.exerciseLabel("squat") + " with support"
+        "bodyweight_or_goblet_squat" -> copy.exerciseLabel("squat")
+        "balance_hold" -> "Balance hold"
+        else -> null
+    }
+    if (activityLabel != null && activity.state != ActivityContextState.UNKNOWN) {
+        return ActivityDisplay(Icons.Filled.AccessibilityNew, activityLabel)
+    }
+
+    if (
+        live.sessionStatus.ready &&
+        live.sessionStatus.exercise == "unknown" &&
+        live.repCount == 0 &&
+        activity.state == ActivityContextState.UNKNOWN
+    ) {
+        return ActivityDisplay(Icons.Filled.HelpOutline, "Movement review")
+    }
+
+    if (
+        visual.support == SessionVisualContext.SUPPORT_CHAIR &&
+        stableExercise in chairSupportConflictLabels
+    ) {
+        return ActivityDisplay(Icons.Filled.AccessibilityNew, "Chair-supported movement")
+    }
+
+    if (stableExercise.isNotBlank() && stableExercise != "unknown") {
+        val (icon, label) = exerciseDisplay(stableExercise)
+        return ActivityDisplay(icon, label)
+    }
+
+    if (visual.support == SessionVisualContext.SUPPORT_CHAIR) {
+        return ActivityDisplay(Icons.Filled.AccessibilityNew, "Chair-supported movement")
+    }
+    val (icon, label) = exerciseDisplay(stableExercise)
+    return ActivityDisplay(icon, label)
+}
+
+private val chairSupportConflictLabels = setOf(
+    "lunge",
+    "deadlift",
+    "push_up",
+)
+
+private fun visualContextSubtitle(live: LiveWorkoutState): String {
+    val visual = live.visualContext
+    val parts = buildList {
+        when (live.activityContext.state) {
+            ActivityContextState.AMBIGUOUS -> add("activity ambiguous")
+            ActivityContextState.CALIBRATING -> live.activityContext.taskLabel
+                ?.replace("_", " ")
+                ?.takeIf { it.isNotBlank() }
+                ?.let { add("calibrating: $it") }
+            ActivityContextState.LOCKED -> live.activityContext.taskLabel
+                ?.replace("_", " ")
+                ?.takeIf { it.isNotBlank() }
+                ?.let { add(it) }
+            else -> Unit
+        }
+        if (visual.support == SessionVisualContext.SUPPORT_CHAIR) add("vision: chair support")
+        if (visual.env != SessionVisualContext.ENV_UNKNOWN) add(visual.env)
+        if (visual.limited == true) add("view limited")
+    }
+    return parts.distinct().take(2).joinToString(" / ")
 }
 
 private fun derivePhaseLabel(live: LiveWorkoutState): String {
+    if (
+        live.activityContext.state == ActivityContextState.CALIBRATING &&
+        !live.activityContext.taskLabel.isNullOrBlank()
+    ) {
+        return "calibrating"
+    }
     if (live.movementPhase != "unknown") return live.movementPhase
-    val k = live.templateMetrics["left_knee_angle"] ?: live.templateMetrics["knee_angle_deg"]
+    val knee = live.templateMetrics["left_knee_angle"] ?: live.templateMetrics["knee_angle_deg"]
     return when {
-        k == null -> "—"
-        k > 160   -> "top"
-        k < 100   -> "bottom"
-        else      -> "transition"
+        knee == null -> "--"
+        knee > 160 -> "top"
+        knee < 100 -> "bottom"
+        else -> "transition"
     }
 }
 
 private fun statusColor(status: String): Color = when (status) {
-    "CRITICAL"       -> Red
-    "WARNING"        -> Orange
-    "MONITOR"        -> Color(0xFFFFD700)
-    "VIEW_LIMITED"   -> com.gemmafit.ui.theme.Blue
-    "LOW_CONFIDENCE" -> com.gemmafit.ui.theme.PurpleSecondary
+    "CRITICAL" -> Red
+    "WARNING" -> Orange
+    "MONITOR" -> Color(0xFFFFD700)
+    "VIEW_LIMITED" -> com.gemmafit.ui.theme.Blue
+    "LOW_CONFIDENCE" -> PurpleSecondary
     "NOT_APPLICABLE" -> Color(0xFF7A7F87)
-    "OK"             -> Green
-    else             -> TextSecondary
+    "OK" -> Green
+    else -> TextSecondary
 }
 
-private fun statusIcon(status: String): String = when (status) {
-    "CRITICAL"       -> "🛑"
-    "WARNING"        -> "⚠"
-    "MONITOR"        -> "👀"
-    "VIEW_LIMITED"   -> "📷"
-    "LOW_CONFIDENCE" -> "❓"
-    "NOT_APPLICABLE" -> "—"
-    "OK"             -> "✅"
-    else             -> "•"
-}
-
-private fun statusTitle(status: String): String = when (status) {
-    "CRITICAL"       -> "CORRECT NOW"
-    "WARNING"        -> "WARNING"
-    "MONITOR"        -> "WATCH"
-    "VIEW_LIMITED"   -> "VIEW LIMITED"
-    "LOW_CONFIDENCE" -> "LOW CONFIDENCE"
-    "NOT_APPLICABLE" -> "NOT APPLICABLE"
-    "OK"             -> "CLEAN"
-    else             -> status
+private fun statusIcon(status: String): ImageVector = when (status) {
+    "CRITICAL" -> Icons.Filled.Error
+    "WARNING" -> Icons.Filled.Warning
+    "MONITOR" -> Icons.Filled.Info
+    "VIEW_LIMITED" -> Icons.Filled.Videocam
+    "LOW_CONFIDENCE" -> Icons.Filled.Warning
+    "NOT_APPLICABLE" -> Icons.Filled.Block
+    "OK" -> Icons.Filled.CheckCircle
+    else -> Icons.Filled.HelpOutline
 }

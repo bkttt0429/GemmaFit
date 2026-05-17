@@ -1,0 +1,12 @@
+{
+  "version": "v3_evidence_router",
+  "run_name": "unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router",
+  "run_suffix": "gemmafit_v3_evidence_router",
+  "updated_at": "2026-05-06T06:48:15Z",
+  "phase": "6_training",
+  "status": "started",
+  "last_completed_phase": null,
+  "next_phase": "7_save_adapter",
+  "latest_checkpoint": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router/checkpoint-450",
+  "checkpoint": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router/checkpoint-450"
+}

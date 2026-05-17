@@ -165,6 +165,32 @@ python finetune/eval_v4_senior_router.py --dataset finetune/data/gemmafit_v4_sen
 git diff --check
 ```
 
+### Next Slice - MotionZip-V4 Temporal Evidence Compression (P0)
+
+MotionZip-V4 is app-side compression for realtime motion evidence. It keeps
+recent detail, compresses event windows, and summarizes session history before
+E2B sees the packet. It does not change Gemma/E2B architecture and must not
+delete safety-critical evidence.
+
+- [x] `MOTIONZIP-P0-01` Add MotionZip design doc and link it from the main
+  implementation plan.
+  - Acceptance: docs describe sliding window, CSA-like event blocks, HCA-like
+    session summary, safety-preserved fields, and unsupported claim boundaries.
+- [x] `MOTIONZIP-P0-02` Add Kotlin `MotionZipPacket` data classes and builder
+  from `MotionFeatureWindow + Layer2Output`.
+  - Acceptance: packet preserves extrema, confidence floor, event refs,
+    rule-policy state, and no-force/no-EMG limits.
+- [x] `MOTIONZIP-P0-03` Add debug-only MotionZip packet to rep-event debug
+  records.
+  - Acceptance: `model_invocation` debug payload contains `motion_zip_packet`
+    without changing the E2B prompt contract.
+- [x] `MOTIONZIP-P0-04` Add unit tests for safety-preserving compression.
+  - Acceptance: tests prove low confidence, event boundaries, extrema, and
+    evidence refs survive compression.
+- [ ] `MOTIONZIP-P0-05` Decide prompt integration after Pixel debug review.
+  - Acceptance: no E2B prompt changes until packet quality is visible on real
+    clips.
+
 ### Training Data Source Plan - Senior v4
 
 Use this before starting FunctionGemma v4 training. The router SFT dataset should

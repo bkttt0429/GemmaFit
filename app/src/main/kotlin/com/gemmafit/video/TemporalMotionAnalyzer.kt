@@ -28,7 +28,13 @@ class TemporalMotionAnalyzer {
         val smoothedVelocityDegS: Float = 0f,
         val rapidFlag: QualityFlag? = null,
         val completedRep: RepRecord? = null,
+        val motionFeatureWindow: MotionFeatureWindow? = null,
         val temporalMetrics: Map<String, Float> = emptyMap(),
+    )
+
+    private data class RepUpdate(
+        val completedRep: RepRecord? = null,
+        val motionFeatureWindow: MotionFeatureWindow? = null,
     )
 
     private val samples = ArrayDeque<Sample>()
@@ -42,6 +48,13 @@ class TemporalMotionAnalyzer {
     private var sawBottom = false
     private var repMinBend = Float.POSITIVE_INFINITY
     private var repMaxBend = 0f
+    private var repStartTimestampMs: Long? = null
+    private var repStartFrameIndex: Int? = null
+    private var repAngleMin = Float.POSITIVE_INFINITY
+    private var repAngleMax = Float.NEGATIVE_INFINITY
+    private var repPeakVelocityDegS = 0f
+    private var repConfidenceFloor = 1f
+    private val repPhaseSequence = mutableListOf<String>()
     private var lastSmoothedAngle: Float? = null
     private var lastTimestampMs: Long? = null
     private var rapidRun = 0
@@ -55,16 +68,19 @@ class TemporalMotionAnalyzer {
         sawBottom = false
         repMinBend = Float.POSITIVE_INFINITY
         repMaxBend = 0f
+        resetRepFeatureState()
         lastSmoothedAngle = null
         lastTimestampMs = null
         rapidRun = 0
     }
 
+    @JvmOverloads
     fun addSample(
         frameIndex: Int,
         timestampMs: Long,
         exercise: String,
         metrics: Map<String, Float>,
+        confidenceFloor: Float = 1f,
     ): Result {
         val primaryMetric = primaryMetricFor(exercise, metrics) ?: return Result(repCount = repCount)
         val rawAngle = metrics[primaryMetric] ?: return Result(repCount = repCount)
@@ -98,7 +114,19 @@ class TemporalMotionAnalyzer {
         val bend = bendFromAngle(rawAngle)
         val bendVelocity = -signedVelocity
         val thresholds = thresholdsFor(exercise)
-        val completedRep = updateRepState(bend, bendVelocity, thresholds)
+        val repUpdate = updateRepState(
+            frameIndex = frameIndex,
+            timestampMs = timestampMs,
+            exercise = exercise,
+            primaryMetric = primaryMetric,
+            rawAngleDeg = rawAngle,
+            confidenceFloor = confidenceFloor,
+            bend = bend,
+            bendVelocityDegS = bendVelocity,
+            velocityAbsDegS = velocityAbs,
+            thresholds = thresholds,
+        )
+        val completedRep = repUpdate.completedRep
         val rapidFlag = rapidMovementFlag(velocityAbs, primaryMetric)
         val range = if (repActive || sawBottom) {
             (repMaxBend - repMinBend).coerceAtLeast(0f)
@@ -115,6 +143,7 @@ class TemporalMotionAnalyzer {
             smoothedVelocityDegS = velocityAbs,
             rapidFlag = rapidFlag,
             completedRep = completedRep,
+            motionFeatureWindow = repUpdate.motionFeatureWindow,
             temporalMetrics = mapOf(
                 "primary_angle_deg" to smoothedAngle,
                 "tempo_deg_s" to velocityAbs,
@@ -130,6 +159,7 @@ class TemporalMotionAnalyzer {
         sawBottom = false
         repMinBend = Float.POSITIVE_INFINITY
         repMaxBend = 0f
+        resetRepFeatureState()
         lastSmoothedAngle = null
         lastTimestampMs = null
         rapidRun = 0
@@ -137,7 +167,8 @@ class TemporalMotionAnalyzer {
 
     private fun primaryMetricFor(exercise: String, metrics: Map<String, Float>): String? {
         val preferred = when (exercise) {
-            "squat" -> listOf("knee_angle", "hip_angle")
+            "squat", "bodyweight_or_goblet_squat", "bodyweight_squat", "goblet_squat" ->
+                listOf("knee_angle", "hip_angle")
             "push_up" -> listOf("elbow_angle", "shoulder_angle")
             "lunge" -> listOf("front_knee_angle", "knee_angle")
             "deadlift" -> listOf("hip_hinge", "knee_angle")
@@ -181,10 +212,17 @@ class TemporalMotionAnalyzer {
     }
 
     private fun updateRepState(
+        frameIndex: Int,
+        timestampMs: Long,
+        exercise: String,
+        primaryMetric: String,
+        rawAngleDeg: Float,
+        confidenceFloor: Float,
         bend: Float,
         bendVelocityDegS: Float,
+        velocityAbsDegS: Float,
         thresholds: Thresholds,
-    ): RepRecord? {
+    ): RepUpdate {
         movementPhase = when {
             bend <= thresholds.finishBend -> "top"
             bend >= thresholds.bottomBend && abs(bendVelocityDegS) < 20f -> "bottom"
@@ -198,31 +236,137 @@ class TemporalMotionAnalyzer {
             sawBottom = false
             repMinBend = bend
             repMaxBend = bend
+            repStartTimestampMs = timestampMs
+            repStartFrameIndex = frameIndex
+            repAngleMin = rawAngleDeg
+            repAngleMax = rawAngleDeg
+            repPeakVelocityDegS = velocityAbsDegS
+            repConfidenceFloor = confidenceFloor.coerceIn(0f, 1f)
+            repPhaseSequence.clear()
         }
 
-        if (!repActive) return null
+        if (!repActive) return RepUpdate()
 
         repMinBend = minOf(repMinBend, bend)
         repMaxBend = max(repMaxBend, bend)
+        repAngleMin = minOf(repAngleMin, rawAngleDeg)
+        repAngleMax = max(repAngleMax, rawAngleDeg)
+        repPeakVelocityDegS = max(repPeakVelocityDegS, velocityAbsDegS)
+        repConfidenceFloor = minOf(repConfidenceFloor, confidenceFloor.coerceIn(0f, 1f))
+        appendRepPhase(movementPhase)
         if (bend >= thresholds.bottomBend) sawBottom = true
 
         if (sawBottom && bend <= thresholds.finishBend) {
             repCount += 1
             val rom = (repMaxBend - repMinBend).coerceAtLeast(0f)
-            repActive = false
-            sawBottom = false
-            repMinBend = Float.POSITIVE_INFINITY
-            repMaxBend = 0f
-            movementPhase = "top"
-            return RepRecord(
+            val completedRep = RepRecord(
                 repNumber = repCount,
                 formQuality = 1f,
                 rangeOfMotionDeg = rom,
                 hadViolations = false,
             )
+            val motionFeatureWindow = buildMotionFeatureWindow(
+                completedRep = completedRep,
+                exercise = exercise,
+                primaryMetric = primaryMetric,
+                finishFrameIndex = frameIndex,
+                finishTimestampMs = timestampMs,
+            )
+            repActive = false
+            sawBottom = false
+            repMinBend = Float.POSITIVE_INFINITY
+            repMaxBend = 0f
+            movementPhase = "top"
+            resetRepFeatureState()
+            return RepUpdate(
+                completedRep = completedRep,
+                motionFeatureWindow = motionFeatureWindow,
+            )
         }
 
-        return null
+        return RepUpdate()
+    }
+
+    private fun appendRepPhase(phase: String) {
+        if (phase.isBlank() || phase == "unknown") return
+        if (repPhaseSequence.lastOrNull() != phase) {
+            repPhaseSequence.add(phase)
+        }
+    }
+
+    private fun resetRepFeatureState() {
+        repStartTimestampMs = null
+        repStartFrameIndex = null
+        repAngleMin = Float.POSITIVE_INFINITY
+        repAngleMax = Float.NEGATIVE_INFINITY
+        repPeakVelocityDegS = 0f
+        repConfidenceFloor = 1f
+        repPhaseSequence.clear()
+    }
+
+    private fun buildMotionFeatureWindow(
+        completedRep: RepRecord,
+        exercise: String,
+        primaryMetric: String,
+        finishFrameIndex: Int,
+        finishTimestampMs: Long,
+    ): MotionFeatureWindow {
+        val startMs = repStartTimestampMs ?: finishTimestampMs
+        val startFrame = repStartFrameIndex ?: finishFrameIndex
+        val durationMs = (finishTimestampMs - startMs).coerceAtLeast(1L)
+        val angleMin = if (repAngleMin.isFinite()) repAngleMin else 0f
+        val angleMax = if (repAngleMax.isFinite()) repAngleMax else angleMin
+        val primaryIsKnee = primaryMetric.contains("knee")
+
+        return MotionFeatureWindow(
+            windowId = "motion.rep.${completedRep.repNumber}",
+            trigger = "REP_COMPLETED",
+            windowMs = durationMs,
+            exercise = exercise,
+            source = listOf("temporal_motion_analyzer", "pose_sequence"),
+            features = MotionFeatureValues(
+                kneeAngleMin = if (primaryIsKnee) angleMin else null,
+                kneeAngleMax = if (primaryIsKnee) angleMax else null,
+                primaryAngleMin = angleMin,
+                primaryAngleMax = angleMax,
+                rangeOfMotionDeg = completedRep.rangeOfMotionDeg,
+                repDurationMs = durationMs,
+                peakVelocityDegS = repPeakVelocityDegS,
+                velocityPeak = velocityPeakLabel(repPeakVelocityDegS),
+                confidenceFloor = repConfidenceFloor,
+            ),
+            derivedLabels = MotionDerivedLabels(
+                tempoBand = tempoBand(durationMs),
+                phaseSequenceEstimate = repPhaseSequence.ifEmpty {
+                    listOf("movement_start", "movement_end")
+                },
+                repCompleted = true,
+            ),
+            evidenceRefs = listOf(
+                "metric.motion.rep_duration",
+                "metric.motion.rom",
+                "metric.motion.peak_velocity",
+                "metric.motion.confidence_floor",
+            ),
+            limits = listOf(
+                "derived_from_single_camera_pose",
+                "no_force_or_grf",
+                "no_emg_or_muscle_activation",
+            ),
+        )
+    }
+
+    private fun tempoBand(durationMs: Long): String = when {
+        durationMs >= 2_000L -> "controlled"
+        durationMs >= 1_000L -> "brisk"
+        else -> "rapid"
+    }
+
+    private fun velocityPeakLabel(peakVelocityDegS: Float): String = when {
+        peakVelocityDegS >= RAPID_WARNING_DEG_S -> "high"
+        peakVelocityDegS >= RAPID_THRESHOLD_DEG_S -> "moderate"
+        peakVelocityDegS > 0f -> "low"
+        else -> "unknown"
     }
 
     private fun rapidMovementFlag(velocityAbs: Float, primaryMetric: String): QualityFlag? {

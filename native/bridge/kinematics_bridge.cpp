@@ -311,7 +311,15 @@ std::string to_json(const gemmafit::kinematics::ConfidenceResult& conf) {
        << "\"pass\":" << (conf.pass ? "true" : "false")
        << ",\"overall_visibility\":" << conf.overall_visibility
        << ",\"threshold\":" << conf.threshold
-       << ",\"low_count\":" << conf.low_visibility_count;
+       << ",\"low_count\":" << conf.low_visibility_count
+       << ",\"high_visibility_count\":" << conf.high_visibility_count
+       << ",\"bbox_area\":" << conf.bbox_area
+       << ",\"torso_anchor_count\":" << conf.torso_anchor_count
+       << ",\"upper_body_anchor_count\":" << conf.upper_body_anchor_count
+       << ",\"has_body_anchor\":" << (conf.has_body_anchor ? "true" : "false");
+    if (!conf.fail_condition.empty()) {
+        ss << ",\"fail_condition\":\"" << json_escape(conf.fail_condition) << "\"";
+    }
     if (!conf.fail_reason.empty()) {
         ss << ",\"fail_reason\":\"" << json_escape(conf.fail_reason) << "\"";
     }

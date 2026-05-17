@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" modified="2026-05-16T18:30:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="gemmafit-realtime-evidence-architecture" name="GemmaFit P0 Realtime Evidence Architecture">
+    <mxGraphModel dx="1500" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="960" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="GemmaFit P0 Realtime Evidence Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="12" width="550" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="core_rule" value="Core Rule: live frames are deterministic. E2B is low-frequency: event explanation, summary, export, or bounded refusal only." style="text;html=1;strokeColor=#D97706;fillColor=#FFFBEB;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontColor=#92400E;fontStyle=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="10" width="810" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lane1" value="1. Inputs" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="60" width="1440" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="2. Realtime Pose + Person Tracking" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="225" width="1440" height="195" as="geometry" />
+        </mxCell>
+        <mxCell id="lane3" value="3. Evidence Builder" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="445" width="1440" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="lane4" value="4. Event-Driven LLM + Outputs" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="650" width="1440" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="camera" value="CameraX&#xA;RGB frames, timestamps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane1">
+          <mxGeometry x="40" y="40" width="190" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="app_task" value="App Task Selection&#xA;task_label, source=app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane1">
+          <mxGeometry x="280" y="40" width="190" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="local_models" value="Local Models&#xA;MediaPipe Pose + official E2B LiteRT&#xA;v5/vision are optional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane1">
+          <mxGeometry x="520" y="40" width="210" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="policy" value="Policy Registry&#xA;allowed tools, forbidden claims" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane1">
+          <mxGeometry x="780" y="40" width="210" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mediapipe" value="MediaPipe Pose&#xA;33 landmarks, visibility" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane2">
+          <mxGeometry x="40" y="45" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="kalman" value="Kalman + Landmark Smooth&#xA;observed / predicted / lost" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane2">
+          <mxGeometry x="290" y="45" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="person_tracking" value="PersonTrackingState&#xA;━━━━━━━━━━━━━━━━&#xA;☑ Presence Gate&#xA;☑ Identity Gate&#xA;☑ Judgment Gate&#xA;━━━━━━━━━━━━━━━━&#xA;→ judgment_allowed (bool)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontColor=#0F172A;fontSize=10;strokeWidth=2;" vertex="1" parent="lane2">
+          <mxGeometry x="550" y="38" width="290" height="122" as="geometry" />
+        </mxCell>
+        <mxCell id="temp_buffer" value="TemporalBuffer&#xA;3-6 sec rolling window&#xA;pose + timestamps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane2">
+          <mxGeometry x="890" y="45" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="event_detector" value="Senior Layer 2 + Event Detector&#xA;activity, phase, event, judgeability&#xA;rep_completed / balance_hold_completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane2">
+          <mxGeometry x="1150" y="45" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="motion_window" value="Motion Feature Window&#xA;{ hip_disp, knee_min/max,&#xA;  rep_duration, velocity_peak,&#xA;  stabilization_ms, confidence_floor }" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane3">
+          <mxGeometry x="40" y="45" width="290" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="visual_evidence" value="ActivityContext + MotionZip&#xA;LOCKED / AMBIGUOUS context&#xA;event blocks, extrema, confidence floors&#xA;video summary adds quality_cues; no raw video" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane3">
+          <mxGeometry x="380" y="45" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="evidence_ledger" value="Evidence Ledger&#xA;id, metric, value, confidence,&#xA;source, method, limits&#xA;JSON truth source" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane3">
+          <mxGeometry x="670" y="45" width="270" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="capability_contract" value="Capability Contract + Support State&#xA;can_judge: tempo, rep, stability&#xA;cannot_judge: force, EMG, fall-risk&#xA;support: setup, left area, no response" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontColor=#0F172A;fontSize=11;strokeWidth=2;" vertex="1" parent="lane3">
+          <mxGeometry x="990" y="45" width="290" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="llm_input" value="ModelInvocationScheduler&#xA;skip / defer / fallback / call&#xA;build compact E2B prompt only when approved" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane4">
+          <mxGeometry x="40" y="45" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="e2b_router" value="Official E2B LiteRT Streaming&#xA;100/100 parseable JSON gate&#xA;warm first token 0.96-3.14s&#xA;native tool-call object not assumed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontColor=#0F172A;fontSize=11;" vertex="1" parent="lane4">
+          <mxGeometry x="310" y="45" width="210" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="validator" value="Parser + Validator + Fill&#xA;JSON cleanup, schema, refs&#xA;forbidden-claim rejection&#xA;invalid -> deterministic fallback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontColor=#0F172A;fontSize=11;strokeWidth=2;" vertex="1" parent="lane4">
+          <mxGeometry x="570" y="45" width="250" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="output" value="Output Channels&#xA;Deterministic UI/TTS with VoiceCuePolicy budget | streaming summary | care log | debug timings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#0F172A;fontSize=12;fontStyle=1;" vertex="1" parent="lane4">
+          <mxGeometry x="870" y="45" width="510" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bypass_label" value="low confidence / subject lost / no response / live frame -> deterministic cue (no E2B)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#DC2626;fontStyle=2;" vertex="1" parent="lane4">
+          <mxGeometry x="580" y="145" width="310" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_cam_mp" value="frame stream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="camera" target="mediapipe">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_cap" value="task_label + source" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="app_task" target="capability_contract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pol_cap" value="forbidden claims registry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.7;entryY=0;" edge="1" parent="1" source="policy" target="capability_contract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_mp_kal" value="landmarks + bbox" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="mediapipe" target="kalman">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_kal_pt" value="pose + tracking state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="kalman" target="person_tracking">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pt_buf" value="frames (gated)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="person_tracking" target="temp_buffer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_buf_evt" value="rolling window" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="temp_buffer" target="event_detector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_evt_mot" value="event window" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="event_detector" target="motion_window">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_buf_vis" value="pre/post keyframes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="temp_buffer" target="visual_evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mot_led" value="features + methods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="motion_window" target="evidence_ledger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_vis_led" value="context refs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="visual_evidence" target="evidence_ledger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_led_cap" value="evidence ids + limits" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="evidence_ledger" target="capability_contract">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_cap_llm" value="compact packet (can_judge / cannot_judge)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="capability_contract" target="llm_input">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_llm_e2b" value="approved trigger only" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="llm_input" target="e2b_router">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_e2b_val" value="streamed schema-shaped JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="e2b_router" target="validator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_val_out" value="accepted / fallback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;endArrow=block;endFill=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="validator" target="output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_evt_out" value="deterministic guard (no LLM)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;endArrow=block;endFill=1;fontSize=10;strokeDasharray=8 4;dashed=1;exitX=0.5;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="event_detector" target="output">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1250" y="175" />
+              <mxPoint x="1250" y="610" />
+              <mxPoint x="1020" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

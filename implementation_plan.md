@@ -93,6 +93,9 @@ Literature and claim policy:
 
 ## 3. System Architecture
 
+Current architecture and technical highlights are summarized in:
+`docs/design/project_architecture_and_technical_highlights.md`.
+
 ```mermaid
 graph TD
     Video["Video / Camera Input"] --> Pose["MediaPipe Pose Landmarker"]
@@ -133,14 +136,16 @@ MediaPipe landmarks
 -> dashboard / Android UI / TTS
 ```
 
-### Realtime Evidence and E2B Fine-tune Policy
+### Realtime Evidence and Official E2B Runtime Policy
 
 Realtime analysis follows a tools-first policy:
 
 ```text
 CameraX -> MediaPipe Pose -> Kalman ROI / landmark smoothing
--> optional YOLO burst fallback -> Motion Feature Window
--> Capability Contract -> E2B function-call router
+-> optional YOLO burst fallback -> Senior Layer 2 activity / phase / event
+-> Motion Feature Window
+-> Capability Contract -> ModelInvocationScheduler
+-> compact E2B event packet -> E2B function-call router
 ```
 
 YOLO is a recovery/fallback path for subject loss, multi-person ambiguity, or
@@ -151,8 +156,168 @@ packets and may explain or route one function call, but it may not override
 deterministic gates or invent force, GRF, EMG, heart-rate, fall-risk, clinical,
 or raw-video judgments.
 
-Detailed implementation and fine-tune spec:
-`docs/design/realtime_person_detection_and_finetune_plan.md`.
+Layer 2 is the senior streaming temporal interpreter between derived motion
+features and event windows. It produces bounded `activity_hypothesis`, `phase`,
+`event`, `judgeability`, and `evidence_refs` for senior activities such as
+`chair_sit_to_stand`, `supported_squat`, and `balance_hold`. It is not a
+language model, does not replace safety rules, and must abstain or downgrade to
+monitor-only when evidence is insufficient.
+
+Activity context is tracked separately from per-frame Layer 2 labels. The
+Android `ActivityContextTracker` scores event windows such as
+`chair_sit_to_stand` vs `supported_squat`, locks only after repeated consistent
+evidence, and emits `AMBIGUOUS` with no task label when scores are too close.
+That context is stored in MotionZip as `activity_context` for summary wording
+and evidence display; it does not unlock hard safety judgments.
+
+`ModelInvocationScheduler` is a runtime gate, not the function-call router. It
+decides whether the app should call E2B now, skip the call, defer to session
+end, or use deterministic fallback. It also selects the context budget and
+eligible backend. It must not choose the final function name, function args,
+evidence refs, refusal wording, memory writes, or safety verdicts; those remain
+owned by E2B and the Android validator. Scheduler-only changes do not require
+E2B retraining when tool names, arg schemas, evidence-ref format, and
+`can_judge` / `cannot_judge` semantics stay stable.
+
+Detailed implementation specs:
+`docs/design/realtime_person_detection_and_finetune_plan.md`,
+`docs/design/layer2_senior_activity_model.md`, and
+`docs/design/official_e2b_motionzip_runtime_architecture.md`.
+
+P0 local inference uses the official Google AI Edge Gallery
+`Gemma-4-E2B-it` LiteRT-LM artifact as the primary baseline. GemmaFit v5
+fine-tuning is now an optional quality layer, not a deadline dependency. The
+official E2B path is accepted only inside a strict app-owned contract:
+
+```text
+MotionZip compact evidence
++ requested function schema
++ Android JSON cleanup
++ schema and evidence-ref validator
++ deterministic fill
++ deterministic fallback
+```
+
+Pixel validation for the official E2B artifact showed GPU prewarm, warm prompt
+inference, 100 / 100 parseable official JSON outputs in the constrained smoke
+gate, and MotionZip dense-vs-compressed key-fact agreement. The constrained
+smoke did not observe LiteRT native tool calls from official E2B, so the P0
+runtime still treats Android parsing, evidence-ref validation, forbidden-claim
+rejection, deterministic fill, and deterministic fallback as mandatory safety
+controls. Token-level streaming is implemented through
+`Session.generateContentStream` on the isolated provider path; on a reused
+official E2B engine, first token arrived in 0.96-3.14 seconds, while cold runs
+still require prewarm because engine initialization dominates. The validated
+claim is not that the model sees every frame; it is that MotionZip preserves the
+activity/state/event/velocity/confidence facts needed for bounded local Gemma
+output.
+
+Video-mode summary quality uses the extra offline budget to enrich compact
+evidence, not to call Gemma on every frame. Session summaries add
+`CoachNarrativePacketBuilder` output (`rep_summaries`, `session_trend`,
+`baseline_comparison`) plus compact `quality_cues` (`best`, `watch`, `focus`).
+E2B may use these cues for one concrete observation and one next-session focus,
+but it may not turn them into new safety conclusions, clinical claims, force
+estimates, or raw-video interpretations.
+
+Realtime event packets also use a MotionZip-style compression policy inspired
+by DeepSeek V4's hybrid long-context design: keep recent motion detail, compress
+important event windows, and collapse session history into a bounded summary.
+This is app-side temporal evidence compression, not a Gemma/E2B architecture
+change. It must preserve safety-critical extrema, confidence floors,
+subject-tracking states, event boundaries, unsupported-claim boundaries, and
+evidence refs before any model call. Detailed spec:
+`docs/design/motionzip_v4_temporal_evidence_compression.md`.
+
+MotionZip equivalence is a benchmark path, not the live interaction path. The
+debug equivalence endpoint may run dense and compressed prompts side by side for
+proof. Product runtime should run the compressed prompt only, on a prewarmed
+official E2B GPU engine, and only for approved event, summary, export, or
+bounded-refusal triggers.
+
+### Low-Frequency Multimodal Evidence Panel
+
+GemmaFit may use Gemma 4 multimodal input as a sidecar for scene context,
+evidence explanation, user questions, session summaries, and caregiver-safe
+exports. It is **not** part of the live safety verdict path. The live path
+remains deterministic:
+
+```text
+MediaPipe / YOLO fallback / C++ motion evidence
+-> Trust Matrix
+-> Evidence Card
+-> immediate UI / TTS
+```
+
+The multimodal sidecar receives selected visual evidence only after the app has
+already produced structured evidence:
+
+```text
+FrameEvidenceSelector
+-> EvidencePanelBuilder
+-> MultimodalEvidencePacket
+-> GemmaMultimodalCoachBackend
+-> MultimodalResultValidator
+```
+
+The first v1 implementation should build an Evidence Panel instead of sending
+raw video or every frame to Gemma. The panel is a compact visual context sheet:
+
+```text
+1. scene_anchor: one full-frame image with the clearest environment context
+2. motion_strip: 4 phase-aware frames, usually top / descent / bottom / ascent
+3. warning_frame: optional frame near the warning or low-confidence event
+4. overlays: pose skeleton, COM path, frame index, phase label
+5. evidence tags: 3-5 short values such as rep, tempo, confidence, verdict
+```
+
+Frame selection must be phase-aware, not uniform-only sampling. The selector
+prioritizes frames with high pose confidence, full-body visibility, stable
+subject identity, low blur, and coverage of the warning timestamp when present.
+If phase detection is weak, it may fall back to sparse uniform sampling, but the
+result should be marked `panel_confidence: low`.
+
+Allowed Gemma/multimodal triggers in v1:
+
+| Trigger | Multimodal panel behavior |
+| --- | --- |
+| `LIVE_FRAME` | Never generate or send a panel. |
+| `SETUP_CHECK` | Not a Gemma/multimodal backend trigger in v1; use deterministic setup UI only. |
+| `REP_COMPLETED` | Debug only for v1; no default model call. |
+| `WARNING_PERSISTED` | Optional async one-frame/panel explanation when device budget allows. |
+| `USER_QUESTION` | Generate or reuse the latest panel if the question needs scene context. |
+| `SESSION_ENDED` | Primary v1 path for multimodal summary. |
+| `CAREGIVER_EXPORT` | Allowed if the export uses summary/trend evidence only. |
+
+Live multimodal is asynchronous by policy. The shipped live warning path renders
+the deterministic cue first, then may queue one background `live_visual_context`
+job for `WARNING_PERSISTED`. The job uses a single downscaled key-frame snapshot,
+has one in-flight slot, applies cooldown and result TTL, and drops stale results
+when the camera epoch changes. It may update explanation/debug context, but it
+must not add, remove, or downgrade a `WARNING` / `CRITICAL` verdict.
+
+The 2026-05-17 local validation run tightened this boundary in code and tests:
+`SETUP_CHECK` now remains deterministic-only, and `LIVE_FRAME` still reports
+`build_panel=false` and `call_backend=false` even when multimodal feature flags
+are enabled.
+
+Gemma multimodal output must be validated with a bounded contract. Allowed
+functions:
+
+```text
+propose_scene_context
+answer_evidence_question
+create_multimodal_session_summary
+refuse_unsupported_multimodal_claim
+```
+
+The validator must reject outputs that introduce a new warning, change a
+deterministic verdict, cite missing `evidence_refs`, or make medical,
+fall-risk, sarcopenia, force, load, EMG, heart-rate, or clinical-progress
+claims. When the panel is low confidence, the model can only explain uncertainty
+or ask for a better view. Memory writes use the existing `MemoryWritePolicy`;
+raw video, raw frame history, and full landmark streams are never stored in
+long-term memory.
 
 ## 4. MVP Exercise Templates
 
@@ -417,6 +582,7 @@ Gemma responsibilities:
 
 Gemma boundaries (the policy engine, not Gemma, decides):
 
+- whether a model call is made at all
 - whether a `MemoryUpdateRequest` is written
 - whether a calibration baseline is replaced
 - whether a caregiver export is produced
@@ -820,9 +986,85 @@ switching, simple arithmetic, and orientation. The app records whether the
 bounded answer matched and whether the expected movement was completed, but it
 does **not** judge cognition or dementia risk.
 
-### v4 FunctionGemma Fine-tune Target
+### Dementia-Friendly Self-Guided P0
 
-v4 fine-tuning targets a small FunctionGemma evidence router:
+P0 adds a **dementia-friendly self-guided Senior Mode** for older adults who may
+benefit from simpler independent activity support. This is an interaction and
+safety policy, not a diagnostic feature. It does not screen for dementia,
+estimate cognitive decline, predict wandering or fall risk, or generate clinical
+interpretation.
+
+The policy is grounded in public dementia-care guidance that emphasizes safety,
+routine, reduced overwhelm, and caregiver support:
+
+- WHO dementia overview: https://www.who.int/health-topics/dementia
+- Alzheimer's Association safety guidance: https://www.alz.org/help-support/caregiving/safety
+- Alzheimer's Association wandering guidance: https://www.alz.org/help-support/caregiving/stages-behaviors/wandering
+
+Runtime placement:
+
+```text
+Senior Layer 2 activity / phase / event
+-> SeniorInteractionPolicy
+-> UI / TTS / ModelInvocationScheduler
+```
+
+`SeniorInteractionPolicy` receives only observable app state:
+
+- `Layer2Output`
+- `PersonTrackingState`
+- last cue timestamp
+- last user button or gesture response timestamp
+- whether a cue is currently awaiting a response
+
+It outputs one of:
+
+| Action | Meaning |
+| --- | --- |
+| `continue_session` | Continue normal Senior Mode. |
+| `repeat_simple_cue` | Repeat one short cue; do not add analysis. |
+| `pause_for_setup` | Pause because camera/view/setup is not ready. |
+| `pause_for_support` | Pause and show a caregiver follow-up friendly message. |
+| `end_session_summary` | End and summarize only observable activity evidence. |
+
+Observable support states:
+
+| State | Trigger | Allowed behavior |
+| --- | --- | --- |
+| `READY` | Person visible, evidence judgeable, no pending support issue. | Continue. |
+| `SETUP_NEEDED` | Low confidence, poor view, or blocked judgment. | Pause or show one setup cue. |
+| `USER_LEFT_ACTIVITY_AREA` | Subject lost/no person after a started session. | Pause and ask user to return to view. |
+| `NO_RESPONSE_AFTER_CUE` | Cue was repeated and no button/gesture response arrived before timeout. | Pause; no hard coaching. |
+| `MULTI_PERSON_AMBIGUOUS` | Subject identity is ambiguous. | Pause/setup; do not count reps. |
+| `SESSION_PAUSED_FOR_SUPPORT` | Policy has paused the session for support. | Deterministic UI/TTS only. |
+
+Dementia-friendly defaults:
+
+- One visible cue at a time.
+- Large buttons: start, pause, continue, end.
+- Short TTS cues; slower voice speed; longer cooldowns.
+- `VoiceCuePolicy` also enforces global voice cooldowns, rolling spoken budgets,
+  and a small queue cap so repeated live warnings do not crowd the user.
+- No blame, warning, danger, or clinical language.
+- Dual-task is off by default. If enabled later, it must be gesture-first,
+  low-impact, and record only bounded attempt outcomes, not cognition.
+
+Care logs may include support-event counts such as low-confidence pauses,
+left-frame pauses, no-response pauses, and multi-person ambiguity. They must not
+store or infer dementia severity, cognitive decline, wandering risk, diagnosis,
+medication, address, raw video, or raw landmarks.
+
+### Optional Fine-tune / Small Router Target
+
+P0 does not require a fine-tuned GemmaFit model. The current deadline path is
+official `Gemma-4-E2B-it` LiteRT plus app-side schema control, validation,
+deterministic fill, and MotionZip evidence compression.
+
+Fine-tuning remains useful only as a P1/P2 quality layer. A small FunctionGemma
+or GemmaFit-v5 router may be added later if it measurably improves schema
+fidelity, evidence-ref precision, refusal stability, zh-TW wording, or latency.
+
+The optional small-router target is:
 
 ```text
 activity_context + motion_context + capability_contract + evidence_ledger
@@ -831,15 +1073,15 @@ activity_context + motion_context + capability_contract + evidence_ledger
 
 Target base model: `google/functiongemma-270m-it`.
 
-Target artifact:
+Candidate artifact:
 
 ```text
 models/gemmafit-v4-senior-router.litertlm
 ```
 
-The model learns tool selection and evidence citation only. It does not learn
-biomechanics thresholds, medical labels, raw video, raw landmarks, force, EMG,
-fall risk, sarcopenia, or rehab progress.
+The optional model learns tool selection and evidence citation only. It does
+not learn biomechanics thresholds, medical labels, raw video, raw landmarks,
+force, EMG, fall risk, sarcopenia, or rehab progress.
 
 New v4 tools:
 

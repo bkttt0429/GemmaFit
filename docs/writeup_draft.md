@@ -1,345 +1,148 @@
-# GemmaFit — Trustworthy Multi-Exercise Motion Feedback
+# GemmaFit - Trustworthy Offline Motion Feedback
 
-> **Kaggle Gemma 4 Good Hackathon submission.**
-> Target length: **≤1500 words** (current draft ≈1600).
-> Tracks: Main · Safety & Trust (primary) · Health & Sciences · llama.cpp · Unsloth Special.
->
-> All FC benchmark `[FILL]` placeholders have been replaced with actual numbers
-> from `eval_compare.py` (see [docs/benchmark/](benchmark/)).
-> Refusal benchmark placeholders remain — pending next fine-tuning checkpoint.
+> Kaggle Gemma 4 Good Hackathon submission writeup draft.
+> Target tracks: Main, Safety & Trust, Health & Sciences, Digital Equity &
+> Inclusion, Google AI Edge / LiteRT. This draft is intentionally evidence-bound
+> and avoids clinical claims.
 
----
+## Summary
 
-## 1. Problem — pose apps overclaim
+GemmaFit is an offline Android movement coach for older adults and beginners.
+It uses single-camera pose evidence, deterministic safety gates, MotionZip
+temporal evidence compression, and local Gemma 4 E2B on LiteRT to produce
+bounded coaching summaries. The core idea is simple: the app should help people
+move with better awareness, but it must also know when the camera evidence is
+not enough.
 
-Single-camera fitness apps habitually overclaim. They report *knee valgus
-angles* from side-view footage where the metric is geometrically
-undefined. They show *muscle activation percentages* that no pose model
-can possibly measure. They predict *injury risk* without an MRI, an EMG,
-or a clinician. Users see clean dashboards and start to believe the
-numbers — until the numbers contradict their bodies.
+The hero demo is Senior Strength Mode: chair sit-to-stand, supported squat, and
+balance hold support for older adults practicing at home or in community care.
+The mode uses large controls, short TTS cues, conservative pauses, and
+caregiver-readable summaries. It is dementia-friendly in interaction design,
+but it does not screen for dementia, infer cognitive decline, predict fall
+risk, diagnose, or prescribe rehabilitation.
 
-The honest move is not to silence these systems. Pose-based feedback
-genuinely helps people who cannot afford a coach. The honest move is to
-make the system *know what it cannot say*. **GemmaFit's central claim is
-trust:** the system gives feedback when evidence supports it, and
-*refuses* when evidence does not — out loud, with reason, and visibly to
-the user. Demoing both halves is harder than demoing one, but only the
-combination is responsibly deployable on a Pixel-class phone in a real
-gym.
+## Problem
 
-This positioning matches Gemma 4's edge profile (E4B at Q4_K_M ≈ 1.5 GB,
-< 100 ms tokenisation latency on Tensor G3) and the Safety & Trust
-track's core question: *how do we ship local AI that is helpful without
-pretending?* GemmaFit's answer is the **Correct judgment + correct
-refusal** dual demo.
+Single-camera fitness systems often overclaim. They may infer knee valgus from
+a side view, imply muscle activation without EMG, or turn a phone video into a
+clinical-looking risk score. Those mistakes are especially harmful in senior
+care, where a false warning can stop useful activity and a false reassurance can
+hide uncertainty.
 
-GemmaFit ships in two modes. **General Fitness Mode** is the broader
-multi-exercise foundation (squat, push-up, lunge, deadlift). **Senior
-Strength Mode** is the hero demo — safe, offline home movement coaching
-for older adults at risk of strength decline, with templates for
-sit-to-stand, supported squat, and balance hold. The two modes share the
-pose pipeline and Evidence Card schema, and diverge in default UI scale,
-voice speed, and the mandatory unsupported-judgment payload (sarcopenia,
-fall-risk, rehab prescription, muscle mass) attached to every Senior
-Mode verdict.
+GemmaFit treats refusal as a product feature. If the user is partially out of
+frame, if the selected subject is ambiguous, if a metric cannot be judged from
+the view, or if the user asks for diagnosis or fall-risk prediction, the app
+shows that boundary directly instead of pretending.
 
-*(≈300 words)*
-
----
-
-## 2. System architecture
+## Architecture
 
 ```text
-Video / Camera
-   ↓ MediaPipe Pose Landmarker (33 keypoints + visibility)
-   ↓ float[99] → JNI KinematicsBridge
-   ↓
-C++ Biomechanics Pipeline (every frame, <1 ms)
-   ├─ Confidence Gate ─── low visibility → LOW_CONFIDENCE
-   ├─ Joint Angles (12) + Body Segments (11)
-   ├─ Symmetry Evaluator
-   ├─ COM Tracker (de Leva 1996, support-polygon)
-   ├─ Safety Monitor (8 rules)
-   ├─ Movement Classifier (pattern, not exercise name)
-   ├─ Muscle Focus Estimator (pose-based, not EMG)
-   └─ Motion Quality Report (template-aware, view-aware)
-         ↓
-   Structured JSON  ->  Evidence DAG + Capability Contract
-         ↓
-   FrameHint (deterministic, every frame)
-   SessionSummary (post-workout, one async local Gemma call)
-         ↓
-   Kotlin: CoachVoice (TTS + cooldown)  +  Compose UI (PoseOverlay)
+CameraX / Video
+-> MediaPipe Pose
+-> presence, subject identity, confidence, and judgeability gates
+-> derived motion features
+-> Senior Layer 2 FSM + ActivityContextTracker
+-> MotionFeatureWindow + MotionZip packet
+-> SeniorInteractionPolicy
+-> ModelInvocationScheduler
+-> official Gemma-4-E2B-it LiteRT streaming session
+-> Android parser, validator, deterministic fill, fallback
+-> UI, TTS, care log, caregiver export, debug receipt
 ```
 
-The decision flow is staged so that *every* judgment has a documented
-provenance. The Trust Matrix attaches one of seven statuses
-(`OK / VIEW_LIMITED / LOW_CONFIDENCE / NOT_APPLICABLE / MONITOR /
-WARNING / CRITICAL`) to every active rule. The Evidence Card records the
-numerical evidence behind a verdict and *equally prominently*, the
-unsupported judgments the system explicitly will not give — joint force,
-clinical injury risk, EMG-style activation percentages, medical
-diagnosis. Before Gemma runs, the app declares a **Capability Contract**:
-which metrics are currently judgeable, which are blocked, why they are
-blocked, and which Evidence DAG node ids support each allowed metric.
+The live loop is deterministic. MediaPipe and Kotlin/C++ tools compute pose
+confidence, joint-angle proxies, range of motion, tempo, velocity, stabilization
+and subject state. Senior Layer 2 converts those features into
+`activity_hypothesis`, `phase`, `event`, `judgeability`, and `evidence_refs`.
+It can emit `judgeable`, `monitor_only`, or `abstain`, but it does not produce
+medical, fall-risk, sarcopenia, rehabilitation, force, GRF, EMG, or diagnosis
+claims.
 
-Four exercise templates ship in the MVP:
+`ActivityContextTracker` is separate from Layer 2. It helps avoid confidently
+choosing the wrong activity when motions look similar, such as chair
+sit-to-stand versus supported squat. It locks only after repeated consistent
+evidence and emits `AMBIGUOUS` when the score is too close.
 
-| Exercise | Active metrics | Refused metrics |
-| --- | --- | --- |
-| **Squat** | depth, knee/hip angle, trunk lean, tempo, COM monitor | knee valgus on side view; precise joint force |
-| **Push-up** | elbow angle, body line, hip sag, depth, tempo | knee valgus, COM/BoS (not load-bearing on floor) |
-| **Lunge** | front knee angle, step length, trunk uprightness | single-frame bilateral asymmetry (intentionally unilateral) |
-| **Deadlift** | hip hinge, trunk angle, bar/body path proxy, tempo | lumbar disc pressure, force-plate-equivalent load |
+MotionZip is the evidence compression layer. It preserves event boundaries,
+angle extrema, velocity peaks, confidence floors, low-confidence spans,
+subject-tracking state, unsupported-claim boundaries, and evidence refs. It
+does not store raw video, full landmark streams, ReID embeddings, or clinical
+labels. The claim is not lossless video compression; it is task-preserving
+compression for the movement facts GemmaFit is allowed to use.
 
-Pose extraction runs on MediaPipe Pose Landmarker (Lite). Joint angles
-and 600 °/s rapid-movement detection (Rule 6) use Savitzky-Golay smoothing
-to avoid one-frame outliers. The same Structured Motion Report is
-consumed by both the Streamlit prototype dashboard and the Android app's
-Compose UI — the two surfaces never disagree.
+`ModelInvocationScheduler` decides whether to call E2B, skip, defer, or render a
+deterministic fallback. Normal live frames, blocked tracking states, user-left
+states, no-response states, and multi-person ambiguity do not call E2B. Model
+calls are reserved for approved event explanations, session summaries,
+caregiver export, and bounded refusal wording.
 
-### Mobile pipeline: deterministic live feedback, summary-only Gemma
+Gemma 4 E2B is used as a local evidence writer, not as the live safety engine.
+It receives compact MotionZip evidence and a strict output contract. Android
+then performs JSON cleanup, schema validation, evidence-ref whitelist checks,
+forbidden-claim rejection, deterministic fill, and deterministic fallback. A
+100-run constrained smoke test did not observe native LiteRT tool-call objects,
+so product safety does not depend on native tool-call enforcement.
 
-GemmaFit does **not** run Gemma every video frame. A background worker
-samples 8-10 fps by timestamp and runs MediaPipe Pose Landmarker (VIDEO
-mode for stored clips, LIVE_STREAM for camera). Feedback is layered:
-`FrameHint` is deterministic from rules + native metrics and updates
-every analyzed frame so the UI never waits on the LLM. Gemma runs once
-after analysis completes, using a compressed `SessionSummary`, the
-Capability Contract, and Evidence DAG refs, not raw per-frame reports.
-The local model receives a fixed-schema prompt and returns one function
-call; it is not allowed to estimate force, diagnose injury, cite missing
-evidence, or override an applicability gate.
+## Why Gemma 4
 
-*(≈320 words)*
+Gemma 4 E2B is the P0 baseline because it runs locally through Google AI Edge /
+LiteRT and is strong enough to turn compact evidence into useful summaries and
+refusals. GemmaFit v5 fine-tuning remains an optional quality layer for future
+schema fidelity and wording, not a deadline dependency. `llama.cpp` vision
+sidecar experiments are kept as P3 benchmark work because Pixel memory pressure
+was too high for the main flow. The submitted product path is therefore simpler
+and safer: deterministic live coaching plus official E2B summaries.
 
----
+## Results
 
-## 3. Innovation — Correct refusal as a hero feature
+Current Pixel evidence supports the architecture, not clinical efficacy.
 
-The most differentiated design choice is *making refusal visible*. Most
-fitness apps hide their limits in a tiny disclaimer at the bottom of a
-splash screen. GemmaFit elevates the refusal:
+| Gate | Result |
+| --- | ---: |
+| Official E2B artifact size | 2,538,766,336 bytes |
+| Official E2B 100-run JSON gate | 100/100 endpoint, generation, and JSON parse success |
+| Official E2B generation latency | avg 24.9s, p50 24.8s, p95 26.5s |
+| Warm streaming first token | 0.96s to 3.14s after generation start |
+| MotionZip dense-vs-compressed key checks | 8/8 pass |
+| MotionZip peak velocity difference | 1.89% |
+| MotionZip event-frame tolerance | within 6 frames |
+| Live camera image path audit | accepted-frame p95 about 10.2ms |
 
-- The Workout screen has a dedicated **"Cannot judge from this view"**
-  card that lists every rule the system declined to apply, with a
-  one-line reason for each.
-- Every Evidence Card contains an explicit `unsupported_judgments` array
-  shown to the user — not just `joint_force` and `clinical_injury_risk`,
-  but also the *reason* (single-camera proxy, not measured force).
-- The Gemma 4 system prompt enforces a refusal vocabulary at generation
-  time: phrases like *"I cannot judge X from this view"* and *"this
-  rule does not apply to <exercise>"* are reinforced through fine-tuning.
-- The benchmark suite ([docs/benchmark/refusal/](benchmark/refusal/))
-  scores 29 hand-curated refusal scenarios across 8 categories
-  (wrong-view, wrong-template, low-confidence, dynamic-COM,
-  unknown-exercise, out-of-scope query, cross-template
-  misapplication, multi-subject). Each scenario tests three
-  axes: did the model **refuse**, did it **mention** the right boundary,
-  did it **avoid** forbidden tokens like `Newtons`, `EMG`, `bpm`,
-  `your fppa reading`?
+The MotionZip equivalence run compared dense frame-derived evidence against a
+compressed MotionZip prompt. The model preserved the tested activity, state set,
+event count, event timing, velocity band, peak velocity, confidence floor, and
+low-confidence reason. That is the central technical claim: GemmaFit can avoid
+feeding every frame to the model while preserving the key facts needed for a
+bounded summary.
 
-Concretely, this turns the project's safety story from a checkbox into a
-measurable competitive metric. *Correctly refusing a side-view FPPA query*
-is a feature with a number attached, not just rhetoric.
+## Safety And Trust
 
-The fine-tune dataset (v2 recipe) mixes three streams at **60:30:10**:
-510 domain FC examples expanded to 2 040 chat-format rows by
-`finetune/data/format_expand.py` — each trained under four prompt
-wrappings (production, bare, terse, chinese) so the Android
-system-prompt format is in distribution; Glaive FC v2 (schema
-robustness); Anthropic HH-RLHF (refusal alignment) — both streamed,
-never touched disk. The v1 ratio of 30:60:10 starved the domain head
-(see §4); the v2 flip is the central training fix. Unsloth QLoRA on
-Colab A100 (~1.5 h), ~50 MB LoRA adapter, exports Q5_K_M and Q4_K_M
-GGUFs.
+GemmaFit's trust layer is visible to the user. The UI shows source badges such
+as `Pose rules`, `Local Gemma`, `Template fallback`, and `Abstained`. Evidence
+cards show what was observed, what was judged, and what was not judged. Debug
+reports include backend, model file, scheduler decision, fallback reason,
+evidence refs, stream phase, first-token time, thermal status, and per-stage
+timings.
 
-The third Safety & Trust pillar is **Evidence-Bounded Long-Term Memory**.
-GemmaFit uses event-triggered local memory: critical events are saved
-immediately, caregiver exports are human-readable but non-clinical, and
-calibration baseline updates are proposed only from repeated
-high-confidence clean reps. Gemma is a *summarizer*, not a state
-machine — every memory write is proposed via a `request_memory_update`
-function call and validated by a Kotlin policy engine that checks
-schema, provenance (≥ 1 evidence id for any trend note), refusal regex
-(blocks sarcopenia, fall-risk, muscle-mass keywords), confidence floor,
-and idempotency. Read access is a closed enum (`PROFILE`, `CALIBRATION`,
-`TRENDS_7D`, `TRENDS_30D`, `EVIDENCE_FOR_SESSION`); raw evidence rows
-never enter coaching prompts. Raw video is never persisted.
+Memory is structured and app-owned. Allowed records include session summaries,
+calibration baselines, bounded preferences, care logs, dual-task attempts, and
+evidence-ledger refs. Blocked records include raw video by default, raw full
+landmark streams, free-form model memory, biometric identity, medical labels,
+fall-risk scores, sarcopenia scores, force, GRF, and EMG claims.
 
-*(≈410 words)*
+## Limitations
 
----
+GemmaFit is not a medical device and does not validate clinical outcomes. It
+does not estimate joint force, GRF, EMG, true muscle activation, injury risk,
+fall risk, dementia status, sarcopenia, rehabilitation progress, or clinical
+improvement. It also does not claim that MotionZip preserves every visual fact
+from a video. When evidence is insufficient, the correct behavior is to
+abstain, pause, ask for setup, or provide a non-clinical activity summary.
 
-## 4. Results
+## Closing
 
-**Function-call schema compliance — v1 (shipped) and v2 (in flight).**
-90 validation examples from `eval_compare.py`, run via llama-cpp-python
-against local GGUF files (both Q4_K_M, GPU-offloaded to compare on the
-same hardware).
-
-| Metric | Base E4B Q4_K_M | v1 Fine-tuned Q4_K_M | Δ |
-| --- | --- | --- | --- |
-| JSON parse rate | 95.6% | 93.3% | −2.3% |
-| Function-name match | 0.0% | 2.2% | +2.2% |
-| Args overlap (Jaccard) | 0.026 | 0.081 | +0.055 |
-| Avg latency / example | 16.78 s (CPU) | 10.77 s (GPU 24/42 layers) | n/a |
-
-The v1 numbers are honest: the fine-tune barely shifted function-name
-selection. A matched-format eval (training-prompt distribution, both
-models GPU) confirmed the diagnosis — under the v1 training prompt the
-FT model echoes the input back as a "Motion report:" string, never
-emits the `{"function": "...", "args": ...}` schema. Root cause is the
-v1 recipe (30% domain mix, single bare prompt format), not quantisation
-or training-loss convergence. The **v2 retraining queued on Colab**
-applies the prompt-format expansion and 60:30:10 mixture flip described
-in §3; the post-retrain A/B re-runs `eval_compare.py --prompt-format
-production` against `models/gemmafit-v2-q4_k_m.gguf`. Full per-example
-breakdown and the diagnosis report in
-[`docs/benchmark/`](benchmark/README.md).
-
-**Refusal benchmark** — 29 hand-curated scenarios across 8 categories
-(wrong view, wrong template, low-confidence, dynamic COM, unknown
-exercise, out-of-scope, cross-template misapplication, multi-subject).
-Benchmark infrastructure (`refusal_eval.py`) and scenario definitions are
-complete; model evaluation pending the next fine-tuning checkpoint.
-
-| Axis | Base | Fine-tuned | Δ |
-| --- | --- | --- | --- |
-| Pass rate (all-three) | [FILL: %] | [FILL: %] | [FILL: ±%] |
-| Refusal axis | [FILL: %] | [FILL: %] | [FILL: ±%] |
-| Mention axis | [FILL: %] | [FILL: %] | [FILL: ±%] |
-| Safety axis (no forbidden tokens) | [FILL: %] | [FILL: %] | [FILL: ±%] |
-
-Source: `prototype/refusal_eval.py`. Detailed per-scenario reports will
-go to `docs/benchmark/refusal/report.html`.
-
-**Movement-quality validation** (Phase 1 benchmarks).
-
-- **169/169 PASS** across all Python prototype unit tests (joint angles
-  36/36, 8 safety rules 67/67, COM tracker 16/16, movement classifier
-  35/35, muscle focus 15/15).
-- **50/50 PASS** across C++ native unit tests (COM tracker 16/16,
-  safety monitor 8/8, kinematics pipeline 12/12, motion quality 14/14).
-- Zenodo squat-image benchmark (3,806 images): bad-back trunk-lean
-  P = 1.000, R = 0.072 (conservative threshold at 15° deviation
-  achieves zero false positives). Bad-heel proxy F1 = 0.787.
-
-**Local inference** (llama.cpp on Tensor G3).
-
-- Gemma 4 E4B Q4_K_M GGUF: ~1.5 GB runtime memory on Pixel 8 Pro.
-- Fine-tuned Q5_K_M inference: **10.77 s** average on 90-example eval.
-- In-app design: per-frame biomechanics runs on C++ native layer
-  (< 1 ms/frame). Live cues are deterministic; real Gemma runs summary-only
-  after full analysis using the SessionSummary, Capability Contract, and
-  Evidence DAG refs. FrameHint updates every frame without waiting for the LLM.
-
-*(≈280 words)*
-
----
-
-## 5. Implementation evidence
-
-The repo ships:
-
-- **[`prototype/`](../prototype/)** — Streamlit dashboard, template
-  engine + applicability gates ([`exercises/core.py`](../prototype/exercises/core.py)),
-  annotated demo MP4 renderer.
-- **[`app/`](../app/)** — 35 Kotlin files: CameraX + MediaPipe
-  LIVE_STREAM, `VideoAnalysisViewModel`, `KinematicsBridge` JNI,
-  `TemporalMotionAnalyzer` (online rep counter, Savitzky-Golay),
-  `CoachVoice` (TTS with cooldown + priority queue), `PoseOverlay`
-  (Compose Canvas), Workout + Summary screens.
-- **[`native/`](../native/)** — C++17 biomechanics engine: 11
-  modules including a multi-person `subject_selector` (auto-pick on
-  area + center + visibility, persistence on center + 8-keypoint
-  skeleton geometry), JNI bridge, 5 test executables (50/50 + 19/19
-  PASS).
-- **[`app/.../memory/`](../app/src/main/kotlin/com/gemmafit/memory/)** —
-  Evidence-Bounded Memory: `Schemas`, `MemoryStore` (Room + DataStore
-  Proto + JSONL audit), `MemoryWritePolicy` (6-step validation),
-  `RefusalValidator`, `AdaptiveRecalibration`, `MemoryAwarePromptBuilder`
-  with pre-warm cache. 19 JVM unit tests pass.
-- **[`finetune/train_gemma4_pipeline.ipynb`](../finetune/train_gemma4_pipeline.ipynb)** —
-  Colab A100 QLoRA pipeline; streams datasets, checkpoints to Drive
-  every 200 steps, exports adapter + Q5/Q4 GGUFs. Total persistent
-  storage < 4 GB; runs on free Kaggle 2×T4 or Colab Pro A100 in one
-  session.
-
-*(≈210 words)*
-
----
-
-## 6. Limitations and boundaries
-
-GemmaFit is a movement-quality feedback system, not a clinical tool.
-The system explicitly does **not**:
-
-- estimate joint force, lumbar disc pressure, or torque (single-camera
-  pose has no force ground truth).
-- estimate muscle activation percentage (no EMG sensor).
-- predict injury risk (not a diagnostic device, not validated for
-  clinical outcomes).
-- give medical diagnoses of any kind.
-- detect or screen for sarcopenia, predict fall risk, prescribe
-  rehabilitation, or estimate muscle mass — Senior Mode evidence cards
-  always carry these as `unsupported_judgments`, even when the metric
-  itself is healthy.
-- judge knee valgus / FPPA from side or back views (geometry undefined).
-- emit `CRITICAL` from a single video frame (requires temporal
-  persistence).
-- judge multiple subjects in one frame without explicit subject lock
-  (the C++ subject_selector's `NEEDS_SELECTION` state requires user
-  confirmation).
-- store raw video by default. Memory holds structured metric records
-  only; caregiver export is opt-in and ships with a mandatory
-  non-clinical disclaimer block.
-
-Threshold values in [`finetune/data_collection/knowledge_base/
-thresholds_curated.json`](../finetune/data_collection/knowledge_base/thresholds_curated.json)
-each carry an explicit citation
-(NSCA, Hewett 2005, Powers 2010, Schoenfeld 2010, etc.). Thresholds
-labelled `prototype_threshold` are conservative defaults; thresholds
-labelled `validated` are calibrated against open datasets and noted
-as such in code comments.
-
-*(≈170 words)*
-
----
-
-## 7. Closing
-
-GemmaFit ships local AI feedback that knows its limits. It runs offline
-on Pixel 8 Pro, refuses unsupported judgments out loud, and produces an
-evidence card for every verdict. The Correct judgment + correct refusal
-demo is the project's core impact claim — and the only honest way to put
-fitness AI in front of a user without a clinician in the loop.
-
-*(≈60 words)*
-
----
-
-## Appendix — Word count check
-
-| Section | Approx words |
-| --- | --- |
-| 1. Problem + dual-mode framing | 300 |
-| 2. Architecture (mobile pipeline collapsed) | 220 |
-| 3. Innovation (refusal + v2 recipe + memory) | 380 |
-| 4. Results (v1 + v2 plan) | 310 |
-| 5. Implementation (bullets compressed) | 200 |
-| 6. Limitations | 220 |
-| 7. Closing | 60 |
-| **Total** | **≈1690** |
-
-Still ~190 words over the 1500 target. Remaining trim candidates:
-§3's three-stream paragraph could drop "Glaive (schema robustness);
-Anthropic HH-RLHF (refusal alignment)" parentheticals (-25); §4's
-diagnosis paragraph could collapse the format-mismatch sentence (-50);
-§6's bullets list could merge sarcopenia + multi-subject + raw-video
-into one sentence each (-40). Reaching 1500 cleanly likely requires
-cutting one full paragraph from §3 (e.g. dropping the FC schema
-robustness justification). Senior Mode framing (§1), v2 recipe
-diagnosis (§3, §4), and Memory policy engine (§3) are the new
-load-bearing additions and should not be trimmed.
+GemmaFit's contribution is a practical Safety & Trust pattern for local AI:
+deterministic evidence first, compact auditable model context, local Gemma only
+when useful, and visible refusal when the camera cannot support a claim. The
+result is an offline motion coach that helps older adults and beginners
+practice movement while keeping every output inside the evidence boundary.

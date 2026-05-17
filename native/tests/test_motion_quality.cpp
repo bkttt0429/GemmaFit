@@ -3,10 +3,12 @@
 #include "../kinematics/motion_quality.h"
 #include "../kinematics/movement_classifier.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include <set>
 #include <string>
+#include <vector>
 
 using gemmafit::kinematics::ComResult;
 using gemmafit::kinematics::LandmarkArray;
@@ -95,6 +97,30 @@ LandmarkArray lunge_landmarks() {
     return lm;
 }
 
+LandmarkArray narrow_lunge_landmarks() {
+    LandmarkArray lm = base_landmarks();
+    lm[25] = {0.34, 0.68, 0.9};
+    lm[26] = {0.61, 0.86, 0.9};
+    lm[27] = {0.46, 0.94, 0.9};
+    lm[28] = {0.58, 0.94, 0.9};
+    return lm;
+}
+
+LandmarkArray deadlift_landmarks() {
+    LandmarkArray lm = base_landmarks();
+    lm[11] = {0.37, 0.40, 0.9};
+    lm[12] = {0.39, 0.40, 0.9};
+    lm[23] = {0.54, 0.58, 0.9};
+    lm[24] = {0.56, 0.58, 0.9};
+    lm[25] = {0.59, 0.76, 0.9};
+    lm[26] = {0.61, 0.76, 0.9};
+    lm[27] = {0.57, 0.94, 0.9};
+    lm[28] = {0.59, 0.94, 0.9};
+    lm[31] = {0.57, 0.98, 0.9};
+    lm[32] = {0.59, 0.98, 0.9};
+    return lm;
+}
+
 MotionQualityReport analyze(const LandmarkArray& lm, double visibility_threshold = 0.5) {
     auto angles = gemmafit::kinematics::compute_all_joint_angles(lm);
     auto pattern = gemmafit::kinematics::classify_movement(lm, angles);
@@ -153,6 +179,47 @@ bool every_edge_endpoint_exists(const MotionQualityReport& report) {
     return true;
 }
 
+bool every_node_has_required_contract_fields(const MotionQualityReport& report) {
+    for (const auto& node : report.evidence_dag.nodes) {
+        if (node.id.empty() ||
+            node.type.empty() ||
+            node.metric.empty() ||
+            node.source_module.empty() ||
+            node.source_function.empty() ||
+            node.frame_range.empty() ||
+            node.evidence_level.empty() ||
+            node.reason.empty()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool evidence_node_ids_are_unique(const MotionQualityReport& report) {
+    std::set<std::string> ids;
+    for (const auto& node : report.evidence_dag.nodes) {
+        if (!ids.insert(node.id).second) return false;
+    }
+    return true;
+}
+
+bool every_edge_relation_is_allowed(const MotionQualityReport& report) {
+    const std::set<std::string> allowed = {
+        "derived_from", "gated_by", "thresholded_by", "supports", "blocks",
+    };
+    for (const auto& edge : report.evidence_dag.edges) {
+        if (allowed.count(edge.relation) == 0) return false;
+    }
+    return true;
+}
+
+bool json_contains_evidence_contract_fields(const MotionQualityReport& report) {
+    const std::string json = gemmafit::kinematics::to_json(report);
+    return json.find("\"evidence_level\"") != std::string::npos &&
+           json.find("\"reason\"") != std::string::npos &&
+           json.find("\"evidence_id\"") != std::string::npos;
+}
+
 void test_squat_frontal_metrics() {
     std::cout << "\n-- Motion Quality: frontal squat --\n";
     auto report = analyze(base_landmarks());
@@ -164,6 +231,14 @@ void test_squat_frontal_metrics() {
           has_can_judge(report, "frontal_knee_valgus"));
     check("evidence DAG edges are valid",
           every_edge_endpoint_exists(report));
+    check("evidence DAG node ids are unique",
+          evidence_node_ids_are_unique(report));
+    check("evidence DAG edge relations are allowed",
+          every_edge_relation_is_allowed(report));
+    check("evidence nodes include contract fields",
+          every_node_has_required_contract_fields(report));
+    check("evidence JSON includes contract fields",
+          json_contains_evidence_contract_fields(report));
 }
 
 void test_side_squat_refuses_fppa() {
@@ -201,6 +276,25 @@ void test_lunge_asymmetry_downgrade() {
           has_cannot_judge(report, "bilateral_asymmetry"));
 }
 
+void test_narrow_lunge_template_detection() {
+    std::cout << "\n-- Motion Quality: narrow lunge --\n";
+    auto report = analyze(narrow_lunge_landmarks());
+    check("narrow lunge detected", report.exercise == "lunge");
+    check("narrow lunge basis includes asymmetric knee bend",
+          std::find(report.exercise_basis.begin(), report.exercise_basis.end(),
+                    "asymmetric_knee_bend") != report.exercise_basis.end());
+}
+
+void test_deadlift_template_detection() {
+    std::cout << "\n-- Motion Quality: deadlift --\n";
+    auto report = analyze(deadlift_landmarks());
+    check("deadlift detected", report.exercise == "deadlift");
+    check("deadlift can judge hip hinge",
+          has_can_judge(report, "hip_hinge"));
+    check("frontal knee valgus not applicable for deadlift",
+          has_cannot_judge(report, "frontal_knee_valgus"));
+}
+
 void test_low_confidence_gate() {
     std::cout << "\n-- Motion Quality: low confidence --\n";
     auto report = analyze(base_landmarks(), 0.95);
@@ -222,6 +316,8 @@ int main() {
     test_side_squat_refuses_fppa();
     test_push_up_template_gates();
     test_lunge_asymmetry_downgrade();
+    test_narrow_lunge_template_detection();
+    test_deadlift_template_detection();
     test_low_confidence_gate();
 
     std::cout << "\nResult: " << passes << " PASS, " << fails << " FAIL\n";

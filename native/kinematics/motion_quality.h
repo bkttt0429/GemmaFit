@@ -40,6 +40,8 @@ struct EvidenceNode {
     std::string source_function;
     std::string frame_range = "current_frame";
     std::vector<std::string> landmark_refs;
+    std::string evidence_level;
+    std::string reason;
 };
 
 struct EvidenceEdge {

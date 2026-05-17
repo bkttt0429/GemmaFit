@@ -1,42 +1,38 @@
 {
-  "version": "v5_1_e2b_evidence_router_hard_cases",
-  "run_name": "google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
-  "run_suffix": "gemmafit_v5_1_e2b_evidence_router_hard_cases",
-  "finished_at": "2026-05-08T06:19:43Z",
-  "status": "training_complete",
-  "last_completed_phase": "11_eval_done",
-  "dataset_variant": "v5_1_hard",
-  "hard_cases": true,
-  "dataset_path": "finetune/data/gemmafit_v5_1_e2b_evidence_router.json",
-  "dataset_sha256": "14275d70f1d15927cb1b1f7ae1bf19677fd155b5e9c5601fd5909c0d8d8f4ddc",
-  "train_rows": 50000,
-  "validation_rows": {
-    "care_log": 400,
-    "persona_report": 400,
-    "dual_task": 400,
-    "realtime_event": 400,
-    "activity_uncertain": 400,
-    "unsupported": 400,
-    "adversarial": 400,
-    "zh_tw": 400,
-    "schema_fuzz": 400,
-    "tracking_uncertainty": 400,
-    "parent_task_uncertain": 400,
-    "sub_action_fallback": 400,
-    "conflicting_evidence": 400,
-    "memory_policy": 400,
-    "unsupported_zh_tw": 400
+  "conversion_status": "converted_unverified",
+  "conversion_summary": {
+    "bytes": 5071689680,
+    "cache_length": 2048,
+    "note": "next Pixel smoke target after jinja-template failure; lets app send raw prompt without bundled template",
+    "prefill_lengths": [
+      1024
+    ],
+    "quantization_recipe": "dynamic_wi8_afp32",
+    "sha256": "9af1eeb9fe246cd29cc630b711643e146fbad8d347f501bdd96518d65bd67ee4",
+    "use_jinja_template": false
   },
-  "model": "google/gemma-4-E2B-it",
-  "checkpoint_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
-  "best_checkpoint": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases/checkpoint-6250",
-  "adapter_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/adapter/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
-  "merged_hf_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases",
-  "litertlm_path": "models/gemmafit-v5-e2b-evidence-router.litertlm",
-  "conversion_status": "not_started",
-  "tool_call_eval": "/content/GemmaFit/finetune/metrics/tool_call_eval_v5_e2b.json",
-  "refusal_eval": "/content/GemmaFit/finetune/metrics/refusal_eval_v5_e2b.json",
-  "adversarial_eval": "/content/GemmaFit/finetune/metrics/adversarial_eval_v5_e2b.json",
-  "resume_log": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/RUN_EVENTS_google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases.jsonl",
-  "disconnect_points": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/DISCONNECT_POINTS_google_gemma_4_E2B_it_gemmafit_v5_1_e2b_evidence_router_hard_cases.jsonl"
+  "created_at_utc": "2026-05-13T07:45:44.740807+00:00",
+  "eval_summary": {
+    "empty_or_unparseable_outputs": 18,
+    "forbidden_claim_rate": 0.0,
+    "gate_failures": [],
+    "hard_case_pass_rate": 0.997,
+    "json_parse_rate": 0.982,
+    "selected_rows": 1000
+  },
+  "litert_variant": "wi8_ctx2048_prefill1024_no_jinja",
+  "litertlm_path": "models\\gemmafit-v5-e2b-evidence-router.litertlm",
+  "model": "google_gemma_4_E2B_it_gemmafit_v5_2_e2b_completion_only_repair3_contract_smoke",
+  "profile": "v5-e2b",
+  "source_litertlm": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix/gemmafit-v5-e2b-evidence-router-wi8_ctx2048_prefill1024_no_jinja.litertlm",
+  "version": "v5_e2b_evidence_router",
+  "run_suffix": "gemmafit_v5_e2b_evidence_router",
+  "conversion_log": {
+    "profile": "v5-e2b",
+    "source_litertlm": "models\\gemmafit-v5-e2b-evidence-router.litertlm",
+    "dest": "models\\gemmafit-v5-e2b-evidence-router.litertlm",
+    "smoke_preset": "finetune\\litert_gemmafit_tools_v5.py",
+    "smoke_status": "not_run"
+  },
+  "tool_call_eval": "finetune\\metrics\\tool_call_eval_v5_e2b.json"
 }

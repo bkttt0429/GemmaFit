@@ -119,6 +119,13 @@ double joint_angle_2d(const LandmarkArray& landmarks,
     return angle2d(pt(landmarks, a), pt(landmarks, b), pt(landmarks, c));
 }
 
+double valid_angle_or(double candidate, double fallback) {
+    if (std::isfinite(candidate) && candidate > 1.0 && candidate <= 180.0) {
+        return candidate;
+    }
+    return fallback;
+}
+
 double min_pair_angle_2d(const LandmarkArray& landmarks,
                          std::size_t left_a, std::size_t left_b, std::size_t left_c,
                          std::size_t right_a, std::size_t right_b, std::size_t right_c,
@@ -202,6 +209,103 @@ bool all_key_visible(const LandmarkArray& landmarks,
         if (!visible(landmarks, idx, threshold)) return false;
     }
     return true;
+}
+
+int visible_count(const LandmarkArray& landmarks,
+                  const std::vector<std::size_t>& indices,
+                  double threshold) {
+    int count = 0;
+    for (std::size_t idx : indices) {
+        if (visible(landmarks, idx, threshold)) count += 1;
+    }
+    return count;
+}
+
+int visible_count_relaxed(const LandmarkArray& landmarks,
+                          const std::vector<std::size_t>& indices,
+                          double threshold) {
+    return visible_count(landmarks, indices, std::max(0.25, threshold * 0.55));
+}
+
+int side_chain_visible_count(const LandmarkArray& landmarks,
+                             std::size_t hip,
+                             std::size_t knee,
+                             std::size_t ankle,
+                             double threshold) {
+    return visible_count_relaxed(landmarks, {hip, knee, ankle}, threshold);
+}
+
+struct KeyVisibilityAssessment {
+    bool usable = true;
+    bool partial = false;
+    double avg_visibility = 0.0;
+    std::string reason;
+};
+
+KeyVisibilityAssessment assess_key_visibility(const LandmarkArray& landmarks,
+                                              const std::string& exercise,
+                                              const std::string& view,
+                                              double threshold) {
+    KeyVisibilityAssessment assessment;
+    assessment.avg_visibility = avg_key_visibility(landmarks, exercise);
+
+    const int torso_count = visible_count_relaxed(
+        landmarks,
+        {kLeftShoulder, kRightShoulder, kLeftHip, kRightHip},
+        threshold);
+    if (torso_count < 2) {
+        assessment.usable = false;
+        assessment.reason = "torso_keypoint_visibility_below_threshold";
+        return assessment;
+    }
+
+    if (exercise == "push_up") {
+        const int upper_count = visible_count_relaxed(
+            landmarks,
+            {kLeftShoulder, kRightShoulder, kLeftElbow, kRightElbow, kLeftWrist, kRightWrist},
+            threshold);
+        if (upper_count < 4) {
+            assessment.usable = false;
+            assessment.reason = "upper_body_keypoint_visibility_below_threshold";
+            return assessment;
+        }
+        assessment.partial = upper_count < 6 || torso_count < 3;
+        assessment.reason = assessment.partial ? "exercise_keypoint_visibility_partial" : "";
+        return assessment;
+    }
+
+    if (exercise == "squat" || exercise == "lunge" || exercise == "deadlift") {
+        const int left_chain = side_chain_visible_count(
+            landmarks, kLeftHip, kLeftKnee, kLeftAnkle, threshold);
+        const int right_chain = side_chain_visible_count(
+            landmarks, kRightHip, kRightKnee, kRightAnkle, threshold);
+        const int lower_count = visible_count_relaxed(
+            landmarks,
+            {kLeftHip, kRightHip, kLeftKnee, kRightKnee, kLeftAnkle, kRightAnkle},
+            threshold);
+        const bool has_near_side_chain = std::max(left_chain, right_chain) >= 2;
+        if (!has_near_side_chain || lower_count < 3) {
+            assessment.usable = false;
+            assessment.reason = "lower_body_keypoint_visibility_below_threshold";
+            return assessment;
+        }
+
+        const bool full_visibility = all_key_visible(landmarks, exercise, threshold);
+        const bool side_like_view = view == "side" || view == "oblique";
+        assessment.partial = !full_visibility;
+        if (assessment.partial) {
+            assessment.reason = side_like_view
+                ? "exercise_keypoint_visibility_partial_side_view"
+                : "exercise_keypoint_visibility_partial";
+        }
+        return assessment;
+    }
+
+    if (!all_key_visible(landmarks, exercise, threshold)) {
+        assessment.usable = false;
+        assessment.reason = "exercise_keypoint_visibility_below_threshold";
+    }
+    return assessment;
 }
 
 std::vector<NamedMetric> compute_squat_metrics(
@@ -535,14 +639,44 @@ std::string overall_status(const MotionQualityReport& report) {
     return "OK";
 }
 
-void append_flags_json(std::ostringstream& ss, const std::vector<QualityFlag>& flags) {
+std::string json_id_key(const std::string& value) {
+    std::string out;
+    out.reserve(value.size());
+    for (char c : value) {
+        const bool ok = (c >= 'a' && c <= 'z') ||
+                        (c >= 'A' && c <= 'Z') ||
+                        (c >= '0' && c <= '9');
+        out.push_back(ok ? static_cast<char>(std::tolower(static_cast<unsigned char>(c))) : '_');
+    }
+    while (out.find("__") != std::string::npos) {
+        out.replace(out.find("__"), 2, "_");
+    }
+    if (!out.empty() && out.back() == '_') out.pop_back();
+    if (!out.empty() && out.front() == '_') out.erase(out.begin());
+    return out.empty() ? "unknown" : out;
+}
+
+std::string flag_evidence_id(const std::string& evidence_prefix,
+                             const QualityFlag& flag,
+                             std::size_t index) {
+    const std::string prefix = evidence_prefix.empty()
+        ? "flag." + json_id_key(flag.status)
+        : evidence_prefix;
+    return prefix + "." + json_id_key(flag.id) + "." + std::to_string(index);
+}
+
+void append_flags_json(std::ostringstream& ss,
+                       const std::vector<QualityFlag>& flags,
+                       const std::string& evidence_prefix = "") {
     ss << "[";
     bool first = true;
-    for (const auto& flag : flags) {
+    for (std::size_t i = 0; i < flags.size(); ++i) {
+        const auto& flag = flags[i];
         if (!first) ss << ",";
         first = false;
         ss << "{"
            << "\"id\":\"" << json_escape(flag.id) << "\","
+           << "\"evidence_id\":\"" << json_escape(flag_evidence_id(evidence_prefix, flag, i)) << "\","
            << "\"status\":\"" << json_escape(flag.status) << "\","
            << "\"value\":" << flag.value << ","
            << "\"threshold\":" << flag.threshold << ","
@@ -567,20 +701,7 @@ void append_string_array_json(std::ostringstream& ss, const std::vector<std::str
 }
 
 std::string evidence_key(const std::string& value) {
-    std::string out;
-    out.reserve(value.size());
-    for (char c : value) {
-        const bool ok = (c >= 'a' && c <= 'z') ||
-                        (c >= 'A' && c <= 'Z') ||
-                        (c >= '0' && c <= '9');
-        out.push_back(ok ? static_cast<char>(std::tolower(static_cast<unsigned char>(c))) : '_');
-    }
-    while (out.find("__") != std::string::npos) {
-        out.replace(out.find("__"), 2, "_");
-    }
-    if (!out.empty() && out.back() == '_') out.pop_back();
-    if (!out.empty() && out.front() == '_') out.erase(out.begin());
-    return out.empty() ? "unknown" : out;
+    return json_id_key(value);
 }
 
 std::string metric_node_id(const std::string& exercise, const std::string& metric) {
@@ -593,7 +714,40 @@ bool metric_exists(const MotionQualityReport& report, const std::string& metric)
         [&](const NamedMetric& item) { return item.name == metric; });
 }
 
+std::string default_evidence_level(const EvidenceNode& node) {
+    if (node.type == "landmark_visibility") return "pose_confidence_proxy";
+    if (node.type == "template_metric") return "prototype_metric";
+    if (node.type == "capability") return "capability_contract";
+    if (node.type == "not_applicable_gate") return "applicability_gate";
+    if (node.status == "LOW_CONFIDENCE" || node.status == "VIEW_LIMITED") {
+        return "confidence_gate";
+    }
+    if (node.type == "quality_gate" || node.type == "safety_rule") {
+        return "prototype_threshold";
+    }
+    return "prototype_evidence";
+}
+
+std::string default_evidence_reason(const EvidenceNode& node) {
+    if (node.type == "landmark_visibility") return "pose_keypoint_visibility_gate";
+    if (node.type == "template_metric") return "pose_based_template_metric";
+    if (node.type == "capability") {
+        return node.status == "OK"
+            ? "supported_by_current_session_evidence"
+            : "blocked_by_capability_contract";
+    }
+    if (!node.label.empty()) return node.label;
+    if (!node.metric.empty()) return node.metric;
+    return node.type.empty() ? "evidence_node" : node.type;
+}
+
 void add_node(EvidenceDag& dag, EvidenceNode node) {
+    if (node.evidence_level.empty()) {
+        node.evidence_level = default_evidence_level(node);
+    }
+    if (node.reason.empty()) {
+        node.reason = default_evidence_reason(node);
+    }
     const auto existing = std::find_if(
         dag.nodes.begin(), dag.nodes.end(),
         [&](const EvidenceNode& item) { return item.id == node.id; });
@@ -864,6 +1018,8 @@ void append_evidence_nodes_json(std::ostringstream& ss, const std::vector<Eviden
            << "\"source_module\":\"" << json_escape(node.source_module) << "\","
            << "\"source_function\":\"" << json_escape(node.source_function) << "\","
            << "\"frame_range\":\"" << json_escape(node.frame_range) << "\","
+           << "\"evidence_level\":\"" << json_escape(node.evidence_level) << "\","
+           << "\"reason\":\"" << json_escape(node.reason) << "\","
            << "\"landmark_refs\":";
         append_string_array_json(ss, node.landmark_refs);
         ss << "}";
@@ -928,7 +1084,7 @@ void append_evidence_dag_json(std::ostringstream& ss, const EvidenceDag& dag) {
 
 ExerciseTemplateDetection detect_exercise_template(
     const LandmarkArray& landmarks,
-    const JointAngleSet&,
+    const JointAngleSet& angles,
     const MovementPattern& pattern) {
     ExerciseTemplateDetection result;
     result.view = infer_view(landmarks);
@@ -943,14 +1099,21 @@ ExerciseTemplateDetection detect_exercise_template(
     const double ankle_separation = std::abs(landmarks[kLeftAnkle].x - landmarks[kRightAnkle].x);
     const double knee_height_diff = std::abs(landmarks[kLeftKnee].y - landmarks[kRightKnee].y);
 
-    const double knee_angle = min_pair_angle_2d(
-        landmarks, kLeftHip, kLeftKnee, kLeftAnkle, kRightHip, kRightKnee, kRightAnkle);
-    const double hip_angle = min_pair_angle_2d(
-        landmarks, kLeftShoulder, kLeftHip, kLeftKnee, kRightShoulder, kRightHip, kRightKnee);
-    const double elbow_angle = min_pair_angle_2d(
-        landmarks, kLeftShoulder, kLeftElbow, kLeftWrist, kRightShoulder, kRightElbow, kRightWrist);
-    const double left_knee = joint_angle_2d(landmarks, kLeftHip, kLeftKnee, kLeftAnkle);
-    const double right_knee = joint_angle_2d(landmarks, kRightHip, kRightKnee, kRightAnkle);
+    const double left_knee_2d = joint_angle_2d(landmarks, kLeftHip, kLeftKnee, kLeftAnkle);
+    const double right_knee_2d = joint_angle_2d(landmarks, kRightHip, kRightKnee, kRightAnkle);
+    const double left_hip_2d = joint_angle_2d(landmarks, kLeftShoulder, kLeftHip, kLeftKnee);
+    const double right_hip_2d = joint_angle_2d(landmarks, kRightShoulder, kRightHip, kRightKnee);
+    const double left_elbow_2d = joint_angle_2d(landmarks, kLeftShoulder, kLeftElbow, kLeftWrist);
+    const double right_elbow_2d = joint_angle_2d(landmarks, kRightShoulder, kRightElbow, kRightWrist);
+    const double left_knee = valid_angle_or(get_angle(angles, "left_knee"), left_knee_2d);
+    const double right_knee = valid_angle_or(get_angle(angles, "right_knee"), right_knee_2d);
+    const double left_hip = valid_angle_or(get_angle(angles, "left_hip"), left_hip_2d);
+    const double right_hip = valid_angle_or(get_angle(angles, "right_hip"), right_hip_2d);
+    const double left_elbow = valid_angle_or(get_angle(angles, "left_elbow"), left_elbow_2d);
+    const double right_elbow = valid_angle_or(get_angle(angles, "right_elbow"), right_elbow_2d);
+    const double knee_angle = std::min(left_knee, right_knee);
+    const double hip_angle = std::min(left_hip, right_hip);
+    const double elbow_angle = std::min(left_elbow, right_elbow);
 
     const double knee_bend = std::max(0.0, 180.0 - knee_angle);
     const double hip_bend = std::max(0.0, 180.0 - hip_angle);
@@ -961,10 +1124,28 @@ ExerciseTemplateDetection detect_exercise_template(
     const bool wrist_support = arms_count >= 4.0 && wrist_mid.y > shoulder_mid.y + 0.12;
     const bool floor_support = wrist_support && elbow_bend > 15.0 &&
                                (lower_count < 4.0 || hip_mid.y > 0.70 || std::abs(hip_mid.y - shoulder_mid.y) < 0.20);
-    const bool lunge_signal = lower_count >= 4.0 &&
-                              ankle_separation > std::max(0.04, shoulder_width * 0.45) &&
-                              knee_height_diff > 0.055;
     const double knee_asymmetry = std::abs(left_knee - right_knee);
+    const bool split_stance = lower_count >= 4.0 &&
+                              ankle_separation > std::max(0.18, shoulder_width * 1.25);
+    const bool staggered_lower_body =
+        split_stance ||
+        knee_height_diff > 0.025 ||
+        ankle_separation > std::max(0.10, shoulder_width * 0.65);
+    const bool asymmetric_knee_bend =
+        standing_support &&
+        knee_bend > 18.0 &&
+        knee_asymmetry > 30.0;
+    const bool extreme_asymmetric_knee_bend =
+        asymmetric_knee_bend &&
+        knee_asymmetry > 50.0;
+    const bool lunge_signal =
+        standing_support &&
+        ((split_stance && (knee_height_diff > 0.035 || knee_asymmetry > 18.0)) ||
+         (asymmetric_knee_bend && staggered_lower_body) ||
+         extreme_asymmetric_knee_bend);
+    const bool hinge_signal = standing_support &&
+                              hip_bend > 18.0 &&
+                              (trunk_lean > 20.0 || hip_bend > knee_bend + 8.0);
 
     std::map<std::string, double> scores = {
         {"squat", 0.0}, {"push_up", 0.0}, {"lunge", 0.0}, {"deadlift", 0.0},
@@ -992,9 +1173,21 @@ ExerciseTemplateDetection detect_exercise_template(
     if (trunk_lean <= 35.0 && knee_bend > 20.0) scores["squat"] += 0.20;
     if (trunk_lean > 25.0 && hip_bend > 10.0) scores["deadlift"] += 0.35;
     if (hip_bend > knee_bend + 10.0) scores["deadlift"] += 0.20;
+    if (split_stance) {
+        scores["lunge"] += 0.20;
+        scores["squat"] = std::max(0.0, scores["squat"] - 0.15);
+    }
     if (lunge_signal) {
-        scores["lunge"] += 0.55;
+        scores["lunge"] += 0.70;
+        scores["squat"] = std::max(0.0, scores["squat"] - 0.50);
+        scores["deadlift"] = std::max(0.0, scores["deadlift"] - 0.15);
+    } else if (asymmetric_knee_bend) {
+        scores["lunge"] += 0.25;
         scores["squat"] = std::max(0.0, scores["squat"] - 0.20);
+    }
+    if (hinge_signal) {
+        scores["deadlift"] += 0.30;
+        scores["squat"] = std::max(0.0, scores["squat"] - 0.25);
     }
     if (knee_asymmetry > 25.0 && lower_count >= 4.0) scores["lunge"] += 0.15;
     if (pattern.primary_joint == DominantJoint::kHip) scores["deadlift"] += 0.10;
@@ -1015,7 +1208,11 @@ ExerciseTemplateDetection detect_exercise_template(
     if (knee_bend > 15.0) result.basis.push_back("knee_flexion");
     if (hip_bend > 15.0) result.basis.push_back("hip_hinge");
     if (elbow_bend > 20.0) result.basis.push_back("elbow_flexion");
+    if (split_stance) result.basis.push_back("split_stance");
+    if (asymmetric_knee_bend) result.basis.push_back("asymmetric_knee_bend");
+    if (extreme_asymmetric_knee_bend) result.basis.push_back("extreme_asymmetric_knee_bend");
     if (lunge_signal) result.basis.push_back("unilateral_lunge_signal");
+    if (hinge_signal) result.basis.push_back("hip_hinge_dominant");
     if (trunk_lean > 25.0) result.basis.push_back("trunk_lean");
     if (!pattern.pattern_label.empty()) result.basis.push_back(pattern.pattern_label);
 
@@ -1072,17 +1269,28 @@ MotionQualityReport analyze_motion_quality(
     report.template_metrics = extract_template_metrics(report.exercise, landmarks, angles, com);
 
     if (report.exercise != "unknown") {
-        const double avg_vis = avg_key_visibility(landmarks, report.exercise);
-        if (!all_key_visible(landmarks, report.exercise, visibility_threshold)) {
+        const KeyVisibilityAssessment visibility = assess_key_visibility(
+            landmarks, report.exercise, report.view, visibility_threshold);
+        if (!visibility.usable) {
             QualityFlag flag = make_flag(
-                "visibility", "LOW_CONFIDENCE", avg_vis, visibility_threshold,
+                "visibility", "LOW_CONFIDENCE", visibility.avg_visibility, visibility_threshold,
                 "pose_based_confidence",
-                "exercise_keypoint_visibility_below_threshold");
+                visibility.reason.empty()
+                    ? "exercise_keypoint_visibility_below_threshold"
+                    : visibility.reason);
             report.low_confidence.push_back(flag);
             report.quality_flags.push_back(flag);
             report.overall_status = "LOW_CONFIDENCE";
             build_evidence_dag_and_capability_contract(report);
             return report;
+        }
+        if (visibility.partial) {
+            report.quality_flags.push_back(make_flag(
+                "visibility", "MONITOR", visibility.avg_visibility, visibility_threshold,
+                "pose_based_confidence",
+                visibility.reason.empty()
+                    ? "exercise_keypoint_visibility_partial"
+                    : visibility.reason));
         }
     }
 
@@ -1117,11 +1325,11 @@ std::string to_json(const MotionQualityReport& report) {
         ss << "\"" << json_escape(metric.name) << "\":" << metric.value;
     }
     ss << "},\"quality_flags\":";
-    append_flags_json(ss, report.quality_flags);
+    append_flags_json(ss, report.quality_flags, "gate." + evidence_key(report.overall_status));
     ss << ",\"not_applicable\":";
-    append_flags_json(ss, report.not_applicable);
+    append_flags_json(ss, report.not_applicable, "gate.not_applicable");
     ss << ",\"low_confidence\":";
-    append_flags_json(ss, report.low_confidence);
+    append_flags_json(ss, report.low_confidence, "gate.low_confidence");
     ss << ",\"capability_contract\":";
     append_capability_contract_json(ss, report.capability_contract);
     ss << ",\"evidence_dag\":";

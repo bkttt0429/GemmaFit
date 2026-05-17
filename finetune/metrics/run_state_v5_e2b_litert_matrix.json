@@ -1,0 +1,15 @@
+{
+  "artifact_prefix": "gemmafit-v5-e2b-evidence-router",
+  "export_matrix_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/litert_export_v5_e2b_matrix",
+  "force_export": false,
+  "force_final": false,
+  "litertlm_final": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/gemmafit-v5-e2b-evidence-router.litertlm",
+  "merged_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/google_gemma_4_E2B_it_gemmafit_v5_2_e2b_completion_only_repair3_contract_smoke",
+  "run_name": "google_gemma_4_E2B_it_gemmafit_v5_2_e2b_completion_only_repair3_contract_smoke",
+  "run_variants": [
+    "wi8_ctx2048_prefill1024_no_jinja",
+    "wi8_ctx2048_prefill512_no_jinja"
+  ],
+  "state_ts": "2026-05-13T07:33:26.658173+00:00",
+  "stop_after_first_success": false
+}

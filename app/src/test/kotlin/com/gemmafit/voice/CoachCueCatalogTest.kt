@@ -3,6 +3,7 @@ package com.gemmafit.voice
 import com.gemmafit.settings.AppCueStyle
 import com.gemmafit.settings.AppLanguage
 import com.gemmafit.settings.AppSettings
+import com.gemmafit.settings.AppTrainingMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -54,8 +55,41 @@ class CoachCueCatalogTest {
         )
 
         assertEquals("Step into a clearer view so I can coach you.", english)
-        assertEquals("請站到更清楚的位置，讓我看得到你的動作。", chinese)
+        assertEquals("請站到更清楚的位置，讓我可以協助你。", chinese)
         assertEquals(english, system)
+    }
+
+    @Test
+    fun chineseVoiceCuesDoNotUseMojibakeFallbackText() {
+        val cueIds = listOf(
+            "correct_knee_alignment",
+            "correct_spinal_alignment",
+            "correct_joint_angle",
+            "correct_asymmetry",
+            "warn_com_offset",
+            "warn_rapid_movement",
+            "increase_range_of_motion",
+            "positive_reinforcement",
+            "warn_poor_visibility",
+            "no_person_detected",
+            "multi_person_selection",
+            CoachCueCatalog.PREVIEW_CUE_ID,
+            "senior_continue",
+            "senior_repeat_simple_cue",
+            "senior_setup_check",
+            "senior_step_back_into_view",
+            "senior_one_person_only",
+            "senior_pause_for_support",
+            "senior_session_summary",
+            "unknown",
+        )
+        val config = CoachVoiceConfig(language = AppLanguage.TRADITIONAL_CHINESE)
+
+        cueIds.forEach { cueId ->
+            val text = CoachCueCatalog.resolve(cueId, config)
+            assertFalse("Mojibake in $cueId: $text", text.contains("?"))
+            assertFalse("English fallback in $cueId: $text", Regex("[A-Za-z]{4,}").containsMatchIn(text))
+        }
     }
 
     @Test
@@ -77,6 +111,20 @@ class CoachCueCatalogTest {
         assertTrue(encouraging.length > terse.length)
         assertTrue(detailed.length > encouraging.length)
         assertTrue(detailed.contains("before continuing"))
+    }
+
+    @Test
+    fun seniorVoiceFirstUsesDementiaFriendlyProfile() {
+        val config = AppSettings(
+            trainingMode = AppTrainingMode.SENIOR,
+            voiceFirst = true,
+            voiceSpeed = 1.2f,
+            cueStyle = AppCueStyle.DETAILED,
+        ).toCoachVoiceConfig()
+
+        assertEquals(VoiceInteractionProfile.DEMENTIA_FRIENDLY_SELF_GUIDED, config.interactionProfile)
+        assertEquals(AppCueStyle.TERSE, config.cueStyle)
+        assertEquals(0.85f, config.speed, 0.001f)
     }
 
     @Test

@@ -1,188 +1,346 @@
 # GemmaFit Literature Review
 
-Last updated: 2026-04-30
+Last updated: 2026-05-05
 
-This document tracks sources that can be cited in the Kaggle writeup, synthetic
-function-calling dataset, and implementation comments. It separates strong
-evidence from heuristic thresholds so the project does not over-claim clinical
-validity.
+GemmaFit's strongest defensible claim is not that an AI coach can diagnose
+injury, clinical biomechanics, or disease from a phone video. The defensible
+claim is narrower and stronger: under single-camera, on-device conditions,
+GemmaFit provides bounded, non-diagnostic movement-quality coaching only when
+pre-inference evidence supports the specific metric being discussed.
 
-## Evidence Levels
+This document is the English canonical source for writeup claims, product copy,
+and benchmark interpretation. The full Chinese working review is kept in
+[`literature_review_zh.md`](literature_review_zh.md). Thresholds remain
+`prototype_threshold` unless they are locally calibrated or directly supported
+by a study in the same metric, population, camera view, and task context.
 
-| Level | Meaning | How to use in GemmaFit |
-|---|---|---|
-| A | Primary paper, official documentation, or government/standards source | Safe to cite in writeup and module docs |
-| B | Peer-reviewed clinical/biomechanics study with narrower population or task | Use as support, but note population/task limits |
-| C | Coaching guideline or practical screening framework | Use for coaching language and UX, not hard diagnostic claims |
-| H | Heuristic derived for this prototype | Must be validated on local data before claiming performance |
+## Executive Summary
 
-## Evidence Backbone
+The current literature supports three product principles:
 
-These sources support the system architecture and policy boundary rather than
-any single threshold. Current implementation maps this layer into a
-Capability Contract and an Evidence DAG: the app declares `can_judge` and
-`cannot_judge` before Gemma runs, then requires model `evidence_refs` to point
-back to structured evidence ids.
+1. AI outputs should be traceable to data, model context, measurement
+   conditions, and known limits.
+2. When a metric is uncertain or unobservable, the system should abstain or
+   narrow the judgment instead of forcing a full verdict.
+3. Coaching feedback helps learning only when its timing, frequency,
+   specificity, and task relevance are controlled.
 
-| Topic | Current anchor | Project use |
-|---|---|---|
-| Evidence provenance | W3C PROV-DM / PROV-O (deep review pending) | Model outputs should be traceable to metric, gate, and source module nodes instead of post-hoc prose. |
-| Model/data documentation | Model Cards and Datasheets (deep review pending) | Document what the model can and cannot support; do not hide missing provenance behind broad claims. |
-| Selective prediction / reject option | Geifman & El-Yaniv, SelectiveNet, conformal prediction for NLP (deep review pending) | Treat unsupported metrics as metric-level abstention, not full-session failure when other evidence is reliable. |
-| Pose confidence calibration | BlazePose / MediaPipe confidence docs plus biomechanical validation papers | Confidence gates and confidence ceilings prevent precise-sounding unsupported metric claims. |
-| Health-AI transparency | WHO AI health ethics guidance | Users should see useful evidence first and skipped judgments second; GemmaFit remains non-diagnostic. |
+For GemmaFit, this supports a **Capability-Bounded Evidence Router**:
 
-## Prototype Thresholds
+- C++/Kotlin computes pose-derived evidence and deterministic safety gates.
+- The app declares a `capability_contract` before local Gemma runs.
+- Gemma may choose a function call only for metrics in `can_judge`.
+- Every model `evidence_refs` value must point to an existing Evidence DAG or
+  Evidence Ledger id.
+- `VIEW_LIMITED`, `LOW_CONFIDENCE`, and `NOT_APPLICABLE` block only the affected
+  metric, not the entire coaching session when other evidence is usable.
 
-The following values are implementation thresholds or proxy metrics until
-GemmaFit has local calibration evidence. They may appear in debug evidence and
-demo explanations, but not as clinically validated claims.
+The same literature also sets hard limits. GemmaFit should not claim phone-only
+injury diagnosis, clinical-grade biomechanics, muscle activation measurement,
+rehabilitation efficacy, fall-risk scoring, sarcopenia detection, or proven
+injury-risk reduction.
 
-| Metric / rule | Current threshold | Label |
-|---|---:|---|
-| Knee/ankle ratio | `0.8` | `prototype_threshold` |
-| FPPA warning | `10 deg` | `prototype_threshold` |
-| Trunk / body-line deviation | exercise-specific `15-55 deg` ranges | `prototype_threshold` |
-| Bilateral asymmetry | `10 deg` legacy / template-gated | `prototype_threshold` |
-| Rapid movement | `600 deg/s` | `prototype_threshold` |
-| ROM insufficient | `<50% expected ROM` | `prototype_threshold` |
+## Evidence Provenance in AI Systems
 
-## Product Claims
+### Core Sources
 
-Use the literature to justify a safety-bounded coaching product, not a clinical
-diagnostic tool. Product copy should say:
+- W3C PROV family: provenance is information about entities, activities, and
+  agents that helps assess data quality, reliability, and trustworthiness
+  (Groth & Moreau, 2013).
+- Model Cards: model releases should document intended use, evaluation
+  procedures, context, and subgroup performance (Mitchell et al., 2019).
+- Datasheets for Datasets: datasets should document motivation, composition,
+  collection process, recommended uses, and limitations (Gebru et al., 2021).
+- NIST AI RMF 1.0: validation means objective evidence that a system satisfies
+  requirements for a specified intended use, with limitations documented
+  (NIST, 2023).
+- NIST AI 600-1: generative AI governance should include provenance,
+  pre-deployment testing, incident disclosure, and recorded limitations
+  (Autio et al., 2024).
 
-- `camera-limited evidence should abstain from unsupported metrics`
-- `pose-only muscle focus is an estimate, not activation percentage`
-- `local AI does not override deterministic gates`
-- `single-camera metrics are movement-quality proxies`
+### Relevance to GemmaFit
 
-Do not claim:
+The useful product move is metric-level provenance, not generic "explainable
+AI" prose. Each coaching output should be traceable to the camera/view
+condition, visible landmarks, metric formula, confidence gate, threshold label,
+and refusal reason. This supports an auditable coaching story while preserving
+the distinction between evidence-backed output and prototype heuristics.
 
-- validated injury prediction
-- precise joint force or lumbar loading
-- EMG-style muscle activation
-- clinical improvement, diagnosis, fall-risk score, or sarcopenia detection
+GemmaFit can credibly claim evidence provenance when each suggestion is linked
+to observable pose features, deterministic rules, and bounded function calls.
+That does not prove the metrics are valid across every body, camera angle, and
+environment.
 
-## Research Gaps To Fill After Deep Review
+### Gaps
 
-- Metric-level abstention is less mature than sample-level selective
-  classification; GemmaFit can contribute a practical contract for partial
-  movement judgments.
-- Pose visibility does not automatically calibrate downstream biomechanical
-  error; GemmaFit should treat confidence ceilings per metric as an engineering
-  safeguard until validated.
-- Quantization-aware tool-call safety for small on-device LLMs is thin; v3
-  benchmarks should compare Q4/Q5 schema validity, forbidden-claim rate, and
-  evidence-ref validity.
-- Augmented feedback evidence supports specificity and timing, but health and
-  older-adult claims need conservative non-clinical wording.
+There is little direct evidence on whether per-output provenance in consumer
+fitness apps reduces over-trust or unsafe action. GemmaFit can contribute here
+by measuring whether Evidence Cards and skipped-judgment explanations improve
+user calibration.
 
-## High-Priority Sources
+## Selective Prediction and Reject Option
 
-| Source | Evidence | Project use | Notes and limits |
-|---|---:|---|---|
-| Bazarevsky et al., 2020, "BlazePose: On-device Real-time Body Pose tracking" ([arXiv](https://arxiv.org/abs/2006.10204)) | A | MediaPipe rationale, 33-keypoint topology, mobile real-time story | Good for "on-device real-time pose tracking"; not a clinical validation paper |
-| Google Research blog, "On-device, Real-time Body Pose Tracking with MediaPipe BlazePose" ([Google Research](https://research.google/blog/on-device-real-time-body-pose-tracking-with-mediapipe-blazepose/)) | A | Writeup narrative: fitness/yoga use cases, mobile inference, 33 landmarks | Blog source; pair with arXiv paper for formal citation |
-| ML Kit Pose Detection Android docs ([Google Developers](https://developers.google.com/ml-kit/vision/pose-detection/android)) | A | Android integration, 33 landmarks, stream mode, confidence handling | ML Kit API differs from MediaPipe Tasks, but landmark/confidence concepts are useful |
-| PoseLandmark reference ([Google Developers](https://developers.google.com/android/reference/com/google/mlkit/vision/pose/PoseLandmark)) | A | Avoid magic numbers; justify `visibility`/`inFrameLikelihood` confidence gate | Z coordinate is less accurate than X/Y, so avoid precise depth claims |
-| NASM Overhead Squat Assessment article ([NASM](https://blog.nasm.org/certified-personal-trainer/how-to-perform-an-overhead-squat-assessment-osa)) | C | Coaching language for knees moving inward, excessive forward lean, low-back arch, cervical/shoulder checkpoints | NASM is a coaching framework, not a quantitative threshold source |
-| NASM OHSA/SLS Assessment Form ([NASM PDF](https://www.nasm.org/docs/default-source/PDF/nasm_ohs_-sls_assessmentform_march2013.pdf)) | C | Demo checklist and labels for common compensation patterns | Use as screening vocabulary only |
-| Hewett et al., 2005, "Biomechanical measures ... valgus loading ... predict ACL injury risk" ([DOI](https://doi.org/10.1177/0363546504269591), [Mayo record](https://mayoclinic.elsevierpure.com/en/publications/biomechanical-measures-of-neuromuscular-control-and-valgus-loadin)) | B | Rule #1 priority: dynamic knee valgus matters for safety feedback | Prospective female athlete landing study; do not generalize to all users/exercises as direct injury prediction |
-| Ugalde et al., 2015, 2D knee motion during single-limb squats ([PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC4275194/)) | B | Rule #1 measurement method: frontal plane projection angle (FPPA) | Supports 2D analysis of knee valgus; better than only knee/ankle distance ratio |
-| Willson/Davis-related FPPA literature summarized in knee valgus studies ([PubMed example](https://pubmed.ncbi.nlm.nih.gov/24380805/)) | B | Rule #1 validation direction for single-leg squat and landing tasks | Use for "FPPA is common in research"; avoid using one universal cutoff |
-| CDC Normal Joint Range of Motion Study ([CDC Archive](https://archive.cdc.gov/www_cdc_gov/ncbddd/jointrom/index_1715172647.html)) | A | Rule #7 expected ROM baseline; Rule #3 endpoint awareness | Normative ROM varies by age/sex; use per-joint conservative ranges |
-| Beighton hypermobility criteria table ([NCBI Bookshelf](https://www.ncbi.nlm.nih.gov/books/NBK557726/table/article-25342.table0/)) | A | Rule #3 hyperextension: elbow/knee >10 degrees beyond neutral is a known screening criterion | Beighton is for generalized hypermobility screening; GemmaFit must not diagnose hypermobility |
-| Parkinson et al., 2021, "The Calculation, Thresholds and Reporting of Inter-Limb Strength Asymmetry: A Systematic Review" ([JSSM PDF](https://www.jssm.org/volume20/iss4/cap/jssm-20-594.pdf), [DOI](https://doi.org/10.52082/jssm.2021.594)) | A | Rule #4 asymmetry framing | The review found 10-15% thresholds are common, but often not well-supported and may need task-, metric-, and population-specific interpretation. This supports monitoring asymmetry, not a universal 10-degree cutoff. |
-| Schache et al., 2014, "Evidence for Joint Moment Asymmetry in Healthy Populations during Gait" ([PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC4267535/)) | B | Rule #4 cautionary evidence | Healthy people can show meaningful joint-moment asymmetry during gait. This supports treating asymmetry as a form-quality cue, not an automatic pathology signal. |
-| de Leva, 1996, "Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters" ([ScienceDirect](https://www.sciencedirect.com/science/article/pii/0021929095001786), [PDF mirror](https://ebm.ufabc.edu.br/wp-content/uploads/2013/12/Leva-1996.pdf)) | A | `com_tracker.cpp`: segment mass fractions and segment COM fractions | Table 4 is used for the C++ weighted COM estimate; MediaPipe landmark endpoints are practical approximations, not the exact anatomical endpoints in the paper |
-| Biomechanical aspects of dynamic stability ([BMC/EURAPA](https://eurapa.biomedcentral.com/articles/10.1007/s11556-006-0006-6)) | B | Rule #5 COM vs base of support | Supports COM/BOS balance framing; phone pose landmarks provide approximation only |
-| Hof et al., 2005, "The condition for dynamic stability" ([DOI](https://doi.org/10.1016/j.jbiomech.2004.03.025), [PDF mirror](https://braceworks.ca/wp-content/uploads/2016/05/hof-condition-for-dynamic-stability.pdf)) | A | Rule #5 COM projection / BoS stability relation | Supports static COM-in-BoS check and explains why dynamic movement may require XCoM; current MVP implements the static check only |
-| Andrew, 1979, "Another efficient algorithm for convex hulls in two dimensions" ([DOI](https://doi.org/10.1016/0020-0190(79)90072-3), [ScienceDirect](https://www.sciencedirect.com/science/article/pii/0020019079900723)) | A | `com_tracker.cpp`: convex hull of foot contact points for support polygon | Algorithmic source for monotone-chain convex hull; support-point quality still depends on pose landmark quality |
-| Papagiannis et al., 2019, sEMG methodology in gait analysis ([PubMed](https://pubmed.ncbi.nlm.nih.gov/31074312/)) | B | MuscleFocusEstimator limitation statement | Supports that sEMG is used to assess muscle activity; posture-only estimate is not EMG |
-| Frontiers, "Surface Electromyography Applied to Gait Analysis" ([Frontiers](https://www.frontiersin.org/articles/10.3389/fneur.2020.00994/full)) | B | Muscle activation boundary language | Good for explaining timing/action of muscles from EMG; avoid claiming pose equals activation |
-| Vigotsky et al.-style sEMG limitations discussion, "Surface Electromyography: What Limits Its Use..." ([PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC7677519/)) | B | Stronger caveat: even sEMG amplitude has interpretation limits | Useful to keep GemmaFit wording conservative |
-| WHO AI health ethics guidance ([WHO publication](https://www.who.int/publications-detail-redirect/9789240037403), [WHO news](https://www.who.int/news/item/28-06-2021-who-issues-first-global-report-on-ai-in-health-and-six-guiding-principles-for-its-design-and-use)) | A | Safety & Trust narrative: safety, transparency, human autonomy | Use to justify confidence gate and non-diagnostic scope |
-| ACSM, 2009, "Progression Models in Resistance Training for Healthy Adults" ([MSSE](https://journals.lww.com/acsm-msse/Fulltext/2009/03000/Progression_Models_in_Resistance_Training_for.26.aspx), [PDF mirror](https://tourniquets.org/wp-content/uploads/PDFs/ACSM-Progression-models-in-resistance-training-for-healthy-adults-2009.pdf)) | A | Rule #6 rapid movement framing | ACSM recommends slow-to-moderate repetition velocities for novice/intermediate resistance training and varied velocities for advanced training depending on goals. It supports controlled-tempo coaching, not a universal angular velocity cutoff. |
-| Wilk et al., 2021, "The Influence of Movement Tempo During Resistance Training on Muscular Strength and Hypertrophy Responses: A Review" ([PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC8310485/)) | B | Rule #6 movement-tempo context | Movement tempo affects training variables and should be controlled/considered. Use as support for tracking tempo/velocity, not as evidence for a fixed injury threshold. |
-| Google Gemma function calling docs ([Google AI](https://ai.google.dev/gemma/docs/capabilities/function-calling)) | A | L4 FunctionRegistry design | Official doc says model outputs must be parsed and validated by application safeguards |
-| Google Gemma 4 announcement ([Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/)) | A | Gemma 4 edge/offline and function-calling claim | Current official Gemma 4 source found on 2026-04-30 |
-| llama.cpp function calling docs ([GitHub](https://github.com/ggml-org/llama.cpp/blob/master/docs/function-calling.md)) | A | llama.cpp tool-call backend and `--jinja`/template caution | Tool calling quality depends on model template and quantization choices |
-| Unsloth saving to GGUF docs ([Unsloth](https://unsloth.ai/docs/basics/inference-and-deployment/saving-to-gguf)) | A | Finetune export path: `save_pretrained_gguf(..., q4_k_m)` | Keep same chat template between training and inference |
+### Core Sources
 
-## Mapping to the 8 Safety Rules
+- Selective Classification for Deep Neural Networks: systems can trade
+  coverage for risk by rejecting examples outside an acceptable confidence
+  region (Geifman & El-Yaniv, 2017).
+- SelectiveNet: reject behavior can be integrated into model training rather
+  than added only as post-hoc confidence thresholding (Geifman & El-Yaniv,
+  2019).
+- Ovadia et al.: uncertainty and calibration degrade under dataset shift, so
+  reject policies cannot be trusted solely from IID validation (Ovadia et al.,
+  2019).
+- NIST AI RMF 1.0: AI systems should fail safely when they exceed knowledge
+  limits, especially in higher-risk contexts (NIST, 2023).
 
-| Rule | Current implementation-plan trigger | Evidence status | Recommendation |
-|---|---|---:|---|
-| #1 Knee lateral deviation | `D_knee / D_ankle < 0.8` | B/H | Keep ratio as a fast heuristic, but add FPPA as the literature-aligned metric. Validate 0.8 against local squat/single-leg fixtures before presenting it as a threshold. |
-| #2 Spinal alignment deviation | shoulder-hip-knee deviation > 15 degrees | C/H | NASM supports screening for excessive forward lean/low-back arch. The 15-degree trigger should be documented as a prototype threshold requiring calibration. Avoid "spinal injury risk" claims. |
-| #3 Joint hyperextension | near 0 or 180 degrees +/- 5 degrees | A/H | Use joint-specific definitions. For elbow/knee hyperextension, Beighton uses >10 degrees beyond neutral; for other joints, use CDC ROM ranges plus local safe ranges. |
-| #4 Bilateral asymmetry | left-right same joint angle difference > 10 degrees | A/H | Literature supports monitoring inter-limb asymmetry, and 10-15% thresholds are common in strength/performance literature. However, the current `>10 degrees` joint-angle trigger is a GemmaFit prototype threshold because percent strength asymmetry does not directly translate to video-derived joint-angle difference. |
-| #5 COM offset | COM projection outside support polygon | A/B | Use de Leva segment mass/COM fractions for estimated whole-body COM, project it onto the selected ground plane, build the support polygon from foot contact landmarks with Andrew's monotone-chain convex hull, then test COM-in-polygon. Implementation must call it "estimated COM" because MediaPipe landmarks are not force plates or exact anatomical endpoints. |
-| #6 Rapid movement | joint angular velocity > 600 degrees/second | A/H | ACSM supports slow-to-moderate repetition velocities for novice/intermediate resistance training. The `600 deg/s` trigger is still a prototype angular-velocity threshold selected to avoid frame-rate dependence and reduce false positives; validate it per movement and FPS pipeline. Use "slow down for control" coaching language, not injury diagnosis. |
-| #7 ROM insufficient | ROM < 50% expected safe ROM | A/H | CDC supports normative ROM tables. Expected ROM must be movement-specific, not universal. Use as "increase range if comfortable" rather than pathology. |
-| #8 Neck hyperextension | ear-shoulder-hip deviation > 15 degrees | C/H | Use neutral head/neck coaching language. The 15-degree trigger is a UI/coaching heuristic until validated. |
+### Relevance to GemmaFit
 
-## Implementation Implications
+The key safety pattern is **partial judgment**. A side-view squat may support
+depth, tempo, and trunk lean while blocking frontal knee valgus. This is more
+useful than a binary full-session refusal and safer than a forced all-metric
+verdict.
 
-1. `safety_monitor.cpp` should expose evidence labels with each anomaly:
-   `evidence = "validated_metric" | "prototype_threshold" | "low_confidence"`.
+Metric-level abstention should be treated as a first-class product feature:
+`can_judge` metrics remain available, `cannot_judge` metrics are explicitly
+listed with reasons, and Gemma can cite only the evidence attached to
+`can_judge`.
 
-2. The JSON sent to Gemma should include `measurement_source`, for example:
-   `{"rule": 1, "metric": "knee_ankle_ratio", "evidence": "prototype_threshold"}`.
-   This helps the LLM choose conservative wording.
+### Gaps
 
-3. Rule #1 should eventually compute both:
-   - `knee_ankle_ratio = distance(knees) / distance(ankles)`
-   - `fppa_deg`, using hip-knee-ankle frontal-plane projection per side
+The literature is strong on sample-level abstention but thinner on
+metric-level abstention for structured coaching outputs. A GemmaFit benchmark
+could report coverage-risk curves by exercise, view angle, occlusion, clothing,
+distance, and lighting.
 
-4. Rule #4 should be reported as `metric = "left_right_angle_delta_deg"` and `evidence = "prototype_threshold"`. Cite asymmetry literature to justify monitoring, but do not cite a 10-degree joint-angle cutoff as validated.
+## Confidence Calibration for Pose-Estimation Metrics
 
-5. Rule #6 should be stored as degrees/second:
-   `angular_velocity_dps = abs(angle_t - angle_t_minus_1) / dt_seconds`.
-   The old `60 degrees/frame` is too frame-rate dependent. The current native/prototype default is `600 deg/s`, with dataset calibration still required.
+### Core Sources
 
-6. MuscleFocusEstimator wording must stay in this lane:
-   - Allowed: "pose-based estimate", "likely primary load area", "may emphasize"
-   - Not allowed: "activation percentage", "muscle is not firing", "diagnosis", "weak/disabled muscle"
+- BlazePose GHUM Holistic: single RGB, on-device, 3D landmarks, and real-time
+  fitness-tracking use cases (Grishchenko et al., 2022).
+- On Calibration of Modern Neural Networks: modern neural networks are often
+  poorly calibrated; temperature scaling is a simple useful correction
+  (Guo et al., 2017).
+- Accurate Uncertainties for Deep Learning Using Calibrated Regression:
+  regression credible intervals also need calibration (Kuleshov et al., 2018).
+- Ovadia et al.: dataset shift can break uncertainty quality (Ovadia et al.,
+  2019).
 
-7. ConfidenceGate is strongly supported by Google landmark confidence docs and WHO health-AI transparency/safety guidance. Low confidence should bypass Gemma and use a deterministic TTS message.
+### Relevance to GemmaFit
 
-8. `com_tracker.cpp` implements the MVP static stability check:
-   - Whole-body COM is the weighted average of segment COMs.
-   - Segment masses and segment COM fractions come from de Leva Table 4.
-   - BoS is the convex hull of projected heel/toe landmarks.
-   - The output is a coaching/safety cue, not force-plate-grade posturography.
+The calibration target should be the final coaching metric, not only a raw
+keypoint confidence score. Users do not need to know only that `left_knee`
+visibility is `0.83`; the product needs to know whether depth, tempo, trunk
+lean, or knee alignment is reliable under the current view.
+
+Visibility, landmark jitter, frame dropout, and view quality are practical
+inputs to a metric confidence estimate, but they are engineering proxies until
+calibrated on real phone videos. Product language should say "readable from
+this view" or "camera-limited" rather than "clinically certain."
+
+### Gaps
+
+Evidence is thin for BlazePose-derived squat depth, FPPA, trunk lean, tempo, and
+similar fitness metrics under real consumer recording conditions. GemmaFit can
+contribute a metric-level calibration protocol reporting accuracy, expected
+calibration error, confidence ceilings, and coverage-risk by view condition.
+
+## Augmented Feedback and Motor Learning
+
+### Core Sources
+
+- Sigrist et al.: visual, auditory, haptic, and multimodal augmented feedback
+  generally helps motor learning, but effectiveness depends on modality,
+  timing, frequency, and task complexity (Sigrist et al., 2013).
+- Winstein: knowledge-of-results scheduling is a foundational motor-learning
+  concern (Winstein, 1991).
+- Wulf & Shea: principles from simple skills do not automatically generalize to
+  complex motor skills (Wulf & Shea, 2002).
+- Wulf, Shea, & Lewthwaite: motor skill learning is affected by attentional
+  focus, task complexity, and feedback design (Wulf et al., 2010).
+
+### Relevance to GemmaFit
+
+The literature supports task-linked movement feedback but does not support
+constant, exhaustive, overconfident commentary. GemmaFit should separate live
+deterministic cues from post-workout summary coaching:
+
+- Live UI: short, safe, high-confidence cues only.
+- Summary UI: explain what was observed, why it matters, what was not judged,
+  and what to focus on next.
+
+This is especially important for older adults and beginners, where too much
+feedback can increase cognitive load and reduce autonomy.
+
+### Gaps
+
+Randomized or retention-focused studies for consumer, single-camera,
+LLM-mediated exercise feedback are still scarce. GemmaFit can compare immediate
+feedback vs set-level summary, low-frequency vs high-frequency cues, and
+baseline-relative vs absolute coaching language.
+
+## On-Device LLM Function-Calling Safety
+
+### Core Sources
+
+- Toolformer: language models can learn when to call APIs, what arguments to
+  pass, and how to integrate tool outputs (Schick et al., 2023).
+- Indirect prompt injection: LLM-integrated applications can be manipulated via
+  natural-language inputs that affect tool use and API calls (Greshake et al.,
+  2023).
+- NIST AI 600-1: generative AI claims need empirical evaluation, provenance,
+  testing, and limitation tracking (Autio et al., 2024).
+- OWASP GenAI Top 10: prompt injection, improper output handling, and excessive
+  agency are major LLM application risks (OWASP, 2025).
+
+### Relevance to GemmaFit
+
+The safety case should not rely on "Gemma is obedient." It should rely on a
+hard capability space:
+
+- fixed function allowlist
+- schema validation
+- parameter bounds
+- deterministic view preconditions
+- evidence-ref validation
+- no arbitrary tool execution
+- deterministic fallback on invalid output
+
+Gemma's role is bounded selection and explanation, not movement metric
+calculation, thresholding, diagnosis, or policy override.
+
+### Gaps
+
+There is little formal safety evaluation for small on-device health or fitness
+LLMs using bounded function calls. GemmaFit can build a red-team corpus covering
+prompt injection, background text, odd poses, unsupported view conditions,
+cross-template contamination, and tool misuse.
+
+## AI Ethics and Regulatory Framing for Non-Diagnostic Health Coaching
+
+### Core Sources
+
+- FDA General Wellness guidance: low-risk software intended to maintain or
+  encourage a healthy lifestyle can fall outside device-function enforcement
+  when it does not diagnose, cure, mitigate, prevent, or treat disease
+  (FDA, 2026).
+- WHO AI for Health ethics guidance: AI for health should prioritize ethics,
+  human rights, transparency, safety, responsibility, and human autonomy
+  (WHO, 2021).
+- NIST AI RMF 1.0: trustworthy AI is valid and reliable, safe, secure,
+  accountable and transparent, explainable and interpretable, privacy-enhanced,
+  and fair with harmful bias managed (NIST, 2023).
+- EU AI Act: the framework is risk-based; high-risk use cases require stronger
+  documentation, logging, human oversight, accuracy, and robustness
+  obligations (European Commission, 2026).
+
+### Relevance to GemmaFit
+
+Intended use determines the boundary. GemmaFit should stay in
+non-diagnostic movement-quality coaching and general wellness language. UI and
+docs should say that pose-based feedback is limited by view angle, lighting,
+clothing, occlusion, and camera setup, but the deeper safety control is the
+capability contract itself.
+
+### Gaps
+
+Wellness, fitness, rehabilitation, and medical-purpose boundaries vary by
+jurisdiction. This document supports product and research framing, not legal
+advice.
+
+## Product Claims Matrix
+
+| Claim | Supported wording | Required qualifier | Avoid |
+| --- | --- | --- | --- |
+| Movement feedback | Single-camera pose landmarks can support non-diagnostic movement-quality cues such as depth, tempo, trunk lean, and consistency. | Only under readable view and confidence conditions. | Clinical biomechanics or medical assessment. |
+| Partial judgment | GemmaFit judges supported metrics and abstains from unsupported ones. | `cannot_judge` reasons must be visible. | "The app can judge all form issues from any angle." |
+| Evidence provenance | Coaching outputs cite evidence ids from deterministic metrics, gates, and capability items. | Provenance supports auditability, not universal validity. | "Every number is clinically validated." |
+| Local AI | Local Gemma routes evidence into bounded function calls and summary explanations. | Deterministic gates remain authoritative. | Free-form diagnosis, force estimates, or injury prediction. |
+| Muscle focus | Pose-estimated load focus can describe likely movement emphasis. | It is not EMG and not activation percentage. | "Your glutes activated 30%." |
+| Calibration | Baselines can personalize coaching thresholds after repeated high-confidence clean reps. | Calibration proposals require evidence and user/app policy approval. | Automatic medical personalization or rehabilitation prescription. |
+| Senior care log | App-provided senior session evidence can be summarized into a caregiver-readable activity log. | The log is a structured activity record, not a medical assessment. | Fall-risk score, sarcopenia detection, rehab progress, or clinical improvement. |
+| Dual-task prompt | Low-impact gesture/voice prompts can combine simple cognitive targets with supported movement tasks. | Results are bounded attempt records only. | Cognitive diagnosis, dementia screening, or clinical interpretation. |
+| Voice answer | Bounded ASR answers can support A/B, yes/no, 1-4, or short options. | Low confidence or out-of-set answers fall back to gesture. | Free-form medical conversation through ASR. |
 
 ## Citation-Ready Claims
 
-Use these claims in the writeup with citations:
+- GemmaFit is an on-device, non-diagnostic movement-quality coaching system.
+- The system uses a capability contract to pre-declare which metrics are
+  judgeable before local Gemma inference.
+- Correct abstention is an intended safety behavior, not a fallback error.
+- Pose-only muscle focus is a movement-pattern estimate, not a physiological
+  activation measurement.
+- Senior care logs summarize activity completion and visible movement-quality
+  observations; they do not assess fall risk, sarcopenia, rehabilitation
+  progress, or clinical improvement.
+- Dual-task results record bounded answers and movement completion only; they
+  do not diagnose cognition or dementia risk.
+- Function-calling benchmarks measure schema compliance, allowed-tool routing,
+  refusal behavior, evidence-ref validity, and local inference status. They do
+  not validate clinical thresholds.
 
-- MediaPipe/BlazePose is appropriate for the edge vision layer because it was designed for real-time mobile pose tracking and outputs a 33-keypoint body topology.
-- Pose landmark confidence/visibility supports a safety gate that abstains when the skeleton is not reliable.
-- NASM movement assessments support beginner-friendly coaching vocabulary such as knees moving inward, excessive forward lean, low-back arch, and neutral alignment cues.
-- Dynamic knee valgus and valgus loading are meaningful biomechanical risk markers in sports medicine literature, but GemmaFit should frame this as "safety cueing" rather than individual injury prediction.
-- 2D frontal-plane projection angle is a recognized practical measure for dynamic knee valgus during screening tasks; the current knee/ankle distance ratio is a prototype shortcut.
-- Normal ROM reference tables can guide conservative per-joint ranges, but ROM is age-, sex-, and task-dependent.
-- Inter-limb asymmetry is commonly monitored in strength and conditioning, but published threshold use varies by metric and task; GemmaFit uses asymmetry as a coaching cue, not diagnosis.
-- ACSM resistance-training guidance supports controlled repetition velocity for novice/intermediate users; GemmaFit's deg/s threshold is an implementation heuristic that must be calibrated on local pose data.
-- EMG is the appropriate measurement family for muscle activation timing/intensity; pose-only muscle focus must be described as an estimate.
-- Function calling should be constrained and application-validated. The model should not execute code or free-form medical advice directly.
+## Consolidated References
 
-## Sources to Avoid or Use Carefully
+Autio, C., Schwartz, R., Dunietz, J., Jain, S., Stanley, M., Tabassi, E., Hall,
+P., & Roberts, K. (2024). *Artificial Intelligence Risk Management Framework:
+Generative Artificial Intelligence Profile (NIST AI 600-1).*
 
-| Source type | Risk |
-|---|---|
-| Generic fitness blogs without citations | May overstate injury causality |
-| Reddit form-check advice | Useful for user language only; do not cite |
-| Single exercise datasets as universal proof | Squat datasets support demos, not "any exercise" validity |
-| Any source claiming exact muscle activation from video-only pose | Conflicts with the project safety boundary |
-| Any claim that neutral spine always prevents low-back pain | Literature is nuanced; use coaching language instead |
+European Commission. (2026). *AI Act.*
 
-## Open Research Tasks
+FDA. (2026). *General Wellness: Policy for Low Risk Devices.*
 
-1. Convert Rule #4 from a fixed 10-degree absolute difference into a normalized asymmetry metric for reporting, while keeping the current trigger as a prototype threshold.
-2. Calibrate Rule #6 `600 deg/s` using real video/pose time series by movement pattern, because ACSM supports controlled velocity but does not define a universal angular-velocity cutoff.
-3. Build a local validation table from `prototype/data/` once datasets are downloaded:
-   `metric`, `threshold`, `dataset`, `precision`, `recall`, `notes`.
-4. Add BibTeX entries after final paper selection; current links are sufficient for sprint planning and writeup drafting.
+Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H.,
+Daume III, H., & Crawford, K. (2021). *Datasheets for Datasets.*
+
+Geifman, Y., & El-Yaniv, R. (2017). *Selective Classification for Deep Neural
+Networks.*
+
+Geifman, Y., & El-Yaniv, R. (2019). *SelectiveNet: A Deep Neural Network with an
+Integrated Reject Option.*
+
+Greshake, K., Abdelnabi, S., Mishra, S., Endres, C., Holz, T., & Fritz, M.
+(2023). *Not what you've signed up for: Compromising Real-World LLM-Integrated
+Applications with Indirect Prompt Injection.*
+
+Grishchenko, I., Bazarevsky, V., Zanfir, A., Bazavan, E. G., Zanfir, M., Yee,
+R., Raveendran, K., Zhdanovich, M., Grundmann, M., & Sminchisescu, C. (2022).
+*BlazePose GHUM Holistic: Real-time 3D Human Landmarks and Pose Estimation.*
+
+Groth, P., & Moreau, L. (2013). *PROV-Overview: An Overview of the PROV Family
+of Documents.*
+
+Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). *On Calibration of
+Modern Neural Networks.*
+
+Kuleshov, V., Fenner, N., & Ermon, S. (2018). *Accurate Uncertainties for Deep
+Learning Using Calibrated Regression.*
+
+Mitchell, M., Wu, S., Zaldivar, A., Barnes, P., Vasserman, L., Hutchinson, B.,
+Spitzer, E., Raji, I. D., & Gebru, T. (2019). *Model Cards for Model Reporting.*
+
+NIST. (2023). *Artificial Intelligence Risk Management Framework (AI RMF 1.0).*
+
+OWASP. (2025). *Top 10 Risks & Mitigations for LLMs and Gen AI Apps.*
+
+Ovadia, Y., Fertig, E., Ren, J., Nado, Z., Sculley, D., Nowozin, S., Dillon,
+J. V., Lakshminarayanan, B., & Snoek, J. (2019). *Can You Trust Your Model's
+Uncertainty? Evaluating Predictive Uncertainty Under Dataset Shift.*
+
+Schick, T., Dwivedi-Yu, J., Dessi, R., Raileanu, R., Lomeli, M., Zettlemoyer,
+L., Cancedda, N., & Scialom, T. (2023). *Toolformer: Language Models Can Teach
+Themselves to Use Tools.*
+
+Sigrist, R., Rauter, G., Riener, R., & Wolf, P. (2013). *Augmented visual,
+auditory, haptic, and multimodal feedback in motor learning: A review.*
+
+Winstein, C. J. (1991). *Knowledge of results and motor learning: implications
+for physical therapy.*
+
+WHO. (2021). *Ethics and governance of artificial intelligence for health.*
+
+Wulf, G., & Shea, C. H. (2002). *Principles derived from the study of simple
+skills do not generalize to complex skill learning.*
+
+Wulf, G., Shea, C., & Lewthwaite, R. (2010). *Motor skill learning and
+performance: A review of influential factors.*

@@ -7,12 +7,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import com.gemmafit.pose.PosePresenceGate
 import com.gemmafit.ui.theme.SkeletonJoint
@@ -33,12 +35,14 @@ data class PoseLandmark(
 )
 
 data class PoseOverlayState(
-    val landmarks: List<PoseLandmark> = List(33) { PoseLandmark(0.5f, 0.5f, 0f) },
+    val landmarks: List<PoseLandmark> = emptyList(),
     val secondarySubjects: List<List<PoseLandmark>> = emptyList(),
     val trajectoryFrames: List<List<PoseLandmark>> = emptyList(),
     val connections: List<Pair<Int, Int>> = POSE_CONNECTIONS,
     val violationSegments: Set<Pair<Int, Int>> = emptySet(),
     val violationJoints: Set<Int> = emptySet(),
+    val watchSegments: Set<Pair<Int, Int>> = emptySet(),
+    val watchJoints: Set<Int> = emptySet(),
     val angleArcs: List<AngleArc> = emptyList(),
     val correctionArrows: List<CorrectionArrow> = emptyList(),
     val comPosition: Offset? = null,
@@ -57,6 +61,8 @@ data class CorrectionArrow(
     val fromIndex: Int,
     val toIndex: Int,
 )
+
+private const val MIN_DRAW_VISIBILITY = 0.35f
 
 private fun List<PoseLandmark>.canRenderPose(): Boolean {
     return PosePresenceGate.canRender(this, { it.x }, { it.y }, { it.visibility })
@@ -109,7 +115,19 @@ private val AngleLabelPaint = android.graphics.Paint().apply {
     setShadowLayer(4f, 0f, 0f, android.graphics.Color.argb(180, 0, 0, 0))
 }
 
-// Skeleton overlay with enhanced visuals
+private val SkeletonWatch = Color(0xFFFFC107)
+
+// Skeleton overlay with enhanced visuals.
+//
+// Performance note: violation pulse animation is isolated into a separate
+// Canvas wrapped in `Modifier.graphicsLayer { alpha = pulseAlpha }`. The
+// graphicsLayer block defers state reads to the layer phase, so the pulse
+// State<Float> ticking at ~60 fps only re-runs the GPU layer alpha — neither
+// Canvas content lambda recomposes on animation tick. This keeps the static
+// skeleton path tied to pose updates (~15 fps) and avoids redrawing the entire
+// skeleton 60 times/sec while a violation is active. Both layers compute scale
+// / offsets independently from the same `width` / `height` inputs, so they
+// share pixel-perfect coordinates; there is no cross-layer desync.
 @Composable
 fun PoseOverlay(
     state: PoseOverlayState,
@@ -119,9 +137,9 @@ fun PoseOverlay(
     heroMode: Boolean = false,
 ) {
     val hasViolations = state.violationJoints.isNotEmpty() || state.violationSegments.isNotEmpty()
-    val pulseAlpha = if (hasViolations) {
+    val pulseAlphaState: State<Float>? = if (hasViolations) {
         val infiniteTransition = rememberInfiniteTransition(label = "violation_pulse")
-        val animatedPulse by infiniteTransition.animateFloat(
+        infiniteTransition.animateFloat(
             initialValue = 0.3f,
             targetValue = 1.0f,
             animationSpec = infiniteRepeatable(
@@ -130,253 +148,368 @@ fun PoseOverlay(
             ),
             label = "pulse",
         )
-        animatedPulse
     } else {
-        1f
+        null
     }
 
     val connections = if (heroMode) POSE_CONNECTIONS_HERO else state.connections
 
-    Canvas(modifier = modifier) {
-        val hasSourceSize = width > 0f && height > 0f && size.width > 0f && size.height > 0f
-        val scale = if (hasSourceSize) minOf(size.width / width, size.height / height) else 1f
-        val contentW = if (hasSourceSize) width * scale else size.width
-        val contentH = if (hasSourceSize) height * scale else size.height
-        val offsetX = if (hasSourceSize) (size.width - contentW) / 2f else 0f
-        val offsetY = if (hasSourceSize) (size.height - contentH) / 2f else 0f
-
-        fun point(index: Int): Offset? {
-            val lm = state.landmarks.getOrNull(index) ?: return null
-            return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
-        }
-
-        fun pointFrom(frame: List<PoseLandmark>, index: Int): Offset? {
-            val lm = frame.getOrNull(index) ?: return null
-            return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
-        }
-
-        val hasActiveSubject = state.landmarks.canRenderPose()
-        val renderableSecondarySubjects = state.secondarySubjects.filter { it.canRenderPose() }
-
-        // ── Dark vignette backdrop for contrast on bright camera ─────
-        if (heroMode) {
-            val cx = size.width / 2f
-            val cy = size.height / 2f
-            val vignetteRadius = maxOf(size.width, size.height) * 0.55f
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(Color(0x00000000), Color(0x44000000), Color(0xAA000000)),
-                    center = Offset(cx, cy),
-                    radius = vignetteRadius,
-                ),
-                radius = vignetteRadius,
+    Box(modifier = modifier) {
+        // Static layer — recomposes only when pose state changes (~15 fps).
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawStaticSkeleton(
+                state = state,
+                connections = connections,
+                width = width,
+                height = height,
             )
         }
 
-        // ── Bone connections ─────────────────────────────────────────
-        renderableSecondarySubjects.forEach { subject ->
-            for ((a, b) in connections) {
-                val la = subject.getOrNull(a)
-                val lb = subject.getOrNull(b)
-                if ((la?.visibility ?: 0f) > 0.2f && (lb?.visibility ?: 0f) > 0.2f) {
-                    val start = pointFrom(subject, a) ?: continue
-                    val end = pointFrom(subject, b) ?: continue
-                    drawLine(
-                        color = Color(0xFF94A3B8).copy(alpha = 0.24f),
-                        start = start,
-                        end = end,
-                        strokeWidth = 2f,
-                        cap = StrokeCap.Round,
-                    )
-                }
-            }
-            for (i in 0 until 33) {
-                val lm = subject.getOrNull(i) ?: continue
-                if (lm.visibility > 0.2f) {
-                    val center = pointFrom(subject, i) ?: continue
-                    drawCircle(
-                        color = Color(0xFF94A3B8).copy(alpha = 0.26f),
-                        radius = 3.5f,
-                        center = center,
-                    )
-                }
+        // Pulsing violation layer — Canvas content does NOT recompose on
+        // pulse tick because pulseAlphaState is read inside graphicsLayer
+        // (deferred state read), not inside the Canvas draw block.
+        if (hasViolations && pulseAlphaState != null) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { this.alpha = pulseAlphaState.value },
+            ) {
+                drawPulsingViolations(
+                    state = state,
+                    connections = connections,
+                    width = width,
+                    height = height,
+                )
             }
         }
+    }
+}
 
-        val trajectoryJoints = listOf(15, 16, 23, 24, 25, 26, 27, 28)
-        if (hasActiveSubject && state.trajectoryFrames.size > 1) {
-            val renderableTrajectoryFrames = state.trajectoryFrames.map { frame ->
-                frame to frame.canRenderPose()
+/**
+ * Pre-computed layout for skeleton overlay. Both canvases derive from the same
+ * inputs (`width`, `height`, `DrawScope.size`) so the math produces identical
+ * values, guaranteeing the static and pulsing layers align pixel-perfectly.
+ */
+private data class OverlayLayout(
+    val scale: Float,
+    val contentW: Float,
+    val contentH: Float,
+    val offsetX: Float,
+    val offsetY: Float,
+)
+
+private fun DrawScope.computeOverlayLayout(width: Float, height: Float): OverlayLayout {
+    val hasSourceSize = width > 0f && height > 0f && size.width > 0f && size.height > 0f
+    val scale = if (hasSourceSize) minOf(size.width / width, size.height / height) else 1f
+    val contentW = if (hasSourceSize) width * scale else size.width
+    val contentH = if (hasSourceSize) height * scale else size.height
+    val offsetX = if (hasSourceSize) (size.width - contentW) / 2f else 0f
+    val offsetY = if (hasSourceSize) (size.height - contentH) / 2f else 0f
+    return OverlayLayout(scale, contentW, contentH, offsetX, offsetY)
+}
+
+private fun OverlayLayout.point(landmarks: List<PoseLandmark>, index: Int): Offset? {
+    val lm = landmarks.getOrNull(index) ?: return null
+    if (lm.visibility < MIN_DRAW_VISIBILITY) return null
+    return Offset(offsetX + lm.x * contentW, offsetY + lm.y * contentH)
+}
+
+private fun DrawScope.drawStaticSkeleton(
+    state: PoseOverlayState,
+    connections: List<Pair<Int, Int>>,
+    width: Float,
+    height: Float,
+) {
+    val layout = computeOverlayLayout(width, height)
+    val hasActiveSubject = state.landmarks.canRenderPose()
+    val renderableSecondarySubjects = state.secondarySubjects.filter { it.canRenderPose() }
+
+    // ── Secondary subjects (faded skeletons of non-primary people) ──
+    renderableSecondarySubjects.forEach { subject ->
+        for ((a, b) in connections) {
+            val la = subject.getOrNull(a)
+            val lb = subject.getOrNull(b)
+            if ((la?.visibility ?: 0f) >= MIN_DRAW_VISIBILITY &&
+                (lb?.visibility ?: 0f) >= MIN_DRAW_VISIBILITY
+            ) {
+                val start = layout.point(subject, a) ?: continue
+                val end = layout.point(subject, b) ?: continue
+                drawLine(
+                    color = Color(0xFF94A3B8).copy(alpha = 0.24f),
+                    start = start,
+                    end = end,
+                    strokeWidth = 2f,
+                    cap = StrokeCap.Round,
+                )
             }
-            trajectoryJoints.forEach { joint ->
-                renderableTrajectoryFrames.zipWithNext().forEachIndexed { idx, (fromEntry, toEntry) ->
-                    val (from, fromRenderable) = fromEntry
-                    val (to, toRenderable) = toEntry
-                    if (!fromRenderable || !toRenderable) return@forEachIndexed
-                    val fromLm = from.getOrNull(joint)
-                    val toLm = to.getOrNull(joint)
-                    if ((fromLm?.visibility ?: 0f) > 0.2f && (toLm?.visibility ?: 0f) > 0.2f) {
-                        val start = pointFrom(from, joint) ?: return@forEachIndexed
-                        val end = pointFrom(to, joint) ?: return@forEachIndexed
-                        val alpha = ((idx + 1).toFloat() / state.trajectoryFrames.lastIndex.coerceAtLeast(1))
-                            .coerceIn(0.12f, 0.80f)
-                        drawLine(
-                            color = Color(0xFF38BDF8).copy(alpha = alpha),
-                            start = start,
-                            end = end,
-                            strokeWidth = if (joint == 15 || joint == 16) 4f else 3f,
-                            cap = StrokeCap.Round,
-                        )
-                    }
-                }
+        }
+        for (i in 0 until 33) {
+            val lm = subject.getOrNull(i) ?: continue
+            if (lm.visibility >= MIN_DRAW_VISIBILITY) {
+                val center = layout.point(subject, i) ?: continue
+                drawCircle(
+                    color = Color(0xFF94A3B8).copy(alpha = 0.26f),
+                    radius = 3.5f,
+                    center = center,
+                )
             }
-            val comJoints = listOf(11, 12, 23, 24, 25, 26, 27, 28)
-            fun comFrom(frame: List<PoseLandmark>): Offset? {
-                val visible = comJoints.mapNotNull { joint -> frame.getOrNull(joint) }
-                    .filter { it.visibility > 0.2f }
-                if (visible.size < 4) return null
-                val x = visible.map { it.x }.average().toFloat()
-                val y = visible.map { it.y }.average().toFloat()
-                return Offset(offsetX + x * contentW, offsetY + y * contentH)
-            }
+        }
+    }
+
+    // ── Trajectory trails ────────────────────────────────────────
+    val trajectoryJoints = listOf(15, 16, 23, 24, 25, 26, 27, 28)
+    if (hasActiveSubject && state.trajectoryFrames.size > 1) {
+        val renderableTrajectoryFrames = state.trajectoryFrames.map { frame ->
+            frame to frame.canRenderPose()
+        }
+        trajectoryJoints.forEach { joint ->
             renderableTrajectoryFrames.zipWithNext().forEachIndexed { idx, (fromEntry, toEntry) ->
                 val (from, fromRenderable) = fromEntry
                 val (to, toRenderable) = toEntry
                 if (!fromRenderable || !toRenderable) return@forEachIndexed
-                val start = comFrom(from)
-                val end = comFrom(to)
-                if (start != null && end != null) {
+                val fromLm = from.getOrNull(joint)
+                val toLm = to.getOrNull(joint)
+                if ((fromLm?.visibility ?: 0f) >= MIN_DRAW_VISIBILITY &&
+                    (toLm?.visibility ?: 0f) >= MIN_DRAW_VISIBILITY
+                ) {
+                    val start = layout.point(from, joint) ?: return@forEachIndexed
+                    val end = layout.point(to, joint) ?: return@forEachIndexed
                     val alpha = ((idx + 1).toFloat() / state.trajectoryFrames.lastIndex.coerceAtLeast(1))
-                        .coerceIn(0.18f, 0.90f)
+                        .coerceIn(0.12f, 0.80f)
                     drawLine(
-                        color = Color(0xFFFFD166).copy(alpha = alpha),
+                        color = Color(0xFF38BDF8).copy(alpha = alpha),
                         start = start,
                         end = end,
-                        strokeWidth = 5f,
+                        strokeWidth = if (joint == 15 || joint == 16) 4f else 3f,
                         cap = StrokeCap.Round,
                     )
                 }
             }
         }
-
-        if (hasActiveSubject) {
-            for ((a, b) in connections) {
-                val la = state.landmarks.getOrNull(a)
-                val lb = state.landmarks.getOrNull(b)
-                val vis = if (la != null && lb != null) {
-                    (la.visibility * lb.visibility).coerceIn(0f, 1f)
-                } else 0f
-
-                val isViolation = state.violationSegments.contains(a to b) ||
-                        state.violationSegments.contains(b to a)
-
-                val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
-                val start = point(a) ?: continue
-                val end = point(b) ?: continue
-
-                if (isViolation) {
-                    // Glow layer for violated bones
-                    drawLine(
-                        color = SkeletonViolation.copy(alpha = alpha * 0.3f * pulseAlpha),
-                        start = start, end = end,
-                        strokeWidth = 12f, cap = StrokeCap.Round,
-                    )
-                    drawLine(
-                        color = SkeletonViolation.copy(alpha = alpha * 0.7f * pulseAlpha),
-                        start = start, end = end,
-                        strokeWidth = 6f, cap = StrokeCap.Round,
-                    )
-                } else {
-                    // Normal bone: soft outer + solid inner
-                    drawLine(
-                        color = SkeletonNormal.copy(alpha = alpha * 0.15f),
-                        start = start, end = end,
-                        strokeWidth = 7f, cap = StrokeCap.Round,
-                    )
-                    drawLine(
-                        color = SkeletonNormal.copy(alpha = alpha * 0.85f),
-                        start = start, end = end,
-                        strokeWidth = 3f, cap = StrokeCap.Round,
-                    )
-                }
+        val comJoints = listOf(11, 12, 23, 24, 25, 26, 27, 28)
+        fun comFrom(frame: List<PoseLandmark>): Offset? {
+            val visible = comJoints.mapNotNull { joint -> frame.getOrNull(joint) }
+                .filter { it.visibility >= MIN_DRAW_VISIBILITY }
+            if (visible.size < 4) return null
+            val x = visible.map { it.x }.average().toFloat()
+            val y = visible.map { it.y }.average().toFloat()
+            return Offset(layout.offsetX + x * layout.contentW, layout.offsetY + y * layout.contentH)
+        }
+        renderableTrajectoryFrames.zipWithNext().forEachIndexed { idx, (fromEntry, toEntry) ->
+            val (from, fromRenderable) = fromEntry
+            val (to, toRenderable) = toEntry
+            if (!fromRenderable || !toRenderable) return@forEachIndexed
+            val start = comFrom(from)
+            val end = comFrom(to)
+            if (start != null && end != null) {
+                val alpha = ((idx + 1).toFloat() / state.trajectoryFrames.lastIndex.coerceAtLeast(1))
+                    .coerceIn(0.18f, 0.90f)
+                drawLine(
+                    color = Color(0xFFFFD166).copy(alpha = alpha),
+                    start = start,
+                    end = end,
+                    strokeWidth = 5f,
+                    cap = StrokeCap.Round,
+                )
             }
         }
+    }
 
-        // ── Joints ───────────────────────────────────────────────────
-        if (hasActiveSubject) {
-            for (i in 0 until 33) {
-                val lm = state.landmarks.getOrNull(i) ?: continue
-                val vis = if (state.showConfidenceFade) lm.visibility else 1f
-                val isViolation = state.violationJoints.contains(i)
-                val p = point(i) ?: continue
-                val jointAlpha = vis * 0.8f + 0.2f
+    // ── Bones: only normal segments draw here. Violation bones (both glow
+    // and solid layers) are deferred to the pulsing canvas. ─────────────
+    if (hasActiveSubject) {
+        for ((a, b) in connections) {
+            val isViolation = state.violationSegments.contains(a to b) ||
+                state.violationSegments.contains(b to a)
+            if (isViolation) continue
+            val isWatch = state.watchSegments.contains(a to b) ||
+                state.watchSegments.contains(b to a)
 
-                if (isViolation) {
-                    // Pulsing outer glow
-                    drawCircle(
-                        color = SkeletonViolation.copy(alpha = jointAlpha * 0.25f * pulseAlpha),
-                        radius = 22f, center = p,
-                    )
-                    // Ring
-                    drawCircle(
-                        color = SkeletonViolation.copy(alpha = jointAlpha * 0.8f * pulseAlpha),
-                        radius = 14f, center = p,
-                        style = Stroke(width = 3f),
-                    )
-                    // Core
-                    drawCircle(
-                        color = SkeletonViolation.copy(alpha = jointAlpha),
-                        radius = 8f, center = p,
-                    )
-                } else {
-                    // Outer glow
-                    drawCircle(
-                        color = SkeletonNormal.copy(alpha = jointAlpha * 0.15f),
-                        radius = 12f, center = p,
-                    )
-                    // Core dot
-                    drawCircle(
-                        color = SkeletonJoint.copy(alpha = jointAlpha),
-                        radius = 5f, center = p,
-                    )
-                }
+            val la = state.landmarks.getOrNull(a)
+            val lb = state.landmarks.getOrNull(b)
+            val vis = if (la != null && lb != null) {
+                (la.visibility * lb.visibility).coerceIn(0f, 1f)
+            } else 0f
+
+            val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
+            val start = layout.point(state.landmarks, a) ?: continue
+            val end = layout.point(state.landmarks, b) ?: continue
+
+            if (isWatch) {
+                drawLine(
+                    color = SkeletonWatch.copy(alpha = alpha * 0.26f),
+                    start = start, end = end,
+                    strokeWidth = 10f, cap = StrokeCap.Round,
+                )
+                drawLine(
+                    color = SkeletonWatch.copy(alpha = alpha * 0.72f),
+                    start = start, end = end,
+                    strokeWidth = 4f, cap = StrokeCap.Round,
+                )
+            } else {
+                drawLine(
+                    color = SkeletonNormal.copy(alpha = alpha * 0.15f),
+                    start = start, end = end,
+                    strokeWidth = 7f, cap = StrokeCap.Round,
+                )
+                drawLine(
+                    color = SkeletonNormal.copy(alpha = alpha * 0.85f),
+                    start = start, end = end,
+                    strokeWidth = 3f, cap = StrokeCap.Round,
+                )
             }
         }
+    }
 
-        // ── COM marker ───────────────────────────────────────────────
-        state.comPosition?.let { com ->
-            val comCenter = Offset(offsetX + com.x * contentW, offsetY + com.y * contentH)
-            drawCircle(
-                color = Color(0xCCFFD700),
-                radius = 14f, center = comCenter,
-            )
-            drawCircle(
-                color = Color(0x44FFD700),
-                radius = 22f, center = comCenter,
-            )
-            val comColor = Color(0x88FFD700)
-            drawLine(comColor, Offset(comCenter.x - 20f, comCenter.y), Offset(comCenter.x + 20f, comCenter.y), strokeWidth = 1.5f)
-            drawLine(comColor, Offset(comCenter.x, comCenter.y - 20f), Offset(comCenter.x, comCenter.y + 20f), strokeWidth = 1.5f)
-        }
+    // ── Joints: normal joints draw here in full. For violation joints we
+    // draw ONLY the constant-alpha core; the pulsing outer glow + ring are
+    // handled by the pulsing canvas. This preserves the original behavior
+    // where the violation core does not pulse. ───────────────────────────
+    if (hasActiveSubject) {
+        for (i in 0 until 33) {
+            val lm = state.landmarks.getOrNull(i) ?: continue
+            val vis = if (state.showConfidenceFade) lm.visibility else 1f
+            val isViolation = state.violationJoints.contains(i)
+            val isWatch = state.watchJoints.contains(i)
+            val p = layout.point(state.landmarks, i) ?: continue
+            val jointAlpha = vis * 0.8f + 0.2f
 
-        // ── Angle arcs ───────────────────────────────────────────────
-        if (hasActiveSubject) {
-            for (arc in state.angleArcs) {
-                val vertex = point(arc.vertexIndex) ?: continue
-                val armA = point(arc.armAIndex) ?: continue
-                val armB = point(arc.armBIndex) ?: continue
-                drawAngleArc(vertex, armA, armB, arc.label, arc.valueDeg)
+            if (isViolation) {
+                // Constant-alpha core only — pulsing glow + ring drawn in pulsing canvas.
+                drawCircle(
+                    color = SkeletonViolation.copy(alpha = jointAlpha),
+                    radius = 8f, center = p,
+                )
+            } else if (isWatch) {
+                drawCircle(
+                    color = SkeletonWatch.copy(alpha = jointAlpha * 0.20f),
+                    radius = 18f, center = p,
+                )
+                drawCircle(
+                    color = SkeletonWatch.copy(alpha = jointAlpha * 0.86f),
+                    radius = 11f, center = p,
+                    style = Stroke(width = 3f),
+                )
+                drawCircle(
+                    color = SkeletonWatch.copy(alpha = jointAlpha),
+                    radius = 5.5f, center = p,
+                )
+            } else {
+                drawCircle(
+                    color = SkeletonNormal.copy(alpha = jointAlpha * 0.15f),
+                    radius = 12f, center = p,
+                )
+                drawCircle(
+                    color = SkeletonJoint.copy(alpha = jointAlpha),
+                    radius = 5f, center = p,
+                )
             }
         }
+    }
 
-        // ── Correction arrows ────────────────────────────────────────
-        if (hasActiveSubject) {
-            for (arrow in state.correctionArrows) {
-                val from = point(arrow.fromIndex) ?: continue
-                val to = point(arrow.toIndex) ?: continue
-                drawCorrectionArrow(from, to)
-            }
+    // ── COM marker ───────────────────────────────────────────────
+    state.comPosition?.let { com ->
+        val comCenter = Offset(layout.offsetX + com.x * layout.contentW, layout.offsetY + com.y * layout.contentH)
+        drawCircle(
+            color = Color(0xCCFFD700),
+            radius = 14f, center = comCenter,
+        )
+        drawCircle(
+            color = Color(0x44FFD700),
+            radius = 22f, center = comCenter,
+        )
+        val comColor = Color(0x88FFD700)
+        drawLine(comColor, Offset(comCenter.x - 20f, comCenter.y), Offset(comCenter.x + 20f, comCenter.y), strokeWidth = 1.5f)
+        drawLine(comColor, Offset(comCenter.x, comCenter.y - 20f), Offset(comCenter.x, comCenter.y + 20f), strokeWidth = 1.5f)
+    }
+
+    // ── Angle arcs ───────────────────────────────────────────────
+    if (hasActiveSubject) {
+        for (arc in state.angleArcs) {
+            val vertex = layout.point(state.landmarks, arc.vertexIndex) ?: continue
+            val armA = layout.point(state.landmarks, arc.armAIndex) ?: continue
+            val armB = layout.point(state.landmarks, arc.armBIndex) ?: continue
+            drawAngleArc(vertex, armA, armB, arc.label, arc.valueDeg)
         }
+    }
+
+    // ── Correction arrows ────────────────────────────────────────
+    if (hasActiveSubject) {
+        for (arrow in state.correctionArrows) {
+            val from = layout.point(state.landmarks, arrow.fromIndex) ?: continue
+            val to = layout.point(state.landmarks, arrow.toIndex) ?: continue
+            drawCorrectionArrow(from, to)
+        }
+    }
+}
+
+/**
+ * Pulsing violation overlay. Drawn inside a graphicsLayer whose alpha is the
+ * pulse animation value, so per-draw alpha math here does NOT multiply by
+ * pulseAlpha — the GPU compositor applies the layer alpha on top.
+ *
+ * Effective alpha == draw-alpha * layer-alpha, which reproduces the original
+ *   `alpha * 0.3f * pulseAlpha` and `alpha * 0.7f * pulseAlpha`
+ * exactly.
+ *
+ * Only violation glow + ring layers are drawn here. The constant-alpha
+ * violation joint CORE stays in the static canvas to preserve the original
+ * non-pulsing core behavior.
+ */
+private fun DrawScope.drawPulsingViolations(
+    state: PoseOverlayState,
+    connections: List<Pair<Int, Int>>,
+    width: Float,
+    height: Float,
+) {
+    val layout = computeOverlayLayout(width, height)
+    val hasActiveSubject = state.landmarks.canRenderPose()
+    if (!hasActiveSubject) return
+
+    // Violation bones: outer glow + inner solid (both pulse — original behavior).
+    for ((a, b) in connections) {
+        val isViolation = state.violationSegments.contains(a to b) ||
+            state.violationSegments.contains(b to a)
+        if (!isViolation) continue
+
+        val la = state.landmarks.getOrNull(a)
+        val lb = state.landmarks.getOrNull(b)
+        val vis = if (la != null && lb != null) {
+            (la.visibility * lb.visibility).coerceIn(0f, 1f)
+        } else 0f
+        val alpha = if (state.showConfidenceFade) vis * 0.9f + 0.1f else 1f
+        val start = layout.point(state.landmarks, a) ?: continue
+        val end = layout.point(state.landmarks, b) ?: continue
+
+        drawLine(
+            color = SkeletonViolation.copy(alpha = alpha * 0.3f),
+            start = start, end = end,
+            strokeWidth = 12f, cap = StrokeCap.Round,
+        )
+        drawLine(
+            color = SkeletonViolation.copy(alpha = alpha * 0.7f),
+            start = start, end = end,
+            strokeWidth = 6f, cap = StrokeCap.Round,
+        )
+    }
+
+    // Violation joints: outer glow + ring (both pulse). Core is in static canvas.
+    for (i in 0 until 33) {
+        if (i !in state.violationJoints) continue
+        val lm = state.landmarks.getOrNull(i) ?: continue
+        val vis = if (state.showConfidenceFade) lm.visibility else 1f
+        val p = layout.point(state.landmarks, i) ?: continue
+        val jointAlpha = vis * 0.8f + 0.2f
+
+        drawCircle(
+            color = SkeletonViolation.copy(alpha = jointAlpha * 0.25f),
+            radius = 22f, center = p,
+        )
+        drawCircle(
+            color = SkeletonViolation.copy(alpha = jointAlpha * 0.8f),
+            radius = 14f, center = p,
+            style = Stroke(width = 3f),
+        )
     }
 }
 

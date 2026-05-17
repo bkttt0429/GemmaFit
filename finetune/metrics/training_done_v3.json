@@ -1,0 +1,121 @@
+{
+  "version": "v3_evidence_router",
+  "finished_at": "2026-05-06 06:10:45",
+  "elapsed_seconds": 2325,
+  "final_train_loss": 0.383637228541904,
+  "best_eval_loss": 3.3221468925476074,
+  "best_eval_step": 250,
+  "best_eval_perplexity": 27.719798149957,
+  "best_checkpoint": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router/checkpoint-250",
+  "global_step": 450,
+  "adapter_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/adapter/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router_best_adapter",
+  "checkpoint_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/checkpoints/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router",
+  "log_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/logs/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router",
+  "effective_batch": 16,
+  "seq_len": 2048,
+  "learning_rate": 5e-05,
+  "max_steps": 1200,
+  "eval_steps": 50,
+  "early_stopping_patience": 4,
+  "model": "unsloth/gemma-4-E4B-it",
+  "model_source": "/content/drive/MyDrive/GemmaFit_train/models/base_models/unsloth__gemma-4-E4B-it",
+  "trained_output_dir": "/content/drive/MyDrive/GemmaFit_train/trained_outputs",
+  "domain_data": "gemmafit_v3_evidence_router.json",
+  "mixture_probabilities": {
+    "domain": 0.7,
+    "glaive": 0.2,
+    "hh_rlhf": 0.1
+  },
+  "eval_format": "production",
+  "eval_history_tail": [
+    {
+      "eval_loss": 3.3384697437286377,
+      "eval_runtime": 35.4454,
+      "eval_samples_per_second": 11.285,
+      "eval_steps_per_second": 2.821,
+      "epoch": 0.11198208286674133,
+      "step": 100
+    },
+    {
+      "eval_loss": 3.331918239593506,
+      "eval_runtime": 35.3893,
+      "eval_samples_per_second": 11.303,
+      "eval_steps_per_second": 2.826,
+      "epoch": 0.167973124300112,
+      "step": 150
+    },
+    {
+      "eval_loss": 3.329564094543457,
+      "eval_runtime": 35.6442,
+      "eval_samples_per_second": 11.222,
+      "eval_steps_per_second": 2.806,
+      "epoch": 0.22396416573348266,
+      "step": 200
+    },
+    {
+      "eval_loss": 3.3221468925476074,
+      "eval_runtime": 35.6172,
+      "eval_samples_per_second": 11.231,
+      "eval_steps_per_second": 2.808,
+      "epoch": 0.2799552071668533,
+      "step": 250
+    },
+    {
+      "eval_loss": 3.361710548400879,
+      "eval_runtime": 35.5622,
+      "eval_samples_per_second": 11.248,
+      "eval_steps_per_second": 2.812,
+      "epoch": 0.335946248600224,
+      "step": 300
+    },
+    {
+      "eval_loss": 3.3768274784088135,
+      "eval_runtime": 35.5898,
+      "eval_samples_per_second": 11.239,
+      "eval_steps_per_second": 2.81,
+      "epoch": 0.3919372900335946,
+      "step": 350
+    },
+    {
+      "eval_loss": 3.384847640991211,
+      "eval_runtime": 35.7957,
+      "eval_samples_per_second": 11.175,
+      "eval_steps_per_second": 2.794,
+      "epoch": 0.4479283314669653,
+      "step": 400
+    },
+    {
+      "eval_loss": 3.4119951725006104,
+      "eval_runtime": 35.7904,
+      "eval_samples_per_second": 11.176,
+      "eval_steps_per_second": 2.794,
+      "epoch": 0.503919372900336,
+      "step": 450
+    }
+  ],
+  "run_name": "unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router",
+  "run_suffix": "gemmafit_v3_evidence_router",
+  "status": "training_complete",
+  "last_completed_phase": "10_litert_conversion",
+  "dataset_path": "finetune/data/gemmafit_v3_evidence_router.json",
+  "dataset_sha256": "5546fc348f6223ccbfb3f2a655413fc54bd52c8702c1df3f519d96fa9e1c7afa",
+  "train_rows": 10000,
+  "validation_rows": 1200,
+  "merged_hf_path": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/merged_fp16/unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router_merged_fp16",
+  "gguf_q4_path": "models/gemmafit-v3-evidence-router-q4_k_m.gguf",
+  "litertlm_path": "models\\gemmafit-v3-evidence-router.litertlm",
+  "conversion_status": "android_smoke_failed",
+  "tool_call_eval": "finetune/metrics/tool_call_eval_v3.json",
+  "resume_log": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/RUN_EVENTS_unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router.jsonl",
+  "disconnect_points": "/content/drive/MyDrive/GemmaFit_train/trained_outputs/DISCONNECT_POINTS_unsloth_gemma-4-E4B-it_gemmafit_v3_evidence_router.jsonl",
+  "conversion_log": {
+    "source_litertlm": "models\\gemmafit-v3-evidence-router.litertlm",
+    "dest": "models\\gemmafit-v3-evidence-router.litertlm",
+    "smoke_status": "not_run",
+    "android_smoke_status": "fail",
+    "android_smoke_backend": "litert-lm",
+    "android_smoke_model_path": "/storage/emulated/0/Android/data/com.gemmafit/files/gemmafit-v3-evidence-router.litertlm",
+    "android_smoke_model_size_bytes": 3910533120,
+    "android_smoke_error": "Failed to create engine: INTERNAL at llm_litert_compiled_model_executor.cc:1928 / litert_compiled_model.h:1780"
+  }
+}

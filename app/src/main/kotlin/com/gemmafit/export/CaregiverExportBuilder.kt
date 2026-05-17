@@ -42,6 +42,7 @@ class CaregiverExportBuilder(
             sessionsCompleted = sessions.size,
             commonCameraLimitations = collectCameraLimitations(sessions),
             commonCues = topCues(sessions),
+            supportEventCounts = supportEventCounts(sessions),
             unsupportedJudgmentsAcknowledged = MANDATORY_UNSUPPORTED,
         )
 
@@ -61,6 +62,7 @@ class CaregiverExportBuilder(
             "sessions_completed" to s.sessionsCompleted,
             "common_camera_limitations" to JSONArray(s.commonCameraLimitations),
             "common_cues" to JSONArray(s.commonCues),
+            "support_event_counts" to JSONObject(s.supportEventCounts),
             "unsupported_judgments_acknowledged"
                 to JSONArray(s.unsupportedJudgmentsAcknowledged),
             "no_medical_diagnosis" to s.noMedicalDiagnosis,
@@ -98,6 +100,13 @@ class CaregiverExportBuilder(
             appendLine("Camera observations to be aware of:")
             s.commonCameraLimitations.forEach { appendLine("  • $it") }
         }
+        if (s.supportEventCounts.isNotEmpty()) {
+            appendLine()
+            appendLine("Support events observed:")
+            s.supportEventCounts.forEach { (key, count) ->
+                appendLine("  - ${humanizeSupportEvent(key)}: $count")
+            }
+        }
         appendLine()
         appendLine("---")
         appendLine(DISCLAIMER_TEXT)
@@ -122,6 +131,13 @@ class CaregiverExportBuilder(
         if (s.commonCameraLimitations.isNotEmpty()) {
             append("<h2>Camera observations to be aware of</h2><ul>")
             s.commonCameraLimitations.forEach { append("<li>${escape(it)}</li>") }
+            append("</ul>")
+        }
+        if (s.supportEventCounts.isNotEmpty()) {
+            append("<h2>Support events observed</h2><ul>")
+            s.supportEventCounts.forEach { (key, count) ->
+                append("<li>${escape(humanizeSupportEvent(key))}: $count</li>")
+            }
             append("</ul>")
         }
         append("<div class='disclaimer'>${escape(DISCLAIMER_TEXT)}</div>")
@@ -153,6 +169,15 @@ class CaregiverExportBuilder(
         return listOf("$limitedSessions session(s) had limited camera view")
     }
 
+    private fun supportEventCounts(sessions: List<SessionSummary>): Map<String, Int> {
+        val counts = linkedMapOf<String, Int>()
+        val lowConfidence = sessions.sumOf { it.lowConfidenceCount }
+        val setupNeeded = sessions.sumOf { it.notApplicableCount }
+        if (lowConfidence > 0) counts["low_confidence_pause"] = lowConfidence
+        if (setupNeeded > 0) counts["setup_needed_pause"] = setupNeeded
+        return counts
+    }
+
     private fun humanizeTrendNote(t: TrendNote): String = when (t) {
         TrendNote.TEMPO_SLOWING       -> "tempo getting slower"
         TrendNote.TEMPO_STABLE        -> "tempo steady"
@@ -162,6 +187,16 @@ class CaregiverExportBuilder(
         TrendNote.ROM_IMPROVING       -> "range of motion improving"
         TrendNote.LOW_CONFIDENCE_RISING -> "camera view harder to read recently"
         TrendNote.VIEW_INCONSISTENT   -> "camera setup keeps changing"
+    }
+
+    private fun humanizeSupportEvent(key: String): String = when (key) {
+        "low_confidence_pause" -> "camera tracking pause"
+        "left_activity_area_pause" -> "paused after leaving the camera view"
+        "no_response_pause" -> "paused after no button or gesture response"
+        "multi_person_ambiguity_pause" -> "paused because more than one person was in view"
+        "setup_needed_pause" -> "setup or camera-view pause"
+        "repeated_cue" -> "simple cue repeated"
+        else -> key.replace('_', ' ')
     }
 
     // ── Bundle + constants ───────────────────────────────────────────

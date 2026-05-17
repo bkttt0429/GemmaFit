@@ -161,6 +161,21 @@ int main() {
     }
 
     {
+        SubjectSelector selector;
+        selector.request_tap(0.50, 0.55);
+        selector.update({synth_candidate(0.50, 0.55, 0.14)});
+
+        const auto out = selector.update({
+            synth_candidate(0.49, 0.55, 0.14),
+            synth_candidate(0.51, 0.55, 0.14),
+        });
+        check("locked ambiguous overlap holds instead of switching",
+              out.status == SubjectLockStatus::kLocked && !out.has_candidate);
+        check("locked ambiguous overlap reports occlusion",
+              out.reason == "subject_temporarily_occluded");
+    }
+
+    {
         SubjectSelectorConfig cfg;
         cfg.auto_lock_stable_frames = 1;
         SubjectSelector selector(cfg);

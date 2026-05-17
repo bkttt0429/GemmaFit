@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.Image
 import android.media.MediaCodec
+import android.media.MediaCodecInfo
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
@@ -13,6 +14,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,6 +30,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 
 data class VideoFrameResult(
     val frameIndex: Int,
@@ -39,6 +42,8 @@ data class VideoFrameResult(
     val pass: VideoAnalysisPass = VideoAnalysisPass.FULL,
     val convertMs: Long = 0L,
     val poseMs: Long = 0L,
+    val extractMs: Long = 0L,
+    val source: String = "unknown",
 )
 
 enum class VideoAnalysisPass {
@@ -69,26 +74,75 @@ class VideoProcessor(
     companion object {
         private const val TAG = "GemmaFit.VideoProc"
         private const val CODEC_FIRST_FRAME_TIMEOUT_MS = 3_000L
-        private const val CODEC_IDLE_TIMEOUT_MS = 5_000L
+        private const val CODEC_IDLE_TIMEOUT_MS = 3_000L
     }
 
     private data class QueuedFrame(
         val bitmap: Bitmap,
         val timestampMs: Long,
         val convertMs: Long = 0L,
+        val extractMs: Long = 0L,
+        val source: String = "codec",
     )
 
     fun processVideo(uri: Uri): Flow<VideoFrameResult> = flow {
-        val emitted = try {
-            extractWithCodec(uri) { emit(it) }
-        } catch (e: Exception) {
-            Log.w(TAG, "MediaCodec fallback: ${e.message}")
-            0
+        val emitted = if (preferRetrieverFirst(uri)) {
+            val retrieverFrames = extractWithRetrieverSafely(uri) { emit(it) }
+            if (retrieverFrames > 0) {
+                retrieverFrames
+            } else {
+                extractWithCodecSafely(uri) { emit(it) }
+            }
+        } else {
+            val codecFrames = extractWithCodecSafely(uri) { emit(it) }
+            if (codecFrames > 0) {
+                codecFrames
+            } else {
+                extractWithRetrieverSafely(uri) { emit(it) }
+            }
         }
         if (emitted == 0) {
-            extractWithRetriever(uri) { emit(it) }
+            Log.w(TAG, "No frames emitted for uri=$uri")
         }
     }.flowOn(Dispatchers.Default)
+
+    private fun preferRetrieverFirst(uri: Uri): Boolean {
+        return uri.scheme.isNullOrBlank()
+    }
+
+    private suspend fun extractWithCodecSafely(
+        uri: Uri,
+        emitFrame: suspend (VideoFrameResult) -> Unit,
+    ): Int {
+        return try {
+            extractWithCodec(uri, emitFrame)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: OutOfMemoryError) {
+            Log.e(TAG, "MediaCodec out of memory; falling back to retriever", e)
+            0
+        } catch (e: Exception) {
+            Log.w(TAG, "MediaCodec fallback: ${e.message}", e)
+            0
+        }
+    }
+
+    private suspend fun extractWithRetrieverSafely(
+        uri: Uri,
+        emitFrame: suspend (VideoFrameResult) -> Unit,
+    ): Int {
+        return try {
+            extractWithRetriever(uri, emitFrame)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: OutOfMemoryError) {
+            Log.e(TAG, "Retriever out of memory", e)
+            0
+        } catch (e: Exception) {
+            Log.e(TAG, "Retriever failed: ${e.message}", e)
+            0
+        }
+    }
 
     private suspend fun extractWithCodec(
         uri: Uri,
@@ -123,7 +177,13 @@ class VideoProcessor(
         val targetW = (width * scale).toInt().coerceAtLeast(1)
         val targetH = (height * scale).toInt().coerceAtLeast(1)
 
-        val decodeFormat = MediaFormat.createVideoFormat(mime, width, height)
+        val decodeFormat = format
+        runCatching {
+            decodeFormat.setInteger(
+                MediaFormat.KEY_COLOR_FORMAT,
+                MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible,
+            )
+        }
 
         val handlerThread = HandlerThread("FrameDecoder").also { it.start() }
         val handler = Handler(handlerThread.looper)
@@ -138,6 +198,7 @@ class VideoProcessor(
         var outputColorFormat = -1
         var emittedFrames = 0
         var codecWatchdogTriggered = false
+        val codecProgressAtMs = AtomicLong(System.currentTimeMillis())
 
         var decoder: MediaCodec? = null
         try {
@@ -150,6 +211,7 @@ class VideoProcessor(
                 override fun onInputBufferAvailable(mc: MediaCodec, index: Int) {
                     if (eosReached.get() || codecStopping.get()) return
                     try {
+                        codecProgressAtMs.set(System.currentTimeMillis())
                         val buf = mc.getInputBuffer(index) ?: return
                         val sampleSize = extractor.readSampleData(buf, 0)
                         if (sampleSize < 0) {
@@ -170,8 +232,10 @@ class VideoProcessor(
                 }
 
                 override fun onOutputBufferAvailable(mc: MediaCodec, index: Int, info: MediaCodec.BufferInfo) {
+                    val outputStart = System.currentTimeMillis()
+                    codecProgressAtMs.set(outputStart)
                     if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
-                        mc.releaseOutputBuffer(index, false)
+                        safeReleaseOutputBuffer(mc, index)
                         decodeFinished.set(true)
                         decodeLatch.countDown()
                         return
@@ -196,7 +260,16 @@ class VideoProcessor(
                             try {
                                 val convertStart = System.currentTimeMillis()
                                 val bmp = yuvImageToBitmap(image, width, height, targetW, targetH)
-                                yuvQueue.put(QueuedFrame(bmp, timestampMs, System.currentTimeMillis() - convertStart))
+                                val convertMs = System.currentTimeMillis() - convertStart
+                                yuvQueue.put(
+                                    QueuedFrame(
+                                        bitmap = bmp,
+                                        timestampMs = timestampMs,
+                                        convertMs = convertMs,
+                                        extractMs = System.currentTimeMillis() - outputStart,
+                                        source = "codec",
+                                    )
+                                )
                                 lastQueuedTimestampMs = timestampMs
                             } catch (e: Exception) {
                                 Log.e(TAG, "YUV convert failed (${width}x${height}): ${e.message}", e)
@@ -211,7 +284,16 @@ class VideoProcessor(
                                     buf.limit(info.offset + info.size)
                                     val convertStart = System.currentTimeMillis()
                                     val bmp = bufferToBitmap(buf, width, height, targetW, targetH, outputColorFormat)
-                                    yuvQueue.put(QueuedFrame(bmp, timestampMs, System.currentTimeMillis() - convertStart))
+                                    val convertMs = System.currentTimeMillis() - convertStart
+                                    yuvQueue.put(
+                                        QueuedFrame(
+                                            bitmap = bmp,
+                                            timestampMs = timestampMs,
+                                            convertMs = convertMs,
+                                            extractMs = System.currentTimeMillis() - outputStart,
+                                            source = "codec",
+                                        )
+                                    )
                                     lastQueuedTimestampMs = timestampMs
                                 } catch (e: Exception) {
                                     Log.e(TAG, "Buffer convert failed: ${e.message}", e)
@@ -220,15 +302,17 @@ class VideoProcessor(
                         }
                     }
                     outputCount++
-                    mc.releaseOutputBuffer(index, false)
+                    safeReleaseOutputBuffer(mc, index)
                 }
 
                 override fun onOutputFormatChanged(mc: MediaCodec, fmt: MediaFormat) {
+                    codecProgressAtMs.set(System.currentTimeMillis())
                     outputColorFormat = try { fmt.getInteger(MediaFormat.KEY_COLOR_FORMAT) } catch (_: Exception) { -1 }
                     Log.d(TAG, "Output format: color=$outputColorFormat")
                 }
 
                 override fun onError(mc: MediaCodec, e: MediaCodec.CodecException) {
+                    codecProgressAtMs.set(System.currentTimeMillis())
                     Log.e(TAG, "Codec error: ${e.message}")
                     decodeError = e
                     decodeFinished.set(true)
@@ -255,6 +339,8 @@ class VideoProcessor(
                             frameIndex = frameIdx,
                             timestampMs = queued.timestampMs,
                             convertMs = queued.convertMs,
+                            extractMs = queued.extractMs,
+                            source = queued.source,
                         )
                         resultQueue.put(result)
                         frameIdx++
@@ -279,7 +365,13 @@ class VideoProcessor(
                     break
                 }
                 val noQueuedWork = yuvQueue.isEmpty() && resultQueue.isEmpty()
-                if (emittedFrames == 0 && noQueuedWork && now - waitStartMs > CODEC_FIRST_FRAME_TIMEOUT_MS) {
+                val idleSinceCodecProgressMs = now - codecProgressAtMs.get()
+                if (
+                    emittedFrames == 0 &&
+                    noQueuedWork &&
+                    now - waitStartMs > CODEC_FIRST_FRAME_TIMEOUT_MS &&
+                    idleSinceCodecProgressMs > CODEC_FIRST_FRAME_TIMEOUT_MS
+                ) {
                     Log.w(TAG, "Codec[$pass] no first frame after ${now - waitStartMs}ms; falling back to retriever")
                     codecWatchdogTriggered = true
                     codecStopping.set(true)
@@ -287,7 +379,13 @@ class VideoProcessor(
                     decodeLatch.countDown()
                     break
                 }
-                if (emittedFrames > 0 && noQueuedWork && !decodeFinished.get() && now - lastEmitMs > CODEC_IDLE_TIMEOUT_MS) {
+                if (
+                    emittedFrames > 0 &&
+                    noQueuedWork &&
+                    !decodeFinished.get() &&
+                    now - lastEmitMs > CODEC_IDLE_TIMEOUT_MS &&
+                    idleSinceCodecProgressMs > CODEC_IDLE_TIMEOUT_MS
+                ) {
                     Log.w(TAG, "Codec[$pass] idle after $emittedFrames frames; falling back to retriever")
                     codecWatchdogTriggered = true
                     codecStopping.set(true)
@@ -404,6 +502,14 @@ class VideoProcessor(
         return Bitmap.createBitmap(pixels, targetW, targetH, Bitmap.Config.ARGB_8888)
     }
 
+    private fun safeReleaseOutputBuffer(codec: MediaCodec, index: Int) {
+        try {
+            codec.releaseOutputBuffer(index, false)
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "releaseOutputBuffer skipped after codec state changed: ${e.message}")
+        }
+    }
+
     private suspend fun extractWithRetriever(
         uri: Uri,
         emitFrame: suspend (VideoFrameResult) -> Unit,
@@ -416,13 +522,21 @@ class VideoProcessor(
             retriever.setDataSource(context, uri)
             val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 10000L
             val sampleIntervalMs = targetAnalysisIntervalMs.coerceAtLeast(33L)
+            val sourceWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: maxDimension
+            val sourceHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: maxDimension
+            val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
+            val orientedWidth = if (rotation == 90 || rotation == 270) sourceHeight else sourceWidth
+            val orientedHeight = if (rotation == 90 || rotation == 270) sourceWidth else sourceHeight
+            val (targetWidth, targetHeight) = scaledDimensions(orientedWidth, orientedHeight, maxDimension)
 
             Log.d(TAG, "Retriever[$pass]: duration=${durationMs}ms, interval=${sampleIntervalMs}ms, longSide=$maxDimension")
 
             var timeMs = 0L
             var frameIdx = 0
             while (timeMs < durationMs) {
-                val bmp = retriever.getFrameAtTime(timeMs * 1000L, MediaMetadataRetriever.OPTION_CLOSEST)
+                val timeUs = timeMs * 1000L
+                val extractStart = System.currentTimeMillis()
+                val bmp = getRetrieverFrame(retriever, timeUs, targetWidth, targetHeight)
                 if (bmp != null) {
                     val convertStart = System.currentTimeMillis()
                     val scaled = if (bmp.width > maxDimension || bmp.height > maxDimension) {
@@ -436,6 +550,8 @@ class VideoProcessor(
                         frameIndex = frameIdx,
                         timestampMs = timeMs,
                         convertMs = System.currentTimeMillis() - convertStart,
+                        extractMs = System.currentTimeMillis() - extractStart,
+                        source = "retriever",
                     )
                     if (result.landmarks != null && result.landmarks.landmarks.isNotEmpty()) {
                         detectedFrames++
@@ -448,6 +564,10 @@ class VideoProcessor(
                 frameIdx++
             }
             Log.d(TAG, "Retriever[$pass]: $emittedFrames frames, $detectedFrames with pose")
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: OutOfMemoryError) {
+            Log.e(TAG, "Retriever[$pass] out of memory after $emittedFrames frames", e)
         } catch (e: Exception) {
             Log.e(TAG, "Retriever error: ${e.message}", e)
         } finally {
@@ -456,14 +576,57 @@ class VideoProcessor(
         return emittedFrames
     }
 
+    private fun getRetrieverFrame(
+        retriever: MediaMetadataRetriever,
+        timeUs: Long,
+        targetWidth: Int,
+        targetHeight: Int,
+    ): Bitmap? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && targetWidth > 0 && targetHeight > 0) {
+            try {
+                return retriever.getScaledFrameAtTime(
+                    timeUs,
+                    MediaMetadataRetriever.OPTION_CLOSEST,
+                    targetWidth,
+                    targetHeight,
+                )
+            } catch (e: OutOfMemoryError) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Scaled frame unavailable at ${timeUs / 1000L}ms: ${e.message}")
+            }
+        }
+        return retriever.getFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST)
+    }
+
+    private fun scaledDimensions(width: Int, height: Int, longSide: Int): Pair<Int, Int> {
+        val safeWidth = width.coerceAtLeast(1)
+        val safeHeight = height.coerceAtLeast(1)
+        val scale = minOf(1f, longSide.toFloat() / maxOf(safeWidth, safeHeight))
+        val targetWidth = (safeWidth * scale).toInt().coerceAtLeast(1)
+        val targetHeight = (safeHeight * scale).toInt().coerceAtLeast(1)
+        return targetWidth to targetHeight
+    }
+
     private fun detectPose(
         bitmap: Bitmap,
         frameIndex: Int,
         timestampMs: Long,
         convertMs: Long,
+        extractMs: Long,
+        source: String,
     ): VideoFrameResult {
         if (poseLandmarker == null) {
-            return VideoFrameResult(frameIndex, timestampMs, null, null, pass = pass, convertMs = convertMs)
+            return VideoFrameResult(
+                frameIndex = frameIndex,
+                timestampMs = timestampMs,
+                landmarks = null,
+                bitmap = null,
+                pass = pass,
+                convertMs = convertMs,
+                extractMs = extractMs,
+                source = source,
+            )
         }
         return try {
             val poseStart = System.currentTimeMillis()
@@ -479,7 +642,7 @@ class VideoProcessor(
             } else {
                 emptyList()
             }
-            Log.d(TAG, "Frame[$pass] #$frameIndex t=${timestampMs}ms convert=${convertMs}ms pose=${poseMs}ms poses=${landmarks.size}")
+            Log.d(TAG, "Frame[$pass] #$frameIndex t=${timestampMs}ms source=$source extract=${extractMs}ms convert=${convertMs}ms pose=${poseMs}ms poses=${landmarks.size}")
             VideoFrameResult(
                 frameIndex = frameIndex,
                 timestampMs = timestampMs,
@@ -490,10 +653,33 @@ class VideoProcessor(
                 pass = pass,
                 convertMs = convertMs,
                 poseMs = poseMs,
+                extractMs = extractMs,
+                source = source,
+            )
+        } catch (e: OutOfMemoryError) {
+            Log.e(TAG, "Frame $frameIndex: pose out of memory")
+            VideoFrameResult(
+                frameIndex = frameIndex,
+                timestampMs = timestampMs,
+                landmarks = null,
+                bitmap = null,
+                pass = pass,
+                convertMs = convertMs,
+                extractMs = extractMs,
+                source = source,
             )
         } catch (e: Exception) {
             Log.e(TAG, "Frame $frameIndex: pose error: ${e.message}")
-            VideoFrameResult(frameIndex, timestampMs, null, null, pass = pass, convertMs = convertMs)
+            VideoFrameResult(
+                frameIndex = frameIndex,
+                timestampMs = timestampMs,
+                landmarks = null,
+                bitmap = null,
+                pass = pass,
+                convertMs = convertMs,
+                extractMs = extractMs,
+                source = source,
+            )
         }
     }
 

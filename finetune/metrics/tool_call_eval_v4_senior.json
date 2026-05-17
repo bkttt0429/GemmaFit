@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "total_rows": 9197,
+    "tool_name_accuracy": 1.0,
+    "args_schema_valid_rate": 1.0,
+    "evidence_ref_valid_rate": 1.0,
+    "care_log_medical_claim_rate": 0.0,
+    "persona_schema_valid_rate": 1.0,
+    "subjective_schema_valid_rate": 1.0,
+    "dual_task_schema_valid_rate": 1.0,
+    "unsupported_refusal_rate": 1.0,
+    "memory_write_policy_valid_rate": 1.0,
+    "zh_tw_wrapper_schema_rate": 1.0,
+    "forbidden_claim_rate": 0.0
+  },
+  "failures": [],
+  "dataset": "finetune\\data\\gemmafit_v4_senior_evidence_router.json",
+  "gate_failures": []
+}
