@@ -1,0 +1,72 @@
+{
+  "video": "D:\\GemmaFit\\test_assets\\videos\\internet_public_mp4\\lunge_forward_army.mp4",
+  "fps": 29.97,
+  "sample_every": 6,
+  "landmark_csv": "D:\\GemmaFit\\prototype\\data\\processed\\landmarks\\lunge_forward_army_motionzip.csv",
+  "angle_csv": "D:\\GemmaFit\\prototype\\data\\processed\\angles\\lunge_forward_army_motionzip_angles.csv",
+  "landmark_frames": 335,
+  "angle_frames": 335,
+  "summaries": {
+    "knee_angle": {
+      "count": 335,
+      "min": 5.433,
+      "median": 173.007,
+      "max": 179.977
+    },
+    "hip_angle": {
+      "count": 335,
+      "min": 1.768,
+      "median": 167.351,
+      "max": 179.972
+    },
+    "back_angle": {
+      "count": 335,
+      "min": 2.169,
+      "median": 170.732,
+      "max": 179.81
+    },
+    "valgus_ratio": {
+      "count": 335,
+      "min": 0.0406,
+      "median": 0.8241,
+      "max": 8.5639
+    },
+    "max_fppa": {
+      "count": 335,
+      "min": 0.182,
+      "median": 12.507,
+      "max": 178.326
+    },
+    "max_angular_velocity_dps": {
+      "count": 335,
+      "min": 0.0,
+      "median": 13.993,
+      "max": 857.147
+    }
+  },
+  "com": {
+    "frames": 335,
+    "inside_count": 290,
+    "inside_rate": 0.8657,
+    "offset_ratio": {
+      "count": 335,
+      "min": 0.0023,
+      "median": 0.2752,
+      "max": 1.3193
+    }
+  },
+  "checks": {
+    "pass": true,
+    "failures": [],
+    "warnings": [
+      "rapid movement detected: max=857.15 deg/s > threshold=600.00 deg/s"
+    ],
+    "observed_phases": [
+      "ascending",
+      "bottom",
+      "descending",
+      "top"
+    ]
+  },
+  "video_frames_total": 2037
+}

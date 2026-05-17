@@ -1,0 +1,69 @@
+{
+  "video": "D:\\GemmaFit\\test_assets\\videos\\demo\\gemmafit_full_feature_demo_pexels_squat_720p.mp4",
+  "fps": 25.0,
+  "sample_every": 3,
+  "landmark_csv": "D:\\GemmaFit\\prototype\\data\\processed\\landmarks\\gemmafit_full_feature_demo_pexels_squat_720p_demo_pexels_squat_720p.csv",
+  "angle_csv": "D:\\GemmaFit\\prototype\\data\\processed\\angles\\gemmafit_full_feature_demo_pexels_squat_720p_demo_pexels_squat_720p_angles.csv",
+  "landmark_frames": 213,
+  "angle_frames": 213,
+  "summaries": {
+    "knee_angle": {
+      "count": 213,
+      "min": 45.341,
+      "median": 107.587,
+      "max": 179.914
+    },
+    "hip_angle": {
+      "count": 213,
+      "min": 28.898,
+      "median": 87.96,
+      "max": 179.428
+    },
+    "back_angle": {
+      "count": 213,
+      "min": 67.125,
+      "median": 118.676,
+      "max": 179.932
+    },
+    "valgus_ratio": {
+      "count": 213,
+      "min": 0.5151,
+      "median": 0.7709,
+      "max": 0.9811
+    },
+    "max_fppa": {
+      "count": 213,
+      "min": 4.061,
+      "median": 72.413,
+      "max": 134.659
+    },
+    "max_angular_velocity_dps": {
+      "count": 213,
+      "min": 0.0,
+      "median": 60.801,
+      "max": 219.038
+    }
+  },
+  "com": {
+    "frames": 213,
+    "inside_count": 213,
+    "inside_rate": 1.0,
+    "offset_ratio": {
+      "count": 213,
+      "min": 0.0011,
+      "median": 0.0861,
+      "max": 0.341
+    }
+  },
+  "checks": {
+    "pass": true,
+    "failures": [],
+    "warnings": [],
+    "observed_phases": [
+      "ascending",
+      "bottom",
+      "descending",
+      "top"
+    ]
+  }
+}

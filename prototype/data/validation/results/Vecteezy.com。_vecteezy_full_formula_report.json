@@ -1,0 +1,67 @@
+{
+  "video": "C:\\Users\\ken\\OneDrive\\桌面\\Vecteezy.com。.MOV",
+  "fps": 25.0,
+  "sample_every": 1,
+  "landmark_csv": "D:\\GemmaFit\\prototype\\data\\processed\\landmarks\\Vecteezy.com。_vecteezy_full.csv",
+  "angle_csv": "D:\\GemmaFit\\prototype\\data\\processed\\angles\\Vecteezy.com。_vecteezy_full_angles.csv",
+  "landmark_frames": 117,
+  "angle_frames": 117,
+  "summaries": {
+    "knee_angle": {
+      "count": 117,
+      "min": 171.078,
+      "median": 177.655,
+      "max": 179.971
+    },
+    "hip_angle": {
+      "count": 117,
+      "min": 170.928,
+      "median": 177.311,
+      "max": 179.979
+    },
+    "back_angle": {
+      "count": 117,
+      "min": 173.838,
+      "median": 177.407,
+      "max": 179.983
+    },
+    "valgus_ratio": {
+      "count": 117,
+      "min": 0.3173,
+      "median": 1.089,
+      "max": 7.9421
+    },
+    "max_fppa": {
+      "count": 117,
+      "min": 0.923,
+      "median": 3.752,
+      "max": 12.111
+    },
+    "max_angular_velocity_dps": {
+      "count": 117,
+      "min": 0.0,
+      "median": 32.562,
+      "max": 198.739
+    }
+  },
+  "com": {
+    "frames": 117,
+    "inside_count": 28,
+    "inside_rate": 0.2393,
+    "offset_ratio": {
+      "count": 117,
+      "min": 0.1063,
+      "median": 0.9284,
+      "max": 2.986
+    }
+  },
+  "checks": {
+    "pass": true,
+    "failures": [],
+    "warnings": [],
+    "observed_phases": [
+      "top"
+    ]
+  },
+  "video_frames_total": 306
+}

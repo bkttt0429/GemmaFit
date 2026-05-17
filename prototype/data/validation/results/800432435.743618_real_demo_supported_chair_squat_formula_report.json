@@ -1,0 +1,69 @@
+{
+  "video": "D:\\GemmaFit\\test_assets\\Real\\800432435.743618.mp4",
+  "fps": 29.9876,
+  "sample_every": 3,
+  "landmark_csv": "D:\\GemmaFit\\prototype\\data\\processed\\landmarks\\800432435.743618_real_demo_supported_chair_squat.csv",
+  "angle_csv": "D:\\GemmaFit\\prototype\\data\\processed\\angles\\800432435.743618_real_demo_supported_chair_squat_angles.csv",
+  "landmark_frames": 162,
+  "angle_frames": 162,
+  "summaries": {
+    "knee_angle": {
+      "count": 162,
+      "min": 58.953,
+      "median": 170.9085,
+      "max": 179.297
+    },
+    "hip_angle": {
+      "count": 162,
+      "min": 71.022,
+      "median": 163.5465,
+      "max": 179.833
+    },
+    "back_angle": {
+      "count": 162,
+      "min": 130.382,
+      "median": 167.5505,
+      "max": 179.418
+    },
+    "valgus_ratio": {
+      "count": 162,
+      "min": 0.3492,
+      "median": 0.6458,
+      "max": 2.4629
+    },
+    "max_fppa": {
+      "count": 162,
+      "min": 8.375,
+      "median": 20.0595,
+      "max": 121.047
+    },
+    "max_angular_velocity_dps": {
+      "count": 162,
+      "min": 0.0,
+      "median": 7.007,
+      "max": 130.074
+    }
+  },
+  "com": {
+    "frames": 162,
+    "inside_count": 162,
+    "inside_rate": 1.0,
+    "offset_ratio": {
+      "count": 162,
+      "min": 0.018,
+      "median": 0.3139,
+      "max": 0.6969
+    }
+  },
+  "checks": {
+    "pass": true,
+    "failures": [],
+    "warnings": [],
+    "observed_phases": [
+      "ascending",
+      "bottom",
+      "descending",
+      "top"
+    ]
+  }
+}
