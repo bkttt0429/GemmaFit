@@ -43,6 +43,9 @@ finetune/data/gemmafit_v5_2_e2b_evidence_router.json
 .kotlin/errors/
 .vscode/
 .claude/
+.gemini/
+AGENTS.md
+CLAUDE.md
 app/.cxx/
 
 # Local debug/test artifacts
@@ -73,7 +76,6 @@ test_assets/videos/internet_public/
 /yolov8*.pt
 /app/src/main/assets/yolo*.tflite
 /app/src/main/assets/yolo*.onnx
-/.gemini/
 test_assets/outputs/
 
 # Large media & datasets
