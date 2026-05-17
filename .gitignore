@@ -77,6 +77,8 @@ test_assets/videos/internet_public/
 test_assets/outputs/
 
 # Large media & datasets
+/models/
+/releases/
 test_assets/datasets/
 *.zip
 *.mp4
